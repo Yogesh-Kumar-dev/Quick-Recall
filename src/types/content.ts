@@ -1,0 +1,96 @@
+// ─── Interview Prep Content Types ──────────────────────────────────────────
+
+// ---------------------------------------------------------------------------
+// Notes pages (JS, TS, React)
+// ---------------------------------------------------------------------------
+export interface Note {
+  id: string;
+  title: string;
+  summary: string; // 1-liner shown on the card
+  keyPoints: string[];
+  gotcha?: string; // common mistake / trap
+  codeSnippet?: string;
+  textbookDef?: string; // formal definition — rendered for intermediate + advanced
+  eli5?: string; // casual analogy-driven walkthrough — rendered for intermediate + advanced
+  difficulty: 'basic' | 'intermediate' | 'advanced';
+  category: string; // e.g. 'core' | 'async' | 'es6' | 'hooks' | 'generics'
+}
+
+// ---------------------------------------------------------------------------
+// Quick Recall cheatsheet
+// ---------------------------------------------------------------------------
+export interface QuickRecallItem {
+  concept: string;
+  bullets: string[];
+  codeSnippet?: string; // short inline code block
+  warning?: string; // highlighted gotcha (rendered in amber box)
+}
+
+export interface QuickRecallSection {
+  title: string;
+  items: QuickRecallItem[];
+}
+
+// ---------------------------------------------------------------------------
+// Shared difficulty type + base problem entry
+// ---------------------------------------------------------------------------
+export type ProblemDifficulty = 'easy' | 'medium' | 'hard';
+
+export interface BaseProblemEntry {
+  id: string;
+  title: string;
+  slug: string;
+  difficulty: ProblemDifficulty;
+  category: string;
+  tags: string[];
+}
+
+// ---------------------------------------------------------------------------
+// JS Machine Coding — problem registry (list page)
+// ---------------------------------------------------------------------------
+export type ProblemCategory = 'array' | 'object' | 'async' | 'string' | 'functional' | 'class' | 'dom';
+
+export interface JsProblemEntry extends BaseProblemEntry {
+  category: ProblemCategory;
+}
+
+// ---------------------------------------------------------------------------
+// React Machine Coding — problem registry (list page)
+// ---------------------------------------------------------------------------
+export type ReactMcCategory = 'ui-state' | 'forms' | 'data-fetching' | 'layout' | 'performance' | 'advanced-ui';
+
+export interface ReactMcProblem extends BaseProblemEntry {
+  category: ReactMcCategory;
+}
+
+// ---------------------------------------------------------------------------
+// JS Machine Coding — individual problem (used in server component)
+// ---------------------------------------------------------------------------
+export interface JsProblemExample {
+  input: string;
+  output: string;
+  explanation?: string;
+}
+
+export interface JsProblemMeta {
+  title: string;
+  description: string;
+  examples: JsProblemExample[];
+  constraints?: string[];
+  interviewTip: string;
+  tags: string[];
+}
+
+// ---------------------------------------------------------------------------
+// JS Machine Coding — a single approach/solution
+// ---------------------------------------------------------------------------
+export interface ApproachData {
+  label: string; // 'Brute Force' | 'Better' | 'Optimal' | 'One-liner'
+  description: string; // What this approach does and why
+  timeComplexity: string; // e.g. 'O(n²)'
+  spaceComplexity: string; // e.g. 'O(1)'
+  pros?: string[];
+  cons?: string[];
+  code: string; // raw file content (read at build time via readFileSync)
+  filename: string; // e.g. 'solution-brute.js' — shown in CodeViewer header
+}
