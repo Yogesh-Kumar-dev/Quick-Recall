@@ -97,7 +97,9 @@ export default function Tabs() {
             role="tab"
             aria-selected={activeTab === i}
             tabIndex={activeTab === i ? 0 : -1}
-            ref={(el) => { tabRefs.current[i] = el; }}
+            ref={(el) => {
+              tabRefs.current[i] = el;
+            }}
             onClick={() => activateTab(i)}
             style={{
               position: 'relative',
@@ -115,7 +117,23 @@ export default function Tabs() {
           >
             {tab.label}
             {tab.badge > 0 && (
-              <span style={{ position: 'absolute', top: 4, right: 4, background: '#f44336', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 4,
+                  right: 4,
+                  background: '#f44336',
+                  color: '#fff',
+                  borderRadius: '50%',
+                  width: 16,
+                  height: 16,
+                  fontSize: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700
+                }}
+              >
                 {tab.badge}
               </span>
             )}

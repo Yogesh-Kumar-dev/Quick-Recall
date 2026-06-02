@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconAlertTriangle, IconChevronDown } from '@tabler/icons-react';
 import type { QuickRecallSection as QRSection } from 'types/content';
 
 interface QuickRecallItemProps {
@@ -40,8 +40,8 @@ function QRItem({ concept, bullets, codeSnippet, warning }: QuickRecallItemProps
             mb: warning ? 1.5 : 0,
             p: 1.5,
             borderRadius: 1,
-            bgcolor: '#1e1e1e',
-            color: '#d4d4d4',
+            bgcolor: 'grey.900',
+            color: 'grey.50',
             fontSize: 12,
             fontFamily: 'monospace',
             overflowX: 'auto',
@@ -54,9 +54,12 @@ function QRItem({ concept, bullets, codeSnippet, warning }: QuickRecallItemProps
       )}
 
       {warning && (
-        <Box sx={{ p: 1.25, bgcolor: '#fff3e0', borderRadius: 1, border: '1px solid #ffcc80' }}>
-          <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-            ⚠️ <strong>Watch out:</strong> {warning}
+        <Box sx={{ p: 1.25, bgcolor: 'warning.light', borderRadius: 1, border: '1px solid', borderColor: 'warning.main' }}>
+          <Typography variant="body2" sx={{ lineHeight: 1.6, color: 'warning.dark', display: 'flex', alignItems: 'flex-start', gap: 0.75 }}>
+            <IconAlertTriangle size={15} style={{ flexShrink: 0, marginTop: 2 }} />
+            <span>
+              <strong>Watch out:</strong> {warning}
+            </span>
           </Typography>
         </Box>
       )}

@@ -21,7 +21,7 @@ const PROBLEM: ProblemMeta = {
     'Single handleChange function handles all fields via e.target.name',
     'Validate on submit: required fields, valid email format, message min-length',
     'Show inline error messages below each invalid field',
-    'Clear a field\'s error as soon as the user starts typing in it',
+    "Clear a field's error as soon as the user starts typing in it",
     'Show a success state with submitted values after valid submission'
   ],
   keyPatterns: [

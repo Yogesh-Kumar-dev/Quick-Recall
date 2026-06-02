@@ -43,18 +43,18 @@ export interface TopicFilterCardsProps {
 // ─── Colour maps ─────────────────────────────────────────────────────────────
 
 const PALETTE_BG: Record<string, string> = {
-  success: '#e8f5e9',
-  warning: '#fff8e1',
-  error: '#ffebee',
-  primary: '#e3f2fd',
-  default: '#f5f5f5'
+  success: 'rgba(76, 175, 80, 0.1)',
+  warning: 'rgba(255, 193, 7, 0.1)',
+  error: 'rgba(244, 67, 54, 0.1)',
+  primary: 'rgba(33, 150, 243, 0.1)',
+  default: 'rgba(255, 255, 255, 0.04)'
 };
 const PALETTE_BORDER: Record<string, string> = {
   success: '#4caf50',
   warning: '#ffc107',
   error: '#f44336',
   primary: '#2196f3',
-  default: '#bdbdbd'
+  default: 'rgba(255,255,255,0.18)'
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -137,12 +137,7 @@ export default function TopicFilterCards({
   return (
     <Box mb={3}>
       <Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap mb={categories && categories.length > 0 ? 1.5 : 0}>
-        <DifficultyCard
-          option={allOption}
-          active={activeDifficulty === 'all'}
-          onClick={() => onDifficultyChange('all')}
-          theme={theme}
-        />
+        <DifficultyCard option={allOption} active={activeDifficulty === 'all'} onClick={() => onDifficultyChange('all')} theme={theme} />
         {difficulties.map((d) => (
           <DifficultyCard
             key={d.value}
@@ -206,7 +201,7 @@ interface DifficultyCardProps {
 function DifficultyCard({ option, active, onClick, fullWidth }: DifficultyCardProps) {
   const colorKey = option.color ?? 'default';
   const bg = active ? PALETTE_BG[colorKey] : 'transparent';
-  const borderColor = active ? PALETTE_BORDER[colorKey] : '#e0e0e0';
+  const borderColor = active ? PALETTE_BORDER[colorKey] : 'rgba(255,255,255,0.12)';
 
   return (
     <Card
@@ -226,9 +221,16 @@ function DifficultyCard({ option, active, onClick, fullWidth }: DifficultyCardPr
     >
       <CardActionArea onClick={onClick} sx={{ px: 2, py: 1.25 }}>
         <Stack direction="row" spacing={0.75} alignItems="center">
-          <Typography fontSize={18} lineHeight={1}>
-            {option.emoji}
-          </Typography>
+          <Box
+            sx={{
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              bgcolor: PALETTE_BORDER[colorKey],
+              flexShrink: 0,
+              boxShadow: active ? `0 0 5px ${PALETTE_BORDER[colorKey]}60` : 'none'
+            }}
+          />
           <Box>
             <Typography variant="body2" fontWeight={active ? 700 : 500} sx={{ textTransform: 'capitalize', lineHeight: 1.2 }}>
               {option.label}

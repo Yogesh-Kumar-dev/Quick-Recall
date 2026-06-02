@@ -18,7 +18,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           fontWeight: 500,
           borderRadius: '4px',
           ...theme.applyStyles('dark', {
-            '&.MuiButton-colorWarning': { color: theme.palette.common.black }
+            '&.MuiButton-contained.MuiButton-colorWarning': { color: theme.palette.common.black }
           })
         }
       }

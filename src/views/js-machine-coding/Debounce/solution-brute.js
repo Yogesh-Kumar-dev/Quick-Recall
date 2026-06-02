@@ -18,7 +18,7 @@ function debounce(fn, delay) {
 
     // Schedule the function to run after 'delay' ms of silence
     timerId = setTimeout(function () {
-      timerId = null;      // reset so we know no timer is pending
+      timerId = null; // reset so we know no timer is pending
       fn.apply(this, args); // preserve original 'this' and arguments
     }, delay);
   };

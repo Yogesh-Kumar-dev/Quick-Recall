@@ -62,7 +62,7 @@ const APPROACHES: ApproachData[] = [
   {
     label: 'One-liner (ES6)',
     description:
-      'Concise arrow-function version — the style you\'ll see in most blog posts. Perfectly acceptable for interviews where brevity is valued. Lacks leading edge and cancel, but is idiomatic and readable.',
+      "Concise arrow-function version — the style you'll see in most blog posts. Perfectly acceptable for interviews where brevity is valued. Lacks leading edge and cancel, but is idiomatic and readable.",
     timeComplexity: 'O(1)',
     spaceComplexity: 'O(1)',
     pros: ['Very concise — easy to write quickly', 'Readable at a glance', 'Good starting point'],

@@ -106,7 +106,7 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
     // eslint-disable-next-line
   }, [pathname, searchParams]);
 
-  const iconSelectedColor = mode === ThemeMode.DARK && drawerOpen ? 'text.primary' : 'secondary.main';
+  const iconSelectedColor = mode === ThemeMode.DARK && drawerOpen ? 'primary.light' : 'secondary.main';
 
   return (
     <>
@@ -135,6 +135,21 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
                   '&:hover': {
                     color: iconSelectedColor,
                     bgcolor: 'secondary.light'
+                  }
+                }
+              }),
+            ...(drawerOpen &&
+              level === 1 &&
+              mode === ThemeMode.DARK && {
+                '&:hover': {
+                  bgcolor: alpha(theme.palette.primary.main, 0.08)
+                },
+                '&.Mui-selected': {
+                  bgcolor: alpha(theme.palette.primary.main, 0.12),
+                  color: iconSelectedColor,
+                  '&:hover': {
+                    color: iconSelectedColor,
+                    bgcolor: alpha(theme.palette.primary.main, 0.16)
                   }
                 }
               }),

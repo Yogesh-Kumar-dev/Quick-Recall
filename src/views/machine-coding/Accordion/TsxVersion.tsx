@@ -55,7 +55,11 @@ export default function Accordion() {
     if (isMultiOpen) {
       setOpenItems((prev) => {
         const next = new Set(prev);
-        if (next.has(index)) { next.delete(index); } else { next.add(index); }
+        if (next.has(index)) {
+          next.delete(index);
+        } else {
+          next.add(index);
+        }
         return next;
       });
     } else {
@@ -105,14 +109,17 @@ export default function Accordion() {
             {/* summary replaces the header div; e.preventDefault() stops the
                 browser's native toggle so React state stays the single source of truth */}
             <summary
-              onClick={(e) => { e.preventDefault(); toggle(item.id); }}
+              onClick={(e) => {
+                e.preventDefault();
+                toggle(item.id);
+              }}
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '14px 16px',
                 cursor: 'pointer',
-                listStyle: 'none',           /* removes the native ▶ marker */
+                listStyle: 'none' /* removes the native ▶ marker */,
                 background: open ? '#e3f2fd' : '#fafafa',
                 borderBottom: open ? '1px solid #e0e0e0' : 'none',
                 transition: 'background 0.15s',

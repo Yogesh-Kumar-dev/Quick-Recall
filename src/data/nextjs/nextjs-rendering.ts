@@ -67,7 +67,7 @@ export async function generateStaticParams() {
     difficulty: 'basic',
     category: 'rendering',
     textbookDef:
-      "SSR generates full HTML for each incoming request on the server. In the App Router, a route becomes dynamically rendered when it accesses request-time APIs (cookies, headers, searchParams) or uses uncached data fetches.",
+      'SSR generates full HTML for each incoming request on the server. In the App Router, a route becomes dynamically rendered when it accesses request-time APIs (cookies, headers, searchParams) or uses uncached data fetches.',
     keyPoints: [
       'A route is dynamically rendered when it uses: cookies(), headers(), or searchParams.',
       'fetch() without "use cache" runs fresh on every request — implicitly dynamic.',
@@ -219,7 +219,8 @@ async function updateProduct(id: string, data) {
   {
     id: 'ppr',
     title: 'Partial Pre-Rendering (PPR)',
-    summary: 'PPR is the default model with Cache Components — static shell served instantly from CDN, dynamic Suspense slots stream in per-request.',
+    summary:
+      'PPR is the default model with Cache Components — static shell served instantly from CDN, dynamic Suspense slots stream in per-request.',
     difficulty: 'advanced',
     category: 'ppr',
     textbookDef:
@@ -247,6 +248,132 @@ export default function ProductPage() {
       </Suspense>
     </>
   );
+}`
+  },
+
+  // ─── RENDERING (from the Next.js interview question bank) ─────────────────────
+  {
+    id: 'csr-vs-ssr',
+    title: 'CSR vs SSR vs Pre-rendering',
+    summary: 'CSR renders in the browser; SSR/SSG pre-render HTML on the server for faster first paint and SEO.',
+    difficulty: 'basic',
+    category: 'rendering',
+    keyPoints: [
+      'CSR: the browser downloads JS, then renders — first paint is an empty shell (poor SEO).',
+      'Pre-rendering: Next.js generates HTML ahead of time so content is visible immediately.',
+      'Two pre-render modes: SSG (at build time) and SSR (per request).',
+      'After HTML arrives, React HYDRATES it — attaching event listeners to make it interactive.',
+      'Pre-rendering improves first contentful paint, SEO, and perceived performance.'
+    ],
+    eli5: 'CSR is handing someone a flat-pack box and the instructions — they build the furniture at home (slow, blank at first). SSR/SSG ships the furniture already assembled — they see it instantly, then just tighten the screws (hydration).',
+    codeSnippet: `// CSR: <div id="root"></div> → JS fills it in the browser
+// SSR/SSG: server sends full HTML → React hydrates it
+
+// Pre-rendered page is visible (and crawlable) before JS loads`
+  },
+  {
+    id: 'auto-static-optimization',
+    title: 'Automatic Static Optimization',
+    summary: 'Pages Router auto-prerenders pages with no server-side data needs into static HTML at build time.',
+    difficulty: 'intermediate',
+    category: 'rendering',
+    keyPoints: [
+      'During build, Next.js analyzes each Pages-Router page for data dependencies.',
+      'A page WITHOUT getServerSideProps / getInitialProps is auto-optimized to static HTML.',
+      'Such pages serve instantly with no per-request server render.',
+      'Pages using only client state, context, or client libraries qualify.',
+      'For freshness, combine with ISR (revalidate) so static pages update over time.'
+    ],
+    gotcha:
+      'Adding getServerSideProps (even returning nothing useful) opts a page OUT of static optimization, forcing SSR on every request. Only add it when you truly need per-request data.',
+    codeSnippet: `// Auto-statically-optimized — no data functions
+export default function About() {
+  return <h1>About us</h1>; // prerendered to static HTML at build
+}
+
+// Opts OUT of static optimization → SSR every request
+export async function getServerSideProps() {
+  return { props: {} };
+}`
+  },
+
+  // ─── PAGES ROUTER DATA FETCHING ───────────────────────────────────────────────
+  {
+    id: 'getstaticprops',
+    title: 'getStaticProps (SSG)',
+    summary: 'Pages Router data fetch that runs at build time and feeds props into a statically generated page.',
+    difficulty: 'intermediate',
+    category: 'pages-router',
+    keyPoints: [
+      'Runs ONCE at build time (or during ISR revalidation) — never on the client.',
+      'Returns { props } that are passed to the page component.',
+      'Add revalidate: n to enable ISR — the page regenerates at most every n seconds.',
+      'Ideal for content that is the same for all users (blogs, docs, marketing).',
+      'Pair with getStaticPaths for dynamic routes ([id]).'
+    ],
+    gotcha:
+      'getStaticProps runs only on the server at build — it is stripped from the client bundle, so you can safely use secrets and direct DB calls inside it.',
+    codeSnippet: `export async function getStaticProps() {
+  const data = await fetchData();
+  return {
+    props: { data },
+    revalidate: 60   // ISR: regenerate at most once per minute
+  };
+}
+
+export default function Page({ data }) {
+  return <List items={data} />;
+}`
+  },
+  {
+    id: 'getserversideprops',
+    title: 'getServerSideProps (SSR)',
+    summary: 'Pages Router data fetch that runs on every request, rendering the page server-side with fresh data.',
+    difficulty: 'intermediate',
+    category: 'pages-router',
+    keyPoints: [
+      'Runs on EVERY request — always fresh, can read req/res, cookies, headers.',
+      'Returns { props } computed server-side and passed to the page.',
+      'Use for personalized or frequently-changing data (dashboards, authed pages).',
+      'Slower than SSG: adds server latency per request (no CDN caching of HTML).',
+      'Can return { redirect } or { notFound: true } to control the response.'
+    ],
+    gotcha:
+      'getServerSideProps disables static optimization for that route. If the data does not actually change per request, use getStaticProps + ISR instead for far better performance.',
+    codeSnippet: `export async function getServerSideProps(context) {
+  const { req, params } = context;
+  const user = await getUser(req.cookies.token);
+  if (!user) return { redirect: { destination: '/login', permanent: false } };
+  return { props: { user } };  // fresh on every request
+}`
+  },
+  {
+    id: 'getstaticpaths-fallback',
+    title: 'getStaticPaths & fallback',
+    summary: 'Declares which dynamic routes to pre-render at build time; fallback controls un-listed paths.',
+    difficulty: 'intermediate',
+    category: 'pages-router',
+    keyPoints: [
+      'Used with getStaticProps for dynamic routes (pages/blog/[id].js).',
+      'Returns { paths, fallback } — paths is the list to pre-render at build time.',
+      'fallback: false — any path not listed returns a 404.',
+      'fallback: true — serve a fallback page, then generate in the background and cache.',
+      "fallback: 'blocking' — SSR the page on first request, then cache it (no fallback UI).",
+      'App Router equivalent: generateStaticParams (no fallback option — uses dynamicParams).'
+    ],
+    gotcha:
+      'With fallback: true the page first renders with no data — you must handle router.isFallback and show a loading state, or it crashes accessing undefined props.',
+    codeSnippet: `export async function getStaticPaths() {
+  const posts = await getPosts();
+  return {
+    paths: posts.map((p) => ({ params: { id: p.id } })),
+    fallback: 'blocking'   // un-listed ids: SSR once, then cache
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const post = await getPost(params.id);
+  return { props: { post } };
 }`
   }
 ];

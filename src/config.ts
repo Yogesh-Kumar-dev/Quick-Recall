@@ -45,7 +45,7 @@ const config: ConfigProps = {
   fontFamily: roboto.style.fontFamily,
   borderRadius: 8,
   outlinedFilled: true,
-  mode: ThemeMode.LIGHT,
+  mode: ThemeMode.DARK,
   presetColor: 'default',
   i18n: 'en',
   themeDirection: ThemeDirection.LTR,

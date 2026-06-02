@@ -33,7 +33,7 @@ const PROBLEM: ProblemMeta = {
     'fetched flag to distinguish "not yet loaded" from "loaded 0 items"'
   ],
   interviewTip:
-    "The three-state pattern: data (what to show), loading (show skeleton/spinner), error (show error message). Always use a try/catch/finally block — put setLoading(false) in finally so it runs even if the fetch throws. Check res.ok before parsing JSON: if (!res.ok) throw new Error(`HTTP ${res.status}`). Keep a separate `fetched` flag to distinguish initial state from loaded-but-empty."
+    'The three-state pattern: data (what to show), loading (show skeleton/spinner), error (show error message). Always use a try/catch/finally block — put setLoading(false) in finally so it runs even if the fetch throws. Check res.ok before parsing JSON: if (!res.ok) throw new Error(`HTTP ${res.status}`). Keep a separate `fetched` flag to distinguish initial state from loaded-but-empty.'
 };
 
 export default function APIDataFetchingApp() {

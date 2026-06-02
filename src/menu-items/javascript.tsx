@@ -1,4 +1,4 @@
-import { IconBolt, IconBook, IconBrandJavascript, IconBrandTypescript, IconCode } from '@tabler/icons-react';
+import { IconBolt, IconBrandJavascript, IconBrandTypescript, IconCode } from '@tabler/icons-react';
 import { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS - JAVASCRIPT & TYPESCRIPT ||============================== //
@@ -14,8 +14,8 @@ const javascript: NavItemType = {
       id: 'js-notes',
       title: 'JS Notes',
       type: 'item',
-      url: '/js/concepts',
-      icon: IconBook
+      url: '/js/notes',
+      icon: IconBrandJavascript
     },
     {
       id: 'ts-notes',

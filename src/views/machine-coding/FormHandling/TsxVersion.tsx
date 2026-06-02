@@ -65,7 +65,16 @@ export default function FormHandling() {
       <div style={{ padding: 24, textAlign: 'center' }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>✅</div>
         <h3 style={{ margin: '0 0 12px', fontSize: 18 }}>Form Submitted!</h3>
-        <div style={{ background: '#f9fafb', borderRadius: 8, padding: '12px 20px', display: 'inline-block', textAlign: 'left', marginBottom: 16 }}>
+        <div
+          style={{
+            background: '#f9fafb',
+            borderRadius: 8,
+            padding: '12px 20px',
+            display: 'inline-block',
+            textAlign: 'left',
+            marginBottom: 16
+          }}
+        >
           <p style={{ margin: '4px 0', fontSize: 14 }}>
             <strong>Name:</strong> {form.name}
           </p>
@@ -120,13 +129,7 @@ export default function FormHandling() {
       {/* Name */}
       <div style={fieldWrap}>
         <label style={labelStyle}>Name</label>
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="John Doe"
-          style={inputStyle(!!errors.name)}
-        />
+        <input name="name" value={form.name} onChange={handleChange} placeholder="John Doe" style={inputStyle(!!errors.name)} />
         {errors.name && <span style={errorStyle}>{errors.name}</span>}
       </div>
 

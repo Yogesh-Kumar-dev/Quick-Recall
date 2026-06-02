@@ -230,13 +230,7 @@ export default function ProfileSection() {
                           <ListItemIcon>
                             <IconSettings stroke={1.5} size="20px" />
                           </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography variant="body2">
-                                Account Settings
-                              </Typography>
-                            }
-                          />
+                          <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
                         </ListItemButton>
                         <ListItemButton sx={{ borderRadius: `${borderRadius}px` }}>
                           <ListItemIcon>
@@ -246,9 +240,7 @@ export default function ProfileSection() {
                             primary={
                               <Grid container spacing={1} sx={{ justifyContent: 'space-between' }}>
                                 <Grid>
-                                  <Typography variant="body2">
-                                    Social Profile
-                                  </Typography>
+                                  <Typography variant="body2">Social Profile</Typography>
                                 </Grid>
                                 <Grid>
                                   <Chip
@@ -267,13 +259,7 @@ export default function ProfileSection() {
                           <ListItemIcon>
                             <IconLogout stroke={1.5} size="20px" />
                           </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography variant="body2">
-                                Logout
-                              </Typography>
-                            }
-                          />
+                          <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
                         </ListItemButton>
                       </List>
                     </Box>

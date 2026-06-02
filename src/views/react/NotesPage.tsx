@@ -10,11 +10,13 @@ import { IconBrandReact, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
 import NoteCard from 'ui-component/interview-prep/NoteCard';
+import FilterShell from 'ui-component/topic-dashboard/FilterShell';
+import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
 import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } from 'ui-component/topic-dashboard/SectionLanding';
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectReactNotes } from 'store/slices/react';
+import { selectReactNotes, selectReactFlashcards } from 'store/slices/react';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -24,6 +26,9 @@ const CATEGORY_EMOJI: Record<string, string> = {
   hooks: '🪝',
   performance: '🚀',
   patterns: '🧩',
+  rendering: '🖥️',
+  'data-fetching': '📡',
+  architecture: '🏛️',
   'react-18': '🆕'
 };
 
@@ -37,6 +42,7 @@ const DIFFICULTY_META: DifficultyOption[] = [
 
 export default function ReactNotesPage() {
   const reactNotes = useSelector(selectReactNotes);
+  const reactFlashcards = useSelector(selectReactFlashcards);
 
   const {
     isLanding,
@@ -53,15 +59,37 @@ export default function ReactNotesPage() {
     handleCategoryChange,
     handleGotchaToggle,
     handleSearchChange,
-    handleToggle
+    handleToggle,
+    applyFilters
   } = useSectionFilter();
 
   // ── Derived landing cards (depend on data) ────────────────────────────────
   const DIFFICULTY_LANDING = useMemo<LandingDifficultyCard[]>(
     () => [
-      { label: 'Basic', value: 'basic', count: reactNotes.filter((c) => c.difficulty === 'basic').length, emoji: '🟢', color: 'success', blurb: 'JSX, props, state, rendering, event handlers' },
-      { label: 'Intermediate', value: 'intermediate', count: reactNotes.filter((c) => c.difficulty === 'intermediate').length, emoji: '🟡', color: 'warning', blurb: 'Hooks, context, virtual DOM, reconciliation, refs' },
-      { label: 'Advanced', value: 'advanced', count: reactNotes.filter((c) => c.difficulty === 'advanced').length, emoji: '🔴', color: 'error', blurb: 'Suspense, concurrent features, custom hooks, performance patterns' }
+      {
+        label: 'Basic',
+        value: 'basic',
+        count: reactNotes.filter((c) => c.difficulty === 'basic').length,
+        emoji: '🟢',
+        color: 'success',
+        blurb: 'JSX, props, state, rendering, event handlers'
+      },
+      {
+        label: 'Intermediate',
+        value: 'intermediate',
+        count: reactNotes.filter((c) => c.difficulty === 'intermediate').length,
+        emoji: '🟡',
+        color: 'warning',
+        blurb: 'Hooks, context, virtual DOM, reconciliation, refs'
+      },
+      {
+        label: 'Advanced',
+        value: 'advanced',
+        count: reactNotes.filter((c) => c.difficulty === 'advanced').length,
+        emoji: '🔴',
+        color: 'error',
+        blurb: 'Suspense, concurrent features, custom hooks, performance patterns'
+      }
     ],
     [reactNotes]
   );
@@ -71,7 +99,7 @@ export default function ReactNotesPage() {
     reactNotes.forEach((c) => map.set(c.category, (map.get(c.category) ?? 0) + 1));
     return Array.from(map.entries()).map(([val, count]) => ({
       value: val,
-      label: val === 'react-18' ? 'React 18' : val.charAt(0).toUpperCase() + val.slice(1),
+      label: val === 'react-18' ? 'React 18' : val === 'data-fetching' ? 'Data Fetching' : val.charAt(0).toUpperCase() + val.slice(1),
       count,
       emoji: CATEGORY_EMOJI[val] ?? '📌'
     }));
@@ -81,8 +109,7 @@ export default function ReactNotesPage() {
 
   // ── Counts for list-view filter strip ────────────────────────────────────
   const difficulties: DifficultyOption[] = useMemo(
-    () =>
-      DIFFICULTY_META.map((d) => ({ ...d, count: reactNotes.filter((c) => c.difficulty === (d.value as Note['difficulty'])).length })),
+    () => DIFFICULTY_META.map((d) => ({ ...d, count: reactNotes.filter((c) => c.difficulty === (d.value as Note['difficulty'])).length })),
     [reactNotes]
   );
 
@@ -91,7 +118,7 @@ export default function ReactNotesPage() {
     const catMap = new Map<string, number>();
     base.forEach((c) => catMap.set(c.category, (catMap.get(c.category) ?? 0) + 1));
     return Array.from(catMap.entries()).map(([val, count]) => ({
-      label: val === 'react-18' ? 'React 18' : val.charAt(0).toUpperCase() + val.slice(1),
+      label: val === 'react-18' ? 'React 18' : val === 'data-fetching' ? 'Data Fetching' : val.charAt(0).toUpperCase() + val.slice(1),
       value: val,
       count
     }));
@@ -132,6 +159,7 @@ export default function ReactNotesPage() {
           onEnterCategory={enterWithCategory}
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
+          flashcards={reactFlashcards}
         />
       </MainCard>
     );
@@ -147,62 +175,69 @@ export default function ReactNotesPage() {
         </Typography>
       }
     >
-      <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
-        {/* ── Left: content ── */}
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          {showGotchaOnly && (
-            <Box mb={1.5}>
-              <Chip label="⚠️ Gotchas Only" color="warning" onDelete={handleGotchaToggle} size="small" />
-            </Box>
-          )}
-
-          {filtered.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 6 }}>
-              <Typography color="text.secondary">No notes match your filters.</Typography>
-            </Box>
-          ) : (
-            <Stack spacing={1.5}>
-              {filtered.map((note) => (
-                <NoteCard
-                  key={note.id}
-                  note={note}
-                  isOpen={openId === note.id}
-                  onToggle={() => handleToggle(note.id)}
-                />
-              ))}
-            </Stack>
-          )}
-        </Box>
-
-        {/* ── Right: sticky filter panel ── */}
-        <Box sx={{ width: 240, flexShrink: 0, position: 'sticky', top: 88 }}>
-          <Box mb={2}>
-            <TextField
-              size="small"
-              fullWidth
-              placeholder="Search notes…"
-              value={search}
-              onChange={(e) => handleSearchChange(e.target.value || null)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconSearch size={16} />
-                  </InputAdornment>
-                )
-              }}
-            />
-          </Box>
-          <TopicFilterCards
+      <FilterShell
+        activeFilterCount={(difficulty !== 'all' ? 1 : 0) + (category !== 'all' ? 1 : 0) + (search ? 1 : 0)}
+        renderDrawer={(open, onClose) => (
+          <MobileFilterDrawer
+            open={open}
+            onClose={onClose}
             difficulties={difficulties}
             activeDifficulty={difficulty}
-            onDifficultyChange={handleDifficultyChange}
             categories={categories}
             activeCategory={category}
-            onCategoryChange={handleCategoryChange}
-            vertical
+            search={search}
+            searchPlaceholder="Search notes…"
+            onApply={applyFilters}
           />
-        </Box>
-      </Box>
+        )}
+        sidebar={
+          <Box sx={{ width: 240, flexShrink: 0, position: 'sticky', top: 88 }}>
+            <Box mb={2}>
+              <TextField
+                size="small"
+                fullWidth
+                placeholder="Search notes…"
+                value={search}
+                onChange={(e) => handleSearchChange(e.target.value || null)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <IconSearch size={16} />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Box>
+            <TopicFilterCards
+              difficulties={difficulties}
+              activeDifficulty={difficulty}
+              onDifficultyChange={handleDifficultyChange}
+              categories={categories}
+              activeCategory={category}
+              onCategoryChange={handleCategoryChange}
+              vertical
+            />
+          </Box>
+        }
+      >
+        {showGotchaOnly && (
+          <Box mb={1.5}>
+            <Chip label="⚠️ Gotchas Only" color="warning" onDelete={handleGotchaToggle} size="small" />
+          </Box>
+        )}
+
+        {filtered.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 6 }}>
+            <Typography color="text.secondary">No notes match your filters.</Typography>
+          </Box>
+        ) : (
+          <Stack spacing={1.5}>
+            {filtered.map((note) => (
+              <NoteCard key={note.id} note={note} isOpen={openId === note.id} onToggle={() => handleToggle(note.id)} />
+            ))}
+          </Stack>
+        )}
+      </FilterShell>
     </MainCard>
   );
 }

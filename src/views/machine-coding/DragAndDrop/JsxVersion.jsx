@@ -77,7 +77,15 @@ export default function DragAndDrop() {
         return (
           <div
             key={colId}
-            style={{ flex: '1 1 200px', minWidth: 190, padding: 12, borderRadius: 10, border: isOver ? '2px dashed #1976d2' : '2px solid #e0e0e0', background: isOver ? '#e3f2fd' : '#fafafa', transition: 'all 0.15s ease' }}
+            style={{
+              flex: '1 1 200px',
+              minWidth: 190,
+              padding: 12,
+              borderRadius: 10,
+              border: isOver ? '2px dashed #1976d2' : '2px solid #e0e0e0',
+              background: isOver ? '#e3f2fd' : '#fafafa',
+              transition: 'all 0.15s ease'
+            }}
             onDragOver={(e) => handleDragOver(e, colId)}
             onDragLeave={handleDragLeave}
             onDrop={() => handleDrop(colId)}
@@ -93,7 +101,16 @@ export default function DragAndDrop() {
 
             <div style={{ minHeight: 60 }}>
               {columns[colId].length === 0 && (
-                <div style={{ padding: '20px 0', textAlign: 'center', border: '1px dashed #ccc', borderRadius: 6, fontSize: 13, color: '#bbb' }}>
+                <div
+                  style={{
+                    padding: '20px 0',
+                    textAlign: 'center',
+                    border: '1px dashed #ccc',
+                    borderRadius: 6,
+                    fontSize: 13,
+                    color: '#bbb'
+                  }}
+                >
                   Drop here
                 </div>
               )}
@@ -102,10 +119,21 @@ export default function DragAndDrop() {
                   key={task.id}
                   draggable
                   onDragStart={() => handleDragStart(task.id, colId)}
-                  style={{ padding: '10px 12px', marginBottom: 8, background: '#fff', border: '1px solid #e0e0e0', borderRadius: 8, cursor: 'grab', userSelect: 'none', fontSize: 14 }}
+                  style={{
+                    padding: '10px 12px',
+                    marginBottom: 8,
+                    background: '#fff',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: 8,
+                    cursor: 'grab',
+                    userSelect: 'none',
+                    fontSize: 14
+                  }}
                 >
                   <div style={{ marginBottom: 6 }}>{task.title}</div>
-                  <span style={{ background: PRIORITY_COLOR[task.priority], color: '#fff', padding: '2px 8px', borderRadius: 8, fontSize: 11 }}>
+                  <span
+                    style={{ background: PRIORITY_COLOR[task.priority], color: '#fff', padding: '2px 8px', borderRadius: 8, fontSize: 11 }}
+                  >
                     {task.priority}
                   </span>
                 </div>

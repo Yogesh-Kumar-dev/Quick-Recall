@@ -1630,5 +1630,869 @@ new RegExp(userQuery);
 // After — safe
 const safe = RegExp.escape(userQuery); // 'hello\\.world \\(test\\)'
 new RegExp(safe); // exact literal match`
+  },
+
+  // ─── CORE CONCEPTS ───────────────────────────────────────────────────────────
+
+  {
+    id: 'core-hoisting',
+    title: 'Hoisting',
+    summary: 'Declarations are moved to the top of their scope at compile time — but only some are initialized.',
+    difficulty: 'basic',
+    category: 'core-concepts',
+    keyPoints: [
+      'var: declaration hoisted and initialized to undefined — readable before its line.',
+      'let / const / class: hoisted but NOT initialized — accessing before declaration throws ReferenceError (TDZ).',
+      'function declarations: fully hoisted — callable before they appear in source.',
+      'function expressions follow the hoisting rule of their var/let/const binding.',
+      'import declarations are hoisted and their module side-effects run first.'
+    ],
+    textbookDef: `Hoisting is the JavaScript mechanism whereby variable, function, and class declarations are conceptually moved ("hoisted") to the top of their containing scope during the compilation phase, before any code is executed. Only declarations are hoisted — not initializations — and the binding's accessibility before its lexical position depends on its declaration kind.`,
+    eli5: `Imagine the JS engine reads your whole script once before running it, and writes every "name" on a whiteboard at the top of the room.
+
+- var names get written down AND given a placeholder value (undefined).
+- let/const/class names get written down but left blank — touch them early and you get yelled at (ReferenceError).
+- Whole function declarations get copied to the top, ready to use immediately.`,
+    gotcha: 'Accessing a let/const before its declaration is NOT undefined — it throws a ReferenceError because of the Temporal Dead Zone.',
+    codeSnippet: `console.log(a); // undefined  (var hoisted + initialized)
+var a = 1;
+
+console.log(b); // ReferenceError (TDZ)
+let b = 2;
+
+foo();          // 'works' — function declaration fully hoisted
+function foo() { console.log('works'); }
+
+bar();          // TypeError: bar is not a function
+var bar = () => {};`
+  },
+  {
+    id: 'core-scope',
+    title: 'Scope: Global, Function & Block',
+    summary: 'Scope determines where a variable is accessible — global, per-function, or per-block.',
+    difficulty: 'basic',
+    category: 'core-concepts',
+    keyPoints: [
+      'Global scope: declared outside any function/block — accessible everywhere.',
+      'Function scope: var and parameters are scoped to the whole enclosing function.',
+      'Block scope: let/const are scoped to the nearest { } block.',
+      'Lexical scoping: scope is decided by where code is WRITTEN, not where it is called.',
+      'Inner scopes can read outer-scope variables; the reverse is not true.'
+    ],
+    codeSnippet: `let g = 'global';
+
+function fn() {
+  var f = 'function-scoped';
+  if (true) {
+    let b = 'block-scoped';
+    console.log(g, f, b); // all visible
+  }
+  // console.log(b); // ReferenceError — block-scoped
+}`
+  },
+  {
+    id: 'core-closures',
+    title: 'Closures',
+    summary: 'A function that remembers and accesses its lexical scope even when executed elsewhere.',
+    difficulty: 'intermediate',
+    category: 'core-concepts',
+    keyPoints: [
+      'A closure forms when an inner function references variables from an outer scope.',
+      'It keeps those variables alive after the outer function has returned.',
+      'Used for: private state, factory functions, memoization, event handlers, currying.',
+      'Each call to the outer function creates a fresh, independent closure.',
+      'Pitfall: capturing a loop variable with var (use let, or an IIFE).'
+    ],
+    textbookDef: `A closure is the combination of a function and the lexical environment within which that function was declared. It allows the function to retain access to variables from its defining scope even after that outer scope has finished executing.`,
+    eli5: `A closure is like a backpack a function carries around. When the function is created, it packs the variables it can see into its backpack. Later, even far away from home, it can still open the backpack and use those variables.`,
+    codeSnippet: `function makeCounter() {
+  let count = 0;            // private — only the closures can touch it
+  return {
+    inc: () => ++count,
+    get: () => count
+  };
+}
+const c = makeCounter();
+c.inc(); c.inc();
+c.get(); // 2`
+  },
+  {
+    id: 'core-eq-vs-eqeq',
+    title: '== vs === (Equality)',
+    summary: '== coerces types before comparing; === compares value and type with no coercion.',
+    difficulty: 'basic',
+    category: 'core-concepts',
+    keyPoints: [
+      '=== (strict): returns false immediately if the types differ — no coercion.',
+      '== (loose): applies the Abstract Equality algorithm, coercing types first.',
+      'Prefer === in application code to avoid surprising coercion bugs.',
+      'Common exception: x == null checks for both null and undefined at once.',
+      'Do not confuse = (assignment) with == / === (comparison).'
+    ],
+    gotcha: '0 == "" is false, but 0 == "0" is true, and "" == "0" is false — loose equality is not transitive. Use ===.',
+    codeSnippet: `1 == '1';     // true  — string coerced to number
+1 === '1';    // false — different types
+null == undefined;  // true
+null === undefined; // false
+x == null;    // true when x is null OR undefined`
+  },
+  {
+    id: 'core-data-types',
+    title: 'Data Types & typeof',
+    summary: 'Seven primitives plus object — and how to inspect a value’s type.',
+    difficulty: 'basic',
+    category: 'core-concepts',
+    keyPoints: [
+      'Primitives: string, number, boolean, null, undefined, symbol, bigint.',
+      'Everything else is an object (arrays, functions, dates, plain objects…).',
+      'typeof returns the type name as a string — but typeof null is "object" (a historic bug).',
+      'Arrays: use Array.isArray(x), not typeof (which returns "object").',
+      'typeof function is "function" — the one object subtype typeof distinguishes.'
+    ],
+    gotcha: 'typeof null === "object" and typeof NaN === "number". Use value === null and Number.isNaN(value) respectively.',
+    codeSnippet: `typeof 'hi';        // 'string'
+typeof 42;          // 'number'
+typeof 10n;         // 'bigint'
+typeof Symbol();    // 'symbol'
+typeof undefined;   // 'undefined'
+typeof null;        // 'object'  ← bug
+typeof [];          // 'object'  → use Array.isArray([])
+typeof function(){};// 'function'`
+  },
+  {
+    id: 'core-null-undefined',
+    title: 'null vs undefined vs undeclared',
+    summary: 'Three "no value" states with different meanings, types, and behaviors.',
+    difficulty: 'basic',
+    category: 'core-concepts',
+    keyPoints: [
+      'undefined: declared but never assigned — the engine’s default "empty".',
+      'null: explicitly assigned by the developer to mean "no value".',
+      'undeclared: never declared at all — reading it throws a ReferenceError.',
+      'typeof undefined === "undefined"; typeof null === "object".',
+      'null == undefined is true; null === undefined is false.'
+    ],
+    codeSnippet: `let a;             // undefined
+let b = null;      // null (intentional)
+// c;              // undeclared → ReferenceError on access
+
+typeof a;          // 'undefined'
+typeof b;          // 'object'
+a == b;            // true
+a === b;           // false`
+  },
+  {
+    id: 'core-coercion',
+    title: 'Type Coercion',
+    summary: 'Automatic conversion between types during operations like +, ==, and template literals.',
+    difficulty: 'intermediate',
+    category: 'core-concepts',
+    keyPoints: [
+      '+ with a string converts the other operand to a string (concatenation).',
+      'Other arithmetic operators (-, *, /) convert operands to numbers.',
+      '== triggers coercion following the Abstract Equality algorithm.',
+      'Falsy values: false, 0, -0, 0n, "", null, undefined, NaN. Everything else is truthy.',
+      'Convert explicitly to be safe: Number(x), String(x), Boolean(x).'
+    ],
+    gotcha: '[] + [] is "" (empty string), [] + {} is "[object Object]", and 1 + "2" is "12" but 1 - "2" is -1.',
+    codeSnippet: `1 + '2';     // '12'  — string concat
+1 - '2';     // -1    — numeric
+'5' * 2;     // 10
+[] + 1;      // '1'
+Boolean(''); // false
+Number('');  // 0`
+  },
+  {
+    id: 'core-strict-mode',
+    title: "'use strict' (Strict Mode)",
+    summary: 'Opts into a restricted, safer variant of JavaScript that turns silent errors into thrown ones.',
+    difficulty: 'intermediate',
+    category: 'core-concepts',
+    keyPoints: [
+      "Enable per-script or per-function with the 'use strict'; directive at the top.",
+      'Prevents accidental globals — assigning to an undeclared variable throws.',
+      'Assignments that would silently fail (to read-only props) now throw.',
+      'this is undefined in a plain function call instead of the global object.',
+      'Requires unique function parameter names; disables confusing legacy features.',
+      'ES modules and class bodies are always in strict mode automatically.'
+    ],
+    codeSnippet: `'use strict';
+
+function f() {
+  // x = 10; // ReferenceError — no accidental globals
+  let x = 10;
+  return x;
+}
+
+function g() {
+  return this; // undefined in strict mode (not window)
+}`
+  },
+
+  // ─── FUNCTIONS & THIS ────────────────────────────────────────────────────────
+
+  {
+    id: 'fn-this',
+    title: 'How `this` Works',
+    summary: 'A dynamic reference to the execution context, decided by HOW a function is called.',
+    difficulty: 'intermediate',
+    category: 'functions-this',
+    keyPoints: [
+      'new Foo(): this is the newly created instance.',
+      'call / apply / bind: this is the explicitly passed object.',
+      'obj.method(): this is obj (the object left of the dot).',
+      'Plain fn(): this is the global object (or undefined in strict mode).',
+      'Arrow functions ignore all the above — they inherit this lexically.',
+      'When multiple rules apply, the higher-precedence one (new > bind > method > free) wins.'
+    ],
+    textbookDef: `this is a keyword whose value is determined at call time by the function's invocation context. It is not bound lexically for ordinary functions; instead it is resolved according to the binding rules (new, explicit, implicit, default), except for arrow functions which capture this from their surrounding lexical scope.`,
+    eli5: `"this" is like the word "here" — its meaning depends on where you're standing when you say it. Call the same function in different ways and "this" points at different things. Arrow functions are stubborn: they always mean the "here" of the place they were written.`,
+    gotcha: 'Passing a method as a bare callback (setTimeout(obj.method, 0)) loses its this. Use obj.method.bind(obj) or an arrow wrapper.',
+    codeSnippet: `const obj = {
+  name: 'A',
+  regular() { return this.name; },
+  arrow: () => this?.name
+};
+obj.regular();            // 'A'  (implicit binding)
+const f = obj.regular;
+f();                      // undefined / global (default binding)
+obj.regular.call({name:'B'}); // 'B' (explicit binding)`
+  },
+  {
+    id: 'fn-call-apply-bind',
+    title: 'call, apply & bind',
+    summary: 'Three ways to control a function’s `this` and arguments explicitly.',
+    difficulty: 'intermediate',
+    category: 'functions-this',
+    keyPoints: [
+      'fn.call(thisArg, a, b) — invokes immediately, args passed individually.',
+      'fn.apply(thisArg, [a, b]) — invokes immediately, args passed as an array.',
+      'fn.bind(thisArg, a) — returns a NEW function with this (and leading args) fixed.',
+      'bind enables partial application and method borrowing.',
+      'Mnemonic: Array → Apply; Comma → Call.'
+    ],
+    codeSnippet: `function add(a, b) { return a + b; }
+
+add.call(null, 1, 2);      // 3
+add.apply(null, [1, 2]);   // 3
+
+const add5 = add.bind(null, 5);
+add5(10);                  // 15  (partial application)
+
+// Method borrowing
+Array.prototype.slice.call(arguments);`
+  },
+  {
+    id: 'fn-arrow-in-constructor',
+    title: 'Arrow Methods in a Constructor',
+    summary: 'An arrow method binds `this` to the instance at creation time and can never be rebound.',
+    difficulty: 'intermediate',
+    category: 'functions-this',
+    keyPoints: [
+      'Arrow functions capture this lexically when the instance is created.',
+      'Their this cannot be changed by call/apply/bind or by detaching the method.',
+      'Great for callbacks/event handlers where you would otherwise lose this.',
+      'Trade-off: a new function is created per instance (slightly more memory).',
+      'Regular methods live on the prototype and share this via the call-site.'
+    ],
+    codeSnippet: `function Person(name) {
+  this.name = name;
+  this.sayRegular = function () { return this.name; };
+  this.sayArrow = () => this.name; // bound to the instance forever
+}
+const john = new Person('John');
+const dave = new Person('Dave');
+
+john.sayRegular.call(dave); // 'Dave'  — rebindable
+john.sayArrow.call(dave);   // 'John'  — locked to john`
+  },
+  {
+    id: 'fn-higher-order',
+    title: 'Higher-Order Functions',
+    summary: 'Functions that take functions as arguments and/or return functions.',
+    difficulty: 'basic',
+    category: 'functions-this',
+    keyPoints: [
+      'Take a function as an argument (map, filter, reduce, forEach).',
+      'Or return a function (bind, debounce, a curried adder).',
+      'They abstract repeated operations and enable a declarative style.',
+      'Foundational to functional programming in JavaScript.'
+    ],
+    codeSnippet: `// Takes a function
+const names = ['irish', 'daisy'];
+names.map((n) => n.toUpperCase()); // ['IRISH', 'DAISY']
+
+// Returns a function
+const multiplier = (factor) => (n) => n * factor;
+const triple = multiplier(3);
+triple(5); // 15`
+  },
+  {
+    id: 'fn-currying',
+    title: 'Currying & Partial Application',
+    summary: 'Two functional techniques for specializing multi-argument functions.',
+    difficulty: 'intermediate',
+    category: 'functions-this',
+    keyPoints: [
+      'Currying: transform f(a, b, c) into f(a)(b)(c) — one argument at a time.',
+      'Partial application: fix SOME arguments now, get a function taking the rest.',
+      'Partial application is easily done with fn.bind(null, ...presetArgs).',
+      'Both improve reuse and readability and rely on closures.',
+      'Difference: currying always yields unary functions; partial fixes any subset.'
+    ],
+    codeSnippet: `// Currying
+const add = (a) => (b) => (c) => a + b + c;
+add(1)(2)(3); // 6
+
+// Partial application
+const add2 = (a, b) => a + b;
+const add5 = add2.bind(null, 5);
+add5(10); // 15`
+  },
+  {
+    id: 'fn-decl-vs-expr',
+    title: 'Function Declarations vs Expressions',
+    summary: 'Declarations are fully hoisted; expressions follow their binding’s hoisting rules.',
+    difficulty: 'basic',
+    category: 'functions-this',
+    keyPoints: [
+      'function foo() {} — a declaration; the whole function is hoisted.',
+      'const foo = function() {} — an expression; only the binding is hoisted.',
+      'Calling a declaration before its line works; calling an expression early throws.',
+      'Named function expressions: the name is only visible inside the function.',
+      'Anonymous functions are typically used as callbacks or IIFEs.'
+    ],
+    codeSnippet: `decl();           // 'ok' — hoisted
+function decl() { return 'ok'; }
+
+expr();           // TypeError — not yet a function
+var expr = function () { return 'ok'; };
+
+const f = function named() { return named; }; // 'named' only inside`
+  },
+
+  // ─── OOP & PROTOTYPES ────────────────────────────────────────────────────────
+
+  {
+    id: 'oop-prototypal-inheritance',
+    title: 'Prototypal Inheritance',
+    summary: 'Objects inherit by delegating to other objects through the prototype chain.',
+    difficulty: 'intermediate',
+    category: 'oop-prototypes',
+    keyPoints: [
+      'Every object has a hidden [[Prototype]] link (read via Object.getPrototypeOf).',
+      'Missing-property lookups walk up the chain until found or null is reached.',
+      'It is really delegation, not copying — instances share prototype methods.',
+      'Build chains with Object.setPrototypeOf or class extends, not Object.create anymore.',
+      'Constructor functions add shared methods on Constructor.prototype.'
+    ],
+    textbookDef: `Prototypal inheritance is a model in which objects inherit directly from other objects. Each object holds an internal reference ([[Prototype]]) to another object; property access that fails on the object itself is delegated up this prototype chain until the property is found or the chain terminates at null.`,
+    eli5: `Looking up a property is like asking your parent a question. If you don't know the answer, you ask your parent (the prototype); if they don't know, they ask their parent — all the way up the family tree until someone answers or you run out of relatives (null).`,
+    codeSnippet: `function Animal(name) { this.name = name; }
+Animal.prototype.makeSound = function () {
+  console.log(this.name + ' makes a sound');
+};
+
+function Dog(name) { Animal.call(this, name); }
+Object.setPrototypeOf(Dog.prototype, Animal.prototype);
+
+const d = new Dog('Bolt');
+d.makeSound(); // found on Animal.prototype via the chain`
+  },
+  {
+    id: 'oop-prototype-chain',
+    title: 'The Prototype Chain',
+    summary: 'The linked series of objects JS traverses during property lookup.',
+    difficulty: 'intermediate',
+    category: 'oop-prototypes',
+    keyPoints: [
+      'obj → obj’s prototype → … → Object.prototype → null.',
+      'Object.getPrototypeOf(obj) reads the link; Object.setPrototypeOf sets it.',
+      'instanceof checks whether a constructor’s prototype is in the chain.',
+      'Own vs inherited: Object.hasOwn(obj, key) checks only the object itself.',
+      'Long chains add lookup cost — keep hierarchies shallow.'
+    ],
+    codeSnippet: `const arr = [1, 2, 3];
+Object.getPrototypeOf(arr) === Array.prototype;          // true
+Object.getPrototypeOf(Array.prototype) === Object.prototype; // true
+arr instanceof Array;  // true (Array.prototype is in the chain)
+arr.hasOwnProperty('map'); // false — inherited, not own`
+  },
+  {
+    id: 'oop-new-keyword',
+    title: 'The `new` Keyword & Constructors',
+    summary: 'What happens, step by step, when you call a function with new.',
+    difficulty: 'intermediate',
+    category: 'oop-prototypes',
+    keyPoints: [
+      '1) A fresh empty object is created.',
+      '2) Its [[Prototype]] is linked to the constructor’s .prototype.',
+      '3) this is bound to the new object inside the constructor.',
+      '4) The body runs; the object is returned unless the body returns its own object.',
+      'Calling a constructor WITHOUT new makes this the global object (or undefined in strict mode).'
+    ],
+    gotcha:
+      'const p = Person() (no new) does not create an instance — it runs Person as a plain function, often returning undefined and leaking globals.',
+    codeSnippet: `function Person(name) { this.name = name; }
+
+const a = new Person('A'); // instance, a.name === 'A'
+const b = Person('B');     // no new → b is undefined, leaks global name
+
+// function Person(){}      → a declaration
+// const p = Person()       → plain call
+// const p = new Person()   → constructor call`
+  },
+  {
+    id: 'oop-class-vs-constructor',
+    title: 'ES2015 Classes vs ES5 Constructors',
+    summary: 'Classes are cleaner syntactic sugar over the prototype/constructor pattern.',
+    difficulty: 'basic',
+    category: 'oop-prototypes',
+    keyPoints: [
+      'class uses constructor + method syntax; ES5 uses a function + .prototype assignments.',
+      'Inheritance: extends/super vs manual Object.create + constructor.call.',
+      'Class methods are non-enumerable; the class body runs in strict mode.',
+      'Classes are not hoisted for use (TDZ); function constructors are hoisted.',
+      'Under the hood it is still prototypal inheritance.'
+    ],
+    codeSnippet: `// ES5
+function Person(name) { this.name = name; }
+Person.prototype.hi = function () { return 'hi ' + this.name; };
+
+// ES2015
+class Person2 {
+  constructor(name) { this.name = name; }
+  hi() { return 'hi ' + this.name; }
+}
+class Student extends Person2 {
+  constructor(name, id) { super(name); this.id = id; }
+}`
+  },
+  {
+    id: 'oop-static-members',
+    title: 'Static Class Members',
+    summary: 'Members that belong to the class itself rather than to instances.',
+    difficulty: 'intermediate',
+    category: 'oop-prototypes',
+    keyPoints: [
+      'Declared with the static keyword; called as ClassName.member.',
+      'Not accessible from an instance (instance.member is undefined).',
+      'Ideal for utilities, constants, factory methods, and shared counters.',
+      'Static fields and even static private (#) members are supported.'
+    ],
+    codeSnippet: `class MathUtil {
+  static PI = 3.14159;
+  static square(x) { return x * x; }
+  static #count = 0;            // static private
+  static create() { MathUtil.#count++; return new MathUtil(); }
+}
+MathUtil.square(4); // 16
+MathUtil.PI;        // 3.14159`
+  },
+  {
+    id: 'oop-object-creation',
+    title: 'Ways to Create Objects',
+    summary: 'Five common ways to build objects in JavaScript.',
+    difficulty: 'basic',
+    category: 'oop-prototypes',
+    keyPoints: [
+      'Object literal {} — simplest and most common.',
+      'new Object() — the Object constructor.',
+      'Object.create(proto) — create with an explicit prototype.',
+      'Constructor function + new — blueprint pattern (ES5).',
+      'ES2015 class — structured syntax with constructor and methods.'
+    ],
+    codeSnippet: `const a = { x: 1 };                    // literal
+const b = new Object(); b.x = 1;       // constructor
+const c = Object.create({ greet() {} }); // explicit prototype
+function P(x){ this.x = x; } const d = new P(1); // constructor fn
+class Q { constructor(x){ this.x = x; } } const e = new Q(1); // class`
+  },
+
+  // ─── COLLECTIONS ─────────────────────────────────────────────────────────────
+
+  {
+    id: 'collections-map-vs-object',
+    title: 'Map vs Plain Object',
+    summary: 'When to reach for a Map instead of a plain {} object.',
+    difficulty: 'intermediate',
+    category: 'collections',
+    keyPoints: [
+      'Map keys can be ANY type; object keys are strings or symbols only.',
+      'Map preserves insertion order; object key order is not fully guaranteed.',
+      'Map has a .size; objects require Object.keys(obj).length.',
+      'Map is directly iterable (for…of, forEach, entries/keys/values).',
+      'Objects are JSON-serializable and have a prototype; Maps are not serializable.',
+      'Prefer Map for large or frequently-mutated key-value sets.'
+    ],
+    codeSnippet: `const m = new Map();
+m.set('a', 1).set({}, 2).set(42, 3); // any key type
+m.size;                              // 3
+for (const [k, v] of m) { /* ordered */ }
+
+const o = { a: 1 };
+Object.keys(o).length;               // 1`
+  },
+  {
+    id: 'collections-weak',
+    title: 'WeakMap & WeakSet',
+    summary: 'Collections that hold object keys weakly so they don’t block garbage collection.',
+    difficulty: 'advanced',
+    category: 'collections',
+    keyPoints: [
+      'Keys/elements must be objects and are held by WEAK reference.',
+      'When an object key has no other references, it can be garbage-collected.',
+      'Not iterable and have no .size — you cannot enumerate them.',
+      'Use cases: private per-object data, caches keyed by objects, DOM-node metadata.',
+      'Map/Set keep their entries alive; WeakMap/WeakSet do not.'
+    ],
+    gotcha: 'You cannot list or count WeakMap/WeakSet contents — that is the price of allowing keys to be collected.',
+    codeSnippet: `const cache = new WeakMap();
+function compute(obj) {
+  if (cache.has(obj)) return cache.get(obj);
+  const result = /* expensive */ obj.value * 2;
+  cache.set(obj, result); // auto-evicted when obj is GC'd
+  return result;
+}`
+  },
+  {
+    id: 'collections-object-equality',
+    title: 'Set/Map Object Equality',
+    summary: 'Sets and Maps compare object keys by reference, not by value.',
+    difficulty: 'basic',
+    category: 'collections',
+    keyPoints: [
+      'Equality uses SameValueZero — for objects, that means reference identity.',
+      'Two different literals with identical contents are distinct entries.',
+      'Primitives are compared by value (NaN is treated as equal to NaN).',
+      'To dedupe by value you must serialize or use a custom key.'
+    ],
+    codeSnippet: `const s = new Set();
+s.add({ a: 1 });
+s.add({ a: 1 }); // different reference
+s.size;          // 2
+
+const x = { a: 1 };
+const s2 = new Set([x, x]);
+s2.size;         // 1 — same reference`
+  },
+
+  // ─── ASYNC JS (concepts) ─────────────────────────────────────────────────────
+
+  {
+    id: 'async-event-loop',
+    title: 'The Event Loop',
+    summary: 'How JS runs sync code, then drains microtasks, then takes one macrotask — repeatedly.',
+    difficulty: 'intermediate',
+    category: 'async-js',
+    keyPoints: [
+      'Synchronous code runs on the call stack first.',
+      'Async work is offloaded to Web/Node APIs; their callbacks are queued.',
+      'When the stack empties: drain the ENTIRE microtask queue, then take ONE macrotask.',
+      'After each macrotask, microtasks are drained again before the next macrotask.',
+      'Microtasks: Promise callbacks, await continuations, queueMicrotask, MutationObserver.',
+      'Macrotasks: setTimeout/setInterval, I/O, UI events.'
+    ],
+    textbookDef: `The event loop is the runtime mechanism that coordinates execution of synchronous code on the call stack with asynchronous callbacks held in the microtask and macrotask queues, processing all available microtasks between each macrotask to provide non-blocking concurrency on a single thread.`,
+    eli5: `Think of a chef (the single thread). Orders pile up in two trays: urgent sticky-notes (microtasks) and regular tickets (macrotasks). After finishing the current dish, the chef clears ALL sticky-notes first, then does just ONE regular ticket — then checks the sticky-notes again. That loop never stops.`,
+    gotcha:
+      'A Promise callback always runs before a setTimeout(…, 0) queued at the same time, because microtasks have priority over macrotasks.',
+    codeSnippet: `console.log('1');
+setTimeout(() => console.log('4'), 0);   // macrotask
+Promise.resolve().then(() => console.log('3')); // microtask
+console.log('2');
+// Order: 1, 2, 3, 4`
+  },
+  {
+    id: 'async-sync-vs-async',
+    title: 'Synchronous vs Asynchronous',
+    summary: 'Sync code blocks until done; async code continues and runs callbacks later.',
+    difficulty: 'basic',
+    category: 'async-js',
+    keyPoints: [
+      'Synchronous statements complete in order, blocking the thread.',
+      'Asynchronous operations return control immediately and finish later.',
+      'Long synchronous work freezes the UI; offload heavy/I/O work asynchronously.',
+      'Async results arrive via callbacks, Promises, or async/await.'
+    ],
+    codeSnippet: `console.log('Fetching…');
+setTimeout(() => console.log('data arrived'), 2000); // async
+console.log('Request sent');
+// Logs: Fetching… → Request sent → (2s) data arrived`
+  },
+  {
+    id: 'async-promises-vs-callbacks',
+    title: 'Promises vs Callbacks',
+    summary: 'Promises fix callback hell with chaining, composition, and centralized errors.',
+    difficulty: 'intermediate',
+    category: 'async-js',
+    keyPoints: [
+      'Callbacks nest deeply ("callback hell") and have scattered error handling.',
+      'Promises chain with .then and centralize errors in one .catch.',
+      'Promises compose: all (parallel/fail-fast), allSettled, race, any.',
+      'async/await is syntactic sugar over Promises for readable sequential code.',
+      'Trade-off: Promises add a few more concepts to learn.'
+    ],
+    codeSnippet: `// Callback hell
+getUser(id, (u) => getPosts(u, (p) => render(p)));
+
+// Promise chain
+getUser(id)
+  .then(getPosts)
+  .then(render)
+  .catch(handleError);`
+  },
+  {
+    id: 'async-combinators',
+    title: 'Promise Combinators',
+    summary: 'all, allSettled, race, and any — choosing the right parallel strategy.',
+    difficulty: 'intermediate',
+    category: 'async-js',
+    keyPoints: [
+      'Promise.all — resolves with all results; rejects on the FIRST rejection (fail-fast).',
+      'Promise.allSettled — never rejects; returns every {status, value|reason}.',
+      'Promise.race — settles with the first promise to SETTLE (win or lose).',
+      'Promise.any — resolves with the first to FULFILL; rejects only if all reject (AggregateError).'
+    ],
+    codeSnippet: `await Promise.all([a(), b()]);        // both, or first error
+await Promise.allSettled([a(), b()]); // every outcome, no throw
+await Promise.race([a(), timeout()]); // first to settle
+await Promise.any([m1(), m2()]);      // first success`
+  },
+
+  // ─── MODULES ─────────────────────────────────────────────────────────────────
+
+  {
+    id: 'modules-esm-vs-cjs',
+    title: 'ES Modules vs CommonJS',
+    summary: 'The two JavaScript module systems and why ESM is the modern standard.',
+    difficulty: 'intermediate',
+    category: 'modules',
+    keyPoints: [
+      'ESM: import/export, static, asynchronous, the official standard.',
+      'CommonJS: require/module.exports, synchronous, Node’s legacy system.',
+      'ESM is statically analyzable → enables tree shaking and named-export checking.',
+      'ESM imports are live read-only bindings; CommonJS exports are a copied value.',
+      'ESM is always strict mode; top-level await works only in ESM.'
+    ],
+    codeSnippet: `// ESM
+export const add = (a, b) => a + b;
+import { add } from './math.js';
+
+// CommonJS
+module.exports = { add: (a, b) => a + b };
+const { add } = require('./math.js');`
+  },
+  {
+    id: 'modules-tree-shaking',
+    title: 'Tree Shaking & Bundlers',
+    summary: 'Bundlers drop unused ES module exports to shrink the final bundle.',
+    difficulty: 'intermediate',
+    category: 'modules',
+    keyPoints: [
+      'Tree shaking = dead-code elimination of unused exports.',
+      'Relies on the static structure of ES modules (imports resolved at build time).',
+      'Bundlers (Vite, webpack, Rollup, esbuild) combine modules and optimize.',
+      'Side-effectful modules can block shaking — mark sideEffects: false in package.json.',
+      'Benefits: fewer HTTP requests, smaller payloads, scope hoisting.'
+    ],
+    codeSnippet: `// utils.js exports add + subtract
+import { add } from './utils.js'; // only 'add' ends up in the bundle
+add(1, 2);`
+  },
+
+  // ─── DESIGN PATTERNS ─────────────────────────────────────────────────────────
+
+  {
+    id: 'pattern-singleton',
+    title: 'Singleton Pattern',
+    summary: 'Guarantees a single shared instance with a global access point.',
+    difficulty: 'intermediate',
+    category: 'design-patterns',
+    keyPoints: [
+      'Ensures a class is instantiated only once.',
+      'Implement via a cached static instance or a module-level closure.',
+      'Use for shared resources: config store, logger, DB connection pool.',
+      'Downside: introduces global state — can hinder testing.'
+    ],
+    codeSnippet: `class Config {
+  constructor() {
+    if (Config.instance) return Config.instance;
+    this.settings = {};
+    Config.instance = this;
+  }
+}
+new Config() === new Config(); // true`
+  },
+  {
+    id: 'pattern-factory',
+    title: 'Factory Pattern',
+    summary: 'Creates objects without exposing the exact class, deciding the type at runtime.',
+    difficulty: 'intermediate',
+    category: 'design-patterns',
+    keyPoints: [
+      'Encapsulates instantiation logic behind a single creation function.',
+      'Chooses the concrete type based on input/runtime conditions.',
+      'Decouples calling code from concrete constructors.',
+      'Useful when creation is complex or varies by parameter.'
+    ],
+    codeSnippet: `function createAnimal(type) {
+  switch (type) {
+    case 'dog': return { sound: () => 'woof' };
+    case 'cat': return { sound: () => 'meow' };
+    default: throw new Error('unknown');
+  }
+}
+createAnimal('dog').sound(); // 'woof'`
+  },
+  {
+    id: 'pattern-observer',
+    title: 'Observer Pattern',
+    summary: 'A subject notifies a list of observers whenever its state changes (pub/sub).',
+    difficulty: 'intermediate',
+    category: 'design-patterns',
+    keyPoints: [
+      'A subject keeps a list of subscribers (observers).',
+      'On change, it calls each observer’s update/handler.',
+      'Basis of event systems, reactive UIs, and EventEmitter.',
+      'Decouples the source of events from their consumers.'
+    ],
+    codeSnippet: `class Subject {
+  observers = [];
+  subscribe(fn) { this.observers.push(fn); }
+  notify(data) { this.observers.forEach((fn) => fn(data)); }
+}
+const s = new Subject();
+s.subscribe((d) => console.log('got', d));
+s.notify(42); // 'got 42'`
+  },
+  {
+    id: 'pattern-module',
+    title: 'Module Pattern',
+    summary: 'An IIFE that exposes only public members, keeping the rest private via closure.',
+    difficulty: 'intermediate',
+    category: 'design-patterns',
+    keyPoints: [
+      'An IIFE returns an object of public methods.',
+      'Variables inside the IIFE stay private (closure encapsulation).',
+      'Avoids polluting the global namespace.',
+      'Conceptual ancestor of ES modules.'
+    ],
+    codeSnippet: `const counter = (function () {
+  let count = 0;            // private
+  return {
+    inc() { return ++count; },
+    value() { return count; }
+  };
+})();
+counter.inc();
+counter.value(); // 1`
+  },
+  {
+    id: 'pattern-strategy-decorator-command',
+    title: 'Strategy, Decorator & Command',
+    summary: 'Three more classic patterns: interchangeable algorithms, dynamic wrapping, and request objects.',
+    difficulty: 'advanced',
+    category: 'design-patterns',
+    keyPoints: [
+      'Strategy: encapsulate interchangeable algorithms; swap behavior without changing the client.',
+      'Decorator: wrap an object to add behavior dynamically without altering its class.',
+      'Command: package a request as an object with execute()/undo() — enables queues and undo.',
+      'All three favor composition over inheritance.'
+    ],
+    codeSnippet: `// Strategy
+const ctx = { run: (strategy, data) => strategy(data) };
+ctx.run((x) => x.toUpperCase(), 'hi'); // 'HI'
+
+// Decorator
+class Car { drive() { return 'driving'; } }
+class WithGPS { constructor(c){ this.c = c; } drive() { return this.c.drive() + ' + GPS'; } }
+new WithGPS(new Car()).drive(); // 'driving + GPS'
+
+// Command
+const cmd = { execute: () => light.on(), undo: () => light.off() };`
+  },
+
+  // ─── SECURITY ────────────────────────────────────────────────────────────────
+
+  {
+    id: 'security-xss',
+    title: 'Cross-Site Scripting (XSS)',
+    summary: 'Attackers inject malicious scripts into pages other users view.',
+    difficulty: 'intermediate',
+    category: 'security',
+    keyPoints: [
+      'Occurs when untrusted input is rendered as executable HTML/JS.',
+      'Consequences: cookie/session theft, keylogging, defacement.',
+      'Prevent: escape/sanitize output, avoid innerHTML with user data (use textContent).',
+      'Use a Content Security Policy as defense in depth.',
+      'Frameworks like React auto-escape — but dangerouslySetInnerHTML reopens the hole.'
+    ],
+    gotcha: 'el.innerHTML = userInput is the classic XSS vector. Use el.textContent for untrusted strings.',
+    codeSnippet: `// vulnerable
+el.innerHTML = userInput;
+
+// safe
+el.textContent = userInput;
+
+// CSP header (defense in depth)
+// Content-Security-Policy: script-src 'self'`
+  },
+  {
+    id: 'security-csrf',
+    title: 'Cross-Site Request Forgery (CSRF)',
+    summary: 'A malicious site tricks a logged-in user’s browser into unwanted authenticated requests.',
+    difficulty: 'intermediate',
+    category: 'security',
+    keyPoints: [
+      'Exploits the browser auto-sending cookies on cross-site requests.',
+      'Performs actions as the victim without their consent.',
+      'Mitigate: anti-CSRF tokens validated server-side.',
+      'Set SameSite=Lax/Strict on session cookies.',
+      'Verify Origin/Referer and configure CORS correctly.'
+    ],
+    codeSnippet: `// Mitigations (conceptual)
+// 1) Per-form anti-CSRF token checked on the server
+// 2) Set-Cookie: session=…; SameSite=Strict; Secure; HttpOnly
+// 3) Validate the Origin header for state-changing requests`
+  },
+  {
+    id: 'security-csp-headers',
+    title: 'CSP & Security Headers',
+    summary: 'HTTP headers that harden a site against XSS, clickjacking, and MIME sniffing.',
+    difficulty: 'intermediate',
+    category: 'security',
+    keyPoints: [
+      'Content-Security-Policy: whitelist trusted sources for scripts/styles/images.',
+      'X-Frame-Options / frame-ancestors: prevent clickjacking via framing.',
+      'Strict-Transport-Security (HSTS): force HTTPS.',
+      'X-Content-Type-Options: nosniff — block MIME-type sniffing.',
+      'Referrer-Policy: control how much referrer info is sent.'
+    ],
+    codeSnippet: `// Example response headers
+// Content-Security-Policy: script-src 'self'
+// X-Frame-Options: DENY
+// Strict-Transport-Security: max-age=31536000
+// X-Content-Type-Options: nosniff`
+  },
+  {
+    id: 'security-same-origin',
+    title: 'Same-Origin Policy & CORS',
+    summary: 'Browsers restrict cross-origin access; CORS selectively relaxes it.',
+    difficulty: 'intermediate',
+    category: 'security',
+    keyPoints: [
+      'Origin = scheme + host + port. Same origin requires all three to match.',
+      'The policy blocks reading cross-origin responses by default.',
+      'CORS headers (Access-Control-Allow-Origin…) let a server opt in to sharing.',
+      'Preflight OPTIONS requests check non-simple cross-origin calls.',
+      'Protects users from one site reading another’s authenticated data.'
+    ],
+    codeSnippet: `// Same origin?  https://app.com:443/page
+// https://app.com/api   → same origin
+// http://app.com/api    → different scheme
+// https://api.app.com   → different host
+// Server opts in:
+// Access-Control-Allow-Origin: https://app.com`
   }
 ];

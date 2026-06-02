@@ -42,7 +42,9 @@ export default function OTPInput() {
     const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH);
     if (!pasted) return;
     const newOtp = [...otp];
-    pasted.split('').forEach((char, i) => { newOtp[i] = char; });
+    pasted.split('').forEach((char, i) => {
+      newOtp[i] = char;
+    });
     setOtp(newOtp);
     inputRefs.current[Math.min(pasted.length, OTP_LENGTH - 1)]?.focus();
   };
@@ -79,7 +81,9 @@ export default function OTPInput() {
             inputMode="numeric"
             maxLength={1}
             value={digit}
-            ref={(el) => { if (el) inputRefs.current[index] = el; }}
+            ref={(el) => {
+              if (el) inputRefs.current[index] = el;
+            }}
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
@@ -100,12 +104,17 @@ export default function OTPInput() {
       </div>
 
       {msgText && (
-        <div style={{
-          padding: '10px 14px', borderRadius: 6, marginBottom: 16, fontSize: 14,
-          background: msgType === 'success' ? '#e8f5e9' : '#fff8e1',
-          color: msgType === 'success' ? '#2e7d32' : '#f57f17',
-          border: `1px solid ${msgType === 'success' ? '#c8e6c9' : '#ffe082'}`
-        }}>
+        <div
+          style={{
+            padding: '10px 14px',
+            borderRadius: 6,
+            marginBottom: 16,
+            fontSize: 14,
+            background: msgType === 'success' ? '#e8f5e9' : '#fff8e1',
+            color: msgType === 'success' ? '#2e7d32' : '#f57f17',
+            border: `1px solid ${msgType === 'success' ? '#c8e6c9' : '#ffe082'}`
+          }}
+        >
           {msgText}
         </div>
       )}
@@ -114,13 +123,30 @@ export default function OTPInput() {
         <button
           onClick={handleVerify}
           disabled={!isComplete}
-          style={{ flex: 1, padding: '10px 0', background: isComplete ? '#1976d2' : '#e0e0e0', color: isComplete ? '#fff' : '#aaa', border: 'none', borderRadius: 6, fontSize: 14, cursor: isComplete ? 'pointer' : 'not-allowed', fontWeight: 600 }}
+          style={{
+            flex: 1,
+            padding: '10px 0',
+            background: isComplete ? '#1976d2' : '#e0e0e0',
+            color: isComplete ? '#fff' : '#aaa',
+            border: 'none',
+            borderRadius: 6,
+            fontSize: 14,
+            cursor: isComplete ? 'pointer' : 'not-allowed',
+            fontWeight: 600
+          }}
         >
           Verify OTP
         </button>
         <button
           onClick={handleReset}
-          style={{ padding: '10px 16px', background: 'transparent', border: '1px solid #ccc', borderRadius: 6, fontSize: 14, cursor: 'pointer' }}
+          style={{
+            padding: '10px 16px',
+            background: 'transparent',
+            border: '1px solid #ccc',
+            borderRadius: 6,
+            fontSize: 14,
+            cursor: 'pointer'
+          }}
         >
           Reset
         </button>

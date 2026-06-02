@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { IconSettings, IconX } from '@tabler/icons-react';
+import { IconMoon, IconSettings, IconSun, IconX } from '@tabler/icons-react';
 
 import useConfig from 'hooks/useConfig';
 import { ThemeMode } from 'config';
@@ -19,12 +19,12 @@ import { PresetColor } from 'types/config';
 
 const PRESETS: { value: PresetColor; primary: string; secondary: string; label: string }[] = [
   { value: 'default', primary: '#2196f3', secondary: '#673ab7', label: 'Default' },
-  { value: 'theme1',  primary: '#607d8b', secondary: '#009688', label: 'Theme 1' },
-  { value: 'theme2',  primary: '#203461', secondary: '#ec407a', label: 'Theme 2' },
-  { value: 'theme3',  primary: '#16595a', secondary: '#c77e23', label: 'Theme 3' },
-  { value: 'theme4',  primary: '#173e43', secondary: '#3fb0ac', label: 'Theme 4' },
-  { value: 'theme5',  primary: '#0a2342', secondary: '#2ca58d', label: 'Theme 5' },
-  { value: 'theme6',  primary: '#3f51b5', secondary: '#3f51b5', label: 'Theme 6' },
+  { value: 'theme1', primary: '#607d8b', secondary: '#009688', label: 'Theme 1' },
+  { value: 'theme2', primary: '#203461', secondary: '#ec407a', label: 'Theme 2' },
+  { value: 'theme3', primary: '#16595a', secondary: '#c77e23', label: 'Theme 3' },
+  { value: 'theme4', primary: '#173e43', secondary: '#3fb0ac', label: 'Theme 4' },
+  { value: 'theme5', primary: '#0a2342', secondary: '#2ca58d', label: 'Theme 5' },
+  { value: 'theme6', primary: '#3f51b5', secondary: '#3f51b5', label: 'Theme 6' }
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -57,12 +57,7 @@ export default function Customization() {
       </Tooltip>
 
       {/* Settings drawer */}
-      <Drawer
-        anchor="right"
-        open={open}
-        onClose={() => setOpen(false)}
-        PaperProps={{ sx: { width: 280, p: 0 } }}
-      >
+      <Drawer anchor="right" open={open} onClose={() => setOpen(false)} PaperProps={{ sx: { width: 280, p: 0 } }}>
         {/* Header */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, bgcolor: 'primary.main' }}>
           <Typography variant="subtitle1" fontWeight={700} color="#fff">
@@ -74,7 +69,6 @@ export default function Customization() {
         </Box>
 
         <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 3 }}>
-
           {/* ── Mode toggle ── */}
           <Box>
             <Typography variant="caption" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 1 }}>
@@ -82,12 +76,19 @@ export default function Customization() {
             </Typography>
             <Box sx={{ display: 'flex', gap: 1.5, mt: 1.5 }}>
               {[
-                { label: '☀️ Light', value: ThemeMode.LIGHT },
-                { label: '🌙 Dark',  value: ThemeMode.DARK  },
-              ].map(({ label, value }) => (
+                { label: 'Light', icon: <IconSun size={15} />, value: ThemeMode.LIGHT },
+                { label: 'Dark', icon: <IconMoon size={15} />, value: ThemeMode.DARK }
+              ].map(({ label, icon, value }) => (
                 <Box
                   key={value}
                   onClick={() => onChangeMode(value)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') onChangeMode(value);
+                  }}
+                  aria-label={`Switch to ${label} mode`}
+                  aria-pressed={mode === value}
                   sx={{
                     flex: 1,
                     py: 1,
@@ -101,10 +102,14 @@ export default function Customization() {
                     bgcolor: mode === value ? 'primary.main' : 'background.paper',
                     color: mode === value ? '#fff' : 'text.primary',
                     transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 0.75,
                     '&:hover': { borderColor: 'primary.main' }
                   }}
                 >
-                  {label}
+                  {icon} {label}
                 </Box>
               ))}
             </Box>
@@ -151,7 +156,6 @@ export default function Customization() {
               })}
             </Box>
           </Box>
-
         </Box>
       </Drawer>
     </>

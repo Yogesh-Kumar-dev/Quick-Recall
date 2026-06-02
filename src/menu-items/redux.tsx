@@ -1,4 +1,4 @@
-import { IconBrandRedux, IconDatabase, IconBolt, IconCode } from '@tabler/icons-react';
+import { IconBrandRedux, IconBolt, IconCode } from '@tabler/icons-react';
 import { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS - REDUX ||============================== //
@@ -15,7 +15,7 @@ const redux: NavItemType = {
       title: 'Redux Notes',
       type: 'item',
       url: '/redux/notes',
-      icon: IconDatabase
+      icon: IconBrandRedux
     },
     {
       id: 'redux-toolkit',

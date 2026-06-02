@@ -62,7 +62,9 @@ function debounce(fn, delay, options = {}) {
 
 // Trailing (default) — fires after the burst ends
 const onSearch = debounce((q) => console.log('search:', q), 300);
-onSearch('a'); onSearch('ab'); onSearch('abc'); // fires once with 'abc'
+onSearch('a');
+onSearch('ab');
+onSearch('abc'); // fires once with 'abc'
 
 // Leading — fires immediately, then ignores calls until delay expires
 const onButtonClick = debounce(() => console.log('clicked!'), 1000, { leading: true });

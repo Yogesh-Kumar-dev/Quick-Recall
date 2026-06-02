@@ -43,8 +43,16 @@ export default function ProblemStatement({ description, requirements, keyPattern
         ))}
       </Stack>
 
-      <Box sx={{ p: 1.5, bgcolor: '#fff8e1', borderRadius: 1, border: '1px solid #ffe082' }}>
-        <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
+      <Box
+        sx={{
+          p: 1.5,
+          bgcolor: 'rgba(255, 193, 7, 0.12)',
+          borderRadius: 1,
+          border: '1px solid',
+          borderColor: 'warning.main'
+        }}
+      >
+        <Typography variant="body2" sx={{ lineHeight: 1.6, color: 'text.primary' }}>
           💡 <strong>Interview Tip:</strong> {interviewTip}
         </Typography>
       </Box>

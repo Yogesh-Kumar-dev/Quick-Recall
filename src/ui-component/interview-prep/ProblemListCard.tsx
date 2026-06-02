@@ -17,7 +17,7 @@ interface ProblemListCardProps {
 
 export default function ProblemListCard({ problem, basePath = '/js/machine-coding' }: ProblemListCardProps) {
   return (
-    <Card variant="outlined" sx={{ borderRadius: 2 }}>
+    <Card variant="outlined" sx={{ borderRadius: 2, transition: 'box-shadow 0.18s', '&:hover': { boxShadow: 2 } }}>
       <CardActionArea component={Link} href={`${basePath}/${problem.slug}`}>
         <CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
@@ -27,20 +27,14 @@ export default function ProblemListCard({ problem, basePath = '/js/machine-codin
               </Typography>
               <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
                 <DifficultyBadge difficulty={problem.difficulty} />
-                <Chip
-                  label={problem.category}
-                  size="small"
-                  variant="outlined"
-                  sx={{ textTransform: 'capitalize' }}
-                />
+                <Chip label={problem.category} size="small" variant="outlined" sx={{ textTransform: 'capitalize' }} />
                 {problem.tags.slice(0, 3).map((tag) => (
                   <Chip
                     key={tag}
                     label={tag}
                     size="small"
-                    color="primary"
                     variant="outlined"
-                    sx={{ fontSize: 11 }}
+                    sx={{ fontSize: 11, color: 'text.secondary', borderColor: 'divider' }}
                   />
                 ))}
               </Stack>

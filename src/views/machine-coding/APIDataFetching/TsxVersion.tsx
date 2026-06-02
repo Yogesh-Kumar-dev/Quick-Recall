@@ -168,9 +168,7 @@ export default function APIDataFetching() {
                 </span>
               </div>
               <p style={{ margin: '0 0 3px', fontWeight: 600, fontSize: 13, textTransform: 'capitalize' }}>{post.title}</p>
-              <p style={{ margin: 0, fontSize: 12, color: '#6b7280', lineHeight: 1.5 }}>
-                {post.body.substring(0, 90)}…
-              </p>
+              <p style={{ margin: 0, fontSize: 12, color: '#6b7280', lineHeight: 1.5 }}>{post.body.substring(0, 90)}…</p>
             </li>
           ))}
         </ul>

@@ -8,9 +8,9 @@
 
 const arr = [1, [2, [3, [4]], 5]];
 
-arr.flat();          // [1, 2, [3, [4]], 5]   — default depth 1
-arr.flat(2);         // [1, 2, 3, [4], 5]     — depth 2
-arr.flat(Infinity);  // [1, 2, 3, 4, 5]       — any depth
+arr.flat(); // [1, 2, [3, [4]], 5]   — default depth 1
+arr.flat(2); // [1, 2, 3, [4], 5]     — depth 2
+arr.flat(Infinity); // [1, 2, 3, 4, 5]       — any depth
 
 // ── Option 2: JSON trick (limited — loses non-JSON-safe values) ───────────────
 

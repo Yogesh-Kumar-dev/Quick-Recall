@@ -20,6 +20,8 @@ import Box from '@mui/material/Box';
 import { ThemeMode, ThemeDirection } from 'config';
 import navigation from 'menu-items';
 import useConfig from 'hooks/useConfig';
+import { jsProblems } from 'data/javascript/js-problems';
+import { reactMcProblems } from 'data/react/react-mc-problems';
 
 // assets
 import { IconChevronRight, IconTallymark1 } from '@tabler/icons-react';
@@ -97,8 +99,20 @@ export default function Breadcrumbs({
   // Paths that have a landing/overview state driven by the ?difficulty param.
   // When the param is present the user is in the filtered list — inject an
   // "Overview" crumb that links back to the bare path (which shows the landing).
-  const SECTION_PATHS = ['/js/concepts', '/react/concepts', '/js/machine-coding', '/react/machine-coding'];
+  const SECTION_PATHS = ['/js/notes', '/react/notes', '/js/machine-coding', '/react/machine-coding'];
   const isInSubState = !custom && SECTION_PATHS.includes(pathname) && (searchParams?.has('difficulty') ?? false);
+
+  // Dynamic detail route: /js/machine-coding/<slug> has no menu entry, so the
+  // tree match below never fires. Derive the trail from the problem registry.
+  const jsMcDetailMatch = !custom ? /^\/js\/machine-coding\/([^/]+)\/?$/.exec(pathname) : null;
+  const jsMcSlug = jsMcDetailMatch?.[1];
+  const jsMcProblem = jsMcSlug ? jsProblems.find((p) => p.slug === jsMcSlug) : undefined;
+
+  // React machine-coding detail route: /machine-coding/<slug> — same situation,
+  // no menu entry, so derive the trail from the React problem registry.
+  const reactMcDetailMatch = !custom ? /^\/machine-coding\/([^/]+)\/?$/.exec(pathname) : null;
+  const reactMcSlug = reactMcDetailMatch?.[1];
+  const reactMcProblem = reactMcSlug ? reactMcProblems.find((p) => p.slug === reactMcSlug) : undefined;
 
   const iconSX = {
     marginRight: 6,
@@ -328,6 +342,104 @@ export default function Breadcrumbs({
         </Card>
       );
     }
+  }
+
+  // Dynamic JS machine-coding detail route — build the trail manually.
+  if (jsMcSlug) {
+    const detailTitle = jsMcProblem?.title ?? 'Problem';
+    breadcrumbContent = (
+      <Card
+        sx={
+          card === false
+            ? { mb: 3, bgcolor: 'transparent', ...sx }
+            : { mb: 3, bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'background.default', ...sx }
+        }
+        {...others}
+      >
+        <Box sx={{ p: 1.25, px: card === false ? 0 : 2 }}>
+          <Grid
+            container
+            direction={rightAlign ? 'row' : 'column'}
+            justifyContent={rightAlign ? 'space-between' : 'flex-start'}
+            alignItems={rightAlign ? 'center' : 'flex-start'}
+            spacing={1}
+          >
+            {title && !titleBottom && <BTitle title={detailTitle} />}
+            <Grid>
+              <MuiBreadcrumbs
+                aria-label="breadcrumb"
+                maxItems={maxItems || 8}
+                separator={separatorIcon}
+                sx={{ '& .MuiBreadcrumbs-separator': { width: 16, mx: 0.75 } }}
+              >
+                <Typography component={Link} href="/" color="textSecondary" variant="h6" sx={linkSX}>
+                  {icons && <HomeTwoToneIcon style={iconSX} />}
+                  {icon && !icons && <HomeIcon style={{ ...iconSX, marginRight: 0 }} />}
+                  {(!icon || icons) && 'Dashboard'}
+                </Typography>
+                <Typography component={Link} href="/js/machine-coding" variant="h6" sx={linkSX} color="text.secondary">
+                  JS Machine Coding
+                </Typography>
+                <Typography variant="h6" sx={{ ...linkSX, color: 'text.primary' }}>
+                  {detailTitle}
+                </Typography>
+              </MuiBreadcrumbs>
+            </Grid>
+            {title && titleBottom && <BTitle title={detailTitle} />}
+          </Grid>
+        </Box>
+        {card === false && divider !== false && <Divider sx={{ mt: 2 }} />}
+      </Card>
+    );
+  }
+
+  // Dynamic React machine-coding detail route — build the trail manually.
+  if (reactMcSlug) {
+    const detailTitle = reactMcProblem?.title ?? 'Problem';
+    breadcrumbContent = (
+      <Card
+        sx={
+          card === false
+            ? { mb: 3, bgcolor: 'transparent', ...sx }
+            : { mb: 3, bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'background.default', ...sx }
+        }
+        {...others}
+      >
+        <Box sx={{ p: 1.25, px: card === false ? 0 : 2 }}>
+          <Grid
+            container
+            direction={rightAlign ? 'row' : 'column'}
+            justifyContent={rightAlign ? 'space-between' : 'flex-start'}
+            alignItems={rightAlign ? 'center' : 'flex-start'}
+            spacing={1}
+          >
+            {title && !titleBottom && <BTitle title={detailTitle} />}
+            <Grid>
+              <MuiBreadcrumbs
+                aria-label="breadcrumb"
+                maxItems={maxItems || 8}
+                separator={separatorIcon}
+                sx={{ '& .MuiBreadcrumbs-separator': { width: 16, mx: 0.75 } }}
+              >
+                <Typography component={Link} href="/" color="textSecondary" variant="h6" sx={linkSX}>
+                  {icons && <HomeTwoToneIcon style={iconSX} />}
+                  {icon && !icons && <HomeIcon style={{ ...iconSX, marginRight: 0 }} />}
+                  {(!icon || icons) && 'Dashboard'}
+                </Typography>
+                <Typography component={Link} href="/react/machine-coding" variant="h6" sx={linkSX} color="text.secondary">
+                  React Machine Coding
+                </Typography>
+                <Typography variant="h6" sx={{ ...linkSX, color: 'text.primary' }}>
+                  {detailTitle}
+                </Typography>
+              </MuiBreadcrumbs>
+            </Grid>
+            {title && titleBottom && <BTitle title={detailTitle} />}
+          </Grid>
+        </Box>
+        {card === false && divider !== false && <Divider sx={{ mt: 2 }} />}
+      </Card>
+    );
   }
 
   return breadcrumbContent;

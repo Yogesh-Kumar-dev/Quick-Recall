@@ -6,18 +6,7 @@
  * Alert replaces the error box, Card replaces the plain <li>.
  */
 import { useState } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Typography,
-  Alert,
-  Chip,
-  Skeleton,
-  Stack,
-  CircularProgress
-} from '@mui/material';
+import { Box, Button, Card, CardContent, Typography, Alert, Chip, Skeleton, Stack, CircularProgress } from '@mui/material';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
@@ -99,11 +88,7 @@ export default function APIDataFetching() {
                   <Chip label={`#${post.id}`} size="small" color="primary" variant="outlined" />
                   <Chip label={`user ${post.userId}`} size="small" color="success" variant="outlined" />
                 </Box>
-                <Typography
-                  variant="body2"
-                  fontWeight={600}
-                  sx={{ textTransform: 'capitalize', mb: 0.5 }}
-                >
+                <Typography variant="body2" fontWeight={600} sx={{ textTransform: 'capitalize', mb: 0.5 }}>
                   {post.title}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" display="block" noWrap>

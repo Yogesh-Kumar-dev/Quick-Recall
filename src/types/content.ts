@@ -32,6 +32,16 @@ export interface QuickRecallSection {
 }
 
 // ---------------------------------------------------------------------------
+// Flashcards — keyword/abbreviation definitions + small Q&A (flip carousel)
+// ---------------------------------------------------------------------------
+export interface Flashcard {
+  id: string;
+  front: string; // keyword / abbreviation / short question
+  back: string; // definition / answer (kept short, 1–3 sentences)
+  category?: string; // optional grouping label (e.g. 'Keyword', 'Q&A')
+}
+
+// ---------------------------------------------------------------------------
 // Shared difficulty type + base problem entry
 // ---------------------------------------------------------------------------
 export type ProblemDifficulty = 'easy' | 'medium' | 'hard';

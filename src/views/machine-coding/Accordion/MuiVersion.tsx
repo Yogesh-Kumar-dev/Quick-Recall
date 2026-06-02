@@ -75,7 +75,11 @@ export default function AccordionMui() {
       // Multi-open: add or remove from set
       setOpenItems((prev) => {
         const next = new Set(prev); // create a new Set (mutation doesn't trigger re-render)
-        if (next.has(index)) { next.delete(index); } else { next.add(index); }
+        if (next.has(index)) {
+          next.delete(index);
+        } else {
+          next.add(index);
+        }
         return next;
       });
     } else {

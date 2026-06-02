@@ -35,26 +35,39 @@ function deleteNode(nodes, id) {
 
 function treeReducer(state, action) {
   switch (action.type) {
-    case 'TOGGLE': return toggleNode(state, action.id);
-    case 'ADD': return addNode(state, action.parentId, action.node);
-    case 'DELETE': return deleteNode(state, action.id);
-    default: return state;
+    case 'TOGGLE':
+      return toggleNode(state, action.id);
+    case 'ADD':
+      return addNode(state, action.parentId, action.node);
+    case 'DELETE':
+      return deleteNode(state, action.id);
+    default:
+      return state;
   }
 }
 
 const INITIAL_TREE = [
   {
-    id: 'src', name: 'src', type: 'folder', expanded: true,
+    id: 'src',
+    name: 'src',
+    type: 'folder',
+    expanded: true,
     children: [
       {
-        id: 'components', name: 'components', type: 'folder', expanded: true,
+        id: 'components',
+        name: 'components',
+        type: 'folder',
+        expanded: true,
         children: [
           { id: 'btn', name: 'Button.tsx', type: 'file' },
           { id: 'input', name: 'Input.tsx', type: 'file' }
         ]
       },
       {
-        id: 'pages', name: 'pages', type: 'folder', expanded: false,
+        id: 'pages',
+        name: 'pages',
+        type: 'folder',
+        expanded: false,
         children: [
           { id: 'home', name: 'Home.tsx', type: 'file' },
           { id: 'about', name: 'About.tsx', type: 'file' }
@@ -85,7 +98,16 @@ function Node({ node, depth, dispatch }) {
   return (
     <div>
       <div
-        style={{ display: 'flex', alignItems: 'center', paddingLeft: depth * 20, padding: `3px 4px 3px ${depth * 20}px`, borderRadius: 4, cursor: isFolder ? 'pointer' : 'default', fontSize: 14, fontFamily: 'monospace' }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          paddingLeft: depth * 20,
+          padding: `3px 4px 3px ${depth * 20}px`,
+          borderRadius: 4,
+          cursor: isFolder ? 'pointer' : 'default',
+          fontSize: 14,
+          fontFamily: 'monospace'
+        }}
         onMouseEnter={(e) => (e.currentTarget.style.background = '#f5f5f5')}
         onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
         onClick={() => isFolder && dispatch({ type: 'TOGGLE', id: node.id })}
@@ -96,17 +118,23 @@ function Node({ node, depth, dispatch }) {
         <span onClick={(e) => e.stopPropagation()} style={{ display: 'flex', gap: 2 }}>
           {isFolder && (
             <>
-              <button title="Add file" onClick={() => handleAdd('file')} style={actBtnStyle}>+📄</button>
-              <button title="Add folder" onClick={() => handleAdd('folder')} style={actBtnStyle}>+📁</button>
+              <button title="Add file" onClick={() => handleAdd('file')} style={actBtnStyle}>
+                +📄
+              </button>
+              <button title="Add folder" onClick={() => handleAdd('folder')} style={actBtnStyle}>
+                +📁
+              </button>
             </>
           )}
-          <button title="Delete" onClick={() => dispatch({ type: 'DELETE', id: node.id })} style={{ ...actBtnStyle, color: '#f44336' }}>✕</button>
+          <button title="Delete" onClick={() => dispatch({ type: 'DELETE', id: node.id })} style={{ ...actBtnStyle, color: '#f44336' }}>
+            ✕
+          </button>
         </span>
       </div>
 
-      {isFolder && node.expanded && node.children?.map((child) => (
-        <Node key={child.id} node={child} depth={depth + 1} dispatch={dispatch} />
-      ))}
+      {isFolder &&
+        node.expanded &&
+        node.children?.map((child) => <Node key={child.id} node={child} depth={depth + 1} dispatch={dispatch} />)}
     </div>
   );
 }
@@ -125,7 +153,9 @@ export default function FileTree() {
   const [tree, dispatch] = useReducer(treeReducer, INITIAL_TREE);
 
   return (
-    <div style={{ maxWidth: 400, border: '1px solid #e0e0e0', borderRadius: 8, padding: 12, fontFamily: 'monospace', background: '#fafafa' }}>
+    <div
+      style={{ maxWidth: 400, border: '1px solid #e0e0e0', borderRadius: 8, padding: 12, fontFamily: 'monospace', background: '#fafafa' }}
+    >
       <p style={{ fontSize: 13, color: '#888', margin: '0 0 8px' }}>📁 my-project — hover a row to see actions</p>
       <hr style={{ border: 'none', borderTop: '1px solid #e0e0e0', margin: '0 0 8px' }} />
       {tree.map((node) => (

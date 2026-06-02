@@ -13,7 +13,7 @@ export const rtkQueryNotes: Note[] = [
       "baseQuery: fetchBaseQuery({ baseUrl: '/api' }) — all endpoint URLs are relative to this.",
       'endpoints builder: define query (GET) and mutation (POST/PUT/DELETE) endpoints here.',
       'Export the auto-generated hooks — one hook per endpoint, named automatically.',
-      "Add api.reducer and api.middleware to configureStore — both are required for RTK Query to work."
+      'Add api.reducer and api.middleware to configureStore — both are required for RTK Query to work.'
     ],
     gotcha:
       'Forgetting to add api.middleware to the store silently breaks caching, invalidation, and polling. Easy to miss when adding a new API slice.',
@@ -40,11 +40,12 @@ configureStore({
   {
     id: 'query-endpoints',
     title: 'Query Endpoints & Auto-Generated Hooks',
-    summary: 'Query endpoints fetch and cache data. RTK Query auto-generates useXxxQuery hooks with isLoading, isFetching, data, and error.',
+    summary:
+      'Query endpoints fetch and cache data. RTK Query auto-generates useXxxQuery hooks with isLoading, isFetching, data, and error.',
     difficulty: 'basic',
     category: 'queries',
     keyPoints: [
-      "Hook naming: use + PascalCase(endpointName) + Query — e.g., getPosts → useGetPostsQuery.",
+      'Hook naming: use + PascalCase(endpointName) + Query — e.g., getPosts → useGetPostsQuery.',
       'isLoading: true only on the FIRST load (no cached data). isFetching: true on any in-flight request including re-fetches.',
       'data persists from the last successful result even while re-fetching — prevents flash of empty state.',
       'Skip a query conditionally: useGetPostByIdQuery(id, { skip: !id }).',
@@ -69,7 +70,8 @@ configureStore({
   {
     id: 'transform-response',
     title: 'transformResponse & Dynamic Queries',
-    summary: 'transformResponse reshapes the raw API response before caching; query functions accept arguments for parameterized endpoints.',
+    summary:
+      'transformResponse reshapes the raw API response before caching; query functions accept arguments for parameterized endpoints.',
     difficulty: 'intermediate',
     category: 'queries',
     keyPoints: [
@@ -96,14 +98,14 @@ configureStore({
     difficulty: 'basic',
     category: 'mutations',
     keyPoints: [
-      "Hook naming: use + PascalCase(endpointName) + Mutation — e.g., addPost → useAddPostMutation.",
+      'Hook naming: use + PascalCase(endpointName) + Mutation — e.g., addPost → useAddPostMutation.',
       'Returns [triggerFn, { isLoading, isSuccess, isError, data, reset }].',
       'triggerFn returns a promise — use .unwrap() to get the payload or throw on error.',
       "Mutations don't cache their result by default — they update other caches via tag invalidation.",
       "Define HTTP method and body: query: (data) => ({ url: '/posts', method: 'POST', body: data })."
     ],
     gotcha:
-      "Each mutation call is independent — no deduplication. If the user double-clicks, two requests fire. Disable the button while isLoading to prevent duplicate submissions.",
+      'Each mutation call is independent — no deduplication. If the user double-clicks, two requests fire. Disable the button while isLoading to prevent duplicate submissions.',
     codeSnippet: `const [addPost, { isLoading }] = useAddPostMutation();
 
 async function handleSubmit(data: NewPost) {
@@ -124,10 +126,10 @@ async function handleSubmit(data: NewPost) {
     difficulty: 'intermediate',
     category: 'caching',
     textbookDef:
-      'Tags are string labels attached to cached query results (providesTags) and mutation effects (invalidatesTags). When a mutation\'s invalidatesTags overlaps any query\'s providesTags, those queries are marked stale and refetched.',
+      "Tags are string labels attached to cached query results (providesTags) and mutation effects (invalidatesTags). When a mutation's invalidatesTags overlaps any query's providesTags, those queries are marked stale and refetched.",
     keyPoints: [
-      "providesTags on a query: declares what this cache entry represents.",
-      "invalidatesTags on a mutation: declares what becomes stale after the mutation runs.",
+      'providesTags on a query: declares what this cache entry represents.',
+      'invalidatesTags on a mutation: declares what becomes stale after the mutation runs.',
       "Granular tags: [{ type: 'Post', id }] — only the specific item refetches, not the entire list.",
       "List tag pattern: provide both item tags AND a collective 'Post' tag so new items trigger list refetch.",
       'tagTypes must be declared upfront in createApi to get TypeScript safety.'
@@ -148,7 +150,8 @@ deletePost: builder.mutation({
   {
     id: 'cache-lifecycle',
     title: 'Cache Lifecycle & keepUnusedDataFor',
-    summary: 'RTK Query counts active subscribers per cache entry. Data persists 60s after the last subscriber unmounts, then is garbage-collected.',
+    summary:
+      'RTK Query counts active subscribers per cache entry. Data persists 60s after the last subscriber unmounts, then is garbage-collected.',
     difficulty: 'intermediate',
     category: 'caching',
     textbookDef:

@@ -1,5 +1,5 @@
 'use client';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -8,7 +8,10 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { IconArrowRight } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowRight, IconCards } from '@tabler/icons-react';
+
+import FlashcardDialog from 'ui-component/interview-prep/FlashcardDialog';
+import type { Flashcard } from 'types/content';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -18,7 +21,6 @@ export interface LandingDifficultyCard {
   count: number;
   emoji: string;
   color: 'success' | 'warning' | 'error' | 'primary' | 'default';
-  /** Short hint shown under the label, e.g. "Closures, this, async/await" */
   blurb?: string;
 }
 
@@ -30,31 +32,35 @@ export interface LandingCategoryCard {
 }
 
 export interface SectionLandingProps {
-  /** Icon shown beside the title (Tabler icon element at ~28px) */
   icon: ReactNode;
   title: string;
-  /** One-paragraph description of what this section covers */
   description: string;
   totalCount: number;
-  /** One card per difficulty tier */
   difficultyCards: LandingDifficultyCard[];
   onEnter: (difficulty: string) => void;
-  /** Optional category section */
   categoryCards?: LandingCategoryCard[];
   onEnterCategory?: (category: string) => void;
-  /** If provided, renders a "Gotchas Only" quick-action button (concepts pages) */
   gotchaCount?: number;
   onGotchaOnly?: () => void;
+  flashcards?: Flashcard[];
 }
 
-// ─── Colour tokens ────────────────────────────────────────────────────────────
+// ─── Dark-mode colour tokens ──────────────────────────────────────────────────
 
 const DIFF_BG: Record<string, string> = {
-  success: '#e8f5e9',
-  warning: '#fff8e1',
-  error: '#ffebee',
-  primary: '#e3f2fd',
-  default: '#f5f5f5'
+  success: 'rgba(76, 175, 80, 0.1)',
+  warning: 'rgba(255, 193, 7, 0.1)',
+  error: 'rgba(244, 67, 54, 0.1)',
+  primary: 'rgba(33, 150, 243, 0.1)',
+  default: 'rgba(255, 255, 255, 0.04)'
+};
+
+const DIFF_BG_HOVER: Record<string, string> = {
+  success: 'rgba(76, 175, 80, 0.2)',
+  warning: 'rgba(255, 193, 7, 0.2)',
+  error: 'rgba(244, 67, 54, 0.2)',
+  primary: 'rgba(33, 150, 243, 0.2)',
+  default: 'rgba(255, 255, 255, 0.1)'
 };
 
 const DIFF_BORDER: Record<string, string> = {
@@ -62,8 +68,10 @@ const DIFF_BORDER: Record<string, string> = {
   warning: '#ffc107',
   error: '#f44336',
   primary: '#2196f3',
-  default: '#bdbdbd'
+  default: 'rgba(255,255,255,0.18)'
 };
+
+const DIFF_DOT: Record<string, string> = DIFF_BORDER;
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -77,9 +85,12 @@ export default function SectionLanding({
   categoryCards,
   onEnterCategory,
   gotchaCount,
-  onGotchaOnly
+  onGotchaOnly,
+  flashcards
 }: SectionLandingProps) {
   const showCategories = categoryCards && categoryCards.length > 0 && onEnterCategory;
+  const hasFlashcards = !!flashcards && flashcards.length > 0;
+  const [flashcardsOpen, setFlashcardsOpen] = useState(false);
 
   return (
     <Box>
@@ -97,7 +108,7 @@ export default function SectionLanding({
 
       <Divider sx={{ mb: 3 }} />
 
-      {/* ── Quick-action row: Browse All + optional Gotcha shortcut ── */}
+      {/* ── Quick-action row ── */}
       <Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap mb={3}>
         <Button
           variant="outlined"
@@ -115,9 +126,23 @@ export default function SectionLanding({
             color="warning"
             size="large"
             onClick={onGotchaOnly}
+            startIcon={<IconAlertTriangle size={18} />}
             sx={{ borderRadius: 2, px: 3, fontWeight: 600 }}
           >
-            ⚠️ Gotchas Only &mdash; {gotchaCount} {gotchaCount === 1 ? 'item' : 'items'}
+            Gotchas Only &mdash; {gotchaCount} {gotchaCount === 1 ? 'item' : 'items'}
+          </Button>
+        )}
+
+        {hasFlashcards && (
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="large"
+            onClick={() => setFlashcardsOpen(true)}
+            startIcon={<IconCards size={18} />}
+            sx={{ borderRadius: 2, px: 3, fontWeight: 600 }}
+          >
+            Flashcards &mdash; {flashcards!.length}
           </Button>
         )}
       </Stack>
@@ -145,16 +170,35 @@ export default function SectionLanding({
                 border: `2px solid ${DIFF_BORDER[ck]}`,
                 bgcolor: DIFF_BG[ck],
                 borderRadius: 2.5,
-                transition: 'box-shadow 0.18s ease, transform 0.18s ease',
-                '&:hover': { boxShadow: 4, transform: 'translateY(-3px)' }
+                transition: 'background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease',
+                '&:hover': { bgcolor: DIFF_BG_HOVER[ck], boxShadow: 4, transform: 'translateY(-3px)' }
               }}
             >
-              <CardActionArea onClick={() => onEnter(card.value)} sx={{ p: 2.5 }}>
+              <Box
+                role="button"
+                tabIndex={0}
+                onClick={() => onEnter(card.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onEnter(card.value);
+                  }
+                }}
+                sx={{ p: 2.5, cursor: 'pointer', outline: 'none' }}
+              >
                 <Stack spacing={1}>
                   <Stack direction="row" spacing={1.25} alignItems="center">
-                    <Typography fontSize={28} lineHeight={1}>
-                      {card.emoji}
-                    </Typography>
+                    {/* Colored dot replaces emoji */}
+                    <Box
+                      sx={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: '50%',
+                        bgcolor: DIFF_DOT[ck],
+                        flexShrink: 0,
+                        boxShadow: `0 0 6px ${DIFF_DOT[ck]}60`
+                      }}
+                    />
                     <Box>
                       <Typography variant="h5" fontWeight={700} sx={{ lineHeight: 1.2 }}>
                         {card.label}
@@ -174,7 +218,7 @@ export default function SectionLanding({
                     </Typography>
                   )}
                 </Stack>
-              </CardActionArea>
+              </Box>
             </Card>
           );
         })}
@@ -194,16 +238,17 @@ export default function SectionLanding({
                 variant="outlined"
                 sx={{
                   minWidth: 110,
-                  border: '2px solid #e3f2fd',
-                  bgcolor: '#f0f7ff',
+                  border: '1px solid',
+                  borderColor: 'rgba(33, 150, 243, 0.25)',
+                  bgcolor: 'rgba(33, 150, 243, 0.06)',
                   borderRadius: 2,
-                  transition: 'box-shadow 0.18s ease, transform 0.18s ease',
-                  '&:hover': { boxShadow: 3, transform: 'translateY(-2px)', borderColor: '#2196f3' }
+                  transition: 'box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s',
+                  '&:hover': { boxShadow: 3, transform: 'translateY(-2px)', borderColor: 'primary.main' }
                 }}
               >
                 <CardActionArea onClick={() => onEnterCategory!(cat.value)} sx={{ px: 2, py: 1.5 }}>
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography fontSize={20} lineHeight={1}>
+                    <Typography fontSize={18} lineHeight={1}>
                       {cat.emoji}
                     </Typography>
                     <Box>
@@ -220,6 +265,10 @@ export default function SectionLanding({
             ))}
           </Stack>
         </>
+      )}
+
+      {hasFlashcards && (
+        <FlashcardDialog open={flashcardsOpen} onClose={() => setFlashcardsOpen(false)} cards={flashcards!} title={title} />
       )}
     </Box>
   );

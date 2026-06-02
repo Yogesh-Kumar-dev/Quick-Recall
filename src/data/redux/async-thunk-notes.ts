@@ -37,7 +37,7 @@ dispatch(fetchUsers(1));`
     keyPoints: [
       "pending: set status to 'loading', optionally clear previous errors.",
       'fulfilled: action.payload holds the value returned by the payloadCreator.',
-      "rejected: action.error.message for thrown errors; action.payload for rejectWithValue errors.",
+      'rejected: action.error.message for thrown errors; action.payload for rejectWithValue errors.',
       "Standard pattern: status field with 'idle' | 'loading' | 'succeeded' | 'failed' values.",
       'Multiple thunks can target the same slice — each adds its own builder.addCase blocks.'
     ],
@@ -70,7 +70,7 @@ dispatch(fetchUsers(1));`
       'dispatch: dispatch other actions or thunks from inside the payloadCreator.',
       'getState: read current state mid-thunk — useful for auth tokens, conditional fetches, or combining slices.',
       'signal: an AbortSignal — pass to fetch() to cancel the HTTP request automatically when the thunk is aborted.',
-      "requestId: unique ID per invocation — store it to cancel a specific in-flight request.",
+      'requestId: unique ID per invocation — store it to cancel a specific in-flight request.',
       "extra: the 'extra argument' from the thunk middleware — ideal for injecting API service instances."
     ],
     codeSnippet: `export const fetchUserPosts = createAsyncThunk(
@@ -131,7 +131,7 @@ dispatch(fetchUsers(1));`
     category: 'errors',
     keyPoints: [
       "dispatch(thunk()) resolves to the fulfilled/rejected action — it doesn't throw by itself.",
-      ".unwrap() throws if the action was rejected — making it behave like a normal async/await function.",
+      '.unwrap() throws if the action was rejected — making it behave like a normal async/await function.',
       'Use unwrap() in components when you need to react to success/failure inline (toast, navigate, setError).',
       'RTK Query mutation hooks have .unwrap() too — the same pattern applies.',
       'Avoid overusing unwrap() in reducers — side effects belong in components or middleware.'
@@ -151,7 +151,8 @@ async function handleLogin() {
   {
     id: 'thunk-cancellation',
     title: 'Request Cancellation',
-    summary: 'Thunks expose an abort() method. Pass the AbortSignal to fetch to cancel the in-flight HTTP request when the thunk is aborted.',
+    summary:
+      'Thunks expose an abort() method. Pass the AbortSignal to fetch to cancel the in-flight HTTP request when the thunk is aborted.',
     difficulty: 'advanced',
     category: 'advanced',
     textbookDef:

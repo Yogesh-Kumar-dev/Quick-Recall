@@ -51,18 +51,42 @@ export default function SequentialProgressBars() {
     setNextId((n) => n + 1);
   };
 
-  const reset = () => { setBars([]); setNextId(1); };
+  const reset = () => {
+    setBars([]);
+    setNextId(1);
+  };
 
   return (
     <div style={{ maxWidth: 540 }}>
       <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-        <button onClick={addBar} style={{ padding: '8px 18px', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>
+        <button
+          onClick={addBar}
+          style={{
+            padding: '8px 18px',
+            background: '#1976d2',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 6,
+            cursor: 'pointer',
+            fontWeight: 600,
+            fontSize: 14
+          }}
+        >
           + Add Bar
         </button>
         <button
           onClick={reset}
           disabled={bars.length === 0}
-          style={{ padding: '8px 18px', background: 'transparent', color: bars.length === 0 ? '#bbb' : '#f44336', border: `1px solid ${bars.length === 0 ? '#ddd' : '#f44336'}`, borderRadius: 6, cursor: bars.length === 0 ? 'default' : 'pointer', fontWeight: 600, fontSize: 14 }}
+          style={{
+            padding: '8px 18px',
+            background: 'transparent',
+            color: bars.length === 0 ? '#bbb' : '#f44336',
+            border: `1px solid ${bars.length === 0 ? '#ddd' : '#f44336'}`,
+            borderRadius: 6,
+            cursor: bars.length === 0 ? 'default' : 'pointer',
+            fontWeight: 600,
+            fontSize: 14
+          }}
         >
           Reset
         </button>
@@ -83,11 +107,23 @@ export default function SequentialProgressBars() {
                 <span style={{ fontWeight: 600, fontSize: 14 }}>Bar #{bar.id}</span>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                   <span style={{ fontSize: 12, color: '#888' }}>{Math.round(bar.progress)}%</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10, background: badgeBg, color: badgeColor }}>{badgeLabel}</span>
+                  <span
+                    style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10, background: badgeBg, color: badgeColor }}
+                  >
+                    {badgeLabel}
+                  </span>
                 </div>
               </div>
               <div style={{ height: 10, background: '#f0f0f0', borderRadius: 5, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${bar.progress}%`, background: trackColor, borderRadius: 5, transition: 'width 0.04s linear' }} />
+                <div
+                  style={{
+                    height: '100%',
+                    width: `${bar.progress}%`,
+                    background: trackColor,
+                    borderRadius: 5,
+                    transition: 'width 0.04s linear'
+                  }}
+                />
               </div>
             </div>
           );

@@ -21,12 +21,7 @@ export default function Dropdown() {
     <Box sx={{ p: 3 }}>
       <FormControl fullWidth sx={{ maxWidth: 280, mb: 2 }}>
         <InputLabel id="fruit-label">Select a fruit</InputLabel>
-        <Select
-          labelId="fruit-label"
-          value={selected}
-          label="Select a fruit"
-          onChange={handleChange}
-        >
+        <Select labelId="fruit-label" value={selected} label="Select a fruit" onChange={handleChange}>
           {OPTIONS.map((opt) => (
             <MenuItem key={opt} value={opt}>
               {opt}
@@ -40,12 +35,7 @@ export default function Dropdown() {
           <Typography variant="body2" color="text.secondary">
             You selected:
           </Typography>
-          <Chip
-            label={selected}
-            color="primary"
-            size="small"
-            onDelete={() => setSelected('')}
-          />
+          <Chip label={selected} color="primary" size="small" onDelete={() => setSelected('')} />
         </Box>
       ) : (
         <Typography variant="body2" color="text.disabled">

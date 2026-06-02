@@ -6,17 +6,7 @@
  * the same isOpen state + close callbacks + accessibility.
  */
 import { useState } from 'react';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Stack, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
@@ -32,19 +22,10 @@ export default function ModalPopup() {
       </Typography>
 
       <Stack direction="row" spacing={1.5}>
-        <Button
-          variant="contained"
-          startIcon={<InfoOutlinedIcon />}
-          onClick={() => setInfoOpen(true)}
-        >
+        <Button variant="contained" startIcon={<InfoOutlinedIcon />} onClick={() => setInfoOpen(true)}>
           Info Modal
         </Button>
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<DeleteOutlineIcon />}
-          onClick={() => setConfirmOpen(true)}
-        >
+        <Button variant="contained" color="error" startIcon={<DeleteOutlineIcon />} onClick={() => setConfirmOpen(true)}>
           Delete (Confirm)
         </Button>
       </Stack>
@@ -72,8 +53,8 @@ export default function ModalPopup() {
         <DialogContent>
           <DialogContentText>
             This modal closes on <strong>backdrop click</strong>, the close button, or the{' '}
-            <kbd style={{ background: '#f3f4f6', padding: '1px 5px', borderRadius: 4, fontSize: 12 }}>Esc</kbd> key.
-            MUI&apos;s Dialog handles all that for you.
+            <kbd style={{ background: '#f3f4f6', padding: '1px 5px', borderRadius: 4, fontSize: 12 }}>Esc</kbd> key. MUI&apos;s Dialog
+            handles all that for you.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

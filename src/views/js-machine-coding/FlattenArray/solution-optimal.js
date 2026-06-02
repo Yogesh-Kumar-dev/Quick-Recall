@@ -30,8 +30,8 @@ function flattenIterative(arr) {
 
 function flattenIterativeOrdered(arr) {
   const result = [];
-  const stack = [arr];     // stack holds arrays (not individual items)
-  const idxStack = [0];    // parallel stack of current index in each array
+  const stack = [arr]; // stack holds arrays (not individual items)
+  const idxStack = [0]; // parallel stack of current index in each array
 
   while (stack.length > 0) {
     const current = stack[stack.length - 1];

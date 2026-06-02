@@ -5,17 +5,7 @@
  * Same filter logic as PlainVersion — MUI components wrap the same pattern.
  */
 import { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  InputAdornment,
-  IconButton
-} from '@mui/material';
+import { Box, TextField, Typography, List, ListItem, ListItemText, Paper, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 
@@ -84,10 +74,7 @@ export default function SearchFilter() {
           <List dense disablePadding>
             {filtered.map((item, i) => (
               <ListItem key={item} divider={i < filtered.length - 1}>
-                <ListItemText
-                  primary={item}
-                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
-                />
+                <ListItemText primary={item} primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }} />
               </ListItem>
             ))}
           </List>

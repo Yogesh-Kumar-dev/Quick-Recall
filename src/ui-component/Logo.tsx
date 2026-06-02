@@ -48,10 +48,7 @@ export default function Logo() {
         }}
       >
         Quick
-        <Box
-          component="span"
-          sx={{ color: theme.palette.primary.main }}
-        >
+        <Box component="span" sx={{ color: theme.palette.primary.main }}>
           Recall
         </Box>
       </Typography>
