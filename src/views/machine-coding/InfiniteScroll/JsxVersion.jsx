@@ -56,7 +56,9 @@ export default function InfiniteScroll() {
     loadMore();
 
     const observer = new IntersectionObserver(
-      (entries) => { if (entries[0].isIntersecting) loadMore(); },
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore();
+      },
       { threshold: 0.1 }
     );
 
@@ -78,7 +80,9 @@ export default function InfiniteScroll() {
             <div key={item.id} style={{ border: '1px solid #e0e0e0', borderRadius: 8, padding: 12, background: '#fff' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                 <strong style={{ fontSize: 13 }}>{item.title}</strong>
-                <span style={{ fontSize: 11, background: '#e3f2fd', color: '#1976d2', padding: '1px 6px', borderRadius: 8 }}>#{item.id}</span>
+                <span style={{ fontSize: 11, background: '#e3f2fd', color: '#1976d2', padding: '1px 6px', borderRadius: 8 }}>
+                  #{item.id}
+                </span>
               </div>
               <p style={{ fontSize: 12, color: '#888', margin: 0 }}>{item.description}</p>
             </div>
@@ -87,7 +91,16 @@ export default function InfiniteScroll() {
 
         {loading && (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
-            <div style={{ width: 28, height: 28, border: '3px solid #e0e0e0', borderTop: '3px solid #1976d2', borderRadius: '50%', animation: 'mc-spin 0.8s linear infinite' }} />
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                border: '3px solid #e0e0e0',
+                borderTop: '3px solid #1976d2',
+                borderRadius: '50%',
+                animation: 'mc-spin 0.8s linear infinite'
+              }}
+            />
           </div>
         )}
 

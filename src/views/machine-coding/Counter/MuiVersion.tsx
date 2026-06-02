@@ -38,38 +38,17 @@ export default function Counter() {
         {count}
       </Typography>
 
-      <Chip
-        label={label}
-        color={chipColor as 'success' | 'error' | 'default'}
-        size="small"
-        sx={{ mt: -1.5 }}
-      />
+      <Chip label={label} color={chipColor as 'success' | 'error' | 'default'} size="small" sx={{ mt: -1.5 }} />
 
       {/* Controls */}
       <Box sx={{ display: 'flex', gap: 1.5, mt: 1 }}>
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<RemoveIcon />}
-          onClick={() => setCount((c) => c - 1)}
-          sx={{ minWidth: 130 }}
-        >
+        <Button variant="contained" color="error" startIcon={<RemoveIcon />} onClick={() => setCount((c) => c - 1)} sx={{ minWidth: 130 }}>
           Decrement
         </Button>
-        <Button
-          variant="outlined"
-          startIcon={<RefreshIcon />}
-          onClick={() => setCount(0)}
-        >
+        <Button variant="outlined" startIcon={<RefreshIcon />} onClick={() => setCount(0)}>
           Reset
         </Button>
-        <Button
-          variant="contained"
-          color="success"
-          endIcon={<AddIcon />}
-          onClick={() => setCount((c) => c + 1)}
-          sx={{ minWidth: 130 }}
-        >
+        <Button variant="contained" color="success" endIcon={<AddIcon />} onClick={() => setCount((c) => c + 1)} sx={{ minWidth: 130 }}>
           Increment
         </Button>
       </Box>

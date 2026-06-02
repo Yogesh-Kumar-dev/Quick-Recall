@@ -23,15 +23,15 @@ clone.address.city = 'Mumbai';
 clone.hobbies.push('hiking');
 
 console.log(original.address.city); // 'Delhi'   — unchanged ✓
-console.log(original.hobbies);      // ['coding', 'reading'] ✓
+console.log(original.hobbies); // ['coding', 'reading'] ✓
 
 // ── Limitations (always mention these!) ───────────────────────────────────────
 const broken = {
-  fn: () => 'hello',      // functions are dropped
-  date: new Date(),       // Date becomes a string
-  undef: undefined,       // undefined is dropped
-  regex: /abc/g,          // RegExp becomes {}
-  circular: null          // circular reference → JSON.stringify throws!
+  fn: () => 'hello', // functions are dropped
+  date: new Date(), // Date becomes a string
+  undef: undefined, // undefined is dropped
+  regex: /abc/g, // RegExp becomes {}
+  circular: null // circular reference → JSON.stringify throws!
 };
 broken.circular = broken; // circular reference
 

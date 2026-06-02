@@ -61,17 +61,41 @@ export default function APIDataFetching() {
         >
           {loading ? (
             <>
-              <span style={{ display: 'inline-block', width: 12, height: 12, border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: 12,
+                  height: 12,
+                  border: '2px solid rgba(255,255,255,0.4)',
+                  borderTopColor: '#fff',
+                  borderRadius: '50%',
+                  animation: 'spin 0.7s linear infinite'
+                }}
+              />
               Loading…
             </>
-          ) : fetched ? '↻ Refresh' : '⬇ Fetch Posts'}
+          ) : fetched ? (
+            '↻ Refresh'
+          ) : (
+            '⬇ Fetch Posts'
+          )}
         </button>
       </div>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
       {error && (
-        <div style={{ padding: '10px 14px', borderRadius: 8, background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', fontSize: 13, marginBottom: 12 }}>
+        <div
+          style={{
+            padding: '10px 14px',
+            borderRadius: 8,
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            color: '#dc2626',
+            fontSize: 13,
+            marginBottom: 12
+          }}
+        >
           ⚠️ {error}
         </div>
       )}
@@ -79,7 +103,16 @@ export default function APIDataFetching() {
       {loading && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[...Array(5)].map((_, i) => (
-            <div key={i} style={{ height: 68, borderRadius: 8, background: `linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%)`, backgroundSize: '200% 100%', animation: 'shimmer 1.2s infinite' }} />
+            <div
+              key={i}
+              style={{
+                height: 68,
+                borderRadius: 8,
+                background: `linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%)`,
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 1.2s infinite'
+              }}
+            />
           ))}
           <style>{`@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }`}</style>
         </div>
@@ -90,8 +123,14 @@ export default function APIDataFetching() {
           {posts.map((post) => (
             <li key={post.id} style={{ padding: '12px 14px', borderRadius: 8, border: '1px solid #e5e7eb', background: '#fafafa' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 999, padding: '1px 8px', fontSize: 11, fontWeight: 700 }}>#{post.id}</span>
-                <span style={{ background: '#f0fdf4', color: '#15803d', borderRadius: 999, padding: '1px 8px', fontSize: 11 }}>user {post.userId}</span>
+                <span
+                  style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 999, padding: '1px 8px', fontSize: 11, fontWeight: 700 }}
+                >
+                  #{post.id}
+                </span>
+                <span style={{ background: '#f0fdf4', color: '#15803d', borderRadius: 999, padding: '1px 8px', fontSize: 11 }}>
+                  user {post.userId}
+                </span>
               </div>
               <p style={{ margin: '0 0 3px', fontWeight: 600, fontSize: 13, textTransform: 'capitalize' }}>{post.title}</p>
               <p style={{ margin: 0, fontSize: 12, color: '#6b7280', lineHeight: 1.5 }}>{post.body.substring(0, 90)}…</p>

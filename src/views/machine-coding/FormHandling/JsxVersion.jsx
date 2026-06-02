@@ -51,15 +51,42 @@ export default function FormHandling() {
       <div style={{ padding: 24, textAlign: 'center' }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>✅</div>
         <h3 style={{ margin: '0 0 12px', fontSize: 18 }}>Form Submitted!</h3>
-        <div style={{ background: '#f9fafb', borderRadius: 8, padding: '12px 20px', display: 'inline-block', textAlign: 'left', marginBottom: 16 }}>
-          <p style={{ margin: '4px 0', fontSize: 14 }}><strong>Name:</strong> {form.name}</p>
-          <p style={{ margin: '4px 0', fontSize: 14 }}><strong>Email:</strong> {form.email}</p>
-          <p style={{ margin: '4px 0', fontSize: 14 }}><strong>Message:</strong> {form.message}</p>
+        <div
+          style={{
+            background: '#f9fafb',
+            borderRadius: 8,
+            padding: '12px 20px',
+            display: 'inline-block',
+            textAlign: 'left',
+            marginBottom: 16
+          }}
+        >
+          <p style={{ margin: '4px 0', fontSize: 14 }}>
+            <strong>Name:</strong> {form.name}
+          </p>
+          <p style={{ margin: '4px 0', fontSize: 14 }}>
+            <strong>Email:</strong> {form.email}
+          </p>
+          <p style={{ margin: '4px 0', fontSize: 14 }}>
+            <strong>Message:</strong> {form.message}
+          </p>
         </div>
         <br />
         <button
-          onClick={() => { setForm(INITIAL); setErrors({}); setSubmitted(false); }}
-          style={{ padding: '10px 24px', borderRadius: 8, background: '#2563eb', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+          onClick={() => {
+            setForm(INITIAL);
+            setErrors({});
+            setSubmitted(false);
+          }}
+          style={{
+            padding: '10px 24px',
+            borderRadius: 8,
+            background: '#2563eb',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            fontWeight: 600
+          }}
         >
           Submit Another
         </button>
@@ -92,7 +119,14 @@ export default function FormHandling() {
 
       <div style={fieldWrap}>
         <label style={labelStyle}>Email</label>
-        <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="john@example.com" style={inputStyle(!!errors.email)} />
+        <input
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="john@example.com"
+          style={inputStyle(!!errors.email)}
+        />
         {errors.email && <span style={errorStyle}>{errors.email}</span>}
       </div>
 
@@ -111,7 +145,17 @@ export default function FormHandling() {
 
       <button
         type="submit"
-        style={{ padding: '12px', borderRadius: 8, background: '#2563eb', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 15, marginTop: 4 }}
+        style={{
+          padding: '12px',
+          borderRadius: 8,
+          background: '#2563eb',
+          color: '#fff',
+          border: 'none',
+          cursor: 'pointer',
+          fontWeight: 700,
+          fontSize: 15,
+          marginTop: 4
+        }}
       >
         Submit
       </button>

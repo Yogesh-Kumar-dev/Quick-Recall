@@ -48,7 +48,11 @@ export default function Accordion() {
     if (isMultiOpen) {
       setOpenItems((prev) => {
         const next = new Set(prev);
-        if (next.has(index)) { next.delete(index); } else { next.add(index); }
+        if (next.has(index)) {
+          next.delete(index);
+        } else {
+          next.add(index);
+        }
         return next;
       });
     } else {
@@ -96,7 +100,10 @@ export default function Accordion() {
             }}
           >
             <summary
-              onClick={(e) => { e.preventDefault(); toggle(item.id); }}
+              onClick={(e) => {
+                e.preventDefault();
+                toggle(item.id);
+              }}
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',

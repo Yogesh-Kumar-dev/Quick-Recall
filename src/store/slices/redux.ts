@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { Note } from 'types/content';
+import type { Note, Flashcard } from 'types/content';
 import { reduxNotes } from 'data/redux/redux-notes';
 import { reduxToolkitNotes } from 'data/redux/redux-toolkit-notes';
 import { rtkQueryNotes } from 'data/redux/rtk-query-notes';
 import { asyncThunkNotes } from 'data/redux/async-thunk-notes';
+import { reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from 'data/redux/redux-flashcards';
 
 // ==============================|| SLICE - REDUX ||============================== //
 
@@ -13,13 +14,21 @@ interface ReduxState {
   reduxToolkitNotes: Note[];
   rtkQueryNotes: Note[];
   asyncThunkNotes: Note[];
+  reduxFlashcards: Flashcard[];
+  reduxToolkitFlashcards: Flashcard[];
+  rtkQueryFlashcards: Flashcard[];
+  asyncThunkFlashcards: Flashcard[];
 }
 
 const initialState: ReduxState = {
   reduxNotes: reduxNotes,
   reduxToolkitNotes: reduxToolkitNotes,
   rtkQueryNotes: rtkQueryNotes,
-  asyncThunkNotes: asyncThunkNotes
+  asyncThunkNotes: asyncThunkNotes,
+  reduxFlashcards,
+  reduxToolkitFlashcards,
+  rtkQueryFlashcards,
+  asyncThunkFlashcards
 };
 
 const reduxSlice = createSlice({
@@ -38,3 +47,7 @@ export const selectReduxNotes = (state: State) => state.redux.reduxNotes;
 export const selectReduxToolkitNotes = (state: State) => state.redux.reduxToolkitNotes;
 export const selectRtkQueryNotes = (state: State) => state.redux.rtkQueryNotes;
 export const selectAsyncThunkNotes = (state: State) => state.redux.asyncThunkNotes;
+export const selectReduxFlashcards = (state: State) => state.redux.reduxFlashcards;
+export const selectReduxToolkitFlashcards = (state: State) => state.redux.reduxToolkitFlashcards;
+export const selectRtkQueryFlashcards = (state: State) => state.redux.rtkQueryFlashcards;
+export const selectAsyncThunkFlashcards = (state: State) => state.redux.asyncThunkFlashcards;

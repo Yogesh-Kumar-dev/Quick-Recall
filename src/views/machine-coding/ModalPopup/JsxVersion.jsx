@@ -179,8 +179,19 @@ export default function ModalPopup() {
             Cancel
           </button>
           <button
-            onClick={() => { setConfirmed(true); setConfirmOpen(false); }}
-            style={{ padding: '8px 20px', borderRadius: 8, background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+            onClick={() => {
+              setConfirmed(true);
+              setConfirmOpen(false);
+            }}
+            style={{
+              padding: '8px 20px',
+              borderRadius: 8,
+              background: '#dc2626',
+              color: '#fff',
+              border: 'none',
+              cursor: 'pointer',
+              fontWeight: 600
+            }}
           >
             Delete
           </button>

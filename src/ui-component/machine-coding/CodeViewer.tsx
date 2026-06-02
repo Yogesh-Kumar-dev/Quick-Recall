@@ -17,9 +17,9 @@ interface CodeViewerProps {
 // Derive Monaco language from filename extension
 function getLanguage(filename: string): string {
   if (filename.endsWith('.tsx')) return 'typescript';
-  if (filename.endsWith('.ts'))  return 'typescript';
+  if (filename.endsWith('.ts')) return 'typescript';
   if (filename.endsWith('.jsx')) return 'javascript';
-  if (filename.endsWith('.js'))  return 'javascript';
+  if (filename.endsWith('.js')) return 'javascript';
   return 'typescript';
 }
 
@@ -48,8 +48,17 @@ export default function CodeViewer({ code, filename = 'source.tsx' }: CodeViewer
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', borderRadius: 2, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
-
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        borderRadius: 2,
+        overflow: 'hidden',
+        border: '1px solid',
+        borderColor: 'divider'
+      }}
+    >
       {/* ── Header bar ── */}
       <Box
         sx={{
@@ -95,7 +104,6 @@ export default function CodeViewer({ code, filename = 'source.tsx' }: CodeViewer
           }}
         />
       </Box>
-
     </Box>
   );
 }

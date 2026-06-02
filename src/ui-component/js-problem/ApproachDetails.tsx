@@ -18,7 +18,15 @@ export default function ApproachDetails({ approach }: ApproachDetailsProps) {
       </Typography>
 
       {/* Complexity */}
-      <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase" letterSpacing={0.5} display="block" mb={1}>
+      <Typography
+        variant="caption"
+        fontWeight={700}
+        color="text.secondary"
+        textTransform="uppercase"
+        letterSpacing={0.5}
+        display="block"
+        mb={1}
+      >
         Complexity
       </Typography>
       <Stack direction="row" spacing={1} mb={2.5}>
@@ -43,7 +51,15 @@ export default function ApproachDetails({ approach }: ApproachDetailsProps) {
       {/* Pros */}
       {approach.pros && approach.pros.length > 0 && (
         <>
-          <Typography variant="caption" fontWeight={700} color="success.main" textTransform="uppercase" letterSpacing={0.5} display="block" mb={0.5}>
+          <Typography
+            variant="caption"
+            fontWeight={700}
+            color="success.main"
+            textTransform="uppercase"
+            letterSpacing={0.5}
+            display="block"
+            mb={0.5}
+          >
             ✅ Pros
           </Typography>
           <Box component="ul" sx={{ mt: 0, mb: 2, pl: 2.5 }}>
@@ -61,7 +77,15 @@ export default function ApproachDetails({ approach }: ApproachDetailsProps) {
       {/* Cons */}
       {approach.cons && approach.cons.length > 0 && (
         <>
-          <Typography variant="caption" fontWeight={700} color="error.main" textTransform="uppercase" letterSpacing={0.5} display="block" mb={0.5}>
+          <Typography
+            variant="caption"
+            fontWeight={700}
+            color="error.main"
+            textTransform="uppercase"
+            letterSpacing={0.5}
+            display="block"
+            mb={0.5}
+          >
             ❌ Cons
           </Typography>
           <Box component="ul" sx={{ mt: 0, pl: 2.5 }}>

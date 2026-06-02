@@ -18,7 +18,14 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript', 'prettier'),
   {
-    ignores: ['**/node_modules/*', '**/.next/*']
+    // Raw solution/version files are read via readFileSync for code display, not compiled —
+    // they are not in tsconfig's include, so exclude them from typed linting.
+    ignores: [
+      '**/node_modules/*',
+      '**/.next/*',
+      'src/views/js-machine-coding/**/solution-*.js',
+      'src/views/machine-coding/**/*.jsx'
+    ]
   },
   {
     plugins: {

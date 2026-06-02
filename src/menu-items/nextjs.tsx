@@ -1,4 +1,4 @@
-import { IconBrandNextjs, IconBook, IconServer } from '@tabler/icons-react';
+import { IconBrandNextjs, IconServer } from '@tabler/icons-react';
 import { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS - NEXT.JS ||============================== //
@@ -15,7 +15,7 @@ const nextjs: NavItemType = {
       title: 'Next.js Notes',
       type: 'item',
       url: '/nextjs/notes',
-      icon: IconBook
+      icon: IconBrandNextjs
     },
     {
       id: 'nextjs-rendering',

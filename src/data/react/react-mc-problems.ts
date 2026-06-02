@@ -127,6 +127,14 @@ export const reactMcProblems: ReactMcProblem[] = [
     category: 'performance',
     tags: ['useEffect', 'setTimeout', 'queue', 'animation']
   },
+  {
+    id: 'movie-seat-selection',
+    title: 'Movie Seat Selection',
+    slug: 'movie-seat-selection',
+    difficulty: 'medium',
+    category: 'advanced-ui',
+    tags: ['useState', 'grid', 'derived-state', 'booking']
+  },
 
   // ── 🔴 Hard ───────────────────────────────────────────────────────────────────
   {
@@ -160,5 +168,13 @@ export const reactMcProblems: ReactMcProblem[] = [
     difficulty: 'hard',
     category: 'advanced-ui',
     tags: ['useReducer', 'context', 'cart-state', 'total-calculation']
+  },
+  {
+    id: 'virtualized-list',
+    title: 'Virtualized List',
+    slug: 'virtualized-list',
+    difficulty: 'hard',
+    category: 'performance',
+    tags: ['IntersectionObserver', 'react-window', 'virtualization', 'useRef']
   }
 ];

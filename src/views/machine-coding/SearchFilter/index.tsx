@@ -31,7 +31,7 @@ const PROBLEM: ProblemMeta = {
     'Controlled input'
   ],
   interviewTip:
-    "Never put the filtered array in state — derive it inline: const filtered = items.filter(i => i.toLowerCase().includes(query.toLowerCase())). State holds only the query string. The filtered list recalculates on every render, which is fine for small arrays. For large datasets, useMemo would help."
+    'Never put the filtered array in state — derive it inline: const filtered = items.filter(i => i.toLowerCase().includes(query.toLowerCase())). State holds only the query string. The filtered list recalculates on every render, which is fine for small arrays. For large datasets, useMemo would help.'
 };
 
 export default function SearchFilterApp() {

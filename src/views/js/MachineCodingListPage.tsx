@@ -6,6 +6,8 @@ import { IconCode } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
 import ProblemCard from 'ui-component/interview-prep/ProblemCard';
+import FilterShell from 'ui-component/topic-dashboard/FilterShell';
+import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
 import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } from 'ui-component/topic-dashboard/SectionLanding';
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
@@ -46,15 +48,45 @@ const DIFFICULTY_META: DifficultyOption[] = [
 export default function MachineCodingListPage() {
   const jsProblems = useSelector(selectJsProblems);
 
-  const { isLanding, difficulty, category, enterWithDifficulty, enterWithCategory, exitToLanding, handleDifficultyChange, handleCategoryChange } =
-    useSectionFilter();
+  const {
+    isLanding,
+    difficulty,
+    category,
+    enterWithDifficulty,
+    enterWithCategory,
+    exitToLanding,
+    handleDifficultyChange,
+    handleCategoryChange,
+    applyFilters
+  } = useSectionFilter();
 
   // ── Derived landing cards (depend on data) ────────────────────────────────
   const DIFFICULTY_LANDING = useMemo<LandingDifficultyCard[]>(
     () => [
-      { label: 'Easy', value: 'easy', count: jsProblems.filter((p) => p.difficulty === 'easy').length, emoji: '🟢', color: 'success', blurb: 'Array flattening, type checks, basic object utilities' },
-      { label: 'Medium', value: 'medium', count: jsProblems.filter((p) => p.difficulty === 'medium').length, emoji: '🟡', color: 'warning', blurb: 'Debounce, throttle, curry, memoize, deep clone' },
-      { label: 'Hard', value: 'hard', count: jsProblems.filter((p) => p.difficulty === 'hard').length, emoji: '🔴', color: 'error', blurb: 'Promise.all polyfill, event emitter, virtual DOM diff' }
+      {
+        label: 'Easy',
+        value: 'easy',
+        count: jsProblems.filter((p) => p.difficulty === 'easy').length,
+        emoji: '🟢',
+        color: 'success',
+        blurb: 'Array flattening, type checks, basic object utilities'
+      },
+      {
+        label: 'Medium',
+        value: 'medium',
+        count: jsProblems.filter((p) => p.difficulty === 'medium').length,
+        emoji: '🟡',
+        color: 'warning',
+        blurb: 'Debounce, throttle, curry, memoize, deep clone'
+      },
+      {
+        label: 'Hard',
+        value: 'hard',
+        count: jsProblems.filter((p) => p.difficulty === 'hard').length,
+        emoji: '🔴',
+        color: 'error',
+        blurb: 'Promise.all polyfill, event emitter, virtual DOM diff'
+      }
     ],
     [jsProblems]
   );
@@ -130,40 +162,50 @@ export default function MachineCodingListPage() {
         </Typography>
       }
     >
-      <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
-        {/* ── Left: content ── */}
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          {filtered.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 6 }}>
-              <Typography color="text.secondary">No problems match the selected filters.</Typography>
-            </Box>
-          ) : (
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
-              {filtered.map((problem) => (
-                <ProblemCard
-                  key={problem.id}
-                  problem={problem}
-                  categoryLabel={CATEGORY_LABELS[problem.category as ProblemCategory]}
-                  categoryEmoji={CATEGORY_EMOJI[problem.category as ProblemCategory]}
-                />
-              ))}
-            </Box>
-          )}
-        </Box>
-
-        {/* ── Right: sticky filter panel ── */}
-        <Box sx={{ width: 240, flexShrink: 0, position: 'sticky', top: 88 }}>
-          <TopicFilterCards
+      <FilterShell
+        activeFilterCount={(difficulty !== 'all' ? 1 : 0) + (category !== 'all' ? 1 : 0)}
+        renderDrawer={(open, onClose) => (
+          <MobileFilterDrawer
+            open={open}
+            onClose={onClose}
             difficulties={difficulties}
             activeDifficulty={difficulty}
-            onDifficultyChange={handleDifficultyChange}
             categories={categories}
             activeCategory={category}
-            onCategoryChange={handleCategoryChange}
-            vertical
+            onApply={applyFilters}
           />
-        </Box>
-      </Box>
+        )}
+        sidebar={
+          <Box sx={{ width: 240, flexShrink: 0, position: 'sticky', top: 88 }}>
+            <TopicFilterCards
+              difficulties={difficulties}
+              activeDifficulty={difficulty}
+              onDifficultyChange={handleDifficultyChange}
+              categories={categories}
+              activeCategory={category}
+              onCategoryChange={handleCategoryChange}
+              vertical
+            />
+          </Box>
+        }
+      >
+        {filtered.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 6 }}>
+            <Typography color="text.secondary">No problems match the selected filters.</Typography>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 1.5 }}>
+            {filtered.map((problem) => (
+              <ProblemCard
+                key={problem.id}
+                problem={problem}
+                categoryLabel={CATEGORY_LABELS[problem.category as ProblemCategory]}
+                categoryEmoji={CATEGORY_EMOJI[problem.category as ProblemCategory]}
+              />
+            ))}
+          </Box>
+        )}
+      </FilterShell>
     </MainCard>
   );
 }

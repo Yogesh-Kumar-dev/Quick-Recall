@@ -9,13 +9,20 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { IconAlertTriangle, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import CodeBlock from 'ui-component/interview-prep/CodeBlock';
 import type { Note } from 'types/content';
 
 const DIFFICULTY_COLOR: Record<Note['difficulty'], 'success' | 'warning' | 'error'> = {
   basic: 'success',
   intermediate: 'warning',
   advanced: 'error'
+};
+
+const DIFFICULTY_BORDER: Record<Note['difficulty'], string> = {
+  basic: 'success.main',
+  intermediate: 'warning.main',
+  advanced: 'error.main'
 };
 
 interface NoteCardProps {
@@ -45,6 +52,8 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
       variant="outlined"
       sx={{
         borderRadius: 2,
+        borderLeft: '3px solid',
+        borderLeftColor: DIFFICULTY_BORDER[note.difficulty],
         transition: 'box-shadow 0.2s',
         '&:hover': { boxShadow: 2 }
       }}
@@ -70,7 +79,12 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
               {note.summary}
             </Typography>
           </Box>
-          <IconButton size="small" onClick={handleToggle} sx={{ flexShrink: 0, mt: 0.25 }}>
+          <IconButton
+            size="small"
+            onClick={handleToggle}
+            aria-label={expanded ? 'Collapse note' : 'Expand note'}
+            sx={{ flexShrink: 0, mt: 0.25 }}
+          >
             {expanded ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
           </IconButton>
         </Box>
@@ -84,10 +98,7 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
           <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase" letterSpacing={0.5}>
             Key Points
           </Typography>
-          <Box
-            component="ul"
-            sx={{ mt: 0.5, mb: note.gotcha || note.codeSnippet || note.textbookDef || note.eli5 ? 2 : 0, pl: 2.5 }}
-          >
+          <Box component="ul" sx={{ mt: 0.5, mb: note.gotcha || note.codeSnippet || note.textbookDef || note.eli5 ? 2 : 0, pl: 2.5 }}>
             {note.keyPoints.map((point, i) => (
               <Box component="li" key={i} sx={{ mb: 0.25 }}>
                 <Typography variant="body2" color="text.secondary">
@@ -99,11 +110,11 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
 
           {/* Textbook Definition — intermediate & advanced only */}
           {note.textbookDef && note.difficulty !== 'basic' && (
-            <Box sx={{ p: 1.5, mb: 2, bgcolor: '#e8eaf6', borderRadius: 1, border: '1px solid #9fa8da' }}>
+            <Box sx={{ p: 1.5, mb: 2, bgcolor: 'secondary.light', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
               <Typography
                 variant="caption"
                 fontWeight={700}
-                color="#3949ab"
+                color="secondary.dark"
                 textTransform="uppercase"
                 letterSpacing={0.5}
                 display="block"
@@ -111,7 +122,7 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
               >
                 Textbook Definition
               </Typography>
-              <Typography variant="body2" sx={{ lineHeight: 1.7, color: '#1a237e' }}>
+              <Typography variant="body2" sx={{ lineHeight: 1.7, color: 'secondary.dark' }}>
                 {note.textbookDef}
               </Typography>
             </Box>
@@ -119,11 +130,11 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
 
           {/* ELI5 — intermediate & advanced only */}
           {note.eli5 && note.difficulty !== 'basic' && (
-            <Box sx={{ p: 1.5, mb: 2, bgcolor: '#e8f5e9', borderRadius: 1, border: '1px solid #a5d6a7' }}>
+            <Box sx={{ p: 1.5, mb: 2, bgcolor: 'success.light', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
               <Typography
                 variant="caption"
                 fontWeight={700}
-                color="#2e7d32"
+                color="success.dark"
                 textTransform="uppercase"
                 letterSpacing={0.5}
                 display="block"
@@ -131,38 +142,26 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
               >
                 Explain Like I&apos;m 5
               </Typography>
-              <Typography variant="body2" sx={{ lineHeight: 1.8, color: '#1b5e20', whiteSpace: 'pre-line' }}>
+              <Typography variant="body2" sx={{ lineHeight: 1.8, color: 'success.dark', whiteSpace: 'pre-line' }}>
                 {note.eli5}
               </Typography>
             </Box>
           )}
 
-          {/* Code snippet */}
-          {note.codeSnippet && (
-            <Box
-              component="pre"
-              sx={{
-                mb: 2,
-                p: 1.5,
-                borderRadius: 1,
-                bgcolor: '#1e1e1e',
-                color: '#d4d4d4',
-                fontSize: 12,
-                fontFamily: 'monospace',
-                overflowX: 'auto',
-                lineHeight: 1.6,
-                whiteSpace: 'pre-wrap'
-              }}
-            >
-              {note.codeSnippet}
-            </Box>
-          )}
+          {/* Code snippet — Prism-highlighted, fixed dark surface (readable in both light & dark mode) */}
+          {note.codeSnippet && <CodeBlock code={note.codeSnippet} />}
 
           {/* Gotcha / common mistake */}
           {note.gotcha && (
-            <Box sx={{ p: 1.5, bgcolor: '#fff3e0', borderRadius: 1, border: '1px solid #ffcc80' }}>
-              <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                ⚠️ <strong>Gotcha:</strong> {note.gotcha}
+            <Box sx={{ p: 1.5, bgcolor: 'warning.light', borderRadius: 1, border: '1px solid', borderColor: 'warning.main' }}>
+              <Typography
+                variant="body2"
+                sx={{ lineHeight: 1.6, color: 'warning.dark', display: 'flex', alignItems: 'flex-start', gap: 0.75 }}
+              >
+                <IconAlertTriangle size={16} style={{ flexShrink: 0, marginTop: 2 }} />
+                <span>
+                  <strong>Gotcha:</strong> {note.gotcha}
+                </span>
               </Typography>
             </Box>
           )}

@@ -81,7 +81,7 @@ export default usersSlice.reducer;`
       'Nested mutations work: state.user.address.city = "NYC" — no deep spreading needed.'
     ],
     gotcha:
-      "Accidentally returning a mutated draft AND a new value is a runtime error. The most common mistake: return state.items.push(item) — Array.push returns a number, not the array. Either mutate in place ({ state.items.push(x) }) OR return a new array (return [...state.items, x]).",
+      'Accidentally returning a mutated draft AND a new value is a runtime error. The most common mistake: return state.items.push(item) — Array.push returns a number, not the array. Either mutate in place ({ state.items.push(x) }) OR return a new array (return [...state.items, x]).',
     codeSnippet: `// ❌ Wrong: push returns a number, not the array
 addItem: (state, action) => return state.items.push(action.payload)
 
@@ -98,7 +98,7 @@ addItem: (state, action) => ({
   {
     id: 'extra-reducers',
     title: 'extraReducers',
-    summary: "Lets a slice respond to actions defined elsewhere — used for async thunk lifecycle actions and cross-slice reactions.",
+    summary: 'Lets a slice respond to actions defined elsewhere — used for async thunk lifecycle actions and cross-slice reactions.',
     difficulty: 'intermediate',
     category: 'slices',
     textbookDef:
@@ -108,7 +108,7 @@ addItem: (state, action) => ({
       'builder.addMatcher(matchFn, reducer) — matches many actions by predicate (e.g., all "fulfilled" thunks).',
       'builder.addDefaultCase(reducer) — catch-all for unmatched actions.',
       'All three createAsyncThunk lifecycle actions (pending / fulfilled / rejected) are handled here.',
-      "If reducers and extraReducers define the same action type, the reducers field wins."
+      'If reducers and extraReducers define the same action type, the reducers field wins.'
     ],
     codeSnippet: `const usersSlice = createSlice({
   name: 'users',
@@ -133,7 +133,7 @@ addItem: (state, action) => ({
   {
     id: 'entity-adapter',
     title: 'createEntityAdapter',
-    summary: "Generates a normalized { ids, entities } state shape plus CRUD reducers and pre-built selectors for collections.",
+    summary: 'Generates a normalized { ids, entities } state shape plus CRUD reducers and pre-built selectors for collections.',
     difficulty: 'advanced',
     category: 'utilities',
     textbookDef:

@@ -48,6 +48,9 @@ export interface SectionFilterState {
   /** Change category while staying in list view */
   handleCategoryChange: (val: string) => void;
 
+  /** Commit difficulty + category + search in a single pass (mobile filter drawer Apply) */
+  applyFilters: (next: { difficulty?: string; category?: string; search?: string | null }) => void;
+
   /** Toggle the gotcha-only filter while in list view */
   handleGotchaToggle: () => void;
 
@@ -110,6 +113,13 @@ export function useSectionFilter(): SectionFilterState {
 
     handleCategoryChange(val) {
       void setCategory(val === 'all' ? null : val);
+      void setOpenId(null);
+    },
+
+    applyFilters({ difficulty: nextDifficulty, category: nextCategory, search: nextSearch }) {
+      if (nextDifficulty !== undefined) void setDifficulty(nextDifficulty);
+      if (nextCategory !== undefined) void setCategory(nextCategory === 'all' ? null : nextCategory);
+      if (nextSearch !== undefined) void setSearch(nextSearch || null);
       void setOpenId(null);
     },
 

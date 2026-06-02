@@ -31,7 +31,7 @@ const PROBLEM: ProblemMeta = {
     'Conditional styling'
   ],
   interviewTip:
-    "Always use functional updates when the new state depends on the previous state: setCount(c => c + 1) instead of setCount(count + 1). This avoids stale-closure bugs in async contexts. The label and color are derived values — never put them in state, compute them inline from count."
+    'Always use functional updates when the new state depends on the previous state: setCount(c => c + 1) instead of setCount(count + 1). This avoids stale-closure bugs in async contexts. The label and color are derived values — never put them in state, compute them inline from count.'
 };
 
 export default function CounterApp() {

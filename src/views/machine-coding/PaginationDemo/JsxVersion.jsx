@@ -80,7 +80,15 @@ export default function Pagination() {
               <td style={{ padding: '8px 12px' }}>{user.name}</td>
               <td style={{ padding: '8px 12px' }}>{user.role}</td>
               <td style={{ padding: '8px 12px' }}>
-                <span style={{ padding: '2px 8px', borderRadius: 10, fontSize: 12, border: `1px solid ${user.status === 'Active' ? '#4caf50' : '#bbb'}`, color: user.status === 'Active' ? '#2e7d32' : '#757575' }}>
+                <span
+                  style={{
+                    padding: '2px 8px',
+                    borderRadius: 10,
+                    fontSize: 12,
+                    border: `1px solid ${user.status === 'Active' ? '#4caf50' : '#bbb'}`,
+                    color: user.status === 'Active' ? '#2e7d32' : '#757575'
+                  }}
+                >
                   {user.status}
                 </span>
               </td>
@@ -90,19 +98,32 @@ export default function Pagination() {
       </table>
 
       <div style={{ display: 'flex', gap: 4, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <button style={{ ...btnBase, opacity: currentPage === 1 ? 0.4 : 1 }} disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>
+        <button
+          style={{ ...btnBase, opacity: currentPage === 1 ? 0.4 : 1 }}
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((p) => p - 1)}
+        >
           ← Prev
         </button>
         {getPageNumbers().map((page) => (
           <button
             key={page}
-            style={{ ...btnBase, background: page === currentPage ? '#1976d2' : 'transparent', color: page === currentPage ? '#fff' : 'inherit', borderColor: page === currentPage ? '#1976d2' : '#ccc' }}
+            style={{
+              ...btnBase,
+              background: page === currentPage ? '#1976d2' : 'transparent',
+              color: page === currentPage ? '#fff' : 'inherit',
+              borderColor: page === currentPage ? '#1976d2' : '#ccc'
+            }}
             onClick={() => setCurrentPage(page)}
           >
             {page}
           </button>
         ))}
-        <button style={{ ...btnBase, opacity: currentPage === totalPages ? 0.4 : 1 }} disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>
+        <button
+          style={{ ...btnBase, opacity: currentPage === totalPages ? 0.4 : 1 }}
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((p) => p + 1)}
+        >
           Next →
         </button>
       </div>

@@ -63,8 +63,8 @@ const b = { name: 'Bob', friend: a };
 a.friend = b; // circular: a → b → a
 
 const clonedA = deepClone(a);
-console.log(clonedA.name);             // 'Alice'
-console.log(clonedA.friend.name);      // 'Bob'
+console.log(clonedA.name); // 'Alice'
+console.log(clonedA.friend.name); // 'Bob'
 console.log(clonedA.friend.friend === clonedA); // true — circular ref preserved ✓
 
 // ── Complexity ────────────────────────────────────────────────────────────────

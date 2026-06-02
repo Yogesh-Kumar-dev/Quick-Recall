@@ -18,7 +18,7 @@ import HorizontalBar from './HorizontalBar';
 import MainContentStyled from './MainContentStyled';
 import Loader from 'ui-component/Loader';
 import Breadcrumbs from 'ui-component/extended/Breadcrumbs';
-import Customization from 'layout/Customization';
+// import Customization from 'layout/Customization';
 
 import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
@@ -81,7 +81,7 @@ export default function MainLayout({ children }: Props) {
       {/* menu / drawer */}
       {menu}
 
-      <Customization />
+      {/* <Customization /> */}
     </Box>
   );
 }

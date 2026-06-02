@@ -14,7 +14,7 @@ const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 const PROBLEM: JsProblemMeta = {
   title: '🟡 Deep Clone an Object',
   description:
-    'Write a function deepClone(obj) that returns a completely independent deep copy of an object — modifying the clone must not affect the original. This tests your understanding of reference types, recursion, and knowledge of JavaScript\'s special object types (Date, RegExp, Map, Set, circular references).',
+    "Write a function deepClone(obj) that returns a completely independent deep copy of an object — modifying the clone must not affect the original. This tests your understanding of reference types, recursion, and knowledge of JavaScript's special object types (Date, RegExp, Map, Set, circular references).",
   examples: [
     {
       input: '{ a: 1, b: { c: 2 } }',
@@ -83,7 +83,11 @@ const APPROACHES: ApproachData[] = [
     timeComplexity: 'O(n)',
     spaceComplexity: 'O(n)',
     pros: ['Native, well-optimised', 'Handles circular references', 'Handles most built-in types'],
-    cons: ['Does not clone functions', 'Not available in very old environments', 'Object spread and Object.assign are SHALLOW (common interview trap)'],
+    cons: [
+      'Does not clone functions',
+      'Not available in very old environments',
+      'Object spread and Object.assign are SHALLOW (common interview trap)'
+    ],
     code: builtinCode,
     filename: 'solution-builtin.js'
   }

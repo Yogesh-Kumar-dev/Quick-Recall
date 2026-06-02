@@ -11,22 +11,51 @@ import { IconBrandJavascript, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
 import NoteCard from 'ui-component/interview-prep/NoteCard';
+import FilterShell from 'ui-component/topic-dashboard/FilterShell';
+import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
 import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } from 'ui-component/topic-dashboard/SectionLanding';
 import TopicFilterCards, { type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectJsNotes } from 'store/slices/javascript';
+import { selectJsNotes, selectJsFlashcards } from 'store/slices/javascript';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
 
 const TOPIC_META: { value: string; label: string; emoji: string; blurb: string }[] = [
+  {
+    value: 'core-concepts',
+    label: 'Core Concepts',
+    emoji: '🧠',
+    blurb: 'hoisting, scope, closures, ==/===, data types, coercion, strict mode'
+  },
+  {
+    value: 'functions-this',
+    label: 'Functions & this',
+    emoji: '🎯',
+    blurb: 'this binding, call/apply/bind, higher-order functions, currying, partial application'
+  },
+  {
+    value: 'oop-prototypes',
+    label: 'OOP & Prototypes',
+    emoji: '🧬',
+    blurb: 'prototypal inheritance, prototype chain, new, classes vs constructors, static members'
+  },
   { value: 'string-methods', label: 'String Methods', emoji: '🔤', blurb: 'slice, split, includes, trim, replace, padStart and more' },
   { value: 'array-methods', label: 'Array Methods', emoji: '📦', blurb: 'map, filter, reduce, sort, splice, flat and more' },
+  { value: 'collections', label: 'Collections', emoji: '🗂️', blurb: 'Map, Set, WeakMap, WeakSet, Map vs object, equality checks' },
   { value: 'dom', label: 'DOM Manipulation', emoji: '🌐', blurb: 'querySelector, addEventListener, classList, createElement' },
   { value: 'error-handling', label: 'Error Handling', emoji: '⚠️', blurb: 'try/catch, error types, custom errors, async errors' },
   { value: 'async-js', label: 'Async JS', emoji: '⏳', blurb: 'setTimeout, callbacks, event loop, promises, async/await' },
   { value: 'web-apis', label: 'Web APIs', emoji: '🌍', blurb: 'fetch, localStorage, URL, History, IntersectionObserver' },
+  { value: 'modules', label: 'Modules', emoji: '📦', blurb: 'ES modules vs CommonJS, tree shaking, bundlers, import/export' },
+  {
+    value: 'design-patterns',
+    label: 'Design Patterns',
+    emoji: '🧩',
+    blurb: 'Singleton, Factory, Observer, Module, Strategy, Decorator, Command'
+  },
+  { value: 'security', label: 'Security', emoji: '🔒', blurb: 'XSS, CSRF, CSP, same-origin policy, security headers, input validation' },
   { value: 'es2026', label: 'ECMAScript 2026', emoji: '✨', blurb: 'Temporal API, using/await using, Error.isError, RegExp.escape' }
 ];
 
@@ -108,6 +137,7 @@ const DIFFICULTY_META: DifficultyOption[] = [
 
 export default function NotesPage() {
   const jsNotes = useSelector(selectJsNotes);
+  const jsFlashcards = useSelector(selectJsFlashcards);
 
   const {
     isLanding,
@@ -121,7 +151,8 @@ export default function NotesPage() {
     handleDifficultyChange,
     handleCategoryChange,
     handleSearchChange,
-    handleToggle
+    handleToggle,
+    applyFilters
   } = useSectionFilter();
 
   // ── Derived landing cards (depend on data) ────────────────────────────────
@@ -184,8 +215,7 @@ export default function NotesPage() {
 
   // ── Counts for list-view difficulty strip ─────────────────────────────────
   const difficulties: DifficultyOption[] = useMemo(
-    () =>
-      DIFFICULTY_META.map((d) => ({ ...d, count: jsNotes.filter((c) => c.difficulty === (d.value as Note['difficulty'])).length })),
+    () => DIFFICULTY_META.map((d) => ({ ...d, count: jsNotes.filter((c) => c.difficulty === (d.value as Note['difficulty'])).length })),
     [jsNotes]
   );
 
@@ -221,6 +251,7 @@ export default function NotesPage() {
           onEnter={enterWithDifficulty}
           categoryCards={allCategoryCards}
           onEnterCategory={enterWithCategory}
+          flashcards={jsFlashcards}
         />
       </MainCard>
     );
@@ -242,99 +273,130 @@ export default function NotesPage() {
         </Typography>
       }
     >
-      <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
-        {/* ── Left: content ── */}
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          {(activeVersion || activeTopic) && (
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2, lineHeight: 1.7 }}>
-              {activeVersion?.blurb ?? activeTopic?.blurb}
-            </Typography>
-          )}
-
-          {filtered.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 6 }}>
-              <Typography color="text.secondary">No features match your filters.</Typography>
-            </Box>
-          ) : (
-            <Stack spacing={1.5}>
-              {filtered.map((note) => (
-                <NoteCard key={note.id} note={note} isOpen={openId === note.id} onToggle={() => handleToggle(note.id)} />
-              ))}
-            </Stack>
-          )}
-        </Box>
-
-        {/* ── Right: sticky filter panel ── */}
-        <Box sx={{ width: 240, flexShrink: 0, position: 'sticky', top: 88 }}>
-          <Box mb={2}>
-            <TextField
-              size="small"
-              fullWidth
-              placeholder="Search features…"
-              value={search}
-              onChange={(e) => handleSearchChange(e.target.value || null)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconSearch size={16} />
-                  </InputAdornment>
-                )
-              }}
-            />
-          </Box>
-          <TopicFilterCards
+      <FilterShell
+        activeFilterCount={(difficulty !== 'all' ? 1 : 0) + (category !== 'all' ? 1 : 0) + (search ? 1 : 0)}
+        renderDrawer={(open, onClose) => (
+          <MobileFilterDrawer
+            open={open}
+            onClose={onClose}
             difficulties={difficulties}
             activeDifficulty={difficulty}
-            onDifficultyChange={handleDifficultyChange}
-            activeCategory="all"
-            onCategoryChange={() => {}}
-            vertical
+            activeCategory={category}
+            chipGroups={[
+              {
+                label: 'By Topic',
+                activeValue: category,
+                options: TOPIC_META.map((t) => ({ value: t.value, label: `${t.emoji} ${t.label}` }))
+              },
+              {
+                label: 'By ES Version',
+                activeValue: category,
+                options: versionCards.map((v) => ({ value: v.value, label: `${v.emoji} ${v.label}` }))
+              }
+            ]}
+            search={search}
+            searchPlaceholder="Search features…"
+            onApply={applyFilters}
           />
-
-          <Divider sx={{ my: 2 }} />
-
-          <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 1, letterSpacing: 1.5, fontSize: '0.68rem', fontWeight: 700 }}>
-            By Topic
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
-            {TOPIC_META.map((t) => (
-              <Chip
-                key={t.value}
-                label={`${t.emoji} ${t.label}`}
-                onClick={() => handleCategoryChange(t.value === category ? 'all' : t.value)}
-                color={category === t.value ? 'primary' : 'default'}
-                variant={category === t.value ? 'filled' : 'outlined'}
+        )}
+        sidebar={
+          <Box sx={{ width: 240, flexShrink: 0, position: 'sticky', top: 88 }}>
+            <Box mb={2}>
+              <TextField
                 size="small"
+                fullWidth
+                placeholder="Search features…"
+                value={search}
+                onChange={(e) => handleSearchChange(e.target.value || null)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <IconSearch size={16} />
+                    </InputAdornment>
+                  )
+                }}
               />
-            ))}
-          </Box>
-
-          <Divider sx={{ my: 2 }} />
-
-          <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 1, letterSpacing: 1.5, fontSize: '0.68rem', fontWeight: 700 }}>
-            By ES Version
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
-            <Chip
-              label="All"
-              onClick={() => handleCategoryChange('all')}
-              color={category === 'all' ? 'primary' : 'default'}
-              variant={category === 'all' ? 'filled' : 'outlined'}
-              size="small"
+            </Box>
+            <TopicFilterCards
+              difficulties={difficulties}
+              activeDifficulty={difficulty}
+              onDifficultyChange={handleDifficultyChange}
+              activeCategory="all"
+              onCategoryChange={() => {}}
+              vertical
             />
-            {versionCards.map((v) => (
+
+            <Divider sx={{ my: 2 }} />
+
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ display: 'block', mb: 1, letterSpacing: 1.5, fontSize: '0.68rem', fontWeight: 700 }}
+            >
+              By Topic
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
+              {TOPIC_META.map((t) => (
+                <Chip
+                  key={t.value}
+                  label={`${t.emoji} ${t.label}`}
+                  onClick={() => handleCategoryChange(t.value === category ? 'all' : t.value)}
+                  color={category === t.value ? 'primary' : 'default'}
+                  variant={category === t.value ? 'filled' : 'outlined'}
+                  size="small"
+                />
+              ))}
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ display: 'block', mb: 1, letterSpacing: 1.5, fontSize: '0.68rem', fontWeight: 700 }}
+            >
+              By ES Version
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
               <Chip
-                key={v.value}
-                label={`${v.emoji} ${v.label}`}
-                onClick={() => handleCategoryChange(v.value === category ? 'all' : v.value)}
-                color={category === v.value ? 'primary' : 'default'}
-                variant={category === v.value ? 'filled' : 'outlined'}
+                label="All"
+                onClick={() => handleCategoryChange('all')}
+                color={category === 'all' ? 'primary' : 'default'}
+                variant={category === 'all' ? 'filled' : 'outlined'}
                 size="small"
               />
-            ))}
+              {versionCards.map((v) => (
+                <Chip
+                  key={v.value}
+                  label={`${v.emoji} ${v.label}`}
+                  onClick={() => handleCategoryChange(v.value === category ? 'all' : v.value)}
+                  color={category === v.value ? 'primary' : 'default'}
+                  variant={category === v.value ? 'filled' : 'outlined'}
+                  size="small"
+                />
+              ))}
+            </Box>
           </Box>
-        </Box>
-      </Box>
+        }
+      >
+        {(activeVersion || activeTopic) && (
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2, lineHeight: 1.7 }}>
+            {activeVersion?.blurb ?? activeTopic?.blurb}
+          </Typography>
+        )}
+
+        {filtered.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 6 }}>
+            <Typography color="text.secondary">No features match your filters.</Typography>
+          </Box>
+        ) : (
+          <Stack spacing={1.5}>
+            {filtered.map((note) => (
+              <NoteCard key={note.id} note={note} isOpen={openId === note.id} onToggle={() => handleToggle(note.id)} />
+            ))}
+          </Stack>
+        )}
+      </FilterShell>
     </MainCard>
   );
 }

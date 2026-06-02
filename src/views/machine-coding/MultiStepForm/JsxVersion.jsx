@@ -46,7 +46,11 @@ export default function MultiStepForm() {
   const next = () => setCurrentStep((s) => s + 1);
   const back = () => setCurrentStep((s) => s - 1);
   const submit = () => setSubmitted(true);
-  const reset = () => { setFormData(INITIAL_DATA); setCurrentStep(0); setSubmitted(false); };
+  const reset = () => {
+    setFormData(INITIAL_DATA);
+    setCurrentStep(0);
+    setSubmitted(false);
+  };
 
   if (submitted) {
     return (
@@ -68,7 +72,9 @@ export default function MultiStepForm() {
       {/* Progress bar header */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontSize: 12, color: '#888' }}>Step {currentStep + 1} of {TOTAL_STEPS}</span>
+          <span style={{ fontSize: 12, color: '#888' }}>
+            Step {currentStep + 1} of {TOTAL_STEPS}
+          </span>
           <span style={{ fontSize: 12, color: '#1976d2', fontWeight: 700 }}>{Math.round(progress)}%</span>
         </div>
         <div style={{ height: 8, background: '#e0e0e0', borderRadius: 4, overflow: 'hidden' }}>
@@ -79,7 +85,11 @@ export default function MultiStepForm() {
             <div
               key={i}
               style={{
-                flex: 1, padding: '3px 0', textAlign: 'center', fontSize: 11, borderRadius: 10,
+                flex: 1,
+                padding: '3px 0',
+                textAlign: 'center',
+                fontSize: 11,
+                borderRadius: 10,
                 background: i === currentStep ? '#1976d2' : i < currentStep ? '#4caf50' : '#f0f0f0',
                 color: i <= currentStep ? '#fff' : '#888'
               }}
@@ -118,12 +128,20 @@ export default function MultiStepForm() {
           <label style={labelStyle}>Job Role *</label>
           <select style={{ ...inputStyle, appearance: 'auto' }} value={formData.role} onChange={handleChange('role')}>
             <option value="">Select role...</option>
-            {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+            {ROLES.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
           </select>
           <label style={labelStyle}>Years of Experience *</label>
           <select style={{ ...inputStyle, appearance: 'auto' }} value={formData.experience} onChange={handleChange('experience')}>
             <option value="">Select experience...</option>
-            {EXP.map((e) => <option key={e} value={e}>{e}</option>)}
+            {EXP.map((e) => (
+              <option key={e} value={e}>
+                {e}
+              </option>
+            ))}
           </select>
         </div>
       )}
@@ -137,7 +155,17 @@ export default function MultiStepForm() {
             ['Role', formData.role],
             ['Experience', formData.experience]
           ].map(([label, value]) => (
-            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 10px', background: '#f9f9f9', borderRadius: 6, marginBottom: 8 }}>
+            <div
+              key={label}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '8px 10px',
+                background: '#f9f9f9',
+                borderRadius: 6,
+                marginBottom: 8
+              }}
+            >
               <span style={{ fontSize: 13, color: '#888' }}>{label}</span>
               <span style={{ fontSize: 13, fontWeight: 600 }}>{value || '—'}</span>
             </div>
@@ -149,7 +177,15 @@ export default function MultiStepForm() {
         <button
           onClick={back}
           disabled={currentStep === 0}
-          style={{ padding: '8px 18px', border: '1px solid #ccc', borderRadius: 6, cursor: currentStep === 0 ? 'not-allowed' : 'pointer', opacity: currentStep === 0 ? 0.4 : 1, fontSize: 14, background: 'transparent' }}
+          style={{
+            padding: '8px 18px',
+            border: '1px solid #ccc',
+            borderRadius: 6,
+            cursor: currentStep === 0 ? 'not-allowed' : 'pointer',
+            opacity: currentStep === 0 ? 0.4 : 1,
+            fontSize: 14,
+            background: 'transparent'
+          }}
         >
           ← Back
         </button>
@@ -158,14 +194,32 @@ export default function MultiStepForm() {
           <button
             onClick={next}
             disabled={!isValid}
-            style={{ padding: '8px 18px', background: isValid ? '#1976d2' : '#e0e0e0', color: isValid ? '#fff' : '#aaa', border: 'none', borderRadius: 6, cursor: isValid ? 'pointer' : 'not-allowed', fontSize: 14, fontWeight: 600 }}
+            style={{
+              padding: '8px 18px',
+              background: isValid ? '#1976d2' : '#e0e0e0',
+              color: isValid ? '#fff' : '#aaa',
+              border: 'none',
+              borderRadius: 6,
+              cursor: isValid ? 'pointer' : 'not-allowed',
+              fontSize: 14,
+              fontWeight: 600
+            }}
           >
             Next →
           </button>
         ) : (
           <button
             onClick={submit}
-            style={{ padding: '8px 18px', background: '#4caf50', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+            style={{
+              padding: '8px 18px',
+              background: '#4caf50',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 6,
+              cursor: 'pointer',
+              fontSize: 14,
+              fontWeight: 600
+            }}
           >
             Submit ✓
           </button>
