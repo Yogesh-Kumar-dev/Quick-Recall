@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 import type { Note, JsProblemEntry, QuickRecallSection, Flashcard } from 'types/content';
 import { jsNotes, tsNotes, tsReactNotes, jsQuickRecall, tsQuickRecall, jsProblems, jsFlashcards, tsFlashcards } from 'data/javascript';
@@ -39,11 +39,13 @@ export default javascriptSlice.reducer;
 
 type State = { javascript: JavaScriptState };
 
-export const selectJsNotes = (state: State) => state.javascript.jsNotes;
-export const selectTsNotes = (state: State) => state.javascript.tsNotes;
-export const selectTsReactNotes = (state: State) => state.javascript.tsReactNotes;
-export const selectJsQuickRecall = (state: State) => state.javascript.jsQuickRecall;
-export const selectTsQuickRecall = (state: State) => state.javascript.tsQuickRecall;
-export const selectJsProblems = (state: State) => state.javascript.jsProblems;
-export const selectJsFlashcards = (state: State) => state.javascript.jsFlashcards;
-export const selectTsFlashcards = (state: State) => state.javascript.tsFlashcards;
+const selectJavascriptState = (state: State) => state.javascript;
+
+export const selectJsNotes = createSelector(selectJavascriptState, (s) => s.jsNotes);
+export const selectTsNotes = createSelector(selectJavascriptState, (s) => s.tsNotes);
+export const selectTsReactNotes = createSelector(selectJavascriptState, (s) => s.tsReactNotes);
+export const selectJsQuickRecall = createSelector(selectJavascriptState, (s) => s.jsQuickRecall);
+export const selectTsQuickRecall = createSelector(selectJavascriptState, (s) => s.tsQuickRecall);
+export const selectJsProblems = createSelector(selectJavascriptState, (s) => s.jsProblems);
+export const selectJsFlashcards = createSelector(selectJavascriptState, (s) => s.jsFlashcards);
+export const selectTsFlashcards = createSelector(selectJavascriptState, (s) => s.tsFlashcards);
