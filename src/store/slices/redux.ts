@@ -1,7 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 import type { Note, Flashcard } from 'types/content';
-import { reduxNotes, reduxToolkitNotes, rtkQueryNotes, asyncThunkNotes, reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from 'data/redux';
+import {
+  reduxNotes,
+  reduxToolkitNotes,
+  rtkQueryNotes,
+  asyncThunkNotes,
+  reduxFlashcards,
+  reduxToolkitFlashcards,
+  rtkQueryFlashcards,
+  asyncThunkFlashcards
+} from 'data/redux';
 
 // ==============================|| SLICE - REDUX ||============================== //
 
@@ -39,11 +48,13 @@ export default reduxSlice.reducer;
 
 type State = { redux: ReduxState };
 
-export const selectReduxNotes = (state: State) => state.redux.reduxNotes;
-export const selectReduxToolkitNotes = (state: State) => state.redux.reduxToolkitNotes;
-export const selectRtkQueryNotes = (state: State) => state.redux.rtkQueryNotes;
-export const selectAsyncThunkNotes = (state: State) => state.redux.asyncThunkNotes;
-export const selectReduxFlashcards = (state: State) => state.redux.reduxFlashcards;
-export const selectReduxToolkitFlashcards = (state: State) => state.redux.reduxToolkitFlashcards;
-export const selectRtkQueryFlashcards = (state: State) => state.redux.rtkQueryFlashcards;
-export const selectAsyncThunkFlashcards = (state: State) => state.redux.asyncThunkFlashcards;
+const selectReduxState = (state: State) => state.redux;
+
+export const selectReduxNotes = createSelector(selectReduxState, (s) => s.reduxNotes);
+export const selectReduxToolkitNotes = createSelector(selectReduxState, (s) => s.reduxToolkitNotes);
+export const selectRtkQueryNotes = createSelector(selectReduxState, (s) => s.rtkQueryNotes);
+export const selectAsyncThunkNotes = createSelector(selectReduxState, (s) => s.asyncThunkNotes);
+export const selectReduxFlashcards = createSelector(selectReduxState, (s) => s.reduxFlashcards);
+export const selectReduxToolkitFlashcards = createSelector(selectReduxState, (s) => s.reduxToolkitFlashcards);
+export const selectRtkQueryFlashcards = createSelector(selectReduxState, (s) => s.rtkQueryFlashcards);
+export const selectAsyncThunkFlashcards = createSelector(selectReduxState, (s) => s.asyncThunkFlashcards);

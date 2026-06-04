@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 import type { Note, ReactMcProblem, QuickRecallSection, Flashcard } from 'types/content';
 import { reactNotes, reactQuickRecall, reactMcProblems, reactFlashcards } from 'data/react';
@@ -31,7 +31,9 @@ export default reactSlice.reducer;
 
 type State = { react: ReactState };
 
-export const selectReactNotes = (state: State) => state.react.reactNotes;
-export const selectReactQuickRecall = (state: State) => state.react.reactQuickRecall;
-export const selectReactMcProblems = (state: State) => state.react.reactMcProblems;
-export const selectReactFlashcards = (state: State) => state.react.reactFlashcards;
+const selectReactState = (state: State) => state.react;
+
+export const selectReactNotes = createSelector(selectReactState, (s) => s.reactNotes);
+export const selectReactQuickRecall = createSelector(selectReactState, (s) => s.reactQuickRecall);
+export const selectReactMcProblems = createSelector(selectReactState, (s) => s.reactMcProblems);
+export const selectReactFlashcards = createSelector(selectReactState, (s) => s.reactFlashcards);

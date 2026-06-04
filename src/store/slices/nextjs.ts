@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 import type { Note, Flashcard } from 'types/content';
 import { nextjsNotes, nextjsRenderingNotes, nextjsFlashcards, nextjsRenderingFlashcards } from 'data/nextjs';
@@ -31,7 +31,9 @@ export default nextjsSlice.reducer;
 
 type State = { nextjs: NextjsState };
 
-export const selectNextjsNotes = (state: State) => state.nextjs.nextjsNotes;
-export const selectNextjsRenderingNotes = (state: State) => state.nextjs.nextjsRenderingNotes;
-export const selectNextjsFlashcards = (state: State) => state.nextjs.nextjsFlashcards;
-export const selectNextjsRenderingFlashcards = (state: State) => state.nextjs.nextjsRenderingFlashcards;
+const selectNextjsState = (state: State) => state.nextjs;
+
+export const selectNextjsNotes = createSelector(selectNextjsState, (s) => s.nextjsNotes);
+export const selectNextjsRenderingNotes = createSelector(selectNextjsState, (s) => s.nextjsRenderingNotes);
+export const selectNextjsFlashcards = createSelector(selectNextjsState, (s) => s.nextjsFlashcards);
+export const selectNextjsRenderingFlashcards = createSelector(selectNextjsState, (s) => s.nextjsRenderingFlashcards);
