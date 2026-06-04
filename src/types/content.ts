@@ -56,6 +56,28 @@ export interface BaseProblemEntry {
 }
 
 // ---------------------------------------------------------------------------
+// Custom Hooks — documented hook with source + live demo
+// ---------------------------------------------------------------------------
+import type { ReactNode } from 'react';
+
+export type HookDifficulty = 'easy' | 'medium' | 'advanced';
+
+export interface HookDoc {
+  id: string;
+  name: string; // e.g. 'useDebounce'
+  tagline: string; // 1-liner shown on the card header
+  difficulty: HookDifficulty;
+  category: string; // e.g. 'state' | 'effect' | 'browser' | 'async'
+  description: string; // 2-4 sentence explanation
+  signature: string; // e.g. 'const value = useDebounce(value, delay)'
+  source: string; // raw hook source (TypeScript)
+  usage: string; // short usage snippet
+  useCases: string[]; // bullet list of where to use it
+  gotcha?: string; // common mistake / trap
+  demo: ReactNode; // live interactive demo element
+}
+
+// ---------------------------------------------------------------------------
 // JS Machine Coding — problem registry (list page)
 // ---------------------------------------------------------------------------
 export type ProblemCategory = 'array' | 'object' | 'async' | 'string' | 'functional' | 'class' | 'dom';
