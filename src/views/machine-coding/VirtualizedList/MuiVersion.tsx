@@ -77,8 +77,8 @@ export default function VirtualizedListMui() {
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" mb={2}>
-        All {TOTAL} divs are passed to react-virtuoso, but only the rows in view are mounted. Inspect the list in dev-tools while scrolling —
-        the node count stays roughly constant.
+        All {TOTAL} divs are passed to react-virtuoso, but only the rows in view are mounted. Inspect the list in dev-tools while scrolling
+        — the node count stays roughly constant.
       </Typography>
 
       <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 1, height: LIST_HEIGHT }}>

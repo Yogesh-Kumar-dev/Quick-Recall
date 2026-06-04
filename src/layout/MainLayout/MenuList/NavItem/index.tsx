@@ -209,7 +209,7 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
                     sx={{
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      width: 102,
+                      maxWidth: '100%',
                       ...(themeDirection === ThemeDirection.RTL && { textAlign: 'end', direction: 'rtl' })
                     }}
                   >

@@ -3,13 +3,12 @@ import { useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import InputAdornment from '@mui/material/InputAdornment';
-import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { IconDatabase, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
-import NoteCard from 'ui-component/interview-prep/NoteCard';
+import VirtualNoteList from 'ui-component/interview-prep/VirtualNoteList';
 import ReduxDevToolsHint from 'ui-component/interview-prep/ReduxDevToolsHint';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
@@ -190,7 +189,19 @@ export default function ReduxNotesPage() {
           />
         )}
         sidebar={
-          <Box sx={{ width: 240, flexShrink: 0, position: 'sticky', top: 88 }}>
+          <Box
+            sx={{
+              width: 240,
+              flexShrink: 0,
+              position: 'sticky',
+              top: 88,
+              alignSelf: 'flex-start',
+              maxHeight: 'calc(100vh - 104px)',
+              overflowY: 'auto',
+              scrollbarWidth: 'none',
+              '&::-webkit-scrollbar': { display: 'none' }
+            }}
+          >
             <Box mb={2}>
               <TextField
                 size="small"
@@ -229,11 +240,7 @@ export default function ReduxNotesPage() {
             <Typography color="text.secondary">No notes match your filters.</Typography>
           </Box>
         ) : (
-          <Stack spacing={1.5}>
-            {filtered.map((note) => (
-              <NoteCard key={note.id} note={note} isOpen={openId === note.id} onToggle={() => handleToggle(note.id)} />
-            ))}
-          </Stack>
+          <VirtualNoteList notes={filtered} openId={openId} onToggle={handleToggle} />
         )}
       </FilterShell>
     </MainCard>
