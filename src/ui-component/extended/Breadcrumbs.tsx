@@ -20,8 +20,8 @@ import Box from '@mui/material/Box';
 import { ThemeMode, ThemeDirection } from 'config';
 import navigation from 'menu-items';
 import useConfig from 'hooks/useConfig';
-import { jsProblems } from 'data/javascript/js-problems';
-import { reactMcProblems } from 'data/react/react-mc-problems';
+import { jsProblems } from 'data/javascript';
+import { reactMcProblems } from 'data/react';
 
 // assets
 import { IconChevronRight, IconTallymark1 } from '@tabler/icons-react';

@@ -1,11 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Note, Flashcard } from 'types/content';
-import { reduxNotes } from 'data/redux/redux-notes';
-import { reduxToolkitNotes } from 'data/redux/redux-toolkit-notes';
-import { rtkQueryNotes } from 'data/redux/rtk-query-notes';
-import { asyncThunkNotes } from 'data/redux/async-thunk-notes';
-import { reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from 'data/redux/redux-flashcards';
+import { reduxNotes, reduxToolkitNotes, rtkQueryNotes, asyncThunkNotes, reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from 'data/redux';
 
 // ==============================|| SLICE - REDUX ||============================== //
 
