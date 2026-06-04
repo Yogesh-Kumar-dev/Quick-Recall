@@ -1,12 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Note, JsProblemEntry, QuickRecallSection, Flashcard } from 'types/content';
-import { jsNotes } from 'data/javascript/js-notes';
-import { tsNotes } from 'data/javascript/ts-notes';
-import { tsReactNotes } from 'data/javascript/ts-react';
-import { jsQuickRecall, tsQuickRecall } from 'data/javascript/js-quick-recall';
-import { jsProblems } from 'data/javascript/js-problems';
-import { jsFlashcards, tsFlashcards } from 'data/javascript/js-flashcards';
+import { jsNotes, tsNotes, tsReactNotes, jsQuickRecall, tsQuickRecall, jsProblems, jsFlashcards, tsFlashcards } from 'data/javascript';
 
 // ==============================|| SLICE - JAVASCRIPT & TYPESCRIPT ||============================== //
 
@@ -22,8 +17,8 @@ interface JavaScriptState {
 }
 
 const initialState: JavaScriptState = {
-  jsNotes: jsNotes,
-  tsNotes: tsNotes,
+  jsNotes,
+  tsNotes,
   tsReactNotes,
   jsQuickRecall,
   tsQuickRecall,

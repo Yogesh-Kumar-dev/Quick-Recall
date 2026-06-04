@@ -1,10 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Note, ReactMcProblem, QuickRecallSection, Flashcard } from 'types/content';
-import { reactNotes } from 'data/react/react-notes';
-import { reactQuickRecall } from 'data/react/react-quick-recall';
-import { reactMcProblems } from 'data/react/react-mc-problems';
-import { reactFlashcards } from 'data/react/react-flashcards';
+import { reactNotes, reactQuickRecall, reactMcProblems, reactFlashcards } from 'data/react';
 
 // ==============================|| SLICE - REACT ||============================== //
 

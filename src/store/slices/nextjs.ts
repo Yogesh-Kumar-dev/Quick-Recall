@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Note, Flashcard } from 'types/content';
-import { nextjsNotes } from 'data/nextjs/nextjs-notes';
-import { nextjsRenderingNotes } from 'data/nextjs/nextjs-rendering';
-import { nextjsFlashcards, nextjsRenderingFlashcards } from 'data/nextjs/nextjs-flashcards';
+import { nextjsNotes, nextjsRenderingNotes, nextjsFlashcards, nextjsRenderingFlashcards } from 'data/nextjs';
 
 // ==============================|| SLICE - NEXT.JS ||============================== //
 

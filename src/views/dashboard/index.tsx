@@ -5,17 +5,10 @@ import Typography from '@mui/material/Typography';
 import { IconBrandJavascript, IconBrandNextjs, IconBrandReact, IconBrandRedux } from '@tabler/icons-react';
 
 import TopicStatCard from 'ui-component/interview-prep/TopicStatCard';
-import { jsProblems } from 'data/javascript/js-problems';
-import { jsNotes } from 'data/javascript/js-notes';
-import { tsNotes } from 'data/javascript/ts-notes';
-import { reactNotes } from 'data/react/react-notes';
-import { reactMcProblems } from 'data/react/react-mc-problems';
-import { reduxNotes } from 'data/redux/redux-notes';
-import { reduxToolkitNotes } from 'data/redux/redux-toolkit-notes';
-import { rtkQueryNotes } from 'data/redux/rtk-query-notes';
-import { asyncThunkNotes } from 'data/redux/async-thunk-notes';
-import { nextjsNotes } from 'data/nextjs/nextjs-notes';
-import { nextjsRenderingNotes } from 'data/nextjs/nextjs-rendering';
+import { jsProblems, jsNotes, tsNotes } from 'data/javascript';
+import { reactNotes, reactMcProblems } from 'data/react';
+import { reduxNotes, reduxToolkitNotes, rtkQueryNotes, asyncThunkNotes } from 'data/redux';
+import { nextjsNotes, nextjsRenderingNotes } from 'data/nextjs';
 
 // ─── Difficulty tally helper ───────────────────────────────────────────────────
 
