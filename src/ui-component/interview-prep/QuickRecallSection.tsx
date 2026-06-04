@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { IconAlertTriangle, IconChevronDown } from '@tabler/icons-react';
+import CodeBlock from 'ui-component/interview-prep/CodeBlock';
 import type { QuickRecallSection as QRSection } from 'types/content';
 
 interface QuickRecallItemProps {
@@ -33,25 +34,7 @@ function QRItem({ concept, bullets, codeSnippet, warning }: QuickRecallItemProps
         ))}
       </Box>
 
-      {codeSnippet && (
-        <Box
-          component="pre"
-          sx={{
-            mb: warning ? 1.5 : 0,
-            p: 1.5,
-            borderRadius: 1,
-            bgcolor: 'grey.900',
-            color: 'grey.50',
-            fontSize: 12,
-            fontFamily: 'monospace',
-            overflowX: 'auto',
-            lineHeight: 1.6,
-            whiteSpace: 'pre-wrap'
-          }}
-        >
-          {codeSnippet}
-        </Box>
-      )}
+      {codeSnippet && <CodeBlock code={codeSnippet} mb={warning ? 1.5 : 0} />}
 
       {warning && (
         <Box sx={{ p: 1.25, bgcolor: 'warning.light', borderRadius: 1, border: '1px solid', borderColor: 'warning.main' }}>

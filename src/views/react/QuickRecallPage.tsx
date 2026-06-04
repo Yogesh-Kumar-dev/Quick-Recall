@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import MainCard from 'ui-component/cards/MainCard';
-import QuickRecallSectionComponent from 'ui-component/interview-prep/QuickRecallSection';
+import VirtualQuickRecallList from 'ui-component/interview-prep/VirtualQuickRecallList';
 import { useSelector } from 'store';
 import { selectReactQuickRecall } from 'store/slices/react';
 
@@ -38,11 +38,7 @@ export default function ReactQuickRecallPage() {
         React hooks cheatsheet, rendering concepts, performance patterns, and common gotchas — scan in 5–10 minutes before your interview.
       </Typography>
 
-      <Stack spacing={0} key={expandKey}>
-        {reactQuickRecall.map((section, i) => (
-          <QuickRecallSectionComponent key={i} section={section} defaultExpanded={allExpanded} />
-        ))}
-      </Stack>
+      <VirtualQuickRecallList key={expandKey} sections={reactQuickRecall} defaultExpanded={allExpanded} />
     </MainCard>
   );
 }
