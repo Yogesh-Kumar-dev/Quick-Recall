@@ -175,6 +175,6 @@ export const reactMcProblems: ReactMcProblem[] = [
     slug: 'virtualized-list',
     difficulty: 'hard',
     category: 'performance',
-    tags: ['IntersectionObserver', 'react-window', 'virtualization', 'useRef']
+    tags: ['IntersectionObserver', 'react-virtuoso', 'virtualization', 'useRef']
   }
 ];

@@ -7,7 +7,7 @@
  * Approach: render 100 items but only SHOW a growing slice. A 1px sentinel sits
  * at the bottom of the visible slice; when it scrolls into view, reveal the next
  * batch. This is the "infinite reveal" pattern — note every revealed node stays
- * mounted in the DOM (compare with the MUI react-window version).
+ * mounted in the DOM (compare with the MUI react-virtuoso version).
  */
 import { useState, useEffect, useRef } from 'react';
 
