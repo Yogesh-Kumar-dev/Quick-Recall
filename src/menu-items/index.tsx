@@ -5,6 +5,7 @@ import react from './react';
 import htmlcss from './htmlcss';
 import redux from './redux';
 import nextjs from './nextjs';
+import engineering from './engineering';
 
 // types
 import { NavItemType } from 'types';
@@ -12,7 +13,7 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [dashboard, javascript, react, htmlcss, redux, nextjs]
+  items: [dashboard, javascript, react, htmlcss, redux, nextjs, engineering]
 };
 
 export default menuItems;
