@@ -901,5 +901,147 @@ useEffect(() => setFullName(first + ' ' + last), [first, last]);
 
 // ✅ compute during render
 const fullName = first + ' ' + last;`
+  },
+
+  // ─── ADDED: topics from the "108 React interview questions" set ──────────────
+  {
+    id: 'react-accessibility',
+    title: 'Accessibility (a11y) in React',
+    summary: 'Make your UI usable with a keyboard and a screen reader — semantic HTML first, ARIA only to fill the gaps.',
+    difficulty: 'intermediate',
+    category: 'patterns',
+    keyPoints: [
+      'Reach for semantic elements first: <button>, <nav>, <label>, <main>. They give you focus and keyboard behaviour for free.',
+      'JSX uses htmlFor (not "for") and className; aria-* and role attributes are written as-is.',
+      'Every input needs a connected <label htmlFor> — or an aria-label when no visible text exists.',
+      'Manage focus on route changes and when opening modals; trap focus inside a dialog and restore it on close.',
+      'Tools: eslint-plugin-jsx-a11y catches issues at lint time; axe DevTools / Lighthouse audit at runtime.'
+    ],
+    gotcha:
+      'Putting onClick on a <div> looks fine with a mouse but is invisible to keyboard and screen-reader users — use a real <button> (or add role="button", tabIndex={0}, and key handlers).',
+    textbookDef:
+      'Web accessibility (a11y) is the practice of building interfaces that people with disabilities can perceive, operate, and understand, typically guided by the WCAG standard and the WAI-ARIA specification.',
+    eli5: 'Think of a11y as building ramps next to your stairs. A mouse user takes the stairs; a keyboard or screen-reader user needs the ramp. Semantic HTML is a building that comes with ramps already — plain <div>s are stairs only.',
+    codeSnippet: `// ❌ keyboard/screen-reader users can't use this
+<div onClick={save}>Save</div>
+
+// ✅ real button: focusable, Enter/Space work, announced as a button
+<button onClick={save}>Save</button>
+
+// input must be labelled
+<label htmlFor="email">Email</label>
+<input id="email" type="email" />`
+  },
+  {
+    id: 'react-typescript',
+    title: 'TypeScript with React',
+    summary: 'Static types on props, state, and events catch a whole class of bugs before the app ever runs.',
+    difficulty: 'intermediate',
+    category: 'core',
+    keyPoints: [
+      'Type a component’s props with an interface/type; the compiler then flags missing or wrong props at the call site.',
+      'useState infers the type from its initial value; pass a generic when it can be null/empty: useState<User | null>(null).',
+      'Event handlers get precise types: React.ChangeEvent<HTMLInputElement>, React.MouseEvent, etc.',
+      'Refs are typed via the element: useRef<HTMLInputElement>(null).',
+      'Editor autocomplete, safe refactors, and self-documenting component APIs are the day-to-day payoff.'
+    ],
+    gotcha:
+      'React.FC was the old default but it implicitly adds a children prop and complicates generics — most teams now type props directly as a function parameter instead.',
+    eli5: 'TypeScript is a label maker for your data. Once every box is labelled "string" or "User", you can’t accidentally pour a number into the string box — the editor stops you before you ship it.',
+    codeSnippet: `interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean; // optional
+}
+
+function Button({ label, onClick, disabled }: ButtonProps) {
+  return <button onClick={onClick} disabled={disabled}>{label}</button>;
+}
+
+const [user, setUser] = useState<User | null>(null);`
+  },
+  {
+    id: 'react-bundle-size',
+    title: 'Bundle Size: Tree Shaking & Dynamic Imports',
+    summary: 'Ship less JavaScript by dropping unused code (tree shaking) and loading the rest on demand (code splitting).',
+    difficulty: 'advanced',
+    category: 'performance',
+    keyPoints: [
+      'Tree shaking: the bundler statically analyses ES module imports and drops exports nothing references — only works with import/export, not CommonJS require.',
+      'Import only what you use: import debounce from "lodash/debounce" (not the whole lodash) so the rest can be shaken out.',
+      'Dynamic import() + React.lazy/Suspense split a chunk that downloads only when needed (route, modal, heavy chart).',
+      'Audit with a bundle analyzer to find the heaviest dependencies before optimising.',
+      'Side-effectful modules can block shaking — "sideEffects": false in package.json tells the bundler it’s safe.'
+    ],
+    gotcha:
+      'Default-importing a whole library for one helper (import _ from "lodash") pulls the entire package into your bundle — tree shaking can’t help once it’s a single default import.',
+    textbookDef:
+      'Tree shaking is dead-code elimination for ES modules: the bundler builds a dependency graph from static import/export statements and excludes any binding that is never imported anywhere.',
+    eli5: 'Imagine packing for a trip. Tree shaking is leaving behind clothes you’ll never wear. Code splitting is mailing your winter coat ahead so it only shows up when you actually reach the cold city.',
+    codeSnippet: `// Route-level code splitting
+const Settings = React.lazy(() => import('./Settings'));
+
+<Suspense fallback={<Spinner />}>
+  <Settings />
+</Suspense>
+
+// Import the one function so the rest is tree-shaken
+import debounce from 'lodash/debounce';`
+  },
+  {
+    id: 'react-animation',
+    title: 'Animation in React',
+    summary: 'Animate by driving state/props over time — reach for a library so React’s re-renders don’t fight your transitions.',
+    difficulty: 'intermediate',
+    category: 'patterns',
+    keyPoints: [
+      'Simple cases: toggle a CSS class and let CSS transitions/keyframes do the work — cheapest and GPU-friendly.',
+      'Mount/unmount animations need a library, because React removes the DOM node before CSS can animate it out.',
+      'Framer Motion: declarative <motion.div animate={…} />, plus AnimatePresence for exit animations.',
+      'React Transition Group: low-level enter/exit lifecycle classes; React Spring: physics-based spring values.',
+      'Prefer animating transform and opacity (compositor-only) over width/top/left (trigger layout/paint).'
+    ],
+    gotcha:
+      'Animating layout properties (width, height, top) on every frame forces reflow and stutters — animate transform: translate/scale and opacity instead.',
+    eli5: 'React is a flip-book artist: it redraws the page when state changes. For smooth motion you hand the in-between frames to an animation library (like Framer Motion) so the flips look like gliding, not jumping.',
+    codeSnippet: `import { motion, AnimatePresence } from 'framer-motion';
+
+<AnimatePresence>
+  {open && (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+    >
+      Panel
+    </motion.div>
+  )}
+</AnimatePresence>`
+  },
+  {
+    id: 'react-env-config',
+    title: 'Environment Config & Variables',
+    summary: 'Keep per-environment settings (API URLs, keys) out of code and inject them at build time per env.',
+    difficulty: 'intermediate',
+    category: 'architecture',
+    keyPoints: [
+      'Store config in .env files (.env.development, .env.production) and read it via the bundler — never hardcode URLs.',
+      'Client-exposed vars need a prefix so the bundler inlines them: NEXT_PUBLIC_ (Next.js), VITE_ (Vite), REACT_APP_ (CRA).',
+      'Anything sent to the browser is public — never put real secrets in a client-exposed variable.',
+      'True secrets (DB passwords, private API keys) belong only in server-side env vars, used in route handlers / server components.',
+      'Commit a .env.example documenting required keys; keep real .env files out of git.'
+    ],
+    gotcha:
+      'A "secret" in a NEXT_PUBLIC_/VITE_/REACT_APP_ variable is baked into the JS bundle and visible to anyone — those prefixes mean "safe to expose", not "hidden".',
+    eli5: 'Env variables are like a settings dial on the back of an appliance. The same React app plugs into "development" or "production" and behaves differently — without you rewiring the appliance itself.',
+    codeSnippet: `// .env.production
+NEXT_PUBLIC_API_URL=https://api.myapp.com
+
+// usage (inlined at build time)
+const base = process.env.NEXT_PUBLIC_API_URL;
+fetch(\`\${base}/users\`);
+
+// server-only secret — NOT exposed to the browser
+const key = process.env.STRIPE_SECRET_KEY;`
   }
 ];
