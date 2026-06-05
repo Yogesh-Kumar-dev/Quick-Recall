@@ -671,5 +671,37 @@ export function Providers({ children }) {
 // app/layout.tsx (Server Component) wraps once
 import { Providers } from './providers';
 // <body><Providers>{children}</Providers></body>`
+  },
+
+  // ─── ADDED: from the adaface Next.js question set ────────────────────────────
+  {
+    id: 'cors-route-handlers',
+    title: 'CORS in Route Handlers',
+    summary: 'Set CORS response headers (and answer the preflight OPTIONS request) when another origin calls your Next.js API.',
+    difficulty: 'intermediate',
+    category: 'api',
+    keyPoints: [
+      'CORS only matters when a browser on a DIFFERENT origin calls your API — same-origin calls never need it.',
+      'Add Access-Control-Allow-Origin (+ -Methods / -Headers) to the Response in a Route Handler.',
+      'Non-simple requests (custom headers, PUT/DELETE, JSON) trigger a preflight — handle the OPTIONS method and return 204.',
+      'For app-wide rules, set the same headers in middleware.ts or the headers() config in next.config.js.',
+      'Server-to-server fetches (RSC, Route Handlers calling other APIs) are not subject to CORS — it is a browser policy.'
+    ],
+    gotcha:
+      'Forgetting the OPTIONS preflight handler is the usual cause of a "blocked by CORS" error even when GET/POST already set the headers — the browser fails the preflight before your main handler ever runs.',
+    codeSnippet: `// app/api/data/route.ts
+const cors = {
+  'Access-Control-Allow-Origin': 'https://other.com',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: cors });
+}
+
+export async function GET() {
+  return Response.json({ ok: true }, { headers: cors });
+}`
   }
 ];
