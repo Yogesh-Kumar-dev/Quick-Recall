@@ -316,5 +316,35 @@ export const reactFlashcards: Flashcard[] = [
     front: 'The use() hook (React 19)',
     back: 'Reads a resource (a promise or context) during render and suspends until it resolves — pairs with Suspense for loading and error boundaries for failures.',
     category: 'Keyword'
+  },
+  {
+    id: 'react-tree-shaking',
+    front: 'Tree shaking',
+    back: 'The bundler drops exports that nothing imports, shrinking the bundle. Needs ES module import/export (not require). Import the one helper, e.g. `lodash/debounce`, so the rest is removed.',
+    category: 'Keyword'
+  },
+  {
+    id: 'react-module-bundler',
+    front: 'What does a bundler (Webpack/Vite) do?',
+    back: 'Walks your import graph and packages modules into optimised files for the browser — handling JSX/TS transforms, code splitting, tree shaking, minification, and asset hashing.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-create-react-app',
+    front: 'create-react-app — still recommended?',
+    back: 'No. CRA was the classic zero-config starter but is now deprecated/unmaintained. Use Vite for SPAs or a framework like Next.js for production apps.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-a11y-essentials',
+    front: 'a11y essentials in React',
+    back: 'Use semantic HTML (<button>, <label>), connect labels to inputs, manage focus for modals/route changes, and lint with eslint-plugin-jsx-a11y. Write htmlFor/className but aria-*/role as-is.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-cicd',
+    front: 'CI/CD for a React app — typical pipeline?',
+    back: 'On push, CI runs lint + type-check + tests + build; on merge, CD deploys the built bundle to a host/CDN (Vercel, Netlify, S3+CloudFront). Tools: GitHub Actions, GitLab CI.',
+    category: 'Q&A'
   }
 ];
