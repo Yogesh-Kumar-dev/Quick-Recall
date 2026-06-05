@@ -239,6 +239,24 @@ export const nextjsFlashcards: Flashcard[] = [
     front: 'next/script',
     back: 'Optimized third-party script loading with a strategy prop: beforeInteractive, afterInteractive (default), or lazyOnload — controls when the script loads relative to hydration.',
     category: 'Keyword'
+  },
+  {
+    id: 'next-cors',
+    front: 'How do you handle CORS in Next.js?',
+    back: 'Set Access-Control-Allow-Origin/-Methods/-Headers on the Response in a Route Handler, and answer the preflight by exporting an OPTIONS handler (204). For app-wide rules use middleware or next.config headers().',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-shallow-routing',
+    front: 'Shallow routing (Pages Router)',
+    back: 'router.push(url, undefined, { shallow: true }) changes the URL without re-running getServerSideProps/getStaticProps — useful for updating query params (filters, tabs) without a data refetch.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-get-initial-props',
+    front: 'getInitialProps — why avoid it?',
+    back: 'A legacy Pages Router data method that runs on both server and client and disables Automatic Static Optimization (forces SSR for the whole app). Prefer getStaticProps/getServerSideProps, or the App Router.',
+    category: 'Q&A'
   }
 ];
 
