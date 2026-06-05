@@ -8,6 +8,7 @@ import reactReducer from './slices/react';
 import reduxReducer from './slices/redux';
 import nextjsReducer from './slices/nextjs';
 import htmlcssReducer from './slices/htmlcss';
+import engineeringReducer from './slices/engineering';
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -17,7 +18,8 @@ const reducer = combineReducers({
   react: reactReducer,
   redux: reduxReducer,
   nextjs: nextjsReducer,
-  htmlcss: htmlcssReducer
+  htmlcss: htmlcssReducer,
+  engineering: engineeringReducer
 });
 
 export default reducer;
