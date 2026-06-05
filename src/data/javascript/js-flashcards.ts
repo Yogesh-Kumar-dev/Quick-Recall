@@ -544,6 +544,78 @@ export const jsFlashcards: Flashcard[] = [
     front: 'The Intl namespace',
     back: 'Built-in internationalization: Intl.NumberFormat, Intl.DateTimeFormat, Intl.Collator, etc. — locale-aware formatting of numbers, dates, currency, and sorting.',
     category: 'Keyword'
+  },
+  {
+    id: 'js-passive-listener',
+    front: 'Passive event listeners',
+    back: 'addEventListener(type, fn, { passive: true }) promises the handler will not call preventDefault, so the browser can scroll immediately instead of waiting — fixes scroll jank on touch/wheel events.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-custom-events',
+    front: 'Custom events',
+    back: 'new CustomEvent("name", { detail }) creates an event; el.dispatchEvent(ev) fires it and any addEventListener("name") handlers run. detail carries your payload. Lets components communicate via the DOM.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-keyboard-events',
+    front: 'Keyboard event handling',
+    back: 'Listen for keydown / keyup; read e.key ("Enter", "a", "ArrowUp") for the logical key and modifiers via e.ctrlKey / e.shiftKey. Prefer e.key over the deprecated e.keyCode.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-listener-leak',
+    front: 'How do event listeners cause memory leaks?',
+    back: 'A listener keeps a reference to its handler (and its closure) alive even after the element is gone, so the element/data can not be garbage-collected. Always removeEventListener with the SAME function reference on cleanup.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-race-condition',
+    front: 'Race condition (async)',
+    back: 'Two async operations whose outcome depends on which finishes first — e.g. a slow earlier request resolving after a newer one and overwriting it. Fix by cancelling stale work (AbortController) or ignoring out-of-order results.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-realtime-updates',
+    front: 'WebSockets vs SSE vs polling',
+    back: 'Polling: client re-requests on a timer (simple, wasteful). SSE: one-way server→client stream over HTTP, auto-reconnects. WebSockets: full-duplex two-way channel — pick it for chat/games where the client also pushes.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-service-worker',
+    front: 'Service Worker',
+    back: 'A background script acting as a network proxy between page and server. Intercepts fetch to serve from cache (offline support), and powers PWAs (push, background sync). HTTPS-only, no DOM access.',
+    category: 'Keyword'
+  },
+  {
+    id: 'js-web-components',
+    front: 'Web Components',
+    back: 'Browser-native reusable elements: Custom Elements (your own <my-tag>), Shadow DOM (encapsulated, style-isolated subtree), and <template>. Framework-agnostic.',
+    category: 'Keyword'
+  },
+  {
+    id: 'js-shadow-dom',
+    front: 'Shadow DOM',
+    back: 'An encapsulated DOM subtree attached to an element. Its markup and CSS are isolated — outside styles don’t leak in and its styles don’t leak out — which is how Web Components avoid CSS clashes.',
+    category: 'Keyword'
+  },
+  {
+    id: 'js-critical-rendering-path',
+    front: 'Critical Rendering Path',
+    back: 'The steps to paint a page: DOM + CSSOM → render tree → layout → paint → composite. CSS is render-blocking; sync <script> is parser-blocking — use defer/async to avoid stalling parse.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-script-defer-async',
+    front: 'script vs defer vs async',
+    back: 'Plain <script>: blocks HTML parsing while it loads + runs. defer: loads in parallel, runs after parse in order. async: loads in parallel, runs as soon as ready (order not guaranteed) — best for independent scripts like analytics.',
+    category: 'Q&A'
+  },
+  {
+    id: 'js-progressive-enhancement',
+    front: 'Progressive enhancement vs graceful degradation',
+    back: 'Progressive enhancement: build a working HTML baseline, then layer on CSS/JS. Graceful degradation: build the rich version, then add fallbacks. Both use feature detection (not UA sniffing).',
+    category: 'Q&A'
   }
 ];
 

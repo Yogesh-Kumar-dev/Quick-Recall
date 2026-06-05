@@ -2494,5 +2494,169 @@ el.textContent = userInput;
 // https://api.app.com   → different host
 // Server opts in:
 // Access-Control-Allow-Origin: https://app.com`
+  },
+
+  // ─── ADDED: event-handling depth (from adaface JS question set) ──────────────
+  {
+    id: 'dom-advanced-events',
+    title: 'Custom, Passive & Keyboard Events',
+    summary: 'Beyond addEventListener: emit your own events, opt into passive listeners for smooth scrolling, and clean up to avoid leaks.',
+    difficulty: 'intermediate',
+    category: 'dom',
+    keyPoints: [
+      'Custom events: new CustomEvent("name", { detail }) + el.dispatchEvent(ev) let parts of an app talk through the DOM; detail carries the payload.',
+      'Passive listeners: { passive: true } promises you will NOT call preventDefault, so the browser scrolls without waiting on your handler — removes touch/wheel scroll jank.',
+      'Keyboard events: listen for keydown / keyup and read e.key ("Enter", "ArrowUp", "a"); use e.ctrlKey / e.shiftKey for modifiers. Prefer e.key over the deprecated e.keyCode.',
+      'Cleanup: removeEventListener needs the SAME function reference you added — an inline arrow can never be removed.',
+      'A listener pins its handler (and closure) in memory; forgetting to remove it on teardown keeps the element and its data from being garbage-collected.'
+    ],
+    gotcha:
+      'Calling e.preventDefault() inside a listener registered as { passive: true } is ignored and logs a console warning — the passive flag tells the browser you gave up that right.',
+    codeSnippet: `// Custom event with a payload
+const ev = new CustomEvent('cart:add', { detail: { id: 42 } });
+window.addEventListener('cart:add', (e) => console.log(e.detail.id));
+window.dispatchEvent(ev);
+
+// Passive listener — smooth scrolling
+el.addEventListener('touchstart', onTouch, { passive: true });
+
+// Keyboard
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') submit();
+});
+
+// Cleanup needs the same reference
+const onScroll = () => {};
+window.addEventListener('scroll', onScroll);
+window.removeEventListener('scroll', onScroll); // ✅ works`
+  },
+  {
+    id: 'async-race-conditions',
+    title: 'Race Conditions in Async Code',
+    summary: 'When results depend on which async task finishes first, a stale earlier response can clobber a newer one — guard against it.',
+    difficulty: 'intermediate',
+    category: 'async-js',
+    keyPoints: [
+      'A race condition: two or more async operations whose final outcome depends on their arrival order rather than the order you started them.',
+      'Classic case: type "ab" → request "a" fires, then "ab"; if "a" resolves last it overwrites the correct "ab" results.',
+      'Fix 1 — cancel stale work: abort the previous request with AbortController before starting a new one.',
+      'Fix 2 — ignore stale results: track the latest request id/value and drop responses that no longer match.',
+      'Promise.all does NOT cause races (it waits for all); races come from overlapping, independently-resolving operations.'
+    ],
+    gotcha:
+      'await inside a loop or rapid effect does not serialise independent calls — each await suspends its own function, so several can still be in flight and resolve out of order.',
+    codeSnippet: `// Cancel the previous request so only the latest wins
+let controller;
+async function search(q) {
+  controller?.abort();            // kill the in-flight request
+  controller = new AbortController();
+  try {
+    const res = await fetch('/api?q=' + q, { signal: controller.signal });
+    setResults(await res.json()); // only the newest reaches here
+  } catch (e) {
+    if (e.name !== 'AbortError') throw e;
+  }
+}`
+  },
+
+  // ─── ADDED: web-platform concepts (from adaface front-end question set) ──────
+  {
+    id: 'web-service-workers',
+    title: 'Service Workers',
+    summary: 'A background script that sits between the page and the network — the engine behind offline support, caching, and push.',
+    difficulty: 'advanced',
+    category: 'web-apis',
+    keyPoints: [
+      'A worker script the browser runs separately from the page — no DOM access, event-driven, and it keeps running after the tab closes.',
+      'Acts as a programmable network proxy: it intercepts fetch events and can answer from a cache instead of the network (offline support).',
+      'Lifecycle: register → install (pre-cache assets) → activate (clean old caches) → controls pages on the next load.',
+      'Powers Progressive Web Apps (PWAs): offline pages, background sync, and push notifications.',
+      'HTTPS only (localhost is exempt) because intercepting every request is a powerful capability.'
+    ],
+    gotcha:
+      'A service worker does not control the page that registered it until the next navigation — so your first visit still hits the network; caching kicks in on the reload.',
+    codeSnippet: `// page
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+
+// sw.js — serve from cache, fall back to network
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    caches.match(e.request).then((hit) => hit || fetch(e.request))
+  );
+});`
+  },
+  {
+    id: 'web-components',
+    title: 'Web Components & Shadow DOM',
+    summary: 'A browser-native way to build reusable, encapsulated custom elements — framework-agnostic.',
+    difficulty: 'advanced',
+    category: 'web-apis',
+    keyPoints: [
+      'Custom Elements: define your own HTML tag with a class extending HTMLElement, e.g. <my-card>.',
+      'Shadow DOM: attach a separate, encapsulated DOM subtree whose styles and markup do NOT leak in or out.',
+      'HTML <template>: inert markup you clone at runtime — parsed but not rendered until used.',
+      'Encapsulation is the headline benefit: a component’s CSS can’t clash with the rest of the page.',
+      'Works in any framework (or none) because it’s a platform standard, not a library.'
+    ],
+    gotcha:
+      'Styles inside a shadow root are isolated by design — global stylesheets and most CSS selectors can’t reach in, which surprises people expecting their app CSS to apply.',
+    codeSnippet: `class MyCard extends HTMLElement {
+  constructor() {
+    super();
+    const root = this.attachShadow({ mode: 'open' }); // encapsulated
+    root.innerHTML = \`<style>p{color:teal}</style><p><slot></slot></p>\`;
+  }
+}
+customElements.define('my-card', MyCard);
+
+// usage:  <my-card>Hello</my-card>`
+  },
+  {
+    id: 'web-critical-rendering-path',
+    title: 'Critical Rendering Path',
+    summary: 'The steps the browser takes to turn HTML, CSS, and JS into pixels — optimise it to render faster.',
+    difficulty: 'advanced',
+    category: 'web-apis',
+    keyPoints: [
+      'Pipeline: HTML → DOM tree, CSS → CSSOM tree, combine into the render tree → layout (positions/sizes) → paint → composite.',
+      'CSS is render-blocking: the browser won’t paint until the CSSOM is ready, so ship critical CSS small and early.',
+      'A plain <script> is parser-blocking — it stops HTML parsing; use defer (run after parse, in order) or async (run ASAP).',
+      'Minimise the bytes, the number of round-trips, and the critical resources to speed up first paint.',
+      'Inlining critical CSS and deferring non-essential JS are the classic wins.'
+    ],
+    gotcha:
+      'A synchronous <script> in <head> blocks DOM construction at that point — move it to the end of <body> or add defer so parsing isn’t stalled.',
+    codeSnippet: `<!-- blocks parsing here -->
+<script src="app.js"></script>
+
+<!-- runs after HTML is parsed, preserves order -->
+<script src="app.js" defer></script>
+
+<!-- runs as soon as it downloads, order not guaranteed -->
+<script src="analytics.js" async></script>`
+  },
+  {
+    id: 'web-progressive-enhancement',
+    title: 'Progressive Enhancement',
+    summary: 'Start with a working baseline that runs everywhere, then layer richer features on top for capable browsers.',
+    difficulty: 'intermediate',
+    category: 'web-apis',
+    keyPoints: [
+      'Progressive enhancement: build the core experience with plain HTML first, then add CSS and JS as enhancements.',
+      'Graceful degradation is the inverse: build the rich version, then add fallbacks so it still mostly works when features are missing.',
+      'Feature detection (not browser sniffing) decides whether to use an enhancement: if ("IntersectionObserver" in window) …',
+      'Benefit: the content/form still works if JS fails to load, on old browsers, or on slow connections.',
+      'A form that submits normally but gets AJAX + validation when JS is available is the textbook example.'
+    ],
+    gotcha:
+      'Detect the feature, don’t sniff the user-agent string — UA strings lie and break, while a capability check (typeof navigator.share === "function") is reliable.',
+    codeSnippet: `// Enhance only when the capability exists
+if ('IntersectionObserver' in window) {
+  lazyLoadImages();        // enhanced path
+} else {
+  loadAllImages();         // baseline still works
+}`
   }
 ];
