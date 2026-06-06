@@ -14,7 +14,9 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   curry: () => import('views/js-machine-coding/Curry'),
   memoize: () => import('views/js-machine-coding/Memoize'),
   'custom-bind': () => import('views/js-machine-coding/CustomBind'),
-  'group-by': () => import('views/js-machine-coding/GroupBy')
+  'group-by': () => import('views/js-machine-coding/GroupBy'),
+  'electricity-bill': () => import('views/js-machine-coding/ElectricityBill'),
+  'frequency-calculator': () => import('views/js-machine-coding/FrequencyCalculator')
 };
 
 interface PageProps {
