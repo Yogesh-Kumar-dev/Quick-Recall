@@ -16,7 +16,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectEngineeringNotes, selectEngineeringFlashcards } from 'store/slices/engineering';
+import useInjectReducer from 'store/useInjectReducer';
+import engineeringReducer, { selectEngineeringNotes, selectEngineeringFlashcards } from 'store/slices/engineering';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -60,6 +61,7 @@ const labelFor = (val: string) => CATEGORY_LABELS[val] ?? val.charAt(0).toUpperC
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function EngineeringNotesPage() {
+  useInjectReducer('engineering', engineeringReducer);
   const engineeringNotes = useSelector(selectEngineeringNotes);
   const engineeringFlashcards = useSelector(selectEngineeringFlashcards);
 

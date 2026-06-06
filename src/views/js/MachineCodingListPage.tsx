@@ -12,7 +12,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectJsProblems } from 'store/slices/javascript';
+import useInjectReducer from 'store/useInjectReducer';
+import javascriptReducer, { selectJsProblems } from 'store/slices/javascript';
 import type { ProblemDifficulty, ProblemCategory } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -46,6 +47,7 @@ const DIFFICULTY_META: DifficultyOption[] = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function MachineCodingListPage() {
+  useInjectReducer('javascript', javascriptReducer);
   const jsProblems = useSelector(selectJsProblems);
 
   const {

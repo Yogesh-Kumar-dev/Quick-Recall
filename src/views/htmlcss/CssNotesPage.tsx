@@ -16,7 +16,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectCssNotes, selectCssFlashcards } from 'store/slices/htmlcss';
+import useInjectReducer from 'store/useInjectReducer';
+import htmlcssReducer, { selectCssNotes, selectCssFlashcards } from 'store/slices/htmlcss';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -54,6 +55,7 @@ const labelFor = (val: string) => CATEGORY_LABELS[val] ?? val.charAt(0).toUpperC
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CssNotesPage() {
+  useInjectReducer('htmlcss', htmlcssReducer);
   const cssNotes = useSelector(selectCssNotes);
   const cssFlashcards = useSelector(selectCssFlashcards);
 

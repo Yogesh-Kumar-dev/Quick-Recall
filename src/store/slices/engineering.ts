@@ -5,7 +5,7 @@ import { engineeringNotes, engineeringFlashcards } from 'data/engineering';
 
 // ==============================|| SLICE - ENGINEERING ESSENTIALS ||============================== //
 
-interface EngineeringState {
+export interface EngineeringState {
   engineeringNotes: Note[];
   engineeringFlashcards: Flashcard[];
 }
@@ -25,9 +25,11 @@ export default engineeringSlice.reducer;
 
 // ─── Selectors ───────────────────────────────────────────────────────────────
 
-type State = { engineering: EngineeringState };
+type State = { engineering?: EngineeringState };
 
-const selectEngineeringState = (state: State) => state.engineering;
+// Falls back to initialState until a dispatch populates the injected slice.
+// See useInjectReducer — injection registers the reducer but doesn't dispatch.
+const selectEngineeringState = (state: State) => state.engineering ?? initialState;
 
 export const selectEngineeringNotes = createSelector(selectEngineeringState, (s) => s.engineeringNotes);
 export const selectEngineeringFlashcards = createSelector(selectEngineeringState, (s) => s.engineeringFlashcards);

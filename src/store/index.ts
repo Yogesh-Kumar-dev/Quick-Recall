@@ -2,24 +2,41 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch as useAppDispatch, useSelector as useAppSelector, TypedUseSelectorHook } from 'react-redux';
 
-import { persistStore } from 'redux-persist';
+// import { persistStore } from 'redux-persist';
 
 // project imports
-import rootReducer from './reducer';
+import rootReducer, { reducerManager } from './reducer';
+import type { InjectableState } from './injectable';
 import DevTools from './DevTools';
 
 // ==============================|| REDUX - MAIN STORE ||============================== //
 
-const store = configureStore({
+const baseStore = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
   devTools: false,
   enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat(DevTools.instrument())
 });
 
-const persister = persistStore(store);
+// Expose the reducer manager on the store so feature code (useInjectReducer)
+// can register / unregister slices at runtime.
+const store = Object.assign(baseStore, { reducerManager });
 
-type RootState = ReturnType<typeof rootReducer>;
+// redux-persist is currently disabled (PersistGate is commented out in
+// ProviderWrapper). Left here, commented, for when persistence is re-enabled —
+// note that dynamically-injected slices would need their own persist handling.
+// const persister = persistStore(store);
+
+// At runtime only `snackbar` is wired statically; feature slices are injected
+// on demand. For typing, though, we still want selectors like
+// `(s) => s.javascript` to be safe, so RootState describes the *full* shape the
+// app can have — static slices plus every injectable feature slice. Decoupling
+// the type (compile-time contract) from the wiring (runtime/bundle) is the
+// whole point: the type says "this branch exists when you read it", and
+// useInjectReducer guarantees it does before the selector runs.
+type StaticState = ReturnType<typeof rootReducer>;
+
+type RootState = StaticState & InjectableState;
 
 type AppDispatch = typeof store.dispatch;
 
@@ -31,4 +48,5 @@ function useDispatch() {
 
 const useSelector: TypedUseSelectorHook<RootState> = useAppSelector;
 
-export { store, persister, dispatch, useSelector, useDispatch };
+export { store, dispatch, useSelector, useDispatch };
+export type { RootState, AppDispatch };

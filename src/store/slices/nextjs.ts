@@ -5,7 +5,7 @@ import { nextjsNotes, nextjsRenderingNotes, nextjsFlashcards, nextjsRenderingFla
 
 // ==============================|| SLICE - NEXT.JS ||============================== //
 
-interface NextjsState {
+export interface NextjsState {
   nextjsNotes: Note[];
   nextjsRenderingNotes: Note[];
   nextjsFlashcards: Flashcard[];
@@ -29,9 +29,11 @@ export default nextjsSlice.reducer;
 
 // ─── Selectors ───────────────────────────────────────────────────────────────
 
-type State = { nextjs: NextjsState };
+type State = { nextjs?: NextjsState };
 
-const selectNextjsState = (state: State) => state.nextjs;
+// Falls back to initialState until a dispatch populates the injected slice.
+// See useInjectReducer — injection registers the reducer but doesn't dispatch.
+const selectNextjsState = (state: State) => state.nextjs ?? initialState;
 
 export const selectNextjsNotes = createSelector(selectNextjsState, (s) => s.nextjsNotes);
 export const selectNextjsRenderingNotes = createSelector(selectNextjsState, (s) => s.nextjsRenderingNotes);

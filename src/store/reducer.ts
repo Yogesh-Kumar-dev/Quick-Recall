@@ -1,25 +1,19 @@
-// third party
-import { combineReducers } from 'redux';
-
 // project imports
+import { createReducerManager } from './reducerManager';
 import snackbarReducer from './slices/snackbar';
-import javascriptReducer from './slices/javascript';
-import reactReducer from './slices/react';
-import reduxReducer from './slices/redux';
-import nextjsReducer from './slices/nextjs';
-import htmlcssReducer from './slices/htmlcss';
-import engineeringReducer from './slices/engineering';
 
-// ==============================|| COMBINE REDUCER ||============================== //
+// ==============================|| ROOT REDUCER (STATIC) + MANAGER ||============================== //
 
-const reducer = combineReducers({
-  snackbar: snackbarReducer,
-  javascript: javascriptReducer,
-  react: reactReducer,
-  redux: reduxReducer,
-  nextjs: nextjsReducer,
-  htmlcss: htmlcssReducer,
-  engineering: engineeringReducer
-});
+// Only globally-needed slices are wired statically. Feature slices (javascript,
+// react, redux, nextjs, htmlcss, engineering) are injected on demand via the
+// reducer manager so their reducer + data ship in the consuming route's chunk
+// rather than the root bundle. See store/useInjectReducer.ts.
+const staticReducers = {
+  snackbar: snackbarReducer
+};
+
+export const reducerManager = createReducerManager(staticReducers);
+
+const reducer = reducerManager.reduce;
 
 export default reducer;

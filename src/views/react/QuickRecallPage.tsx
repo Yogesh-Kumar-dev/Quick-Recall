@@ -7,9 +7,11 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'ui-component/cards/MainCard';
 import VirtualQuickRecallList from 'ui-component/interview-prep/VirtualQuickRecallList';
 import { useSelector } from 'store';
-import { selectReactQuickRecall } from 'store/slices/react';
+import useInjectReducer from 'store/useInjectReducer';
+import reactReducer, { selectReactQuickRecall } from 'store/slices/react';
 
 export default function ReactQuickRecallPage() {
+  useInjectReducer('react', reactReducer);
   const reactQuickRecall = useSelector(selectReactQuickRecall);
 
   const [allExpanded, setAllExpanded] = useState(true);

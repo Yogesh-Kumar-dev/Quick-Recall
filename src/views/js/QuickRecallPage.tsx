@@ -7,9 +7,11 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'ui-component/cards/MainCard';
 import VirtualQuickRecallList from 'ui-component/interview-prep/VirtualQuickRecallList';
 import { useSelector } from 'store';
-import { selectJsQuickRecall, selectTsQuickRecall } from 'store/slices/javascript';
+import useInjectReducer from 'store/useInjectReducer';
+import javascriptReducer, { selectJsQuickRecall, selectTsQuickRecall } from 'store/slices/javascript';
 
 export default function QuickRecallPage() {
+  useInjectReducer('javascript', javascriptReducer);
   const jsQuickRecall = useSelector(selectJsQuickRecall);
   const tsQuickRecall = useSelector(selectTsQuickRecall);
   const allSections = useMemo(() => [...jsQuickRecall, ...tsQuickRecall], [jsQuickRecall, tsQuickRecall]);
