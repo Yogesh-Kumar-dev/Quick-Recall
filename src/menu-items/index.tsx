@@ -13,7 +13,7 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [dashboard, javascript, react, htmlcss, redux, nextjs, engineering]
+  items: [dashboard, htmlcss, javascript, react, redux, nextjs, engineering]
 };
 
 export default menuItems;
