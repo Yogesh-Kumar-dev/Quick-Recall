@@ -17,7 +17,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectRtkQueryNotes, selectRtkQueryFlashcards } from 'store/slices/redux';
+import useInjectReducer from 'store/useInjectReducer';
+import reduxReducer, { selectRtkQueryNotes, selectRtkQueryFlashcards } from 'store/slices/redux';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -40,6 +41,7 @@ const PAGE_TITLE = '⚡ RTK Query';
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function RtkQueryPage() {
+  useInjectReducer('redux', reduxReducer);
   const rtkQueryNotes = useSelector(selectRtkQueryNotes);
   const rtkQueryFlashcards = useSelector(selectRtkQueryFlashcards);
 

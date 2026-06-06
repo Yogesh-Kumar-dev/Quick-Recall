@@ -5,7 +5,7 @@ import { htmlNotes, cssNotes, htmlFlashcards, cssFlashcards } from 'data/htmlcss
 
 // ==============================|| SLICE - HTML & CSS ||============================== //
 
-interface HtmlCssState {
+export interface HtmlCssState {
   htmlNotes: Note[];
   cssNotes: Note[];
   htmlFlashcards: Flashcard[];
@@ -29,9 +29,13 @@ export default htmlcssSlice.reducer;
 
 // ─── Selectors ───────────────────────────────────────────────────────────────
 
-type State = { htmlcss: HtmlCssState };
+type State = { htmlcss?: HtmlCssState };
 
-const selectHtmlCssState = (state: State) => state.htmlcss;
+// Falls back to initialState until the slice has been populated by a dispatch.
+// Reducer injection (useInjectReducer) registers the reducer but does NOT
+// dispatch, so state.htmlcss is undefined for the first render after a route
+// loads — this keeps selectors safe without a render-phase dispatch.
+const selectHtmlCssState = (state: State) => state.htmlcss ?? initialState;
 
 export const selectHtmlNotes = createSelector(selectHtmlCssState, (s) => s.htmlNotes);
 export const selectCssNotes = createSelector(selectHtmlCssState, (s) => s.cssNotes);

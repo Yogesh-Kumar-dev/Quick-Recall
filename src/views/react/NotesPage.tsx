@@ -15,7 +15,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectReactNotes, selectReactFlashcards } from 'store/slices/react';
+import useInjectReducer from 'store/useInjectReducer';
+import reactReducer, { selectReactNotes, selectReactFlashcards } from 'store/slices/react';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -40,6 +41,7 @@ const DIFFICULTY_META: DifficultyOption[] = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ReactNotesPage() {
+  useInjectReducer('react', reactReducer);
   const reactNotes = useSelector(selectReactNotes);
   const reactFlashcards = useSelector(selectReactFlashcards);
 

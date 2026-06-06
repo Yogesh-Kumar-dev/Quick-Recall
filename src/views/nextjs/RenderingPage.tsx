@@ -17,7 +17,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectNextjsRenderingNotes, selectNextjsRenderingFlashcards } from 'store/slices/nextjs';
+import useInjectReducer from 'store/useInjectReducer';
+import nextjsReducer, { selectNextjsRenderingNotes, selectNextjsRenderingFlashcards } from 'store/slices/nextjs';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -41,6 +42,7 @@ const PAGE_TITLE = '🖥️ Rendering Strategies';
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function RenderingPage() {
+  useInjectReducer('nextjs', nextjsReducer);
   const nextjsRenderingNotes = useSelector(selectNextjsRenderingNotes);
   const nextjsRenderingFlashcards = useSelector(selectNextjsRenderingFlashcards);
 

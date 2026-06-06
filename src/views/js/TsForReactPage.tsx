@@ -15,7 +15,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectTsReactNotes, selectTsFlashcards } from 'store/slices/javascript';
+import useInjectReducer from 'store/useInjectReducer';
+import javascriptReducer, { selectTsReactNotes, selectTsFlashcards } from 'store/slices/javascript';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -47,6 +48,7 @@ const DIFFICULTY_META: DifficultyOption[] = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function TsForReactPage() {
+  useInjectReducer('javascript', javascriptReducer);
   const tsReactNotes = useSelector(selectTsReactNotes);
   const tsFlashcards = useSelector(selectTsFlashcards);
 

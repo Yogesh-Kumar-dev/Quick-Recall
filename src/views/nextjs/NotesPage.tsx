@@ -16,7 +16,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectNextjsNotes, selectNextjsFlashcards } from 'store/slices/nextjs';
+import useInjectReducer from 'store/useInjectReducer';
+import nextjsReducer, { selectNextjsNotes, selectNextjsFlashcards } from 'store/slices/nextjs';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -44,6 +45,7 @@ const PAGE_TITLE = '▲ Next.js Notes';
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function NextjsNotesPage() {
+  useInjectReducer('nextjs', nextjsReducer);
   const nextjsNotes = useSelector(selectNextjsNotes);
   const nextjsFlashcards = useSelector(selectNextjsFlashcards);
 

@@ -17,7 +17,8 @@ import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } 
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
-import { selectAsyncThunkNotes, selectAsyncThunkFlashcards } from 'store/slices/redux';
+import useInjectReducer from 'store/useInjectReducer';
+import reduxReducer, { selectAsyncThunkNotes, selectAsyncThunkFlashcards } from 'store/slices/redux';
 import type { Note } from 'types/content';
 
 // ─── Static meta (no data dependency) ────────────────────────────────────────
@@ -39,6 +40,7 @@ const PAGE_TITLE = '🔄 createAsyncThunk';
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AsyncThunkPage() {
+  useInjectReducer('redux', reduxReducer);
   const asyncThunkNotes = useSelector(selectAsyncThunkNotes);
   const asyncThunkFlashcards = useSelector(selectAsyncThunkFlashcards);
 

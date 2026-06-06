@@ -5,7 +5,7 @@ import { jsNotes, tsNotes, tsReactNotes, jsQuickRecall, tsQuickRecall, jsProblem
 
 // ==============================|| SLICE - JAVASCRIPT & TYPESCRIPT ||============================== //
 
-interface JavaScriptState {
+export interface JavaScriptState {
   jsNotes: Note[];
   tsNotes: Note[];
   tsReactNotes: Note[];
@@ -37,9 +37,11 @@ export default javascriptSlice.reducer;
 
 // ─── Selectors ───────────────────────────────────────────────────────────────
 
-type State = { javascript: JavaScriptState };
+type State = { javascript?: JavaScriptState };
 
-const selectJavascriptState = (state: State) => state.javascript;
+// Falls back to initialState until a dispatch populates the injected slice.
+// See useInjectReducer — injection registers the reducer but doesn't dispatch.
+const selectJavascriptState = (state: State) => state.javascript ?? initialState;
 
 export const selectJsNotes = createSelector(selectJavascriptState, (s) => s.jsNotes);
 export const selectTsNotes = createSelector(selectJavascriptState, (s) => s.tsNotes);

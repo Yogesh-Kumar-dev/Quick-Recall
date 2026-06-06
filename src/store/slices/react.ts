@@ -5,7 +5,7 @@ import { reactNotes, reactQuickRecall, reactMcProblems, reactFlashcards } from '
 
 // ==============================|| SLICE - REACT ||============================== //
 
-interface ReactState {
+export interface ReactState {
   reactNotes: Note[];
   reactQuickRecall: QuickRecallSection[];
   reactMcProblems: ReactMcProblem[];
@@ -29,9 +29,11 @@ export default reactSlice.reducer;
 
 // ─── Selectors ───────────────────────────────────────────────────────────────
 
-type State = { react: ReactState };
+type State = { react?: ReactState };
 
-const selectReactState = (state: State) => state.react;
+// Falls back to initialState until a dispatch populates the injected slice.
+// See useInjectReducer — injection registers the reducer but doesn't dispatch.
+const selectReactState = (state: State) => state.react ?? initialState;
 
 export const selectReactNotes = createSelector(selectReactState, (s) => s.reactNotes);
 export const selectReactQuickRecall = createSelector(selectReactState, (s) => s.reactQuickRecall);

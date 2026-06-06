@@ -14,7 +14,7 @@ import {
 
 // ==============================|| SLICE - REDUX ||============================== //
 
-interface ReduxState {
+export interface ReduxState {
   reduxNotes: Note[];
   reduxToolkitNotes: Note[];
   rtkQueryNotes: Note[];
@@ -46,9 +46,11 @@ export default reduxSlice.reducer;
 
 // ─── Selectors ───────────────────────────────────────────────────────────────
 
-type State = { redux: ReduxState };
+type State = { redux?: ReduxState };
 
-const selectReduxState = (state: State) => state.redux;
+// Falls back to initialState until a dispatch populates the injected slice.
+// See useInjectReducer — injection registers the reducer but doesn't dispatch.
+const selectReduxState = (state: State) => state.redux ?? initialState;
 
 export const selectReduxNotes = createSelector(selectReduxState, (s) => s.reduxNotes);
 export const selectReduxToolkitNotes = createSelector(selectReduxState, (s) => s.reduxToolkitNotes);
