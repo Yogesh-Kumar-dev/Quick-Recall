@@ -72,5 +72,21 @@ export const jsProblems: JsProblemEntry[] = [
     difficulty: 'easy',
     category: 'array',
     tags: ['reduce', 'array', 'object']
+  },
+  {
+    id: 'electricity-bill',
+    title: 'Calculate Electricity Bill',
+    slug: 'electricity-bill',
+    difficulty: 'easy',
+    category: 'array',
+    tags: ['slab-pricing', 'reduce', 'array', 'logic', 'math']
+  },
+  {
+    id: 'frequency-calculator',
+    title: 'Frequency Calculator',
+    slug: 'frequency-calculator',
+    difficulty: 'easy',
+    category: 'array',
+    tags: ['hash-map', 'frequency', 'array', 'reduce', 'object']
   }
 ];
