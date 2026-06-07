@@ -16,11 +16,26 @@ import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 
 // assets
-import { IconBolt, IconBrandJavascript, IconBrandNextjs, IconBrandReact, IconBrandRedux, IconCode } from '@tabler/icons-react';
+import {
+  IconBolt,
+  IconBrandCss3,
+  IconBrandJavascript,
+  IconBrandNextjs,
+  IconBrandReact,
+  IconBrandRedux,
+  IconCode,
+  IconTool
+} from '@tabler/icons-react';
 
 // project imports
 import useConfig from 'hooks/useConfig';
 import { ThemeMode } from 'config';
+import { jsNotes, tsNotes, jsProblems } from 'data/javascript';
+import { reactNotes, reactMcProblems } from 'data/react';
+import { reduxNotes, reduxToolkitNotes, rtkQueryNotes, asyncThunkNotes } from 'data/redux';
+import { nextjsNotes, nextjsRenderingNotes } from 'data/nextjs';
+import { htmlNotes, cssNotes } from 'data/htmlcss';
+import { engineeringNotes } from 'data/engineering';
 
 // ==============================|| LANDING - TOPICS ||============================== //
 
@@ -32,41 +47,57 @@ type Topic = {
   accent: 'primary' | 'secondary' | 'success' | 'error' | 'warning';
 };
 
+const reduxNotesCount = reduxNotes.length + reduxToolkitNotes.length + rtkQueryNotes.length + asyncThunkNotes.length;
+
 const topics: Topic[] = [
   {
     title: 'JavaScript & TypeScript',
-    description: '76 JS notes and 13 TS notes covering closures, prototypes, async, generics and more.',
+    description: `${jsNotes.length} JS notes and ${tsNotes.length} TS notes covering closures, prototypes, async, generics and more.`,
     href: '/js/notes',
     icon: IconBrandJavascript,
     accent: 'warning'
   },
   {
     title: 'React',
-    description: '16 concept notes plus a library of reusable custom hooks with live examples.',
+    description: `${reactNotes.length} concept notes plus a library of reusable custom hooks with live examples.`,
     href: '/react/notes',
     icon: IconBrandReact,
     accent: 'primary'
   },
   {
     title: 'Machine Coding',
-    description: '28 problems — 9 JS and 19 React — each with side-by-side live output and a code viewer.',
+    description: `${jsProblems.length + reactMcProblems.length} problems — ${jsProblems.length} JS and ${reactMcProblems.length} React — each with side-by-side live output and a code viewer.`,
     href: '/react/machine-coding?difficulty=easy',
     icon: IconCode,
     accent: 'secondary'
   },
   {
     title: 'Redux',
-    description: 'Redux Toolkit, RTK Query and createAsyncThunk explained with practical patterns.',
+    description: `${reduxNotesCount} notes on Redux Toolkit, RTK Query and createAsyncThunk with practical patterns.`,
     href: '/redux/notes',
     icon: IconBrandRedux,
     accent: 'secondary'
   },
   {
     title: 'Next.js',
-    description: 'Rendering strategies and framework notes for the App Router era.',
+    description: `${nextjsNotes.length + nextjsRenderingNotes.length} notes on the App Router, server components and rendering strategies.`,
     href: '/nextjs/notes',
     icon: IconBrandNextjs,
     accent: 'error'
+  },
+  {
+    title: 'HTML & CSS',
+    description: `${htmlNotes.length} HTML and ${cssNotes.length} CSS notes on semantics, layout, flexbox, grid and the box model.`,
+    href: '/html-css/html',
+    icon: IconBrandCss3,
+    accent: 'primary'
+  },
+  {
+    title: 'Engineering Essentials',
+    description: `${engineeringNotes.length} notes on browser internals, networking, security and performance fundamentals.`,
+    href: '/engineering/notes',
+    icon: IconTool,
+    accent: 'warning'
   },
   {
     title: 'Quick Recall',

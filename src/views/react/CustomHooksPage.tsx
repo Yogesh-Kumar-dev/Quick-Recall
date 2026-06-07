@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { parseAsString, useQueryState } from 'nuqs';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -39,6 +39,7 @@ const difficultyColor = (d: HookDifficulty) => DIFFICULTY_META.find((m) => m.val
 function HookCard({ hook, open, onToggle }: { hook: HookDoc; open: boolean; onToggle: (id: string) => void }) {
   return (
     <Accordion
+      id={`hook-${hook.id}`}
       expanded={open}
       onChange={() => onToggle(hook.id)}
       disableGutters
@@ -179,6 +180,15 @@ export default function CustomHooksPage() {
       }),
     [difficulty, category]
   );
+
+  // When a hook is deep-linked via ?open=<id> (e.g. from header fuzzy search),
+  // scroll its now-expanded card into view once it has rendered.
+  useEffect(() => {
+    if (!openId) return;
+    if (!filtered.some((h) => h.id === openId)) return;
+    const el = document.getElementById(`hook-${openId}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [openId, filtered]);
 
   return (
     <MainCard

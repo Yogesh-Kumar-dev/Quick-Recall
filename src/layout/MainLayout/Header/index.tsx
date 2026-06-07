@@ -9,6 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 // project imports
 import LogoSection from '../LogoSection';
+import SearchSection from './SearchSection';
 import FullScreenSection from './FullScreenSection';
 
 import { MenuOrientation, ThemeMode } from 'config';
@@ -32,13 +33,20 @@ export default function Header() {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-      {/* logo */}
-      <Box component="span" sx={{ display: { xs: 'none', md: 'block' } }}>
-        <LogoSection />
+      {/* left: logo */}
+      <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+        <Box component="span" sx={{ display: { xs: 'none', md: 'block' } }}>
+          <LogoSection />
+        </Box>
       </Box>
 
-      {/* right side: full screen + nav toggle */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      {/* center: search */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+        <SearchSection />
+      </Box>
+
+      {/* right: full screen + nav toggle */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1, flex: 1 }}>
         {!isHorizontal && (
           <Tooltip title={drawerOpen ? 'Close navigation' : 'Open navigation'} placement="bottom">
             <Avatar
