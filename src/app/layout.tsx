@@ -8,9 +8,9 @@ import ProviderWrapper from 'store/ProviderWrapper';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export const metadata: Metadata = {
-  title: 'QuickRecall — React Interview Prep',
+  title: 'QuickRecall — Developer Interview Prep',
   description:
-    'Your one-stop React interview preparation tool. Machine coding problems with Minimal and MUI versions, side-by-side code viewer, and interview tips.'
+    'A personal knowledge base for developer interview prep. Notes, machine-coding problems with a side-by-side code viewer, and quick-recall sheets — any source distilled into one searchable format.'
 };
 
 // ==============================|| ROOT LAYOUT ||============================== //

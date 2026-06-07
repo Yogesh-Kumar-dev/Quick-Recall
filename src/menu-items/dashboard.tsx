@@ -13,7 +13,7 @@ const icons = {
 };
 const dashboard: NavItemType = {
   id: 'dashboard',
-  title: 'dashboard',
+  title: 'Dashboard',
   icon: icons.IconBrandChrome,
   type: 'group',
   url: '/dashboard'

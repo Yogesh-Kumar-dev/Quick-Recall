@@ -19,6 +19,7 @@ import { IconBolt } from '@tabler/icons-react';
 const links = [
   { label: 'JS & TS Notes', href: '/js/notes' },
   { label: 'React', href: '/react/notes' },
+  { label: 'HTML & CSS', href: '/html-css/html' },
   { label: 'Machine Coding', href: '/react/machine-coding?difficulty=easy' },
   { label: 'Quick Recall', href: '/js/quick-recall' }
 ];
@@ -72,7 +73,7 @@ export default function Footer() {
         </Stack>
 
         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 3 }}>
-          © {new Date().getFullYear()} QuickRecall — interview prep for JavaScript, TypeScript & React.
+          © {new Date().getFullYear()} QuickRecall — interview prep for JavaScript, TypeScript, React & more.
         </Typography>
       </Container>
     </Box>

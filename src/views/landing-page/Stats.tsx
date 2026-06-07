@@ -5,13 +5,38 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
+// project imports — count content live so these never drift
+import { jsNotes, tsNotes, tsReactNotes, jsProblems } from 'data/javascript';
+import { reactNotes, reactMcProblems } from 'data/react';
+import { reduxNotes, reduxToolkitNotes, rtkQueryNotes, asyncThunkNotes } from 'data/redux';
+import { nextjsNotes, nextjsRenderingNotes } from 'data/nextjs';
+import { htmlNotes, cssNotes } from 'data/htmlcss';
+import { engineeringNotes } from 'data/engineering';
+
 // ==============================|| LANDING - STATS ||============================== //
 
+const totalNotes =
+  jsNotes.length +
+  tsNotes.length +
+  tsReactNotes.length +
+  reactNotes.length +
+  reduxNotes.length +
+  reduxToolkitNotes.length +
+  rtkQueryNotes.length +
+  asyncThunkNotes.length +
+  nextjsNotes.length +
+  nextjsRenderingNotes.length +
+  htmlNotes.length +
+  cssNotes.length +
+  engineeringNotes.length;
+
+const totalProblems = jsProblems.length + reactMcProblems.length;
+
 const stats = [
-  { value: '105+', label: 'Concept notes' },
-  { value: '28', label: 'Machine-coding problems' },
+  { value: `${totalNotes}+`, label: 'Concept notes' },
+  { value: `${totalProblems}`, label: 'Machine-coding problems' },
   { value: '3', label: 'Live versions per problem' },
-  { value: '5', label: 'Topics covered' }
+  { value: '7', label: 'Topics covered' }
 ];
 
 export default function Stats() {

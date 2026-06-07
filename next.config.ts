@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'flagcdn.com',
         pathname: '**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'thesvg.org',
+        pathname: '/icons/**'
       }
     ]
   }

@@ -10,6 +10,7 @@ import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
 import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } from 'ui-component/topic-dashboard/SectionLanding';
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
+import SuggestProblemBanner from 'ui-component/SuggestProblemBanner';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
 import useInjectReducer from 'store/useInjectReducer';
@@ -208,6 +209,8 @@ export default function ReactMachineCodingPage() {
           </Box>
         )}
       </FilterShell>
+
+      <SuggestProblemBanner sx={{ mt: 3 }} />
     </MainCard>
   );
 }
