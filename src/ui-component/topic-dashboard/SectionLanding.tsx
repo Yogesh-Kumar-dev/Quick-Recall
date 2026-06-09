@@ -267,7 +267,7 @@ export default function SectionLanding({
         </>
       )}
 
-      {hasFlashcards && (
+      {hasFlashcards && flashcardsOpen && (
         <FlashcardDialog open={flashcardsOpen} onClose={() => setFlashcardsOpen(false)} cards={flashcards!} title={title} />
       )}
     </Box>

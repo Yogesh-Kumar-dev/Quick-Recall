@@ -2,13 +2,14 @@ import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { IconBrandJavascript, IconBrandNextjs, IconBrandReact, IconBrandRedux } from '@tabler/icons-react';
+import { IconBrandCss3, IconBrandJavascript, IconBrandNextjs, IconBrandReact, IconBrandRedux } from '@tabler/icons-react';
 
 import TopicStatCard from 'ui-component/interview-prep/TopicStatCard';
 import { jsProblems, jsNotes, tsNotes } from 'data/javascript';
 import { reactNotes, reactMcProblems } from 'data/react';
 import { reduxNotes, reduxToolkitNotes, rtkQueryNotes, asyncThunkNotes } from 'data/redux';
 import { nextjsNotes, nextjsRenderingNotes } from 'data/nextjs';
+import { htmlNotes, cssNotes } from 'data/htmlcss';
 
 // ─── Difficulty tally helper ───────────────────────────────────────────────────
 
@@ -31,11 +32,12 @@ function tallyDifficulty(problems: { difficulty: string }[]): Diff {
 const jsNotesCount = jsNotes.length + tsNotes.length;
 const reduxNotesCount = reduxNotes.length + reduxToolkitNotes.length + rtkQueryNotes.length + asyncThunkNotes.length;
 const nextjsNotesCount = nextjsNotes.length + nextjsRenderingNotes.length;
+const htmlCssNotesCount = htmlNotes.length + cssNotes.length;
 
 const jsDiff = tallyDifficulty(jsProblems);
 const reactDiff = tallyDifficulty(reactMcProblems);
 
-const totalNotes = jsNotesCount + reactNotes.length + reduxNotesCount + nextjsNotesCount;
+const totalNotes = jsNotesCount + reactNotes.length + reduxNotesCount + nextjsNotesCount + htmlCssNotesCount;
 const totalProblems = jsProblems.length + reactMcProblems.length;
 const totalDiff: Diff = {
   easy: jsDiff.easy + reactDiff.easy,
@@ -94,86 +96,124 @@ export default function DashboardPage() {
         ))}
       </Stack>
 
-      {/* Topic cards */}
+      {/* Topic cards — 4 corners with HTML & CSS centered in the middle column (md+) */}
       <Box
         sx={{
           display: 'grid',
           gap: 3,
-          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' },
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', md: 'repeat(3, minmax(0, 1fr))' },
           alignItems: 'stretch'
         }}
       >
-        <TopicStatCard
-          icon={<IconBrandJavascript size={26} />}
-          title="JavaScript & TypeScript"
-          description="ES6→ES2024 feature notes, TypeScript patterns, machine coding problems, and a quick-recall cheatsheet."
-          accentColor="#f0db4f"
-          stats={[
-            { label: 'Notes', value: jsNotesCount },
-            { label: 'Problems', value: jsProblems.length }
-          ]}
-          difficulty={jsDiff}
-          quickLinks={[
-            { label: 'JS Notes', href: '/js/notes' },
-            { label: 'TS Notes', href: '/js/typescript' },
-            { label: 'Machine Coding', href: '/js/machine-coding' },
-            { label: 'Quick Recall', href: '/js/quick-recall' }
-          ]}
-          primaryHref="/js/notes"
-        />
+        <Box sx={{ gridColumn: { md: '1' }, gridRow: { md: '1' } }}>
+          <TopicStatCard
+            icon={<IconBrandCss3 size={26} />}
+            title="HTML & CSS"
+            description="Semantic HTML notes, modern CSS layout and styling notes, plus flashcards for quick recall."
+            accentColor="#e34f26"
+            stats={[
+              { label: 'Notes', value: htmlCssNotesCount },
+              { label: 'Topics', value: 2 }
+            ]}
+            quickLinks={[
+              { label: 'HTML Notes', href: '/html-css/html' },
+              { label: 'CSS Notes', href: '/html-css/css' }
+            ]}
+            primaryHref="/html-css/html"
+          />
+        </Box>
 
-        <TopicStatCard
-          icon={<IconBrandReact size={26} />}
-          title="React"
-          description="React notes, custom hooks reference, machine coding problems by difficulty, and a quick-recall cheatsheet."
-          accentColor="#61dafb"
-          stats={[
-            { label: 'Notes', value: reactNotes.length },
-            { label: 'Problems', value: reactMcProblems.length }
-          ]}
-          difficulty={reactDiff}
-          quickLinks={[
-            { label: 'React Notes', href: '/react/notes' },
-            { label: 'Custom Hooks', href: '/react/custom-hooks' },
-            { label: 'Machine Coding', href: '/react/machine-coding' },
-            { label: 'Quick Recall', href: '/react/quick-recall' }
-          ]}
-          primaryHref="/react/notes"
-        />
+        <Box sx={{ gridColumn: { md: '3' }, gridRow: { md: '1' } }}>
+          <TopicStatCard
+            icon={<IconBrandReact size={26} />}
+            title="React"
+            description="React notes, custom hooks reference, machine coding problems by difficulty, and a quick-recall cheatsheet."
+            accentColor="#61dafb"
+            stats={[
+              { label: 'Notes', value: reactNotes.length },
+              { label: 'Problems', value: reactMcProblems.length }
+            ]}
+            difficulty={reactDiff}
+            quickLinks={[
+              { label: 'React Notes', href: '/react/notes' },
+              { label: 'Custom Hooks', href: '/react/custom-hooks' },
+              { label: 'Machine Coding', href: '/react/machine-coding' },
+              { label: 'Quick Recall', href: '/react/quick-recall' }
+            ]}
+            primaryHref="/react/notes"
+          />
+        </Box>
 
-        <TopicStatCard
-          icon={<IconBrandRedux size={26} />}
-          title="Redux"
-          description="Core Redux concepts, Redux Toolkit (createSlice, configureStore), RTK Query, and createAsyncThunk patterns."
-          accentColor="#764abc"
-          stats={[
-            { label: 'Notes', value: reduxNotesCount },
-            { label: 'Topics', value: 4 }
-          ]}
-          quickLinks={[
-            { label: 'Redux Notes', href: '/redux/notes' },
-            { label: 'Redux Toolkit', href: '/redux/toolkit' },
-            { label: 'RTK Query', href: '/redux/rtk-query' },
-            { label: 'Async Thunk', href: '/redux/async-thunk' }
-          ]}
-          primaryHref="/redux/notes"
-        />
+        {/* Centered card: middle column, spanning both rows on md+. Let the card size to
+            its content (not stretch to fill the span) so the leftover height becomes
+            balanced top/bottom margin around it. */}
+        <Box
+          sx={{
+            gridColumn: { md: '2' },
+            gridRow: { md: '1 / span 2' },
+            display: 'flex',
+            alignItems: 'center',
+            // override TopicStatCard's height:100% on md+ so it shrinks to content
+            '& > .MuiCard-root': { height: { md: 'auto' } }
+          }}
+        >
+          <TopicStatCard
+            icon={<IconBrandJavascript size={26} />}
+            title="JavaScript & TypeScript"
+            description="ES6→ES2024 feature notes, TypeScript patterns, machine coding problems, and a quick-recall cheatsheet."
+            accentColor="#f0db4f"
+            stats={[
+              { label: 'Notes', value: jsNotesCount },
+              { label: 'Problems', value: jsProblems.length }
+            ]}
+            difficulty={jsDiff}
+            quickLinks={[
+              { label: 'JS Notes', href: '/js/notes' },
+              { label: 'TS Notes', href: '/js/typescript' },
+              { label: 'Machine Coding', href: '/js/machine-coding' },
+              { label: 'Quick Recall', href: '/js/quick-recall' }
+            ]}
+            primaryHref="/js/notes"
+          />
+        </Box>
 
-        <TopicStatCard
-          icon={<IconBrandNextjs size={26} />}
-          title="Next.js"
-          description="App Router, Server Components, rendering strategies (SSR, SSG, ISR, CSR, PPR), and core Next.js concepts."
-          accentColor="#94a3b8"
-          stats={[
-            { label: 'Notes', value: nextjsNotesCount },
-            { label: 'Topics', value: 2 }
-          ]}
-          quickLinks={[
-            { label: 'Next.js Notes', href: '/nextjs/notes' },
-            { label: 'Rendering', href: '/nextjs/rendering' }
-          ]}
-          primaryHref="/nextjs/notes"
-        />
+        <Box sx={{ gridColumn: { md: '1' }, gridRow: { md: '2' } }}>
+          <TopicStatCard
+            icon={<IconBrandRedux size={26} />}
+            title="Redux"
+            description="Core Redux concepts, Redux Toolkit (createSlice, configureStore), RTK Query, and createAsyncThunk patterns."
+            accentColor="#764abc"
+            stats={[
+              { label: 'Notes', value: reduxNotesCount },
+              { label: 'Topics', value: 4 }
+            ]}
+            quickLinks={[
+              { label: 'Redux Notes', href: '/redux/notes' },
+              { label: 'Redux Toolkit', href: '/redux/toolkit' },
+              { label: 'RTK Query', href: '/redux/rtk-query' },
+              { label: 'Async Thunk', href: '/redux/async-thunk' }
+            ]}
+            primaryHref="/redux/notes"
+          />
+        </Box>
+
+        <Box sx={{ gridColumn: { md: '3' }, gridRow: { md: '2' } }}>
+          <TopicStatCard
+            icon={<IconBrandNextjs size={26} />}
+            title="Next.js"
+            description="App Router, Server Components, rendering strategies (SSR, SSG, ISR, CSR, PPR), and core Next.js concepts."
+            accentColor="#94a3b8"
+            stats={[
+              { label: 'Notes', value: nextjsNotesCount },
+              { label: 'Topics', value: 2 }
+            ]}
+            quickLinks={[
+              { label: 'Next.js Notes', href: '/nextjs/notes' },
+              { label: 'Rendering', href: '/nextjs/rendering' }
+            ]}
+            primaryHref="/nextjs/notes"
+          />
+        </Box>
       </Box>
     </Box>
   );
