@@ -2,7 +2,6 @@
 
 // next
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 
 // material-ui
 import { Theme } from '@mui/material/styles';
@@ -10,29 +9,23 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
 // project imports
 import AuthWrapper1 from './AuthWrapper1';
 import AuthCardWrapper from './AuthCardWrapper';
 import ViewOnlyAlert from './ViewOnlyAlert';
-import LoginProvider from './LoginProvider';
 
 import Logo from 'ui-component/Logo';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 
 import useAuth from 'hooks/useAuth';
-import { APP_AUTH } from 'config';
 
 // ==============================|| AUTH3 - CHECK MAIL ||============================== //
 
 export default function CheckMail() {
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const { isLoggedIn } = useAuth();
-
-  const searchParams = useSearchParams();
-  const auth = searchParams.get('auth');
 
   return (
     <AuthWrapper1>
@@ -66,7 +59,7 @@ export default function CheckMail() {
                     <AnimateButton>
                       <Button
                         component={Link}
-                        href={isLoggedIn ? '/pages/login/login3' : auth ? `/${auth}/login?auth=supabase` : '/login'}
+                        href={isLoggedIn ? '/pages/login/login3' : '/login'}
                         disableElevation
                         fullWidth
                         size="large"
@@ -80,20 +73,6 @@ export default function CheckMail() {
                   </Grid>
                 </Grid>
               </AuthCardWrapper>
-              {!isLoggedIn && (
-                <Box
-                  sx={{
-                    maxWidth: { xs: 400, lg: 475 },
-                    margin: { xs: 2.5, md: 3 },
-                    '& > *': {
-                      flexGrow: 1,
-                      flexBasis: '50%'
-                    }
-                  }}
-                >
-                  <LoginProvider currentLoginWith={APP_AUTH} />
-                </Box>
-              )}
             </Grid>
           </Grid>
         </Grid>

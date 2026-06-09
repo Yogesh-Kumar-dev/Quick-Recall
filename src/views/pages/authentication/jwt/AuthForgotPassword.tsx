@@ -13,8 +13,9 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 
 // third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -25,6 +26,12 @@ import { useDispatch } from 'store';
 import { openSnackbar } from 'store/slices/snackbar';
 
 // ========================|| JWT - FORGOT PASSWORD ||======================== //
+
+const schema = z.object({
+  email: z.string().min(1, 'Email is required').email('Must be a valid email').max(255)
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export default function AuthForgotPassword({ link, ...others }: { link?: string }) {
   const theme = useTheme();
@@ -37,94 +44,74 @@ export default function AuthForgotPassword({ link, ...others }: { link?: string 
   const searchParams = useSearchParams();
   const authParam = searchParams.get('auth');
 
-  return (
-    <Formik
-      initialValues={{
-        email: '',
-        submit: null
-      }}
-      validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
-      })}
-      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        try {
-          await resetPassword?.(values.email).then(
-            () => {
-              setStatus({ success: true });
-              setSubmitting(false);
-              dispatch(
-                openSnackbar({
-                  open: true,
-                  message: 'Check mail for reset password link',
-                  variant: 'alert',
-                  alert: {
-                    color: 'success'
-                  },
-                  close: false
-                })
-              );
-              setTimeout(() => {
-                router.replace(
-                  isLoggedIn ? `/pages/check-mail/${link || 'check-mail3'}` : authParam ? `/check-mail?auth=${authParam}` : '/check-mail'
-                );
-              }, 1500);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting }
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { email: '' }
+  });
 
-              // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-              // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-              // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-              // github issue: https://github.com/formium/formik/issues/2430
-            },
-            (err: any) => {
-              setStatus({ success: false });
-              setErrors({ submit: err.message });
-              setSubmitting(false);
-            }
+  const onSubmit = handleSubmit(async (values) => {
+    try {
+      await resetPassword?.(values.email).then(
+        () => {
+          dispatch(
+            openSnackbar({
+              open: true,
+              message: 'Check mail for reset password link',
+              variant: 'alert',
+              alert: {
+                color: 'success'
+              },
+              close: false
+            })
           );
-        } catch (err: any) {
-          console.error(err);
-          if (scriptedRef.current) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
+          setTimeout(() => {
+            router.replace(
+              isLoggedIn ? `/pages/check-mail/${link || 'check-mail3'}` : authParam ? `/check-mail?auth=${authParam}` : '/check-mail'
+            );
+          }, 1500);
+        },
+        (err: any) => {
+          setError('root', { message: err.message });
         }
-      }}
-    >
-      {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-        <form noValidate onSubmit={handleSubmit} {...others}>
-          <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-            <InputLabel htmlFor="outlined-adornment-email-forgot">Email Address / Username</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-email-forgot"
-              type="email"
-              value={values.email}
-              name="email"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              label="Email Address / Username"
-            />
-            {touched.email && errors.email && (
-              <FormHelperText error id="standard-weight-helper-text-email-forgot">
-                {errors.email}
-              </FormHelperText>
-            )}
-          </FormControl>
+      );
+    } catch (err: any) {
+      console.error(err);
+      if (scriptedRef.current) {
+        setError('root', { message: err.message });
+      }
+    }
+  });
 
-          {errors.submit && (
-            <Box sx={{ mt: 3 }}>
-              <FormHelperText error>{errors.submit}</FormHelperText>
-            </Box>
-          )}
+  return (
+    <form noValidate onSubmit={onSubmit} {...others}>
+      <FormControl fullWidth error={Boolean(errors.email)} sx={{ ...theme.typography.customInput }}>
+        <InputLabel htmlFor="outlined-adornment-email-forgot">Email Address / Username</InputLabel>
+        <OutlinedInput id="outlined-adornment-email-forgot" type="email" {...register('email')} label="Email Address / Username" />
+        {errors.email && (
+          <FormHelperText error id="standard-weight-helper-text-email-forgot">
+            {errors.email.message}
+          </FormHelperText>
+        )}
+      </FormControl>
 
-          <Box sx={{ mt: 2 }}>
-            <AnimateButton>
-              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="secondary">
-                Send Mail
-              </Button>
-            </AnimateButton>
-          </Box>
-        </form>
+      {errors.root && (
+        <Box sx={{ mt: 3 }}>
+          <FormHelperText error>{errors.root.message}</FormHelperText>
+        </Box>
       )}
-    </Formik>
+
+      <Box sx={{ mt: 2 }}>
+        <AnimateButton>
+          <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="secondary">
+            Send Mail
+          </Button>
+        </AnimateButton>
+      </Box>
+    </form>
   );
 }
