@@ -19,8 +19,9 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 // project imports
 import useAuth from 'hooks/useAuth';
@@ -39,6 +40,18 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { StringColorProps } from 'types';
 
 // ========================|| JWT - RESET PASSWORD ||======================== //
+
+const schema = z
+  .object({
+    password: z.string().min(1, 'Password is required').max(255),
+    confirmPassword: z.string().min(1, 'Confirm Password is required')
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Both Password must be match!',
+    path: ['confirmPassword']
+  });
+
+type FormValues = z.infer<typeof schema>;
 
 export default function AuthResetPassword({ link, ...others }: { link?: string }) {
   const theme = useTheme();
@@ -72,152 +85,130 @@ export default function AuthResetPassword({ link, ...others }: { link?: string }
   const searchParams = useSearchParams();
   const authParam = searchParams.get('auth');
 
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting }
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { password: '', confirmPassword: '' }
+  });
+
+  const passwordField = register('password');
+
+  const onSubmit = handleSubmit(async () => {
+    try {
+      // password reset
+      if (scriptedRef.current) {
+        dispatch(
+          openSnackbar({
+            open: true,
+            message: 'Successfuly reset password.',
+            variant: 'alert',
+            alert: {
+              color: 'success'
+            },
+            close: false
+          })
+        );
+
+        setTimeout(() => {
+          router.replace(isLoggedIn ? `/pages/login/${link || 'login3'}` : authParam ? `/login?auth=${authParam}` : '/login');
+        }, 1500);
+      }
+    } catch (err: any) {
+      console.error(err);
+      if (scriptedRef.current) {
+        setError('root', { message: err.message });
+      }
+    }
+  });
+
   return (
-    <Formik
-      initialValues={{
-        password: '',
-        confirmPassword: '',
-        submit: null
-      }}
-      validationSchema={Yup.object().shape({
-        password: Yup.string().max(255).required('Password is required'),
-        confirmPassword: Yup.string()
-          .required('Confirm Password is required')
-          .test('confirmPassword', 'Both Password must be match!', (confirmPassword, yup) => yup.parent.password === confirmPassword)
-      })}
-      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        try {
-          // password reset
-          if (scriptedRef.current) {
-            setStatus({ success: true });
-            setSubmitting(false);
-
-            dispatch(
-              openSnackbar({
-                open: true,
-                message: 'Successfuly reset password.',
-                variant: 'alert',
-                alert: {
-                  color: 'success'
-                },
-                close: false
-              })
-            );
-
-            setTimeout(() => {
-              router.replace(isLoggedIn ? `/pages/login/${link || 'login3'}` : authParam ? `/login?auth=${authParam}` : '/login');
-            }, 1500);
+    <form noValidate onSubmit={onSubmit} {...others}>
+      <FormControl fullWidth error={Boolean(errors.password)} sx={{ ...theme.typography.customInput }}>
+        <InputLabel htmlFor="outlined-adornment-password-reset">Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password-reset"
+          type={showPassword ? 'text' : 'password'}
+          {...passwordField}
+          onChange={(e) => {
+            passwordField.onChange(e);
+            changePassword(e.target.value);
+          }}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+                size="large"
+              >
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
           }
-        } catch (err: any) {
-          console.error(err);
-          if (scriptedRef.current) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
-        }
-      }}
-    >
-      {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-        <form noValidate onSubmit={handleSubmit} {...others}>
-          <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
-            <InputLabel htmlFor="outlined-adornment-password-reset">Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password-reset"
-              type={showPassword ? 'text' : 'password'}
-              value={values.password}
-              name="password"
-              onBlur={handleBlur}
-              onChange={(e) => {
-                handleChange(e);
-                changePassword(e.target.value);
-              }}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                    size="large"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          {touched.password && errors.password && (
-            <FormControl fullWidth>
-              <FormHelperText error id="standard-weight-helper-text-reset">
-                {errors.password}
-              </FormHelperText>
-            </FormControl>
-          )}
-          {strength !== 0 && (
-            <FormControl fullWidth>
-              <Box sx={{ mb: 2 }}>
-                <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-                  <Grid>
-                    <Box
-                      sx={{
-                        width: 85,
-                        height: 8,
-                        borderRadius: '7px',
-                        bgcolor: level?.color
-                      }}
-                    />
-                  </Grid>
-                  <Grid>
-                    <Typography variant="subtitle1" sx={{ fontSize: '0.75rem' }}>
-                      {level?.label}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-            </FormControl>
-          )}
-
-          <FormControl
-            fullWidth
-            error={Boolean(touched.confirmPassword && errors.confirmPassword)}
-            sx={{ ...theme.typography.customInput }}
-          >
-            <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-confirm-password"
-              type="password"
-              value={values.confirmPassword}
-              name="confirmPassword"
-              label="Confirm Password"
-              onBlur={handleBlur}
-              onChange={handleChange}
-            />
-          </FormControl>
-
-          {touched.confirmPassword && errors.confirmPassword && (
-            <FormControl fullWidth>
-              <FormHelperText error id="standard-weight-helper-text-confirm-password">
-                {' '}
-                {errors.confirmPassword}{' '}
-              </FormHelperText>
-            </FormControl>
-          )}
-
-          {errors.submit && (
-            <Box sx={{ mt: 3 }}>
-              <FormHelperText error>{errors.submit}</FormHelperText>
-            </Box>
-          )}
-          <Box sx={{ mt: 1 }}>
-            <AnimateButton>
-              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="secondary">
-                Reset Password
-              </Button>
-            </AnimateButton>
-          </Box>
-        </form>
+        />
+      </FormControl>
+      {errors.password && (
+        <FormControl fullWidth>
+          <FormHelperText error id="standard-weight-helper-text-reset">
+            {errors.password.message}
+          </FormHelperText>
+        </FormControl>
       )}
-    </Formik>
+      {strength !== 0 && (
+        <FormControl fullWidth>
+          <Box sx={{ mb: 2 }}>
+            <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+              <Grid>
+                <Box
+                  sx={{
+                    width: 85,
+                    height: 8,
+                    borderRadius: '7px',
+                    bgcolor: level?.color
+                  }}
+                />
+              </Grid>
+              <Grid>
+                <Typography variant="subtitle1" sx={{ fontSize: '0.75rem' }}>
+                  {level?.label}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+        </FormControl>
+      )}
+
+      <FormControl fullWidth error={Boolean(errors.confirmPassword)} sx={{ ...theme.typography.customInput }}>
+        <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
+        <OutlinedInput id="outlined-adornment-confirm-password" type="password" label="Confirm Password" {...register('confirmPassword')} />
+      </FormControl>
+
+      {errors.confirmPassword && (
+        <FormControl fullWidth>
+          <FormHelperText error id="standard-weight-helper-text-confirm-password">
+            {' '}
+            {errors.confirmPassword.message}{' '}
+          </FormHelperText>
+        </FormControl>
+      )}
+
+      {errors.root && (
+        <Box sx={{ mt: 3 }}>
+          <FormHelperText error>{errors.root.message}</FormHelperText>
+        </Box>
+      )}
+      <Box sx={{ mt: 1 }}>
+        <AnimateButton>
+          <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="secondary">
+            Reset Password
+          </Button>
+        </AnimateButton>
+      </Box>
+    </form>
   );
 }

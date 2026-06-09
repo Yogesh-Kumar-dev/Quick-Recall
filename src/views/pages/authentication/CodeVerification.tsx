@@ -2,9 +2,6 @@
 
 // next
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-
-import { useEffect, useState } from 'react';
 
 // material-ui
 import { Theme } from '@mui/material/styles';
@@ -14,54 +11,24 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
 // project imports
 import AuthWrapper1 from './AuthWrapper1';
 import AuthCardWrapper from './AuthCardWrapper';
+import AuthCodeVerification from './jwt/AuthCodeVerification';
 import ViewOnlyAlert from './ViewOnlyAlert';
-import LoginProvider from './LoginProvider';
 
 import Logo from 'ui-component/Logo';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 
 import useAuth from 'hooks/useAuth';
-import { APP_AUTH } from 'config';
-
-// Possible auth types
-type AuthType = 'firebase' | 'jwt' | 'aws' | 'auth0' | 'supabase';
-
-// A mapping of auth types to dynamic imports
-const authCodeVerificationImports: Record<AuthType, () => Promise<any>> = {
-  firebase: () => import('./firebase/AuthCodeVerification'),
-  jwt: () => import('./jwt/AuthCodeVerification'),
-  aws: () => import('./aws/AuthCodeVerification'),
-  auth0: () => import('./auth0/AuthCodeVerification'),
-  supabase: () => import('./supabase/AuthCodeVerification')
-};
 
 // ===========================|| AUTH3 - CODE VERIFICATION ||=========================== //
 
 export default function CodeVerification() {
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-  const [AuthCodeVerificationComponent, setAuthCodeVerificationComponent] = useState<React.ComponentType | null>(null);
   const { isLoggedIn } = useAuth();
-
-  const searchParams = useSearchParams();
-  const authParam = (searchParams.get('auth') as AuthType | null) || '';
-
-  useEffect(() => {
-    const selectedAuth = authParam || (APP_AUTH as AuthType);
-
-    const importAuthCodeVerificationComponent = authCodeVerificationImports[selectedAuth];
-
-    importAuthCodeVerificationComponent()
-      .then((module) => setAuthCodeVerificationComponent(() => module.default))
-      .catch((error) => {
-        console.error(`Error loading ${selectedAuth} AuthCodeVerification`, error);
-      });
-  }, [authParam]);
 
   return (
     <AuthWrapper1>
@@ -94,7 +61,9 @@ export default function CodeVerification() {
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid size={12}>{AuthCodeVerificationComponent && <AuthCodeVerificationComponent />}</Grid>
+                  <Grid size={12}>
+                    <AuthCodeVerification />
+                  </Grid>
                   <Grid size={12}>
                     <Divider />
                   </Grid>
@@ -119,20 +88,6 @@ export default function CodeVerification() {
                   </Grid>
                 </Grid>
               </AuthCardWrapper>
-              {!isLoggedIn && (
-                <Box
-                  sx={{
-                    maxWidth: { xs: 400, lg: 475 },
-                    margin: { xs: 2.5, md: 3 },
-                    '& > *': {
-                      flexGrow: 1,
-                      flexBasis: '50%'
-                    }
-                  }}
-                >
-                  <LoginProvider currentLoginWith={APP_AUTH} />
-                </Box>
-              )}
             </Grid>
           </Grid>
         </Grid>

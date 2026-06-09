@@ -2,9 +2,6 @@
 
 // next
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-
-import { useEffect, useState } from 'react';
 
 // material-ui
 import { Theme } from '@mui/material/styles';
@@ -13,53 +10,23 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
 // project imports
 import AuthWrapper1 from './AuthWrapper1';
 import AuthCardWrapper from './AuthCardWrapper';
-import LoginProvider from './LoginProvider';
+import AuthLogin from './jwt/AuthLogin';
 import ViewOnlyAlert from './ViewOnlyAlert';
 
 import Logo from 'ui-component/Logo';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 
 import useAuth from 'hooks/useAuth';
-import { APP_AUTH } from 'config';
-
-// Possible auth types
-type AuthType = 'firebase' | 'jwt' | 'aws' | 'auth0' | 'supabase';
-
-// A mapping of auth types to dynamic imports
-const authLoginImports: Record<AuthType, () => Promise<any>> = {
-  firebase: () => import('./firebase/AuthLogin'),
-  jwt: () => import('./jwt/AuthLogin'),
-  aws: () => import('./aws/AuthLogin'),
-  auth0: () => import('./auth0/AuthLogin'),
-  supabase: () => import('./supabase/AuthLogin')
-};
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 export default function Login() {
   const { isLoggedIn } = useAuth();
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-  const [AuthLoginComponent, setAuthLoginComponent] = useState<React.ComponentType | null>(null);
-
-  const searchParams = useSearchParams();
-  const authParam = (searchParams.get('auth') as AuthType | null) || '';
-
-  useEffect(() => {
-    const selectedAuth = authParam || (APP_AUTH as AuthType);
-
-    const importAuthLoginComponent = authLoginImports[selectedAuth];
-
-    importAuthLoginComponent()
-      .then((module) => setAuthLoginComponent(() => module.default))
-      .catch((error) => {
-        console.error(`Error loading ${selectedAuth} AuthLogin`, error);
-      });
-  }, [authParam]);
 
   return (
     <AuthWrapper1>
@@ -89,7 +56,9 @@ export default function Login() {
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid size={12}>{AuthLoginComponent && <AuthLoginComponent />}</Grid>
+                  <Grid size={12}>
+                    <AuthLogin />
+                  </Grid>
                   <Grid size={12}>
                     <Divider />
                   </Grid>
@@ -97,7 +66,7 @@ export default function Login() {
                     <Grid container direction="column" sx={{ alignItems: 'center' }} size={12}>
                       <Typography
                         component={Link}
-                        href={isLoggedIn ? '/pages/register/register3' : authParam ? `/register?auth=${authParam}` : '/register'}
+                        href={isLoggedIn ? '/pages/register/register3' : '/register'}
                         variant="subtitle1"
                         sx={{ textDecoration: 'none' }}
                       >
@@ -107,20 +76,6 @@ export default function Login() {
                   </Grid>
                 </Grid>
               </AuthCardWrapper>
-              {!isLoggedIn && (
-                <Box
-                  sx={{
-                    maxWidth: { xs: 400, lg: 475 },
-                    margin: { xs: 2.5, md: 3 },
-                    '& > *': {
-                      flexGrow: 1,
-                      flexBasis: '50%'
-                    }
-                  }}
-                >
-                  <LoginProvider currentLoginWith={APP_AUTH} />
-                </Box>
-              )}
             </Grid>
           </Grid>
         </Grid>
