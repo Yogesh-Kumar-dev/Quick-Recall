@@ -50,7 +50,8 @@ export default function FilterShell({ children, sidebar, renderDrawer, activeFil
           </Fab>
         </Badge>
 
-        {renderDrawer(open, () => setOpen(false))}
+        {/* Mount the drawer only while open — no need to keep its subtree in the DOM otherwise */}
+        {open && renderDrawer(open, () => setOpen(false))}
       </>
     );
   }

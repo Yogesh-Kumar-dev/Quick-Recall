@@ -84,20 +84,20 @@ const FEATURES: Feature[] = [
     span: 1
   },
   {
-    icon: <IconLayersSubtract size={24} />,
-    title: 'Code-Split Redux',
-    blurb: 'Feature state slices load only when their section is first visited, keeping the initial bundle lean.',
-    tech: 'custom reducerManager + useInjectReducer',
-    accent: '#764abc',
-    span: 2
-  },
-  {
     icon: <IconList size={24} />,
     title: 'Buttery Long Lists',
     blurb: 'Note lists render only what is on screen, staying smooth across hundreds of items.',
     tech: 'react-virtuoso',
     accent: '#00bcd4',
     span: 1
+  },
+  {
+    icon: <IconLayersSubtract size={24} />,
+    title: 'Code-Split Redux',
+    blurb: 'Feature state slices load only when their section is first visited, keeping the initial bundle lean.',
+    tech: 'custom reducerManager + useInjectReducer',
+    accent: '#764abc',
+    span: 2
   },
   {
     icon: <IconArrowsMaximize size={24} />,
@@ -148,25 +148,51 @@ export default function AboutPage() {
   return (
     <Box>
       {/* The story — why this exists */}
-      <Box sx={{ mb: 4, maxWidth: 760 }}>
-        <Typography variant="overline" color="primary" fontWeight={600}>
-          Why I built this
-        </Typography>
-        <Typography variant="h3" fontWeight={700} gutterBottom sx={{ mt: 0.5 }}>
-          A single source of truth for my interview prep
-        </Typography>
-        <Stack spacing={1.5} sx={{ mt: 1 }}>
-          <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
-            During my job search I kept scattering notes across docs, bookmarks, and old repos — and burning time hunting them down right
-            before interviews. I wanted one place I could open and instantly recall what I needed: concepts, patterns, and working code.
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={{ xs: 3, md: 5 }}
+        sx={{ mb: 4, alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <Box sx={{ maxWidth: 760 }}>
+          <Typography variant="overline" color="primary" fontWeight={600}>
+            Why I built this
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
-            So I built QuickRecall to solve my own problem — and used it as an excuse to get hands-on with the things I&apos;d been curious
-            about but hadn&apos;t had the chance to ship at work. Every feature here is something I wanted to learn by actually building it,
-            not just reading about it.
+          <Typography variant="h3" fontWeight={700} gutterBottom sx={{ mt: 0.5 }}>
+            A single source of truth for my interview prep
           </Typography>
-        </Stack>
-      </Box>
+          <Stack spacing={1.5} sx={{ mt: 1 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
+              During my job search I kept scattering notes across docs, bookmarks, and old repos — and burning time hunting them down right
+              before interviews. I wanted one place I could open and instantly recall what I needed: concepts, patterns, and working code.
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
+              So I built QuickRecall to solve my own problem — and used it as an excuse to get hands-on with the things I&apos;d been
+              curious about but hadn&apos;t had the chance to ship at work. Every feature here is something I wanted to learn by actually
+              building it, not just reading about it.
+            </Typography>
+          </Stack>
+        </Box>
+        <Box
+          sx={{
+            flexShrink: 0,
+            width: { xs: '100%', md: 380, lg: 440 },
+            borderRadius: 3,
+            overflow: 'hidden',
+            border: '1px solid',
+            borderColor: 'divider',
+            boxShadow: 3,
+            lineHeight: 0
+          }}
+        >
+          <Image
+            src="/assets/images/claudest-work.jpg"
+            alt="Claude hard at work building QuickRecall"
+            width={1079}
+            height={719}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
+        </Box>
+      </Stack>
 
       <Divider sx={{ mb: 4 }} />
 
