@@ -322,7 +322,15 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
   const roundsError = typeof errors.rounds?.message === 'string' ? errors.rounds.message : undefined;
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose} slotProps={{ paper: { sx: { width: { xs: '100%', sm: 520 } } } }}>
+    <Drawer
+      anchor="right"
+      open={open}
+      // Don't discard an in-progress form on a stray outside click; Esc still closes.
+      onClose={(_, reason) => {
+        if (reason !== 'backdropClick') onClose();
+      }}
+      slotProps={{ paper: { sx: { width: { xs: '100%', sm: 520 } } } }}
+    >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Header */}
