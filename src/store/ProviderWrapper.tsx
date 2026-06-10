@@ -15,6 +15,7 @@ import NavigationScroll from 'layout/NavigationScroll';
 // import RTLLayout from 'ui-component/RTLLayout';
 import Snackbar from 'ui-component/extended/Snackbar';
 import Notistack from 'ui-component/third-party/Notistack';
+import NotificationProvider from 'notifications/NotificationProvider';
 
 import dynamic from 'next/dynamic';
 
@@ -44,7 +45,7 @@ export default function ProviderWrapper({ children }: { children: ReactNode }) {
               <AuthProvider>
                 <Notistack>
                   <Snackbar />
-                  {children}
+                  <NotificationProvider>{children}</NotificationProvider>
                 </Notistack>
               </AuthProvider>
             </NavigationScroll>

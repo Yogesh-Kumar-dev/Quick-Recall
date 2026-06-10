@@ -32,6 +32,7 @@ import { ThemeMode } from 'config';
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
 import useAuth from 'hooks/useAuth';
+import { useNotificationPrefs, useNotify } from 'notifications/NotificationProvider';
 
 // assets
 const User1 = '/assets/images/users/user-round.svg';
@@ -46,7 +47,8 @@ export default function ProfileSection() {
 
   const [sdm, setSdm] = useState(true);
   const [value, setValue] = useState('');
-  const [notification, setNotification] = useState(false);
+  const [prefs, setPrefs] = useNotificationPrefs();
+  const { requestPermission } = useNotify();
   const { logout, user } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -204,9 +206,14 @@ export default function ProfileSection() {
                                 </Grid>
                                 <Grid>
                                   <Switch
-                                    checked={notification}
-                                    onChange={(e) => setNotification(e.target.checked)}
-                                    name="sdm"
+                                    checked={prefs.enabled}
+                                    onChange={(e) => {
+                                      const enabled = e.target.checked;
+                                      setPrefs({ ...prefs, enabled });
+                                      // Turning on the master switch is a good moment to request OS permission.
+                                      if (enabled) void requestPermission();
+                                    }}
+                                    name="allow-notifications"
                                     size="small"
                                   />
                                 </Grid>

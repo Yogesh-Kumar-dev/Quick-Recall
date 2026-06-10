@@ -10,6 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 // project imports
 import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
+import TimerSection from './TimerSection';
 import FullScreenSection from './FullScreenSection';
 
 import { MenuOrientation, ThemeMode } from 'config';
@@ -73,6 +74,9 @@ export default function Header() {
             </Avatar>
           </Tooltip>
         )}
+
+        {/* universal timer: keep visible across breakpoints so a running countdown is always shown */}
+        <TimerSection />
 
         <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
           <FullScreenSection />

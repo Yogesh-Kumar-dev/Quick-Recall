@@ -1,6 +1,7 @@
 // project imports
 import { createReducerManager } from './reducerManager';
 import snackbarReducer from './slices/snackbar';
+import timerReducer from './slices/timer';
 
 // ==============================|| ROOT REDUCER (STATIC) + MANAGER ||============================== //
 
@@ -8,8 +9,13 @@ import snackbarReducer from './slices/snackbar';
 // react, redux, nextjs, htmlcss, engineering) are injected on demand via the
 // reducer manager so their reducer + data ship in the consuming route's chunk
 // rather than the root bundle. See store/useInjectReducer.ts.
+//
+// `timer` is global like `snackbar` — the running timer lives in the always-mounted
+// header and must survive navigation — so it's registered statically rather than
+// injected per-page.
 const staticReducers = {
-  snackbar: snackbarReducer
+  snackbar: snackbarReducer,
+  timer: timerReducer
 };
 
 export const reducerManager = createReducerManager(staticReducers);
