@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
+
+// third party
+import { useLiveQuery } from 'dexie-react-hooks';
 
 // project imports
 import { useDispatch } from 'store';
@@ -10,15 +13,20 @@ import type { JobApplication, JobApplicationInput } from 'types/job-tracker';
 
 // ==============================|| JOB TRACKER - useJobs HOOK ||============================== //
 
-// Owns the in-memory list and bridges UI ↔ repository. Components never call the
-// repository (or localStorage) directly — they go through here.
+// Bridges UI ↔ repository. The list is a LIVE query: Dexie re-runs it and the
+// component re-renders automatically whenever the jobs table changes — including
+// edits made in another browser tab. So there's no local state to keep in sync and
+// no optimistic patching; mutations just write, and the live query reflects them.
+// Components never call the repository directly — they go through here.
 
 type SnackColor = 'success' | 'error';
 
 export default function useJobs() {
   const dispatch = useDispatch();
-  const [jobs, setJobs] = useState<JobApplication[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  // `undefined` until the first query resolves → that's our loading signal.
+  const jobs = useLiveQuery(() => jobsRepository.getAll());
+  const loading = jobs === undefined;
 
   const notify = useCallback(
     (message: string, color: SnackColor) => {
@@ -35,26 +43,10 @@ export default function useJobs() {
     [dispatch]
   );
 
-  useEffect(() => {
-    let active = true;
-    jobsRepository
-      .getAll()
-      .then((data) => {
-        if (active) setJobs(data);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
   const addJob = useCallback(
     async (input: JobApplicationInput) => {
       try {
-        const created = await jobsRepository.create(input);
-        setJobs((prev) => [created, ...prev]);
+        await jobsRepository.create(input);
         notify('Job application added.', 'success');
       } catch {
         notify('Could not add job application.', 'error');
@@ -66,8 +58,7 @@ export default function useJobs() {
   const editJob = useCallback(
     async (id: string, input: JobApplicationInput) => {
       try {
-        const updated = await jobsRepository.update(id, input);
-        setJobs((prev) => prev.map((j) => (j.id === id ? updated : j)));
+        await jobsRepository.update(id, input);
         notify('Job application updated.', 'success');
       } catch {
         notify('Could not update job application.', 'error');
@@ -80,7 +71,6 @@ export default function useJobs() {
     async (id: string) => {
       try {
         await jobsRepository.remove(id);
-        setJobs((prev) => prev.filter((j) => j.id !== id));
         notify('Job application deleted.', 'success');
       } catch {
         notify('Could not delete job application.', 'error');
@@ -115,8 +105,7 @@ export default function useJobs() {
           documents: job.documents,
           notes: job.notes
         };
-        const updated = await jobsRepository.update(job.id, { ...base, ...partial });
-        setJobs((prev) => prev.map((j) => (j.id === job.id ? updated : j)));
+        await jobsRepository.update(job.id, { ...base, ...partial });
       } catch {
         notify('Could not update job application.', 'error');
       }
@@ -124,5 +113,5 @@ export default function useJobs() {
     [notify]
   );
 
-  return { jobs, loading, addJob, editJob, deleteJob, patchJob };
+  return { jobs: jobs ?? [], loading, addJob, editJob, deleteJob, patchJob };
 }
