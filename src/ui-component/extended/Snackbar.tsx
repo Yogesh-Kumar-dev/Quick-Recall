@@ -18,6 +18,10 @@ import { KeyedObject } from 'types';
 import { useDispatch, useSelector } from 'store';
 import { closeSnackbar } from 'store/slices/snackbar';
 
+// How long a snackbar stays before auto-hiding (ms). 5 minutes — long enough not to
+// be missed; the close/UNDO button is always available to dismiss sooner.
+const AUTO_HIDE_DURATION = 5 * 60 * 1000;
+
 // animation function
 function TransitionSlideLeft(props: SlideProps) {
   return <Slide {...props} direction="left" />;
@@ -70,7 +74,7 @@ export default function Snackbar() {
         <MuiSnackbar
           anchorOrigin={anchorOrigin}
           open={open}
-          autoHideDuration={1500}
+          autoHideDuration={AUTO_HIDE_DURATION}
           onClose={handleClose}
           message={message}
           slots={{ transition: animation[transition] }}
@@ -93,7 +97,7 @@ export default function Snackbar() {
           slots={{ transition: animation[transition] }}
           anchorOrigin={anchorOrigin}
           open={open}
-          autoHideDuration={1500}
+          autoHideDuration={AUTO_HIDE_DURATION}
           onClose={handleClose}
         >
           <Alert

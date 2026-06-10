@@ -2,6 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 
+// project imports
+import { useSelector } from 'store';
+import { useNotify } from 'notifications/NotificationProvider';
+import usePresenceHeartbeat from './usePresenceHeartbeat';
+
 // ==============================|| HOOKS - DISTRACTION ALERT ||============================== //
 
 export interface DistractionStep {
@@ -38,25 +43,42 @@ const DEFAULT_STEPS: DistractionStep[] = [
 ];
 
 export default function useDistractionAlert({ interval = 300, steps = DEFAULT_STEPS }: DistractionAlertOptions = {}) {
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const activeNotifRef = useRef<Notification | null>(null);
+  const { notify, dismissCategory, requestPermission } = useNotify();
+  const { isSiblingActive } = usePresenceHeartbeat();
 
-  // Keep the latest steps/interval available to the away-handler without
-  // re-subscribing the visibility/blur listeners on every render.
+  // A universal timer being active fully suppresses distraction nudges. The
+  // notification manager's policy also blocks them, but we additionally cancel
+  // pending nudges here so nothing is queued while a timer runs.
+  const timerStatus = useSelector((s) => s.timer?.status);
+  const timerActive = timerStatus === 'running' || timerStatus === 'paused';
+
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  // Keep the latest values available to the long-lived listeners without
+  // re-subscribing them on every render.
   const stepsRef = useRef(steps);
   stepsRef.current = steps;
   const intervalRef = useRef(interval);
   intervalRef.current = interval;
+  const timerActiveRef = useRef(timerActive);
+  timerActiveRef.current = timerActive;
+  const isSiblingActiveRef = useRef(isSiblingActive);
+  isSiblingActiveRef.current = isSiblingActive;
 
-  // Request permission once on mount
+  // Request permission once on mount.
   useEffect(() => {
-    if (typeof window === 'undefined' || !('Notification' in window)) return;
-    if (Notification.permission === 'default') {
-      void Notification.requestPermission();
-    }
-  }, []);
+    void requestPermission();
+  }, [requestPermission]);
 
-  // Page Visibility API — fires when the user switches browser tabs
+  // When a universal timer becomes active, cancel any pending/visible nudge.
+  useEffect(() => {
+    if (timerActive) {
+      clearTimers();
+      dismissCategory('distraction');
+    }
+  }, [timerActive, dismissCategory]);
+
+  // Page Visibility API — fires when the user switches browser tabs.
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
@@ -65,7 +87,7 @@ export default function useDistractionAlert({ interval = 300, steps = DEFAULT_ST
         scheduleEscalation();
       } else {
         clearTimers();
-        dismiss();
+        dismissCategory('distraction');
       }
     };
 
@@ -76,7 +98,7 @@ export default function useDistractionAlert({ interval = 300, steps = DEFAULT_ST
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Window blur / focus — fires when the user alt-tabs to another app
+  // Window blur / focus — fires when the user alt-tabs to another app.
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -85,7 +107,7 @@ export default function useDistractionAlert({ interval = 300, steps = DEFAULT_ST
     };
     const onFocus = () => {
       clearTimers();
-      dismiss();
+      dismissCategory('distraction');
     };
 
     window.addEventListener('blur', onBlur);
@@ -98,10 +120,12 @@ export default function useDistractionAlert({ interval = 300, steps = DEFAULT_ST
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Queue one notification per step at increasing offsets (interval, 2×, 3×…).
-  // After the final step we stop — no notification fires once the user has been
-  // away past the last interval, so we stop nagging entirely.
+  // After the final step we stop nagging entirely.
   function scheduleEscalation() {
     clearTimers(); // guard against double-scheduling (e.g. blur + visibility)
+
+    // Don't schedule anything while a universal timer is running.
+    if (timerActiveRef.current) return;
 
     stepsRef.current.forEach((step, i) => {
       const t = setTimeout(() => fire(step), intervalRef.current * 1000 * (i + 1));
@@ -110,39 +134,20 @@ export default function useDistractionAlert({ interval = 300, steps = DEFAULT_ST
   }
 
   function fire(step: DistractionStep) {
-    if (typeof window === 'undefined' || !('Notification' in window)) return;
-    if (Notification.permission !== 'granted') return;
+    // Suppress if a universal timer is active (also enforced centrally by policy).
+    if (timerActiveRef.current) return;
 
-    // Replace any previous nudge so only the latest (most aggressive) shows.
-    dismiss();
+    // Multi-tab: if the user is active in another tab of the app, they're not
+    // distracted — this backgrounded tab should stay quiet. An active sibling beats
+    // every ~2s, so a short freshness window (5s) reliably detects presence while
+    // still firing once every tab has gone quiet.
+    if (isSiblingActiveRef.current(5000)) return;
 
-    const n = new Notification(step.title, {
-      body: step.body,
-      icon: '/favicon.ico',
-      tag: 'distraction-alert'
-    });
-
-    n.onclick = () => {
-      window.focus();
-      n.close();
-      activeNotifRef.current = null;
-    };
-    n.onclose = () => {
-      activeNotifRef.current = null;
-    };
-
-    activeNotifRef.current = n;
+    notify({ category: 'distraction', title: step.title, body: step.body });
   }
 
   function clearTimers() {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
-  }
-
-  function dismiss() {
-    if (activeNotifRef.current) {
-      activeNotifRef.current.close();
-      activeNotifRef.current = null;
-    }
   }
 }
