@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 // material-ui
 import Box from '@mui/material/Box';
@@ -33,6 +33,9 @@ import JobsEmptyState from './JobsEmptyState';
 import KanbanBoard from './KanbanBoard';
 import StatsStrip from './StatsStrip';
 import useJobs from './useJobs';
+// Registers window.__seedJobs() (desktop console) and provides seedJobs() for the
+// ?seed=1 URL trigger below.
+import { seedJobs } from './seedJobs';
 import { JOB_STATUS_CONFIG, JOB_STATUS_ORDER } from './statusConfig';
 import { INTERVIEW_OUTCOME_CONFIG } from './roundConfig';
 import { JOB_SOURCE_CONFIG, WORK_MODE_CONFIG } from './jobConfig';
@@ -102,6 +105,26 @@ type ViewMode = 'list' | 'board';
 
 export default function JobTracker() {
   const { jobs, loading, addJob, editJob, deleteJob, patchJob } = useJobs();
+
+  // ?seed=1 → reset the jobs table to the sample set. Works on any device (handy on
+  // mobile where there's no console). Because it WIPES current data, confirm first;
+  // then strip the param so a refresh can't silently re-trigger it.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('seed') !== '1') return;
+
+    const clearParam = () => {
+      params.delete('seed');
+      const qs = params.toString();
+      window.history.replaceState(null, '', `${window.location.pathname}${qs ? `?${qs}` : ''}`);
+    };
+
+    if (window.confirm('This deletes all current jobs on this device and loads sample data. Continue?')) {
+      void seedJobs().finally(clearParam);
+    } else {
+      clearParam();
+    }
+  }, []);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editing, setEditing] = useState<JobApplication | null>(null);
