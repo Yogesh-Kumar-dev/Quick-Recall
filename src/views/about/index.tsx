@@ -129,6 +129,11 @@ interface StackTech {
   label: string;
   // simple-icons slug served by thesvg.org (e.g. /icons/nextdotjs/default.svg)
   icon: string;
+  // Optional locally-hosted asset (for logos simple-icons/thesvg.org doesn't carry,
+  // e.g. Dexie). When set, this is used instead of the thesvg.org template.
+  localSrc?: string;
+  // Render width in px (defaults to a square 40). Wide wordmarks (Dexie) override this.
+  width?: number;
 }
 
 const CORE_STACK: StackTech[] = [
@@ -137,6 +142,7 @@ const CORE_STACK: StackTech[] = [
   { label: 'MUI 7', icon: 'mui' },
   { label: 'TypeScript', icon: 'typescript' },
   { label: 'Redux Toolkit', icon: 'redux' },
+  { label: 'Dexie.js', icon: 'dexie', localSrc: '/assets/images/icons/dexie.png', width: 158 },
   { label: 'nuqs', icon: 'nuqs' },
   { label: 'React Router', icon: 'react-router' },
   { label: 'Vercel', icon: 'vercel' }
@@ -218,7 +224,12 @@ export default function AboutPage() {
                   '&:hover': { transform: 'scale(1.15)' }
                 }}
               >
-                <Image src={`https://thesvg.org/icons/${tech.icon}/default.svg`} alt={tech.label} width={40} height={40} />
+                <Image
+                  src={tech.localSrc ?? `https://thesvg.org/icons/${tech.icon}/default.svg`}
+                  alt={tech.label}
+                  width={tech.width ?? 40}
+                  height={40}
+                />
               </Box>
             </Tooltip>
           ))}
