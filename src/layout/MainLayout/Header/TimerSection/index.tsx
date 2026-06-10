@@ -128,7 +128,15 @@ export default function TimerSection() {
         </Stack>
 
         {/* Stop confirmation — offer pausing as the gentler alternative. */}
-        <Dialog open={confirmStopOpen} onClose={() => setConfirmStopOpen(false)} maxWidth="xs" fullWidth>
+        <Dialog
+          open={confirmStopOpen}
+          // A stray outside click shouldn't dismiss the confirmation; Esc still closes.
+          onClose={(_, reason) => {
+            if (reason !== 'backdropClick') setConfirmStopOpen(false);
+          }}
+          maxWidth="xs"
+          fullWidth
+        >
           <DialogTitle>Stop this timer?</DialogTitle>
           <DialogContent>
             <DialogContentText>Stopping ends the timer and clears it. If you just need a moment, pause it instead.</DialogContentText>

@@ -117,7 +117,15 @@ export default function TimerFormModal({ open, onClose }: TimerFormModalProps) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+    <Dialog
+      open={open}
+      // Don't discard an in-progress form on a stray outside click; Esc still closes.
+      onClose={(_, reason) => {
+        if (reason !== 'backdropClick') handleClose();
+      }}
+      maxWidth="xs"
+      fullWidth
+    >
       <DialogTitle>Start a timer</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={2.5} sx={{ pt: 1 }}>
