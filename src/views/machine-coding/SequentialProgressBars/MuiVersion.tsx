@@ -131,7 +131,7 @@ export default function SequentialProgressBarsMui() {
       {/* Empty state */}
       {bars.length === 0 && (
         <Typography variant="body2" color="text.secondary">
-          Click "Add Bar" to queue a progress bar.
+          Click &quot;Add Bar&quot; to queue a progress bar.
         </Typography>
       )}
 

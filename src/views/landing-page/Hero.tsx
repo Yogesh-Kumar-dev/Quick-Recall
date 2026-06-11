@@ -120,8 +120,8 @@ export default function Hero() {
           </Typography>
 
           <Typography variant="h4" sx={{ fontWeight: 400, color: 'text.secondary', maxWidth: 700, lineHeight: 1.6 }}>
-            The one place I open to recall what I need. QuickRecall turns notes, blog posts, videos and docs into a single, searchable format
-            — built for fast revision before interviews.
+            The one place I open to recall what I need. QuickRecall turns notes, blog posts, videos and docs into a single, searchable
+            format — built for fast revision before interviews.
           </Typography>
 
           {/* The durable story, not a counter */}
