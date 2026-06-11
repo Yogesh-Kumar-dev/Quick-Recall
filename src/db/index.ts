@@ -4,6 +4,7 @@ import Dexie, { type Table } from 'dexie';
 
 // types
 import type { JobApplication } from 'types/job-tracker';
+import type { SpeakUpQA } from 'types/speak-up';
 
 // ==============================|| DEXIE - SHARED CLIENT DATABASE ||============================== //
 
@@ -18,6 +19,7 @@ import type { JobApplication } from 'types/job-tracker';
 class QuickRecallDB extends Dexie {
   // <recordType, primaryKeyType>
   jobs!: Table<JobApplication, string>;
+  speakUpQAs!: Table<SpeakUpQA, string>;
 
   constructor() {
     super('quickrecall');
@@ -26,6 +28,12 @@ class QuickRecallDB extends Dexie {
     // querying/sorting. `createdAt` is indexed so getAll can sort newest-first.
     this.version(1).stores({
       jobs: 'id, status, favorite, createdAt'
+    });
+    // v2 adds the Speak Up Q&A bank. Dexie keeps the version chain and migrates each
+    // browser automatically; existing `jobs` data is preserved untouched.
+    this.version(2).stores({
+      jobs: 'id, status, favorite, createdAt',
+      speakUpQAs: 'id, sourceId, jobId, createdAt'
     });
   }
 }

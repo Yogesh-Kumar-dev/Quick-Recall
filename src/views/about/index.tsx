@@ -25,7 +25,8 @@ import {
   IconCode,
   IconSearch,
   IconArrowRight,
-  IconMail
+  IconMail,
+  IconDatabase
 } from '@tabler/icons-react';
 
 // project imports
@@ -89,6 +90,14 @@ const FEATURES: Feature[] = [
     blurb: 'Note lists render only what is on screen, staying smooth across hundreds of items.',
     tech: 'react-virtuoso',
     accent: '#00bcd4',
+    span: 1
+  },
+  {
+    icon: <IconDatabase size={24} />,
+    title: 'Offline-First Job Tracker',
+    blurb: 'Job applications live in an in-browser database that persists across reloads and syncs live across open tabs.',
+    tech: 'Dexie + IndexedDB',
+    accent: '#e6529b',
     span: 1
   },
   {

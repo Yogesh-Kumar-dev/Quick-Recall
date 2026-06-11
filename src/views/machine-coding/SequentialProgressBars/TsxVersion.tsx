@@ -104,7 +104,7 @@ export default function SequentialProgressBars() {
       </div>
 
       {/* Empty state */}
-      {bars.length === 0 && <p style={{ color: '#aaa', fontSize: 13 }}>Click "Add Bar" to queue a progress bar.</p>}
+      {bars.length === 0 && <p style={{ color: '#aaa', fontSize: 13 }}>Click &quot;Add Bar&quot; to queue a progress bar.</p>}
 
       {/* Bar list */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

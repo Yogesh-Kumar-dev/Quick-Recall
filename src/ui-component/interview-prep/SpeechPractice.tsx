@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 
 // material-ui
 import { alpha, keyframes } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
@@ -17,6 +15,7 @@ import { IconMicrophone, IconPlayerStopFilled, IconArrowRight, IconTrash, IconVi
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
+import { predefinedQuestions } from 'data/speak-up-questions';
 
 // ─── Web Speech API minimal typings (not in the TS DOM lib) ─────────────────────
 
@@ -65,48 +64,6 @@ function getSpeechRecognition(): SpeechRecognitionConstructor | undefined {
   return w.SpeechRecognition || w.webkitSpeechRecognition;
 }
 
-// ─── Questions ──────────────────────────────────────────────────────────────────
-
-const QUESTIONS = [
-  'Tell me about yourself.',
-  'What are your strengths and weaknesses?',
-  'Why do you want this role?',
-  'Describe a challenging problem you solved.',
-  'Where do you see yourself in 5 years?',
-  'Why are you leaving your current job?'
-];
-
-// ─── External voice tools for extra practice ────────────────────────────────────
-// `icon` is a simple-icons slug served by thesvg.org (/icons/<slug>/default.svg).
-
-const PRACTICE_TOOLS = [
-  {
-    label: 'ChatGPT Voice',
-    icon: 'openai',
-    href: 'https://chatgpt.com/features/voice/',
-    blurb: 'Hold a spoken mock interview and get instant follow-up questions.'
-  },
-  {
-    label: 'Claude Voice',
-    // Claude has no dedicated voice landing page — link to the official help article.
-    icon: 'claude',
-    href: 'https://support.claude.com/en/articles/11101966-using-voice-mode-on-claude-mobile-apps',
-    blurb: 'Talk through answers out loud in the Claude mobile app.'
-  },
-  {
-    label: 'Gemini Live',
-    icon: 'gemini',
-    href: 'https://gemini.google/overview/gemini-live/',
-    blurb: 'Real-time back-and-forth voice conversations to rehearse with.'
-  },
-  {
-    label: 'NotebookLM Audio',
-    icon: 'notebooklm',
-    href: 'https://notebooklm.google/audio',
-    blurb: 'Turn your notes into an audio overview to review on the go.'
-  }
-];
-
 // ─── Pulse animation for the mic while listening ────────────────────────────────
 
 const pulse = keyframes`
@@ -117,11 +74,17 @@ const pulse = keyframes`
 
 // ==============================|| SPEECH PRACTICE ||============================== //
 
-export default function SpeechPractice() {
+interface SpeechPracticeProps {
+  // The current question index and advance handler are owned by the Speak Up page so
+  // the Q&A bank below can highlight the matching card in sync.
+  questionIndex: number;
+  onNextQuestion: () => void;
+}
+
+export default function SpeechPractice({ questionIndex, onNextQuestion }: SpeechPracticeProps) {
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [interim, setInterim] = useState('');
-  const [questionIndex, setQuestionIndex] = useState(0);
   const [supported, setSupported] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -212,10 +175,6 @@ export default function SpeechPractice() {
     setInterim('');
   };
 
-  const handleNextQuestion = () => {
-    setQuestionIndex((prev) => (prev + 1) % QUESTIONS.length);
-  };
-
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
@@ -258,252 +217,191 @@ export default function SpeechPractice() {
   useEffect(() => () => stopCamera(), []);
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gap: 3,
-        alignItems: 'start',
-        gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 2fr) minmax(260px, 1fr)' }
-      }}
-    >
-      <MainCard border contentSX={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: { xs: 2.5, sm: 3 } }}>
-        {/* Question */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="overline" color="text.secondary">
-            Practice answering out loud
-          </Typography>
-          <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5 }}>
-            {QUESTIONS[questionIndex]}
-          </Typography>
-          <Button size="small" variant="text" endIcon={<IconArrowRight size={16} />} onClick={handleNextQuestion} sx={{ mt: 1 }}>
-            Next question
-          </Button>
-        </Box>
+    <MainCard border contentSX={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: { xs: 2.5, sm: 3 } }}>
+      {/* Question */}
+      <Box sx={{ textAlign: 'center' }}>
+        <Typography variant="overline" color="text.secondary">
+          Practice answering out loud
+        </Typography>
+        <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5 }}>
+          {predefinedQuestions[questionIndex].question}
+        </Typography>
+        <Button size="small" variant="text" endIcon={<IconArrowRight size={16} />} onClick={onNextQuestion} sx={{ mt: 1 }}>
+          Next question
+        </Button>
+      </Box>
 
-        {/* Camera (70%) + mic/transcript (30%).
+      {/* Camera (70%) + mic/transcript (30%).
             A 2-row grid keeps the camera box and transcript box (row 1) bottom-aligned,
             with each column's controls sitting in row 2 below. */}
+      <Box
+        sx={{
+          width: '100%',
+          display: 'grid',
+          columnGap: 3,
+          rowGap: 1.5,
+          gridTemplateColumns: { xs: '1fr', md: '60fr 40fr' },
+          gridTemplateRows: { md: '1fr auto' }
+        }}
+      >
+        {/* Row 1, left — camera preview */}
         <Box
-          sx={{
+          sx={(theme) => ({
+            gridColumn: { md: 1 },
+            gridRow: { md: 1 },
+            position: 'relative',
             width: '100%',
-            display: 'grid',
-            columnGap: 3,
-            rowGap: 1.5,
-            gridTemplateColumns: { xs: '1fr', md: '60fr 40fr' },
-            gridTemplateRows: { md: '1fr auto' }
-          }}
+            aspectRatio: { xs: '4 / 3', md: 'auto' },
+            minHeight: { md: 300 },
+            borderRadius: 2,
+            overflow: 'hidden',
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: alpha(theme.palette.text.primary, 0.04),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          })}
         >
-          {/* Row 1, left — camera preview */}
           <Box
-            sx={(theme) => ({
-              gridColumn: { md: 1 },
-              gridRow: { md: 1 },
-              position: 'relative',
+            component="video"
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            sx={{
               width: '100%',
-              aspectRatio: { xs: '4 / 3', md: 'auto' },
-              minHeight: { md: 300 },
-              borderRadius: 2,
-              overflow: 'hidden',
-              border: '1px solid',
-              borderColor: 'divider',
-              bgcolor: alpha(theme.palette.text.primary, 0.04),
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            })}
-          >
-            <Box
-              component="video"
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              sx={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transform: 'scaleX(-1)', // mirror, like a real video call
-                display: cameraOn ? 'block' : 'none'
-              }}
-            />
-            {!cameraOn && (
-              <Stack alignItems="center" spacing={0.5} sx={{ color: 'text.secondary' }}>
-                <IconVideoOff size={32} />
-                <Typography variant="caption">Camera off</Typography>
-              </Stack>
-            )}
-          </Box>
-
-          {/* Row 1, right — mic + transcript */}
-          <Box sx={{ gridColumn: { md: 2 }, gridRow: { md: 1 }, width: '100%', display: 'flex', flexDirection: 'column' }}>
-            {!supported ? (
-              <Typography variant="body1" color="error" sx={{ textAlign: 'center' }}>
-                Speech recognition isn&apos;t supported in this browser — try Chrome or Edge.
-              </Typography>
-            ) : (
-              <Stack alignItems="center" spacing={2} sx={{ flexGrow: 1, width: '100%' }}>
-                {/* Mic button */}
-                <Stack alignItems="center" spacing={1}>
-                  <IconButton
-                    onClick={handleToggle}
-                    aria-label={listening ? 'Stop listening' : 'Start listening'}
-                    sx={(theme) => ({
-                      width: 72,
-                      height: 72,
-                      color: '#fff',
-                      bgcolor: listening ? theme.palette.error.main : theme.palette.primary.main,
-                      animation: listening ? `${pulse} 1.6s infinite` : 'none',
-                      transition: 'background-color 0.2s ease',
-                      '&:hover': {
-                        bgcolor: listening ? theme.palette.error.dark : theme.palette.primary.dark
-                      }
-                    })}
-                  >
-                    {listening ? <IconPlayerStopFilled size={30} /> : <IconMicrophone size={30} />}
-                  </IconButton>
-                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                    {listening ? 'Listening… click to stop' : 'Click the mic and start speaking your answer'}
-                  </Typography>
-                </Stack>
-
-                {errorMsg && (
-                  <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
-                    {errorMsg}
-                  </Typography>
-                )}
-
-                {/* Transcript — grows to fill the column, scrolls only when overflowing */}
-                <Box
-                  sx={(theme) => ({
-                    width: '100%',
-                    flexGrow: 1,
-                    minHeight: { xs: 140, md: 0 },
-                    overflowY: 'auto',
-                    p: 2,
-                    borderRadius: 2,
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    bgcolor: alpha(theme.palette.primary.main, 0.04)
-                  })}
-                >
-                  {transcript || interim ? (
-                    <Typography variant="body1" sx={{ lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                      {transcript}
-                      {interim && (
-                        <Typography component="span" color="text.secondary">
-                          {transcript ? ' ' : ''}
-                          {interim}
-                        </Typography>
-                      )}
-                    </Typography>
-                  ) : (
-                    <Typography variant="body1" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                      Your words will appear here as you speak…
-                    </Typography>
-                  )}
-                </Box>
-              </Stack>
-            )}
-          </Box>
-
-          {/* Row 2, left — camera controls */}
-          <Stack alignItems="center" spacing={1} sx={{ gridColumn: { md: 1 }, gridRow: { md: 2 }, width: '100%' }}>
-            <Button
-              variant="outlined"
-              color={cameraOn ? 'error' : 'primary'}
-              size="small"
-              startIcon={cameraOn ? <IconVideoOff size={18} /> : <IconVideo size={18} />}
-              onClick={handleToggleCamera}
-            >
-              {cameraOn ? 'Turn camera off' : 'Turn camera on'}
-            </Button>
-
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ display: 'flex', alignItems: 'center', gap: 0.5, textAlign: 'center' }}
-            >
-              <IconLock size={13} />
-              Live preview only — your video stays on your device and is never recorded or saved.
-            </Typography>
-
-            {cameraError && (
-              <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
-                {cameraError}
-              </Typography>
-            )}
-          </Stack>
-
-          {/* Row 2, right — clear (top-aligned so it sits just below the transcript,
-              matching the camera button's spacing instead of floating in a tall cell) */}
-          {supported && (
-            <Box sx={{ gridColumn: { md: 2 }, gridRow: { md: 2 }, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
-              <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                startIcon={<IconTrash size={18} />}
-                onClick={handleClear}
-                disabled={!transcript && !interim}
-              >
-                Clear
-              </Button>
-            </Box>
+              height: '100%',
+              objectFit: 'cover',
+              transform: 'scaleX(-1)', // mirror, like a real video call
+              display: cameraOn ? 'block' : 'none'
+            }}
+          />
+          {!cameraOn && (
+            <Stack alignItems="center" spacing={0.5} sx={{ color: 'text.secondary' }}>
+              <IconVideoOff size={32} />
+              <Typography variant="caption">Camera off</Typography>
+            </Stack>
           )}
         </Box>
-      </MainCard>
 
-      {/* Practice elsewhere too — bento side column */}
-      <Stack spacing={2}>
-        <Typography variant="overline" color="text.secondary">
-          Want a back-and-forth? Try an AI voice partner
-        </Typography>
-        {PRACTICE_TOOLS.map((tool) => (
-          <Link
-            key={tool.label}
-            href={tool.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="none"
-            sx={(theme) => ({
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 1.5,
-              p: 2,
-              borderRadius: 2,
-              border: '1px solid',
-              borderColor: 'divider',
-              bgcolor: 'background.paper',
-              color: 'text.primary',
-              transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
-              '&:hover': { transform: 'translateY(-2px)', borderColor: theme.palette.primary.main, boxShadow: 2 }
-            })}
+        {/* Row 1, right — mic + transcript */}
+        <Box sx={{ gridColumn: { md: 2 }, gridRow: { md: 1 }, width: '100%', display: 'flex', flexDirection: 'column' }}>
+          {!supported ? (
+            <Typography variant="body1" color="error" sx={{ textAlign: 'center' }}>
+              Speech recognition isn&apos;t supported in this browser — try Chrome or Edge.
+            </Typography>
+          ) : (
+            <Stack alignItems="center" spacing={2} sx={{ flexGrow: 1, width: '100%' }}>
+              {/* Mic button */}
+              <Stack alignItems="center" spacing={1}>
+                <IconButton
+                  onClick={handleToggle}
+                  aria-label={listening ? 'Stop listening' : 'Start listening'}
+                  sx={(theme) => ({
+                    width: 72,
+                    height: 72,
+                    color: '#fff',
+                    bgcolor: listening ? theme.palette.error.main : theme.palette.primary.main,
+                    animation: listening ? `${pulse} 1.6s infinite` : 'none',
+                    transition: 'background-color 0.2s ease',
+                    '&:hover': {
+                      bgcolor: listening ? theme.palette.error.dark : theme.palette.primary.dark
+                    }
+                  })}
+                >
+                  {listening ? <IconPlayerStopFilled size={30} /> : <IconMicrophone size={30} />}
+                </IconButton>
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                  {listening ? 'Listening… click to stop' : 'Click the mic and start speaking your answer'}
+                </Typography>
+              </Stack>
+
+              {errorMsg && (
+                <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
+                  {errorMsg}
+                </Typography>
+              )}
+
+              {/* Transcript — grows to fill the column, scrolls only when overflowing */}
+              <Box
+                sx={(theme) => ({
+                  width: '100%',
+                  flexGrow: 1,
+                  minHeight: { xs: 140, md: 0 },
+                  overflowY: 'auto',
+                  p: 2,
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  bgcolor: alpha(theme.palette.primary.main, 0.04)
+                })}
+              >
+                {transcript || interim ? (
+                  <Typography variant="body1" sx={{ lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                    {transcript}
+                    {interim && (
+                      <Typography component="span" color="text.secondary">
+                        {transcript ? ' ' : ''}
+                        {interim}
+                      </Typography>
+                    )}
+                  </Typography>
+                ) : (
+                  <Typography variant="body1" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                    Your words will appear here as you speak…
+                  </Typography>
+                )}
+              </Box>
+            </Stack>
+          )}
+        </Box>
+
+        {/* Row 2, left — camera controls */}
+        <Stack alignItems="center" spacing={1} sx={{ gridColumn: { md: 1 }, gridRow: { md: 2 }, width: '100%' }}>
+          <Button
+            variant="outlined"
+            color={cameraOn ? 'error' : 'primary'}
+            size="small"
+            startIcon={cameraOn ? <IconVideoOff size={18} /> : <IconVideo size={18} />}
+            onClick={handleToggleCamera}
           >
-            <Box
-              sx={{
-                flexShrink: 0,
-                width: 40,
-                height: 40,
-                borderRadius: 1.5,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                bgcolor: alpha('#000', 0.04)
-              }}
+            {cameraOn ? 'Turn camera off' : 'Turn camera on'}
+          </Button>
+
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: 'flex', alignItems: 'center', gap: 0.5, textAlign: 'center' }}
+          >
+            <IconLock size={13} />
+            Live preview only — your video stays on your device and is never recorded or saved.
+          </Typography>
+
+          {cameraError && (
+            <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
+              {cameraError}
+            </Typography>
+          )}
+        </Stack>
+
+        {/* Row 2, right — clear (top-aligned so it sits just below the transcript,
+              matching the camera button's spacing instead of floating in a tall cell) */}
+        {supported && (
+          <Box sx={{ gridColumn: { md: 2 }, gridRow: { md: 2 }, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              startIcon={<IconTrash size={18} />}
+              onClick={handleClear}
+              disabled={!transcript && !interim}
             >
-              <Image src={`https://thesvg.org/icons/${tool.icon}/default.svg`} alt={tool.label} width={26} height={26} />
-            </Box>
-            <Box sx={{ minWidth: 0 }}>
-              <Typography variant="subtitle2" fontWeight={700}>
-                {tool.label}
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.5, display: 'block' }}>
-                {tool.blurb}
-              </Typography>
-            </Box>
-          </Link>
-        ))}
-      </Stack>
-    </Box>
+              Clear
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </MainCard>
   );
 }
