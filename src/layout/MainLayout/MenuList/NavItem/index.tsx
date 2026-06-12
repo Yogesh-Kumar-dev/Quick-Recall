@@ -25,6 +25,9 @@ import useConfig from 'hooks/useConfig';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
+// project imports
+import ReviewDueBadge from './ReviewDueBadge';
+
 // types
 import { LinkTarget, NavItemType } from 'types';
 
@@ -236,6 +239,8 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
               avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
             />
           )}
+          {/* Live "N due" badge — ambient count, only on the Review item. */}
+          {drawerOpen && item.id === 'review' && <ReviewDueBadge />}
         </ListItemButton>
       ) : (
         <ListItemButton
@@ -289,6 +294,8 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
               avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
             />
           )}
+          {/* Live "N due" badge — ambient count, only on the Review item. */}
+          {item.id === 'review' && <ReviewDueBadge />}
         </ListItemButton>
       )}
     </>

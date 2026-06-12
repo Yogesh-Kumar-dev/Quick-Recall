@@ -161,6 +161,7 @@ export default function RtkQueryPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={rtkQueryFlashcards}
+          flashcardSource="rtkQuery"
         />
       </MainCard>
     );

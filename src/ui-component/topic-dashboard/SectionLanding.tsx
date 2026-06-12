@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { IconAlertTriangle, IconArrowRight, IconCards } from '@tabler/icons-react';
 
 import FlashcardDialog from 'ui-component/interview-prep/FlashcardDialog';
+import { flashcardKey, type FlashcardSource } from 'data/flashcards-index';
 import type { Flashcard } from 'types/content';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -43,6 +44,8 @@ export interface SectionLandingProps {
   gotchaCount?: number;
   onGotchaOnly?: () => void;
   flashcards?: Flashcard[];
+  /** Namespace for this section's flashcards — enables save/SRS actions in the dialog. */
+  flashcardSource?: FlashcardSource;
 }
 
 // ─── Dark-mode colour tokens ──────────────────────────────────────────────────
@@ -86,7 +89,8 @@ export default function SectionLanding({
   onEnterCategory,
   gotchaCount,
   onGotchaOnly,
-  flashcards
+  flashcards,
+  flashcardSource
 }: SectionLandingProps) {
   const showCategories = categoryCards && categoryCards.length > 0 && onEnterCategory;
   const hasFlashcards = !!flashcards && flashcards.length > 0;
@@ -268,7 +272,13 @@ export default function SectionLanding({
       )}
 
       {hasFlashcards && flashcardsOpen && (
-        <FlashcardDialog open={flashcardsOpen} onClose={() => setFlashcardsOpen(false)} cards={flashcards!} title={title} />
+        <FlashcardDialog
+          open={flashcardsOpen}
+          onClose={() => setFlashcardsOpen(false)}
+          cards={flashcards!}
+          title={title}
+          getKey={flashcardSource ? (c) => flashcardKey(flashcardSource, c.id) : undefined}
+        />
       )}
     </Box>
   );

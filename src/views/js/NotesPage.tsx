@@ -253,6 +253,7 @@ export default function NotesPage() {
           categoryCards={allCategoryCards}
           onEnterCategory={enterWithCategory}
           flashcards={jsFlashcards}
+          flashcardSource="js"
         />
       </MainCard>
     );

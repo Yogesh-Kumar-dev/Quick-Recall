@@ -219,6 +219,22 @@ export default function ProfileSection() {
                                 </Grid>
                               </Grid>
                             </Grid>
+                            <Grid>
+                              <Grid container sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Grid>
+                                  <Typography variant="subtitle1">Review reminders</Typography>
+                                </Grid>
+                                <Grid>
+                                  <Switch
+                                    checked={prefs.categories.review !== false}
+                                    disabled={!prefs.enabled}
+                                    onChange={(e) => setPrefs({ ...prefs, categories: { ...prefs.categories, review: e.target.checked } })}
+                                    name="review-reminders"
+                                    size="small"
+                                  />
+                                </Grid>
+                              </Grid>
+                            </Grid>
                           </Grid>
                         </CardContent>
                       </Card>

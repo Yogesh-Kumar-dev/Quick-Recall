@@ -2,7 +2,7 @@
 
 // The kinds of notification the app can raise. Add new categories here and give
 // them an entry in registry.ts — every other part of the system keys off this union.
-export type NotificationCategory = 'distraction' | 'timer';
+export type NotificationCategory = 'distraction' | 'timer' | 'review';
 
 // Where a notification is shown:
 //  - 'native'   → OS-level Web Notification only (silent if permission not granted)

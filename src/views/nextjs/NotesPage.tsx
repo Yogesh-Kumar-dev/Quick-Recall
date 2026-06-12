@@ -165,6 +165,7 @@ export default function NextjsNotesPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={nextjsFlashcards}
+          flashcardSource="nextjs"
         />
       </MainCard>
     );

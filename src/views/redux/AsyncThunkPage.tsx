@@ -160,6 +160,7 @@ export default function AsyncThunkPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={asyncThunkFlashcards}
+          flashcardSource="asyncThunk"
         />
       </MainCard>
     );

@@ -5,6 +5,7 @@ import Dexie, { type Table } from 'dexie';
 // types
 import type { JobApplication } from 'types/job-tracker';
 import type { SpeakUpQA } from 'types/speak-up';
+import type { Bookmark, ReviewState } from 'types/study';
 
 // ==============================|| DEXIE - SHARED CLIENT DATABASE ||============================== //
 
@@ -20,6 +21,8 @@ class QuickRecallDB extends Dexie {
   // <recordType, primaryKeyType>
   jobs!: Table<JobApplication, string>;
   speakUpQAs!: Table<SpeakUpQA, string>;
+  bookmarks!: Table<Bookmark, string>;
+  reviews!: Table<ReviewState, string>;
 
   constructor() {
     super('quickrecall');
@@ -34,6 +37,15 @@ class QuickRecallDB extends Dexie {
     this.version(2).stores({
       jobs: 'id, status, favorite, createdAt',
       speakUpQAs: 'id, sourceId, jobId, createdAt'
+    });
+    // v3 adds the Study layer: `bookmarks` (mark-for-review stars on any content) and
+    // `reviews` (per-flashcard spaced-repetition scheduling state). Existing jobs/speakUp data is
+    // preserved — Dexie migrates the version chain in each browser automatically.
+    this.version(3).stores({
+      jobs: 'id, status, favorite, createdAt',
+      speakUpQAs: 'id, sourceId, jobId, createdAt',
+      bookmarks: 'id, kind, createdAt',
+      reviews: 'id, dueAt'
     });
   }
 }

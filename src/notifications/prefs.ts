@@ -19,7 +19,7 @@ export interface NotificationPrefs {
 
 const DEFAULT_PREFS: NotificationPrefs = {
   enabled: true,
-  categories: { distraction: true, timer: true }
+  categories: { distraction: true, timer: true, review: true }
 };
 
 function read(): NotificationPrefs {

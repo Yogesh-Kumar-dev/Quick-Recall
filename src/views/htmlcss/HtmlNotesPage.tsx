@@ -168,6 +168,7 @@ export default function HtmlNotesPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={htmlFlashcards}
+          flashcardSource="html"
         />
       </MainCard>
     );

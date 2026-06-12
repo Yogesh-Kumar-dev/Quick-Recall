@@ -7,7 +7,11 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import { IconArrowLeft, IconArrowRight, IconArrowsShuffle, IconX } from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight, IconArrowsShuffle, IconBrain, IconX } from '@tabler/icons-react';
+import BookmarkButton from 'ui-component/interview-prep/BookmarkButton';
+import { useDispatch } from 'store';
+import { openSnackbar } from 'store/slices/snackbar';
+import * as reviewsRepository from 'views/review/reviewsRepository';
 import type { Flashcard } from 'types/content';
 
 // Fisher–Yates shuffle of [0, 1, …, n-1]
@@ -25,10 +29,17 @@ interface FlashcardDialogProps {
   onClose: () => void;
   cards: Flashcard[];
   title?: string;
+  /**
+   * Maps a card to its namespaced refId (`${source}:${id}`). When provided, the header shows
+   * a "save for review" star + an "add to SRS" button for the current card. Callers that don't
+   * have the aggregator can omit this — the dialog stays exactly as before.
+   */
+  getKey?: (card: Flashcard) => string;
 }
 
-export default function FlashcardDialog({ open, onClose, cards, title }: FlashcardDialogProps) {
+export default function FlashcardDialog({ open, onClose, cards, title, getKey }: FlashcardDialogProps) {
   const total = cards.length;
+  const dispatch = useDispatch();
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [order, setOrder] = useState<number[]>(() => Array.from({ length: total }, (_, i) => i));
@@ -65,6 +76,21 @@ export default function FlashcardDialog({ open, onClose, cards, title }: Flashca
 
   const toggleFlip = useCallback(() => setFlipped((f) => !f), []);
 
+  // Current card's refId (when the caller wired up `getKey`), powering the save + enroll actions.
+  const currentKey = getKey && card ? getKey(card) : null;
+
+  const enrollCurrent = useCallback(async () => {
+    if (!currentKey) return;
+    try {
+      await reviewsRepository.enroll(currentKey);
+      dispatch(openSnackbar({ open: true, message: 'Added to review.', variant: 'alert', alert: { color: 'success' }, close: false }));
+    } catch {
+      dispatch(
+        openSnackbar({ open: true, message: 'Could not add to review.', variant: 'alert', alert: { color: 'error' }, close: false })
+      );
+    }
+  }, [currentKey, dispatch]);
+
   // Keyboard: ←/→ navigate, Space/Enter flips
   useEffect(() => {
     if (!open) return;
@@ -92,7 +118,10 @@ export default function FlashcardDialog({ open, onClose, cards, title }: Flashca
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      // Don't close mid-review on a stray backdrop click; the X button (and Esc) still close.
+      onClose={(_, reason) => {
+        if (reason !== 'backdropClick') onClose();
+      }}
       maxWidth="sm"
       fullWidth
       PaperProps={{
@@ -112,6 +141,16 @@ export default function FlashcardDialog({ open, onClose, cards, title }: Flashca
           {isShuffled ? ' · Shuffled' : ''}
         </Typography>
         <Stack direction="row" spacing={0.5} alignItems="center">
+          {currentKey && (
+            <>
+              <BookmarkButton kind="flashcard" refId={currentKey} />
+              <Tooltip title="Add to spaced-repetition review">
+                <IconButton size="small" onClick={enrollCurrent} aria-label="Add this card to review">
+                  <IconBrain size={18} />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
           <Tooltip title="Shuffle (S)">
             <IconButton size="small" onClick={shuffle} aria-label="Shuffle flashcards" color={isShuffled ? 'primary' : 'default'}>
               <IconArrowsShuffle size={18} />
