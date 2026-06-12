@@ -172,6 +172,7 @@ export default function TsForReactPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={tsFlashcards}
+          flashcardSource="ts"
         />
       </MainCard>
     );

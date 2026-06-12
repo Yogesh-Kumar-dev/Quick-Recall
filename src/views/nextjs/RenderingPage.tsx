@@ -162,6 +162,7 @@ export default function RenderingPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={nextjsRenderingFlashcards}
+          flashcardSource="nextjsRendering"
         />
       </MainCard>
     );

@@ -178,6 +178,7 @@ export default function TypeScriptPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={tsFlashcards}
+          flashcardSource="ts"
         />
       </MainCard>
     );

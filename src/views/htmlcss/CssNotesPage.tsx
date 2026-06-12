@@ -170,6 +170,7 @@ export default function CssNotesPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={cssFlashcards}
+          flashcardSource="css"
         />
       </MainCard>
     );

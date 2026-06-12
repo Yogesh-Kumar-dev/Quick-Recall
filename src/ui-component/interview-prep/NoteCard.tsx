@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { IconAlertTriangle, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import CodeBlock from 'ui-component/interview-prep/CodeBlock';
+import BookmarkButton from 'ui-component/interview-prep/BookmarkButton';
 import type { Note } from 'types/content';
 
 const DIFFICULTY_COLOR: Record<Note['difficulty'], 'success' | 'warning' | 'error'> = {
@@ -79,14 +80,12 @@ export default function NoteCard({ note, defaultExpanded = false, isOpen, onTogg
               {note.summary}
             </Typography>
           </Box>
-          <IconButton
-            size="small"
-            onClick={handleToggle}
-            aria-label={expanded ? 'Collapse note' : 'Expand note'}
-            sx={{ flexShrink: 0, mt: 0.25 }}
-          >
-            {expanded ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
-          </IconButton>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, mt: 0.25 }}>
+            <BookmarkButton kind="note" refId={note.id} />
+            <IconButton size="small" onClick={handleToggle} aria-label={expanded ? 'Collapse note' : 'Expand note'}>
+              {expanded ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
+            </IconButton>
+          </Box>
         </Box>
       </CardContent>
 

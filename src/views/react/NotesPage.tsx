@@ -161,6 +161,7 @@ export default function ReactNotesPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={reactFlashcards}
+          flashcardSource="react"
         />
       </MainCard>
     );

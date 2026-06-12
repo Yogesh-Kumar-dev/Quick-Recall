@@ -158,6 +158,7 @@ export default function ReduxNotesPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={reduxFlashcards}
+          flashcardSource="redux"
         />
       </MainCard>
     );

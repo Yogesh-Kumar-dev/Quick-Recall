@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
+import BookmarkButton from 'ui-component/interview-prep/BookmarkButton';
 import type { BaseProblemEntry } from 'types/content';
 
 const ACCENT_BORDER: Record<string, string> = {
@@ -77,6 +78,7 @@ export default function ProblemCard({ problem, basePath = '/js/machine-coding', 
                 ))}
               </Stack>
             </Box>
+            <BookmarkButton kind="problem" refId={problem.slug} stopPropagation />
             <IconArrowRight
               size={18}
               className="pc-arrow"

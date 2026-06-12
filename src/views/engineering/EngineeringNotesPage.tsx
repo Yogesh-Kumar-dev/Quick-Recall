@@ -176,6 +176,7 @@ export default function EngineeringNotesPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={engineeringFlashcards}
+          flashcardSource="engineering"
         />
       </MainCard>
     );

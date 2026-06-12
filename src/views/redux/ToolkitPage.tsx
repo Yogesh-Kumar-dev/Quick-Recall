@@ -161,6 +161,7 @@ export default function ReduxToolkitPage() {
           gotchaCount={GOTCHA_COUNT}
           onGotchaOnly={enterGotchaOnly}
           flashcards={reduxToolkitFlashcards}
+          flashcardSource="reduxToolkit"
         />
       </MainCard>
     );
