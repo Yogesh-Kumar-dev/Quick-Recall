@@ -1,10 +1,13 @@
 'use client';
 import { useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { IconBrandReact } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import { PlaylistLauncher } from 'ui-component/playlist-player';
+import { REACT_MACHINE_CODING_PLAYLISTS } from 'data/video-playlists';
 import ProblemCard from 'ui-component/interview-prep/ProblemCard';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
@@ -139,7 +142,7 @@ export default function ReactMachineCodingPage() {
   // ── Landing ───────────────────────────────────────────────────────────────
   if (isLanding) {
     return (
-      <MainCard title="⚛️ React Machine Coding">
+      <MainCard title="⚛️ React Machine Coding" secondary={<PlaylistLauncher playlists={REACT_MACHINE_CODING_PLAYLISTS} />}>
         <SectionLanding
           icon={<IconBrandReact size={28} />}
           title="React Machine Coding"
@@ -159,9 +162,12 @@ export default function ReactMachineCodingPage() {
     <MainCard
       title="⚛️ React Machine Coding"
       secondary={
-        <Typography variant="caption" color="text.secondary">
-          {filtered.length} of {reactMcProblems.length}
-        </Typography>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography variant="caption" color="text.secondary">
+            {filtered.length} of {reactMcProblems.length}
+          </Typography>
+          <PlaylistLauncher playlists={REACT_MACHINE_CODING_PLAYLISTS} />
+        </Stack>
       }
     >
       <FilterShell

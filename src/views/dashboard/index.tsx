@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 import { IconBrandCss3, IconBrandJavascript, IconBrandNextjs, IconBrandReact, IconBrandRedux } from '@tabler/icons-react';
 
 import TopicStatCard from 'ui-component/interview-prep/TopicStatCard';
+import { InstagramLauncher } from 'ui-component/instagram-launcher';
+import { DASHBOARD_INSTAGRAM } from 'data/video-playlists';
 import { jsProblems, jsNotes, tsNotes } from 'data/javascript';
 import { reactNotes, reactMcProblems } from 'data/react';
 import { reduxNotes, reduxToolkitNotes, rtkQueryNotes, asyncThunkNotes } from 'data/redux';
@@ -61,13 +63,16 @@ export default function DashboardPage() {
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h3" fontWeight={700} gutterBottom>
-          Interview Prep
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Your personal reference for JavaScript, TypeScript, React, Redux, and Next.js — notes, machine coding, and cheat sheets.
-        </Typography>
+      <Box sx={{ mb: 3, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+        <Box>
+          <Typography variant="h3" fontWeight={700} gutterBottom>
+            Interview Prep
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Your personal reference for JavaScript, TypeScript, React, Redux, and Next.js — notes, machine coding, and cheat sheets.
+          </Typography>
+        </Box>
+        <InstagramLauncher links={DASHBOARD_INSTAGRAM} />
       </Box>
 
       {/* Overview strip */}

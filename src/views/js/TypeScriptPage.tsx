@@ -3,11 +3,15 @@ import { useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import InputAdornment from '@mui/material/InputAdornment';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { IconBrandTypescript, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import { PlaylistLauncher } from 'ui-component/playlist-player';
+import { InstagramLauncher } from 'ui-component/instagram-launcher';
+import { TS_NOTES_PLAYLISTS, TS_NOTES_INSTAGRAM } from 'data/video-playlists';
 import VirtualNoteList from 'ui-component/interview-prep/VirtualNoteList';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
@@ -165,7 +169,15 @@ export default function TypeScriptPage() {
   // ── Landing ───────────────────────────────────────────────────────────────
   if (isLanding) {
     return (
-      <MainCard title="📘 TypeScript Notes">
+      <MainCard
+        title="📘 TypeScript Notes"
+        secondary={
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            <PlaylistLauncher playlists={TS_NOTES_PLAYLISTS} />
+            <InstagramLauncher links={TS_NOTES_INSTAGRAM} />
+          </Stack>
+        }
+      >
         <SectionLanding
           icon={<IconBrandTypescript size={28} />}
           title="TypeScript Notes"
