@@ -12,6 +12,7 @@ import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
 import TimerSection from './TimerSection';
 import FullScreenSection from './FullScreenSection';
+import { InstallButton, OfflineDownloadButton, OfflineStatusChip } from 'ui-component/pwa';
 
 import { MenuOrientation, ThemeMode } from 'config';
 import useConfig from 'hooks/useConfig';
@@ -77,6 +78,17 @@ export default function Header() {
 
         {/* universal timer: keep visible across breakpoints so a running countdown is always shown */}
         <TimerSection />
+
+        {/* PWA: persistent "Offline" chip — visible only while the device is offline */}
+        <OfflineStatusChip />
+
+        {/* PWA: install prompt shown at all breakpoints (primary action); self-hides when
+            already installed or no prompt is available */}
+        <InstallButton />
+
+        <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
+          <OfflineDownloadButton />
+        </Box>
 
         <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
           <FullScreenSection />

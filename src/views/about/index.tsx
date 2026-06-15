@@ -27,7 +27,8 @@ import {
   IconArrowRight,
   IconMail,
   IconDatabase,
-  IconBrandYoutube
+  IconBrandYoutube,
+  IconCloudDownload
 } from '@tabler/icons-react';
 
 // project imports
@@ -45,6 +46,15 @@ interface Feature {
 }
 
 const FEATURES: Feature[] = [
+  {
+    icon: <IconCloudDownload size={24} />,
+    title: 'Installable & Offline-First',
+    blurb:
+      'Install QuickRecall like a native app, then download sections for offline study — pick what you need or grab everything, with live per-section progress. It even detects what is already saved and refreshes after a new release.',
+    tech: 'PWA · Serwist service worker + Cache Storage API',
+    accent: '#5a0fc8',
+    span: 2
+  },
   {
     icon: <IconMicrophone size={24} />,
     title: 'Speak Out Loud',
@@ -162,6 +172,7 @@ const CORE_STACK: StackTech[] = [
   { label: 'TypeScript', icon: 'typescript' },
   { label: 'Redux Toolkit', icon: 'redux' },
   { label: 'Dexie.js', icon: 'dexie', localSrc: '/assets/images/icons/dexie.png', width: 158 },
+  { label: 'PWA (Serwist)', icon: 'pwa' },
   { label: 'nuqs', icon: 'nuqs' },
   { label: 'React Router', icon: 'react-router' },
   { label: 'YouTube', icon: 'youtube' },
