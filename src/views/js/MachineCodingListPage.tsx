@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { IconCode } from '@tabler/icons-react';
 
@@ -11,6 +12,8 @@ import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer'
 import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } from 'ui-component/topic-dashboard/SectionLanding';
 import TopicFilterCards, { type CategoryOption, type DifficultyOption } from 'ui-component/topic-dashboard/TopicFilterCards';
 import SuggestProblemBanner from 'ui-component/SuggestProblemBanner';
+import { PlaylistLauncher } from 'ui-component/playlist-player';
+import { JS_MACHINE_CODING_PLAYLISTS } from 'data/video-playlists';
 import { useSectionFilter } from 'hooks/useSectionFilter';
 import { useSelector } from 'store';
 import useInjectReducer from 'store/useInjectReducer';
@@ -140,7 +143,7 @@ export default function MachineCodingListPage() {
   // ── Landing ───────────────────────────────────────────────────────────────
   if (isLanding) {
     return (
-      <MainCard title="🔧 JS Machine Coding">
+      <MainCard title="🔧 JS Machine Coding" secondary={<PlaylistLauncher playlists={JS_MACHINE_CODING_PLAYLISTS} />}>
         <SectionLanding
           icon={<IconCode size={28} />}
           title="JS Machine Coding"
@@ -160,9 +163,12 @@ export default function MachineCodingListPage() {
     <MainCard
       title="🔧 JS Machine Coding"
       secondary={
-        <Typography variant="caption" color="text.secondary">
-          {filtered.length} of {jsProblems.length}
-        </Typography>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography variant="caption" color="text.secondary">
+            {filtered.length} of {jsProblems.length}
+          </Typography>
+          <PlaylistLauncher playlists={JS_MACHINE_CODING_PLAYLISTS} />
+        </Stack>
       }
     >
       <FilterShell

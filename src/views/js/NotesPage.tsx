@@ -4,11 +4,15 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import InputAdornment from '@mui/material/InputAdornment';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { IconBrandJavascript, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import { PlaylistLauncher } from 'ui-component/playlist-player';
+import { InstagramLauncher } from 'ui-component/instagram-launcher';
+import { JS_NOTES_PLAYLISTS, JS_NOTES_INSTAGRAM } from 'data/video-playlists';
 import VirtualNoteList from 'ui-component/interview-prep/VirtualNoteList';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
@@ -242,7 +246,15 @@ export default function NotesPage() {
   // ── Landing ───────────────────────────────────────────────────────────────
   if (isLanding) {
     return (
-      <MainCard title="📗 JS Notes">
+      <MainCard
+        title="📗 JS Notes"
+        secondary={
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            <PlaylistLauncher playlists={JS_NOTES_PLAYLISTS} />
+            <InstagramLauncher links={JS_NOTES_INSTAGRAM} />
+          </Stack>
+        }
+      >
         <SectionLanding
           icon={<IconBrandJavascript size={28} />}
           title="JavaScript Notes"

@@ -8,6 +8,8 @@ import Typography from '@mui/material/Typography';
 import { IconBrandReact, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import { InstagramLauncher } from 'ui-component/instagram-launcher';
+import { REACT_NOTES_INSTAGRAM } from 'data/video-playlists';
 import VirtualNoteList from 'ui-component/interview-prep/VirtualNoteList';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
@@ -148,7 +150,7 @@ export default function ReactNotesPage() {
   // ── Landing ───────────────────────────────────────────────────────────────
   if (isLanding) {
     return (
-      <MainCard title="⚛️ React Notes">
+      <MainCard title="⚛️ React Notes" secondary={<InstagramLauncher links={REACT_NOTES_INSTAGRAM} />}>
         <SectionLanding
           icon={<IconBrandReact size={28} />}
           title="React Notes"

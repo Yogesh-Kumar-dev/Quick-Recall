@@ -58,7 +58,7 @@ const animation: KeyedObject = {
 export default function Snackbar() {
   const dispatch = useDispatch();
   const snackbar = useSelector((state) => state.snackbar);
-  const { actionButton, anchorOrigin, alert, close, message, open, transition, variant, severity } = snackbar;
+  const { actionButton, anchorOrigin, alert, message, open, transition, variant, severity } = snackbar;
 
   const handleClose = (event: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -117,18 +117,18 @@ export default function Snackbar() {
                     UNDO
                   </Button>
                 )}
-                {close !== false && (
-                  <IconButton
-                    sx={{
-                      color: alert.color === 'success' || alert.color === 'warning' ? 'common.black' : 'common.white'
-                    }}
-                    size="small"
-                    aria-label="close"
-                    onClick={handleClose}
-                  >
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                )}
+                {/* Close icon is always shown so any toast can be dismissed instantly,
+                    regardless of the `close` flag a caller passed. */}
+                <IconButton
+                  sx={{
+                    color: alert.color === 'success' || alert.color === 'warning' ? 'common.black' : 'common.white'
+                  }}
+                  size="small"
+                  aria-label="close"
+                  onClick={handleClose}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
               </>
             }
             sx={{

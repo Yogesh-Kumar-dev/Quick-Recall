@@ -26,7 +26,8 @@ import {
   IconSearch,
   IconArrowRight,
   IconMail,
-  IconDatabase
+  IconDatabase,
+  IconBrandYoutube
 } from '@tabler/icons-react';
 
 // project imports
@@ -131,6 +132,15 @@ const FEATURES: Feature[] = [
     tech: 'fuse.js',
     accent: '#10b981',
     span: 1
+  },
+  {
+    icon: <IconBrandYoutube size={24} />,
+    title: 'Embedded Video Player',
+    blurb:
+      'Topic-specific YouTube playlists play right inside the app — shuffled on each launch, with the frame auto-switching between portrait Shorts and landscape videos.',
+    tech: 'react-youtube + YouTube IFrame API + oEmbed',
+    accent: '#FF0000',
+    span: 2
   }
 ];
 
@@ -154,6 +164,7 @@ const CORE_STACK: StackTech[] = [
   { label: 'Dexie.js', icon: 'dexie', localSrc: '/assets/images/icons/dexie.png', width: 158 },
   { label: 'nuqs', icon: 'nuqs' },
   { label: 'React Router', icon: 'react-router' },
+  { label: 'YouTube', icon: 'youtube' },
   { label: 'Vercel', icon: 'vercel' }
 ];
 

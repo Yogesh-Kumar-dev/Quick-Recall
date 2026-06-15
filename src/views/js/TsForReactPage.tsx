@@ -8,6 +8,8 @@ import Typography from '@mui/material/Typography';
 import { IconBrandReact, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import { PlaylistLauncher } from 'ui-component/playlist-player';
+import { TS_FOR_REACT_PLAYLISTS } from 'data/video-playlists';
 import VirtualNoteList from 'ui-component/interview-prep/VirtualNoteList';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
@@ -159,7 +161,7 @@ export default function TsForReactPage() {
   // ── Landing ───────────────────────────────────────────────────────────────
   if (isLanding) {
     return (
-      <MainCard title="📘 TypeScript for React">
+      <MainCard title="📘 TypeScript for React" secondary={<PlaylistLauncher playlists={TS_FOR_REACT_PLAYLISTS} />}>
         <SectionLanding
           icon={<IconBrandReact size={28} />}
           title="TypeScript for React"
