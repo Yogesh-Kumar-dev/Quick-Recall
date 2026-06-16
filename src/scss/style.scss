@@ -4,27 +4,12 @@
 
 // third party
 @import 'react-perfect-scrollbar/dist/css/styles.css';
-@import 'slick-carousel/slick/slick.css';
-@import 'slick-carousel/slick/slick-theme.css';
-
-@import 'react-responsive-carousel/lib/styles/carousel.min.css';
-@include meta.load-css('yet-another-react-lightbox.scss');
 @include meta.load-css('scrollbar.scss');
 
 // ==============================|| TAP HIGHLIGHT ||============================== //
 
 * {
   -webkit-tap-highlight-color: transparent !important;
-}
-
-// ==============================|| LIGHT BOX ||============================== //
-.slick-arrow:before {
-  color: themes-vars.$grey500;
-}
-
-// ==============================|| LIGHT BOX ||============================== //
-.fullscreen .react-images__blanket {
-  z-index: 1200;
 }
 
 // ==============================|| APEXCHART ||============================== //

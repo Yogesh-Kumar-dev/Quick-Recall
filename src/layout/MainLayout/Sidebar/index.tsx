@@ -12,12 +12,10 @@ import Box from '@mui/material/Box';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // project imports
-// import MenuCard from './MenuCard';
 import MenuList from '../MenuList';
 import LogoSection from '../LogoSection';
 import MiniDrawerStyled from './MiniDrawerStyled';
 
-import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import { drawerWidth } from 'store/constant';
 
@@ -31,7 +29,7 @@ function Sidebar() {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened || false;
 
-  const { menuOrientation, miniDrawer, mode } = useConfig();
+  const { miniDrawer, mode } = useConfig();
 
   const logo = useMemo(
     () => (
@@ -43,16 +41,6 @@ function Sidebar() {
   );
 
   const drawer = useMemo(() => {
-    const isVerticalOpen = menuOrientation === MenuOrientation.VERTICAL && drawerOpen;
-    const drawerContent = (
-      <>
-        {/* <MenuCard />
-        <Stack direction="row" sx={{ justifyContent: 'center', mb: 2 }}>
-          <Chip label={process.env.NEXT_PUBLIC_VERSION} size="small" color="default" />
-        </Stack> */}
-      </>
-    );
-
     let drawerSX = { paddingLeft: '0px', paddingRight: '0px', marginTop: '20px' };
     if (drawerOpen) drawerSX = { paddingLeft: '16px', paddingRight: '16px', marginTop: '0px' };
 
@@ -61,18 +49,16 @@ function Sidebar() {
         {downMD ? (
           <Box sx={drawerSX}>
             <MenuList />
-            {isVerticalOpen && drawerContent}
           </Box>
         ) : (
           <PerfectScrollbar style={{ height: 'calc(100vh - 64px)', ...drawerSX }}>
             <MenuList />
-            {isVerticalOpen && drawerContent}
           </PerfectScrollbar>
         )}
       </>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [downMD, drawerOpen, menuOrientation, mode]);
+  }, [downMD, drawerOpen, mode]);
 
   return (
     <Box component="nav" sx={{ flexShrink: { md: 0 }, width: { xs: 'auto', md: drawerWidth } }} aria-label="mailbox folders">

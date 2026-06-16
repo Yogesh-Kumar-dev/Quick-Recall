@@ -2,8 +2,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch as useAppDispatch, useSelector as useAppSelector, TypedUseSelectorHook } from 'react-redux';
 
-// import { persistStore } from 'redux-persist';
-
 // project imports
 import rootReducer, { reducerManager } from './reducer';
 import type { InjectableState } from './injectable';
@@ -21,11 +19,6 @@ const baseStore = configureStore({
 // Expose the reducer manager on the store so feature code (useInjectReducer)
 // can register / unregister slices at runtime.
 const store = Object.assign(baseStore, { reducerManager });
-
-// redux-persist is currently disabled (PersistGate is commented out in
-// ProviderWrapper). Left here, commented, for when persistence is re-enabled —
-// note that dynamically-injected slices would need their own persist handling.
-// const persister = persistStore(store);
 
 // At runtime only `snackbar` is wired statically; feature slices are injected
 // on demand. For typing, though, we still want selectors like

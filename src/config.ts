@@ -24,20 +24,10 @@ export enum ThemeDirection {
   RTL = 'rtl'
 }
 
-export enum AuthProvider {
-  JWT = 'jwt',
-  FIREBASE = 'firebase',
-  AUTH0 = 'auth0',
-  AWS = 'aws',
-  SUPABASE = 'supabase'
-}
-
 export enum DropzopType {
   default = 'DEFAULT',
   standard = 'STANDARD'
 }
-
-export const APP_AUTH: AuthProvider = AuthProvider.JWT;
 
 const config: ConfigProps = {
   menuOrientation: MenuOrientation.VERTICAL,

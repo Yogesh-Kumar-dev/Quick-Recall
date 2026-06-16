@@ -11,14 +11,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 
 // project imports
-// import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import HorizontalBar from './HorizontalBar';
 import MainContentStyled from './MainContentStyled';
 import Loader from 'ui-component/Loader';
 import Breadcrumbs from 'ui-component/extended/Breadcrumbs';
-// import Customization from 'layout/Customization';
 
 import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
@@ -74,14 +72,11 @@ export default function MainLayout({ children }: Props) {
           {/* breadcrumb */}
           <Breadcrumbs />
           {children}
-          {/* <Footer /> */}
         </Container>
       </MainContentStyled>
 
       {/* menu / drawer */}
       {menu}
-
-      {/* <Customization /> */}
     </Box>
   );
 }
