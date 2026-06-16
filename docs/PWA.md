@@ -170,9 +170,15 @@ document navigations while offline. Precached via `additionalPrecacheEntries` in
 ### Step 8 — Offline content manifest `src/data/offline-content.ts`
 
 `OFFLINE_SECTIONS`: ~8 groups mirroring the sidebar, each mapping a human label → the route
-paths to fetch. JS/React machine-coding slugs mirror the `PROBLEM_MAP` / route pages. We list
-**route paths** (not chunk URLs) — fetching a route pulls its chunks, which runtime caching then
-stores. `OFFLINE_TOTAL_URLS` is the overall-progress denominator.
+paths to fetch. We list **route paths** (not chunk URLs) — fetching a route pulls its chunks,
+which runtime caching then stores. `OFFLINE_TOTAL_URLS` is the overall-progress denominator.
+
+Machine-coding slugs are **derived from the existing problem registries** — `JS_MC_SLUGS =
+jsProblems.map(p => p.slug)` (`data/javascript/js-problems.ts`) and `REACT_MC_SLUGS =
+reactMcProblems.map(p => p.slug)` (`data/react/react-mc-problems.ts`) — not hardcoded. Those
+registries are the single source of truth, so adding a problem there automatically includes it in
+the offline download with no manual list to keep in sync. Only the static page routes (notes,
+quick-recall, typescript, etc.), which have no registry, are listed by hand.
 
 ### Step 9 — Download hook `src/hooks/useOfflineDownload.ts`
 
@@ -258,5 +264,61 @@ Two additions for graceful offline behavior:
 **Verify (prod build):** go offline (DevTools ▸ Network ▸ Offline). The header shows an "Offline"
 chip. Click a section you have NOT downloaded → the guard panel appears listing your downloaded
 sections; clicking one navigates there. Reconnect → chip disappears, pages load normally.
+
+### Step 15 — Derive machine-coding slugs from the registries (de-duplication)
+
+Step 8 originally hardcoded the JS (11) and React (21) machine-coding slug lists, duplicating the
+authoritative `jsProblems` / `reactMcProblems` registries. Replaced the hardcoded arrays with
+`.map(p => p.slug)` over those registries so the offline manifest can't drift when a problem is
+added. Behavior-preserving (same slugs); typecheck + build green.
+
+---
+
+## Maintaining the app under the PWA
+
+How the two kinds of "adding content" behave once the service worker is in place. The key idea:
+the SW caches **static content** (so it gates *when* users see new code), but never touches
+**IndexedDB** (Dexie migrations are independent).
+
+### Expanding static content (more questions, a new notes page, etc.)
+
+1. Edit the relevant `src/data/*` array (or add a new route + nav entry as usual).
+2. If it's a **new route**, add its path to the right section's `urls` in
+   `src/data/offline-content.ts` so it's included in "download for offline". (Machine-coding
+   problems need no action — their slugs are derived from the registries; see Step 15.)
+3. Commit + deploy. The build emits new content-hashed chunks; Serwist regenerates `public/sw.js`
+   with a new precache manifest.
+
+What happens automatically: a returning user's browser sees `sw.js` changed → installs + activates
+the new SW (`skipWaiting` + `clientsClaim`), serving new content on next load. The
+`MANIFEST_VERSION` changes, so the download panel flips saved sections to **"Update available"**
+(Step 12). **No special action** — this is the clean case. Caveat: a user mid-session sees new
+content only after a reload (normal PWA behavior).
+
+### Adding / changing an IndexedDB table (`src/db/index.ts`)
+
+The SW is **not** involved — Dexie migrates each browser at runtime when the new code executes.
+Rules (these are Dexie rules; the PWA doesn't change them):
+
+1. Add a **new** `this.version(n + 1).stores({ ...all existing tables, newTable: 'id, idx' })` —
+   never edit an existing version block. Carry forward every prior table.
+2. Add the `Table<…>` field to the `QuickRecallDB` class.
+3. Use `.upgrade(tx => …)` if existing data needs backfilling/transforming.
+
+PWA interaction (the subtle bit): after you deploy, a user may briefly run **cached old code**
+(old schema) until the new SW activates on reload. This is safe for **additive** changes — old
+code just ignores the new table. Avoid **destructive** schema changes (rename/remove a table,
+change a primary key) in a release that also changes how existing data is read: a client still on
+cached old code can break until it reloads. `skipWaiting: true` makes updates fast, but not
+instant.
+
+### Quick reference
+
+| Change | Steps | PWA concern |
+| --- | --- | --- |
+| Add content to an existing page | Edit `src/data/*.ts`, deploy | None — auto-cached, "Update available" prompt |
+| Add a new content route | Add route + nav + add path to `OFFLINE_SECTIONS` | Add to offline manifest so it's downloadable |
+| Add a machine-coding problem | Add to `jsProblems` / `reactMcProblems` registry (as before) | None — offline slugs derive from the registry |
+| Add an IndexedDB table/index | New `version(n+1)` carrying all tables; add class field | Keep changes **additive**; avoid destructive schema changes alongside read-path changes |
 
 <!-- Subsequent steps are appended here as they are performed. -->
