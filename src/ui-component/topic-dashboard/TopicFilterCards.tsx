@@ -7,6 +7,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
+import { useAutoAnimate } from 'ui-component/extended/AutoAnimate';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -70,6 +71,8 @@ export default function TopicFilterCards({
   showDifficulty = true
 }: TopicFilterCardsProps) {
   const theme = useTheme();
+  const [verticalCatRef] = useAutoAnimate<HTMLDivElement>();
+  const [horizontalCatRef] = useAutoAnimate<HTMLDivElement>();
   const allCount = difficulties.reduce((s, d) => s + d.count, 0);
   const allOption: DifficultyOption = { label: 'All', value: 'all', count: allCount, emoji: '📋' };
 
@@ -106,7 +109,7 @@ export default function TopicFilterCards({
           <>
             {showDifficulty && <Divider sx={{ my: 2 }} />}
             <SectionLabel>Category</SectionLabel>
-            <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap ref={verticalCatRef}>
               <Chip
                 label={`All (${categories.reduce((s, c) => s + c.count, 0)})`}
                 onClick={() => onCategoryChange('all')}
@@ -150,7 +153,7 @@ export default function TopicFilterCards({
       </Stack>
 
       {categories && categories.length > 0 && (
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap ref={horizontalCatRef}>
           <Chip
             label={`All categories (${categories.reduce((s, c) => s + c.count, 0)})`}
             onClick={() => onCategoryChange('all')}

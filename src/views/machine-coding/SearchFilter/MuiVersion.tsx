@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Box, TextField, Typography, List, ListItem, ListItemText, Paper, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useAutoAnimate } from 'ui-component/extended/AutoAnimate';
 
 const ITEMS = [
   'React',
@@ -34,6 +35,7 @@ const ITEMS = [
 
 export default function SearchFilter() {
   const [query, setQuery] = useState('');
+  const [listRef] = useAutoAnimate<HTMLUListElement>();
 
   const filtered = ITEMS.filter((item) => item.toLowerCase().includes(query.toLowerCase()));
 
@@ -71,7 +73,7 @@ export default function SearchFilter() {
             <Typography variant="body2">No results for &ldquo;{query}&rdquo;</Typography>
           </Box>
         ) : (
-          <List dense disablePadding>
+          <List dense disablePadding ref={listRef}>
             {filtered.map((item, i) => (
               <ListItem key={item} divider={i < filtered.length - 1}>
                 <ListItemText primary={item} primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }} />

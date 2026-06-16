@@ -31,6 +31,7 @@ import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 import Drawer from '@mui/material/Drawer';
 import { IconShoppingCart, IconPlus, IconMinus, IconTrash, IconX } from '@tabler/icons-react';
+import { useAutoAnimate } from 'ui-component/extended/AutoAnimate';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Product {
@@ -85,6 +86,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (val: T) => void]
 export default function ShoppingCartMui() {
   const [cart, setCart] = useLocalStorage<CartItem[]>('mc-cart-mui', []);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [cartListRef] = useAutoAnimate<HTMLDivElement>();
 
   // ── Helpers ───────────────────────────────────────────────────────────────────
   const getProduct = (id: number) => PRODUCTS.find((p) => p.id === id)!;
@@ -184,7 +186,7 @@ export default function ShoppingCartMui() {
           )}
 
           {/* Cart items */}
-          <Stack spacing={1.5} sx={{ flex: 1, overflowY: 'auto' }}>
+          <Stack spacing={1.5} sx={{ flex: 1, overflowY: 'auto' }} ref={cartListRef}>
             {cart.map((item) => {
               const product = getProduct(item.productId);
               return (
