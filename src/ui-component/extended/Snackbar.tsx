@@ -1,6 +1,6 @@
 'use client';
 
-import { SyntheticEvent } from 'react';
+import type { SyntheticEvent } from 'react';
 
 // material-ui
 import Alert from '@mui/material/Alert';
@@ -8,13 +8,13 @@ import Button from '@mui/material/Button';
 import Fade from '@mui/material/Fade';
 import Grow from '@mui/material/Grow';
 import IconButton from '@mui/material/IconButton';
-import Slide, { SlideProps } from '@mui/material/Slide';
+import Slide, { type SlideProps } from '@mui/material/Slide';
 import MuiSnackbar from '@mui/material/Snackbar';
 
 // assets
 import CloseIcon from '@mui/icons-material/Close';
 
-import { KeyedObject } from 'types';
+import type { KeyedObject } from 'types';
 import { useDispatch, useSelector } from 'store';
 import { closeSnackbar } from 'store/slices/snackbar';
 

@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';

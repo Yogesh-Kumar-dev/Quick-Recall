@@ -27,8 +27,8 @@ export default function OfflinePage() {
       </div>
       <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 600 }}>You&apos;re offline</h1>
       <p style={{ margin: 0, maxWidth: '28rem', color: '#555', lineHeight: 1.5 }}>
-        This page hasn&apos;t been saved for offline use yet. Reconnect to load it, or open a page you&apos;ve already visited — those
-        work offline. Tip: use <strong>Download for offline</strong> in the header to save everything ahead of time.
+        This page hasn&apos;t been saved for offline use yet. Reconnect to load it, or open a page you&apos;ve already visited — those work
+        offline. Tip: use <strong>Download for offline</strong> in the header to save everything ahead of time.
       </p>
       <a
         href="/"

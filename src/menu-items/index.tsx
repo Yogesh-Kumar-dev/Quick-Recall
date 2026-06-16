@@ -12,7 +12,7 @@ import jobTracker from './job-tracker';
 import study from './study';
 
 // types
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS ||============================== //
 

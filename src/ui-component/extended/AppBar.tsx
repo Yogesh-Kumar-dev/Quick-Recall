@@ -1,6 +1,6 @@
 'use client';
 
-import { cloneElement, useState, ReactElement, CSSProperties } from 'react';
+import { cloneElement, useState, type ReactElement, type CSSProperties } from 'react';
 import RouterLink from 'next/link';
 
 // material-ui

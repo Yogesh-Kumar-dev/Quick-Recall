@@ -1,5 +1,5 @@
 // project imports
-import { MenuOrientation, ThemeDirection, ThemeMode } from 'config';
+import type { MenuOrientation, ThemeDirection, ThemeMode } from 'config';
 
 export type FontFamily = string;
 export type PresetColor = 'default' | 'theme1' | 'theme2' | 'theme3' | 'theme4' | 'theme5' | 'theme6';

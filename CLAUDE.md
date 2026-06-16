@@ -11,9 +11,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev          # Start dev server (Next.js)
 npm run build        # Production build
-npm run lint         # ESLint on src/**/*.{js,jsx,ts,tsx}
-npm run lint:fix     # Auto-fix lint errors
-npm run prettier     # Format all src files with Prettier
+npm run lint         # Biome lint on ./src
+npm run lint:fix     # Biome lint with safe auto-fixes
+npm run format       # Biome format all src files
+npm run check        # Biome lint + format + safe fixes in one pass
 npm run knip         # Find unused exports/dependencies
 ```
 
@@ -84,6 +85,6 @@ Dynamic routing: `src/app/(dashboard)/js/machine-coding/[slug]/page.tsx` maintai
 
 ## Code Style
 
-Prettier config: single quotes, 140 print width, 2-space indent, no trailing commas. Run `npm run prettier` before committing.
+Formatting and linting are handled by **Biome** (`biome.json`): single quotes, 140 line width, 2-space indent, no trailing commas, semicolons. Run `npm run check` (lint + format + safe fixes) before committing. The raw `solution-*.js` and `*.jsx` demo files under `src/views/**/machine-coding/` are excluded from Biome since they're displayed verbatim via `readFileSync`.
 
 `reactStrictMode` is set to `false` in `next.config.ts` due to a known chart rendering issue.

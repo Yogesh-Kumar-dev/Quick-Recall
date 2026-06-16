@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 
 // third party
-import { useSnackbar, SnackbarKey } from 'notistack';
+import { useSnackbar, type SnackbarKey } from 'notistack';
 
 // project imports
 import SubCard from 'ui-component/cards/SubCard';

@@ -1,4 +1,4 @@
-import { CSSProperties, ExoticComponent, ReactElement, Ref } from 'react';
+import type { CSSProperties, ExoticComponent, ReactElement, Ref } from 'react';
 
 // material-ui
 import Collapse from '@mui/material/Collapse';

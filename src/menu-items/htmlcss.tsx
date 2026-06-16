@@ -1,5 +1,5 @@
 import { IconBrandHtml5, IconBrandCss3 } from '@tabler/icons-react';
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS - HTML & CSS ||============================== //
 

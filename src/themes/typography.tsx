@@ -1,11 +1,11 @@
 // material-ui
-import { Theme, TypographyVariantsOptions } from '@mui/material/styles';
+import type { Theme, TypographyVariantsOptions } from '@mui/material/styles';
 
 // project imports
 import { ThemeMode } from 'config';
 
 // types
-import { FontFamily } from 'types/config';
+import type { FontFamily } from 'types/config';
 
 export default function Typography(theme: Theme, borderRadius: number, fontFamily: FontFamily): TypographyVariantsOptions {
   return {

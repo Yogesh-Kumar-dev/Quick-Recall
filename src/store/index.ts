@@ -1,6 +1,6 @@
 // third party
 import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch as useAppDispatch, useSelector as useAppSelector, TypedUseSelectorHook } from 'react-redux';
+import { useDispatch as useAppDispatch, useSelector as useAppSelector, type TypedUseSelectorHook } from 'react-redux';
 
 // project imports
 import rootReducer, { reducerManager } from './reducer';

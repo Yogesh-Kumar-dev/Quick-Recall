@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // types
-import { SnackbarProps } from 'types/snackbar';
+import type { SnackbarProps } from 'types/snackbar';
 
 const initialState: SnackbarProps = {
   action: false,

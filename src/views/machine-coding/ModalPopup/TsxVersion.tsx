@@ -8,7 +8,7 @@
  * - Focus trap (basic)
  * - Portal-less fixed overlay
  */
-import { useState, useEffect, useRef, ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 
 // ── Reusable Modal component ────────────────────────────────────────────────
 

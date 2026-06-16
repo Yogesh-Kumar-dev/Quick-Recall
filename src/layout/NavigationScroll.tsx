@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, ReactElement } from 'react';
+import { useEffect, type ReactElement } from 'react';
 
 // ==============================|| NAVIGATION SCROLL TO TOP ||============================== //
 

@@ -29,7 +29,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ReviewDueBadge from './ReviewDueBadge';
 
 // types
-import { LinkTarget, NavItemType } from 'types';
+import type { LinkTarget, NavItemType } from 'types';
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 

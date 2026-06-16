@@ -1,5 +1,5 @@
 // material-ui
-import { alpha, Theme } from '@mui/material/styles';
+import { alpha, type Theme } from '@mui/material/styles';
 
 // project imports
 import componentsOverrides from './overrides';

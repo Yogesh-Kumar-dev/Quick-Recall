@@ -14,8 +14,8 @@ import theme5 from '../scss/_theme5.module.scss';
 import theme6 from '../scss/_theme6.module.scss';
 
 // types
-import { ColorProps } from 'types';
-import { PresetColor } from 'types/config';
+import type { ColorProps } from 'types';
+import type { PresetColor } from 'types/config';
 
 // ==============================|| DEFAULT THEME - PALETTE ||============================== //
 

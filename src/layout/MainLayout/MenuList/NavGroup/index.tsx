@@ -30,7 +30,7 @@ import { useGetMenuMaster } from 'api/menu';
 import { IconChevronDown, IconChevronRight, IconMinusVertical } from '@tabler/icons-react';
 
 // types
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 type VirtualElement = {
   getBoundingClientRect: () => DOMRectReadOnly | DOMRect;

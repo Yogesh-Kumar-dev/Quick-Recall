@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { usePathname, useSearchParams } from 'next/navigation';
 
-import { CSSProperties, ReactElement, useEffect, useState } from 'react';
+import { type CSSProperties, type ReactElement, useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -30,7 +30,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 
 // types
-import { NavItemType, OverrideIcon } from 'types';
+import type { NavItemType, OverrideIcon } from 'types';
 
 interface BreadcrumbLinkProps {
   title: string;
