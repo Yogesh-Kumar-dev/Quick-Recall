@@ -13,7 +13,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // assets
-import { IconCheck, IconAlertTriangle, IconDownload, IconRefresh, IconCircleDashed } from '@tabler/icons-react';
+import { IconCheck, IconAlertTriangle, IconDownload, IconRefresh, IconCircleDashed, IconCircleCheck } from '@tabler/icons-react';
 
 // project imports
 import type { UseOfflineDownload, SectionProgress } from 'hooks/useOfflineDownload';
@@ -68,8 +68,10 @@ function sectionButtonLabel(s: SectionProgress): string {
 }
 
 export default function OfflineDownloadPanel({ open, onClose, download }: Props) {
-  const { sections, overallProgress, isRunning, isSupported, isStale, isChecking, enqueueSection, enqueueAll } = download;
+  const { sections, overallProgress, isRunning, isSupported, isStale, isChecking, justCompleted, enqueueSection, enqueueAll } = download;
   const allSaved = !isChecking && sections.length > 0 && sections.every((s) => s.status === 'done');
+  // Celebrate when a run just finished and everything is saved (and not freshly stale again).
+  const showUpToDate = justCompleted && allSaved && !isStale && !isRunning;
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" aria-labelledby="offline-download-title">
@@ -89,6 +91,17 @@ export default function OfflineDownloadPanel({ open, onClose, download }: Props)
               <Typography variant="body2" color="warning.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <IconRefresh size={18} />
                 A new version is available. Re-download to refresh your saved offline content.
+              </Typography>
+            )}
+
+            {showUpToDate && (
+              <Typography
+                variant="body2"
+                color="success.main"
+                sx={{ display: 'flex', alignItems: 'center', gap: 0.75, fontWeight: 600 }}
+              >
+                <IconCircleCheck size={18} />
+                You’re all set and up to date — go prepare for your interview. All the best! 🎯
               </Typography>
             )}
 

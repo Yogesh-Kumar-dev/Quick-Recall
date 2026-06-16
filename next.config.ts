@@ -14,6 +14,10 @@ const withSerwist = withSerwistInit({
   swSrc: 'src/app/sw.ts',
   swDest: 'public/sw.js',
   disable: process.env.NODE_ENV === 'development',
+  // Only the offline fallback is precached here. The entry-point documents ('/', '/dashboard')
+  // are warmed in the SW `install` handler (src/app/sw.ts) instead — additionalPrecacheEntries
+  // for route *documents* is unreliable (the Serwist maintainer's own guidance), so we cache them
+  // through the runtime navigation strategy so a launch request actually matches. See sw.ts.
   additionalPrecacheEntries: [{ url: '/~offline', revision: process.env.VERCEL_GIT_COMMIT_SHA ?? Date.now().toString() }]
 });
 
