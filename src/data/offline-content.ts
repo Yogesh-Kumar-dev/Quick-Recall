@@ -6,8 +6,13 @@
 // chunks it pulls in — which is why we list **route paths**, not internal chunk URLs (stable,
 // low-maintenance). The grouping is what the progress UI renders per section.
 //
-// Keep these lists in sync with the menu items and the JS machine-coding PROBLEM_MAP. Each id
-// mirrors a sidebar group; `urls` are the navigable routes within it.
+// Machine-coding slugs are DERIVED from the existing problem registries (the single source of
+// truth) rather than hardcoded — add a problem there and it's automatically included here. Only
+// the static page routes (notes, quick-recall, etc.) are listed by hand below, since they have
+// no registry to derive from.
+
+import { jsProblems } from 'data/javascript/js-problems';
+import { reactMcProblems } from 'data/react/react-mc-problems';
 
 export interface OfflineSection {
   /** stable id, mirrors the sidebar group id */
@@ -18,47 +23,9 @@ export interface OfflineSection {
   urls: string[];
 }
 
-// JS machine-coding problem slugs — mirror of PROBLEM_MAP in
-// src/app/(dashboard)/js/machine-coding/[slug]/page.tsx
-const JS_MC_SLUGS = [
-  'debounce',
-  'throttle',
-  'flatten-array',
-  'deep-clone',
-  'promise-all',
-  'curry',
-  'memoize',
-  'custom-bind',
-  'group-by',
-  'electricity-bill',
-  'frequency-calculator'
-];
-
-// React machine-coding problem slugs — mirror of the route pages under
-// src/app/(dashboard)/machine-coding/<slug>/
-const REACT_MC_SLUGS = [
-  'todo',
-  'infinite-scroll',
-  'debounced-search',
-  'star-rating',
-  'pagination',
-  'otp-input',
-  'drag-and-drop',
-  'accordion',
-  'multi-step-form',
-  'tabs',
-  'file-tree',
-  'shopping-cart',
-  'sequential-progress-bars',
-  'counter',
-  'search-filter',
-  'dropdown',
-  'modal-popup',
-  'form-handling',
-  'api-data-fetching',
-  'virtualized-list',
-  'movie-seat-selection'
-];
+// Derived from the authoritative registries — no manual slug lists to keep in sync.
+const JS_MC_SLUGS = jsProblems.map((p) => p.slug);
+const REACT_MC_SLUGS = reactMcProblems.map((p) => p.slug);
 
 export const OFFLINE_SECTIONS: OfflineSection[] = [
   {

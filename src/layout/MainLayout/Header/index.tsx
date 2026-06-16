@@ -47,33 +47,38 @@ export default function Header() {
         <SearchSection />
       </Box>
 
-      {/* right: full screen + nav toggle */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1, flex: 1 }}>
+      {/* right: timer + PWA controls + full screen + nav toggle.
+          Spacing is owned by each item's own `ml: 2` wrapper (the established convention for
+          TimerSection / FullScreenSection), so no `gap` here — adding one would double the
+          spacing and make these icons sit unevenly vs. the bare nav-toggle. */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flex: 1 }}>
         {!isHorizontal && (
-          <Tooltip title={drawerOpen ? 'Close navigation' : 'Open navigation'} placement="bottom">
-            <Avatar
-              variant="rounded"
-              role="button"
-              aria-label={drawerOpen ? 'Close navigation' : 'Open navigation'}
-              sx={{
-                ...theme.typography.commonAvatar,
-                ...theme.typography.mediumAvatar,
-                overflow: 'hidden',
-                transition: 'all .2s ease-in-out',
-                cursor: 'pointer',
-                bgcolor: mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
-                color: mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
-                '&:hover': {
-                  bgcolor: mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
-                  color: mode === ThemeMode.DARK ? 'secondary.light' : 'secondary.light'
-                }
-              }}
-              onClick={() => handlerDrawerOpen(!drawerOpen)}
-              color="inherit"
-            >
-              <IconMenu2 stroke={1.5} size="20px" />
-            </Avatar>
-          </Tooltip>
+          <Box sx={{ ml: 2 }}>
+            <Tooltip title={drawerOpen ? 'Close navigation' : 'Open navigation'} placement="bottom">
+              <Avatar
+                variant="rounded"
+                role="button"
+                aria-label={drawerOpen ? 'Close navigation' : 'Open navigation'}
+                sx={{
+                  ...theme.typography.commonAvatar,
+                  ...theme.typography.mediumAvatar,
+                  overflow: 'hidden',
+                  transition: 'all .2s ease-in-out',
+                  cursor: 'pointer',
+                  bgcolor: mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
+                  color: mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
+                  '&:hover': {
+                    bgcolor: mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
+                    color: mode === ThemeMode.DARK ? 'secondary.light' : 'secondary.light'
+                  }
+                }}
+                onClick={() => handlerDrawerOpen(!drawerOpen)}
+                color="inherit"
+              >
+                <IconMenu2 stroke={1.5} size="20px" />
+              </Avatar>
+            </Tooltip>
+          </Box>
         )}
 
         {/* universal timer: keep visible across breakpoints so a running countdown is always shown */}
@@ -86,9 +91,8 @@ export default function Header() {
             already installed or no prompt is available */}
         <InstallButton />
 
-        <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
-          <OfflineDownloadButton />
-        </Box>
+        {/* PWA: offline download shown at all breakpoints — it's most useful on mobile */}
+        <OfflineDownloadButton />
 
         <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
           <FullScreenSection />
