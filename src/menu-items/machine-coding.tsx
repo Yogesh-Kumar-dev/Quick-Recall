@@ -26,7 +26,7 @@ import {
 } from '@tabler/icons-react';
 
 // types
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS - MACHINE CODING ||============================== //
 

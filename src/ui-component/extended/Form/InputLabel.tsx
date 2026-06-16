@@ -2,7 +2,7 @@
 
 // material-ui
 import { styled } from '@mui/material/styles';
-import MuiInputLabel, { InputLabelProps } from '@mui/material/InputLabel';
+import MuiInputLabel, { type InputLabelProps } from '@mui/material/InputLabel';
 
 const BInputLabel = styled((props: MUIInputLabelProps) => <MuiInputLabel {...props} />, {
   shouldForwardProp: (prop) => prop !== 'horizontal'

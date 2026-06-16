@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 
 // material-ui
 import { CacheProvider } from '@emotion/react';
-import createCache, { StylisPlugin } from '@emotion/cache';
+import createCache, { type StylisPlugin } from '@emotion/cache';
 
 // third party
 import rtlPlugin from 'stylis-plugin-rtl';

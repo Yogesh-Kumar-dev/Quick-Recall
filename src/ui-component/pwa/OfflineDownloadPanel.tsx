@@ -89,17 +89,12 @@ export default function OfflineDownloadPanel({ open, onClose, download }: Props)
 
             {isStale && (
               <Typography variant="body2" color="warning.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                <IconRefresh size={18} />
-                A new version is available. Re-download to refresh your saved offline content.
+                <IconRefresh size={18} />A new version is available. Re-download to refresh your saved offline content.
               </Typography>
             )}
 
             {showUpToDate && (
-              <Typography
-                variant="body2"
-                color="success.main"
-                sx={{ display: 'flex', alignItems: 'center', gap: 0.75, fontWeight: 600 }}
-              >
+              <Typography variant="body2" color="success.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, fontWeight: 600 }}>
                 <IconCircleCheck size={18} />
                 You’re all set and up to date — go prepare for your interview. All the best! 🎯
               </Typography>

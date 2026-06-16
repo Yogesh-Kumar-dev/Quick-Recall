@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 // material-ui
-import MuiAvatar, { AvatarProps } from '@mui/material/Avatar';
-import { OverridableComponent } from '@mui/material/OverridableComponent';
+import MuiAvatar, { type AvatarProps } from '@mui/material/Avatar';
+import type { OverridableComponent } from '@mui/material/OverridableComponent';
 
 // types
-import { LinkTarget } from 'types';
+import type { LinkTarget } from 'types';
 
 // ==============================|| AVATAR ||============================== //
 

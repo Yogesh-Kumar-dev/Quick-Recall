@@ -1,6 +1,6 @@
 // material-ui
-import { alpha, Palette, PaletteColor, Theme } from '@mui/material/styles';
-import { ChipProps } from '@mui/material/Chip';
+import { alpha, type Palette, type PaletteColor, type Theme } from '@mui/material/styles';
+import type { ChipProps } from '@mui/material/Chip';
 
 // project imports
 import { ThemeMode } from 'config';

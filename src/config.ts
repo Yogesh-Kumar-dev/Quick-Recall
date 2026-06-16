@@ -2,7 +2,7 @@
 import { Roboto } from 'next/font/google';
 
 // types
-import { ConfigProps } from 'types/config';
+import type { ConfigProps } from 'types/config';
 
 export const DASHBOARD_PATH = '/dashboard';
 export const HORIZONTAL_MAX_ITEM = 7;

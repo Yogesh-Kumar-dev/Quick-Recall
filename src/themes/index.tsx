@@ -1,9 +1,16 @@
 'use client';
 
-import { useMemo, ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 
 // material-ui
-import { createTheme, ThemeOptions, ThemeProvider, Theme, TypographyVariantsOptions, StyledEngineProvider } from '@mui/material/styles';
+import {
+  createTheme,
+  type ThemeOptions,
+  ThemeProvider,
+  type Theme,
+  type TypographyVariantsOptions,
+  StyledEngineProvider
+} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 // project imports
@@ -15,7 +22,7 @@ import componentStyleOverrides from './compStyleOverride';
 import customShadows from './shadows';
 
 // types
-import { CustomShadowProps } from 'types/default-theme';
+import type { CustomShadowProps } from 'types/default-theme';
 
 interface Props {
   children: ReactNode;

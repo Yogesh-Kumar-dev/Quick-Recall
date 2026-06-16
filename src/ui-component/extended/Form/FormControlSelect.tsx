@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 
 // project imports
-import { GenericCardProps } from 'types';
+import type { GenericCardProps } from 'types';
 
 // ==============================|| FORM CONTROL SELECT ||============================== //
 

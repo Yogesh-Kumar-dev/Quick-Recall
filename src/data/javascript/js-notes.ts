@@ -846,7 +846,7 @@ s.indexOf('xyz');      // -1`
     ],
     codeSnippet: `'a,b,c'.split(',');          // ['a', 'b', 'c']
 'hello'.split('');          // ['h','e','l','l','o']
-'a1b2c'.split(/\d/);        // ['a', 'b', 'c']
+'a1b2c'.split(/d/);        // ['a', 'b', 'c']
 
 ['a', 'b', 'c'].join('-');  // 'a-b-c'
 ['a', 'b', 'c'].join('');   // 'abc'`
@@ -911,7 +911,7 @@ url.endsWith('/users');        // true
     codeSnippet: `'aabbcc'.replace('b', 'x');    // 'axbcc' — only first
 'aabbcc'.replaceAll('b', 'x'); // 'aaxxcc'
 '1-2-3'.replace(/-/g, '_');    // '1_2_3' — regex /g
-'foo bar'.replace(/(\w+)/g, s => s.toUpperCase()); // 'FOO BAR'`
+'foo bar'.replace(/(w+)/g, s => s.toUpperCase()); // 'FOO BAR'`
   },
 
   {

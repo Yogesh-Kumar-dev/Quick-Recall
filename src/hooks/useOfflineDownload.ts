@@ -105,11 +105,21 @@ async function warmUrl(url: string): Promise<boolean> {
   const rscUrl = url + (url.includes('?') ? '&' : '?') + '_rsc=offline';
 
   const docReq = fetch(url, { cache: 'reload', credentials: 'same-origin' })
-    .then((res) => res.text().then(() => res.ok).catch(() => res.ok))
+    .then((res) =>
+      res
+        .text()
+        .then(() => res.ok)
+        .catch(() => res.ok)
+    )
     .catch(() => false);
 
   const rscReq = fetch(rscUrl, { cache: 'reload', credentials: 'same-origin', headers: { RSC: '1' } })
-    .then((res) => res.text().then(() => res.ok).catch(() => res.ok))
+    .then((res) =>
+      res
+        .text()
+        .then(() => res.ok)
+        .catch(() => res.ok)
+    )
     .catch(() => false);
 
   const [docOk, rscOk] = await Promise.all([docReq, rscReq]);
@@ -194,42 +204,37 @@ export default function useOfflineDownload(): UseOfflineDownload {
 
   // Process one section: warm its URLs (skipping already-cached unless stale/forced), updating
   // progress. Returns whether all URLs succeeded.
-  const processSection = useCallback(
-    async (section: OfflineSection, forceRefetch: boolean): Promise<void> => {
-      setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, status: 'downloading' } : s)));
+  const processSection = useCallback(async (section: OfflineSection, forceRefetch: boolean): Promise<void> => {
+    setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, status: 'downloading' } : s)));
 
-      // Snapshot what's already cached once (ground truth from cache.keys()), so the per-URL
-      // skip below is a cheap set lookup rather than re-enumerating Cache Storage each iteration.
-      const cachedSet = forceRefetch ? new Set<string>() : await getCachedPathnames();
-      const pathOf = (url: string) => {
-        try {
-          return new URL(url, location.origin).pathname;
-        } catch {
-          return url;
-        }
-      };
-
-      let anyFailed = false;
-      let completed = section.urls.filter((u) => cachedSet.has(pathOf(u))).length;
-      setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, completed } : s)));
-
-      for (const url of section.urls) {
-        if (!forceRefetch && cachedSet.has(pathOf(url))) continue; // already saved
-        const ok = await warmUrl(url);
-        if (!ok) anyFailed = true;
-        completed = Math.min(completed + 1, section.urls.length);
-        setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, completed } : s)));
+    // Snapshot what's already cached once (ground truth from cache.keys()), so the per-URL
+    // skip below is a cheap set lookup rather than re-enumerating Cache Storage each iteration.
+    const cachedSet = forceRefetch ? new Set<string>() : await getCachedPathnames();
+    const pathOf = (url: string) => {
+      try {
+        return new URL(url, location.origin).pathname;
+      } catch {
+        return url;
       }
+    };
 
-      // We just changed Cache Storage — invalidate the snapshot so detection elsewhere is fresh.
-      refreshCachedPathnames();
+    let anyFailed = false;
+    let completed = section.urls.filter((u) => cachedSet.has(pathOf(u))).length;
+    setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, completed } : s)));
 
-      setSections((prev) =>
-        prev.map((s) => (s.id === section.id ? { ...s, completed: s.total, status: anyFailed ? 'error' : 'done' } : s))
-      );
-    },
-    []
-  );
+    for (const url of section.urls) {
+      if (!forceRefetch && cachedSet.has(pathOf(url))) continue; // already saved
+      const ok = await warmUrl(url);
+      if (!ok) anyFailed = true;
+      completed = Math.min(completed + 1, section.urls.length);
+      setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, completed } : s)));
+    }
+
+    // We just changed Cache Storage — invalidate the snapshot so detection elsewhere is fresh.
+    refreshCachedPathnames();
+
+    setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, completed: s.total, status: anyFailed ? 'error' : 'done' } : s)));
+  }, []);
 
   // Drain loop: whenever the queue has items and nothing is active, pull the next id and process
   // it. Runs one section at a time (drainingRef guard) and is re-triggered by queue/activeId.
@@ -288,9 +293,7 @@ export default function useOfflineDownload(): UseOfflineDownload {
         if (additions.length === 0) return prev;
 
         // mark newly queued sections
-        setSections((cur) =>
-          cur.map((s) => (additions.includes(s.id) && s.id !== activeId ? { ...s, status: 'queued' } : s))
-        );
+        setSections((cur) => cur.map((s) => (additions.includes(s.id) && s.id !== activeId ? { ...s, status: 'queued' } : s)));
 
         // keep core ahead of everything else in the resulting queue
         const merged = [...prev, ...additions];

@@ -32,7 +32,7 @@ import { IconChevronDown, IconChevronRight, IconChevronUp } from '@tabler/icons-
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 // types
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // horizontal-menu - wrapper
 const PopperStyled = styled(Popper)(({ theme }) => ({

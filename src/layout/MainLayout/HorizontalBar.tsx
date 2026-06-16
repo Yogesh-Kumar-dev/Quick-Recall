@@ -1,6 +1,6 @@
 'use client';
 
-import { cloneElement, ReactElement } from 'react';
+import { cloneElement, type ReactElement } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';

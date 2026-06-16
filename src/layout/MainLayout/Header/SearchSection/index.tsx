@@ -1,11 +1,11 @@
 'use client';
 
-import { KeyboardEvent, ReactNode, useMemo, useRef, useState } from 'react';
+import { type KeyboardEvent, type ReactNode, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import Avatar, { AvatarProps } from '@mui/material/Avatar';
+import Avatar, { type AvatarProps } from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -26,7 +26,7 @@ import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
 // project imports
 import { ThemeMode } from 'config';
 import Transitions from 'ui-component/extended/Transitions';
-import { createSearchFuse, SearchItem } from 'data/search-index';
+import { createSearchFuse, type SearchItem } from 'data/search-index';
 
 // assets
 import { IconSearch, IconX } from '@tabler/icons-react';

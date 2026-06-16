@@ -4,7 +4,7 @@ import { memo, useState } from 'react';
 // import { memo, useLayoutEffect, useState } from 'react';
 
 // material-ui
-import { Theme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
@@ -24,7 +24,7 @@ import { useGetMenuMaster } from 'api/menu';
 // import { useGetMenu, useGetMenuMaster } from 'api/menu';
 
 // types
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 

@@ -1,7 +1,7 @@
 'use client';
 
 // material-ui
-import { styled, Theme, CSSObject } from '@mui/material/styles';
+import { styled, type Theme, type CSSObject } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 
 // project imports

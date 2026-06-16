@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 // types
 import type { PomodoroConfig, StartTimerInput, TimerState } from 'types/timer';

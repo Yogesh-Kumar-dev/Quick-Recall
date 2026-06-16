@@ -1,6 +1,6 @@
 'use client';
 
-import { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
 // third party
 import { useAutoAnimate } from '@formkit/auto-animate/react';

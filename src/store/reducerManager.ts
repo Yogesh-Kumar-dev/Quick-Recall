@@ -35,9 +35,11 @@ export interface ReducerManager<S = Record<string, unknown>> {
   getReducerMap: () => Record<string, Reducer>;
 }
 
-export function createReducerManager<S extends Record<string, unknown>>(initialReducers: {
-  [K in keyof S]: Reducer<S[K]>;
-}): ReducerManager<S> {
+export function createReducerManager<S extends Record<string, unknown>>(
+  initialReducers: {
+    [K in keyof S]: Reducer<S[K]>;
+  }
+): ReducerManager<S> {
   // The live registry of reducers, keyed by their state slice name. Typed
   // loosely internally because injected reducers add keys outside S.
   const reducers: Record<string, Reducer> = { ...initialReducers };

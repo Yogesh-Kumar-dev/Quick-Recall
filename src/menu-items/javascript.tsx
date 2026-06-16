@@ -1,5 +1,5 @@
 import { IconBolt, IconBrandJavascript, IconBrandTypescript, IconCode } from '@tabler/icons-react';
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS - JAVASCRIPT & TYPESCRIPT ||============================== //
 

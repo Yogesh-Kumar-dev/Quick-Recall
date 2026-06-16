@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, type ChangeEvent, useEffect } from 'react';
 
 // material-ui
 import Button from '@mui/material/Button';

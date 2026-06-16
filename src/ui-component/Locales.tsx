@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 
 // third party
-import { IntlProvider, MessageFormatElement } from 'react-intl';
+import { IntlProvider, type MessageFormatElement } from 'react-intl';
 import useConfig from 'hooks/useConfig';
 
 // types
-import { I18n } from 'types/config';
+import type { I18n } from 'types/config';
 
 // load locales files
 function loadLocaleData(i18n: I18n) {

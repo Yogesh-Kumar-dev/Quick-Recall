@@ -5,8 +5,8 @@ import { useMemo } from 'react';
 import { fetcher } from 'utils/axios';
 
 // types
-import { MenuProps } from 'types/menu';
-import { NavItemType } from 'types';
+import type { MenuProps } from 'types/menu';
+import type { NavItemType } from 'types';
 
 const initialState: MenuProps = {
   openedItem: 'dashboard',

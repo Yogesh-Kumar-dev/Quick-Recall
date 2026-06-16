@@ -1,11 +1,11 @@
 'use client';
 
-import { CSSProperties, ReactNode, Ref } from 'react';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 
 // material-ui
-import Card, { CardProps } from '@mui/material/Card';
-import CardContent, { CardContentProps } from '@mui/material/CardContent';
-import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader';
+import Card, { type CardProps } from '@mui/material/Card';
+import CardContent, { type CardContentProps } from '@mui/material/CardContent';
+import CardHeader, { type CardHeaderProps } from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 

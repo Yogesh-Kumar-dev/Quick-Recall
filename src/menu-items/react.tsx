@@ -1,5 +1,5 @@
 import { IconBolt, IconBrandReact, IconCode } from '@tabler/icons-react';
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // ==============================|| MENU ITEMS - REACT ||============================== //
 

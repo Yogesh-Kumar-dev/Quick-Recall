@@ -1,14 +1,15 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import type React from 'react';
+import type { FunctionComponent, ReactElement } from 'react';
 
 // material-ui
-import { OverridableComponent } from '@mui/material/OverridableComponent';
-import { SvgIconTypeMap } from '@mui/material/SvgIcon';
-import { ChipProps } from '@mui/material/Chip';
-import { TableCellProps } from '@mui/material/TableCell';
+import type { OverridableComponent } from '@mui/material/OverridableComponent';
+import type { SvgIconTypeMap } from '@mui/material/SvgIcon';
+import type { ChipProps } from '@mui/material/Chip';
+import type { TableCellProps } from '@mui/material/TableCell';
 
 // project imports
 // import { TablerIcon } from '@tabler/icons';
-import { SnackbarProps } from './snackbar';
+import type { SnackbarProps } from './snackbar';
 
 export type ArrangementOrder = 'asc' | 'desc' | undefined;
 

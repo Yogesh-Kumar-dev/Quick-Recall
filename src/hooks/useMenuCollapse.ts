@@ -1,7 +1,7 @@
-import { useEffect, Dispatch, SetStateAction } from 'react';
+import { useEffect, type Dispatch, type SetStateAction } from 'react';
 
 // types
-import { NavItemType } from 'types';
+import type { NavItemType } from 'types';
 
 // Type alias for setting state
 // Allows setting a state value or null

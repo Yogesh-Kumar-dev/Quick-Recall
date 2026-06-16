@@ -1,13 +1,13 @@
 'use client';
 
-import { createContext, ReactNode } from 'react';
+import { createContext, type ReactNode } from 'react';
 
 // project imports
-import defaultConfig, { MenuOrientation, ThemeMode, ThemeDirection } from 'config';
+import defaultConfig, { type MenuOrientation, type ThemeMode, type ThemeDirection } from 'config';
 import useLocalStorage from 'hooks/useLocalStorage';
 
 // types
-import { CustomizationProps, FontFamily, I18n, PresetColor } from 'types/config';
+import type { CustomizationProps, FontFamily, I18n, PresetColor } from 'types/config';
 
 // initial state
 const initialState: CustomizationProps = {

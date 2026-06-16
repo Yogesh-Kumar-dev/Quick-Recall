@@ -1,7 +1,7 @@
 // Server Component — readFileSync runs at next build (static generation)
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import ProblemLayout, { ProblemMeta } from 'ui-component/machine-coding/ProblemLayout';
+import ProblemLayout, { type ProblemMeta } from 'ui-component/machine-coding/ProblemLayout';
 import MuiVersion from './MuiVersion';
 import TsxVersion from './TsxVersion';
 import JsxVersion from './JsxVersion';

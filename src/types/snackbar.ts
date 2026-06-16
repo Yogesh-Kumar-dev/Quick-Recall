@@ -1,6 +1,6 @@
 // material-ui
-import { AlertProps } from '@mui/material/Alert';
-import { SnackbarOrigin } from '@mui/material/Snackbar';
+import type { AlertProps } from '@mui/material/Alert';
+import type { SnackbarOrigin } from '@mui/material/Snackbar';
 
 // ==============================|| SNACKBAR TYPES ||============================== //
 

@@ -6,7 +6,7 @@
  * how MUI wraps the same pattern: isOpen + selected state.
  */
 import { useState } from 'react';
-import { Box, FormControl, InputLabel, Select, MenuItem, Typography, Chip, SelectChangeEvent } from '@mui/material';
+import { Box, FormControl, InputLabel, Select, MenuItem, Typography, Chip, type SelectChangeEvent } from '@mui/material';
 
 const OPTIONS = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry', 'Fig', 'Grape', 'Honeydew', 'Kiwi', 'Lemon'];
 

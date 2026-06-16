@@ -14,7 +14,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 
 // third party
-import { enqueueSnackbar, useSnackbar, SnackbarContent, SnackbarKey, SnackbarMessage } from 'notistack';
+import { enqueueSnackbar, useSnackbar, SnackbarContent, type SnackbarKey, type SnackbarMessage } from 'notistack';
 
 // project imports
 import SubCard from 'ui-component/cards/SubCard';
