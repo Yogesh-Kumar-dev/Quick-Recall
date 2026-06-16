@@ -45,8 +45,8 @@ export function useNotify() {
   return { notify: fire, dismissCategory: dismiss, requestPermission: request };
 }
 
-// Hook for the preferences UI (e.g. the ProfileSection toggle). Subscribes to
-// cross-tab pref changes so every tab's UI stays in sync.
+// Hook for a preferences UI toggle. Subscribes to cross-tab pref changes so
+// every tab's UI stays in sync.
 export function useNotificationPrefs(): [NotificationPrefs, (next: NotificationPrefs) => void] {
   const [prefs, setLocal] = useState<NotificationPrefs>(() => getPrefs());
 
