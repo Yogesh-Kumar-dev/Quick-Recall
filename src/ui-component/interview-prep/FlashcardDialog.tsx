@@ -7,12 +7,21 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import { AnimatePresence, motion } from 'framer-motion';
 import { IconArrowLeft, IconArrowRight, IconArrowsShuffle, IconBrain, IconX } from '@tabler/icons-react';
 import BookmarkButton from 'ui-component/interview-prep/BookmarkButton';
 import { useDispatch } from 'store';
 import { openSnackbar } from 'store/slices/snackbar';
 import * as reviewsRepository from 'views/review/reviewsRepository';
 import type { Flashcard } from 'types/content';
+
+// Slide the outgoing card out and the incoming card in, in the navigation direction.
+// custom = +1 (forward) → new card enters from the right; -1 (back) → from the left.
+const slideVariants = {
+  enter: (direction: number) => ({ x: direction > 0 ? 90 : -90, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (direction: number) => ({ x: direction > 0 ? -90 : 90, opacity: 0 })
+};
 
 // Fisher–Yates shuffle of [0, 1, …, n-1]
 function shuffledIndices(n: number): number[] {
@@ -44,6 +53,8 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
   const [flipped, setFlipped] = useState(false);
   const [order, setOrder] = useState<number[]>(() => Array.from({ length: total }, (_, i) => i));
   const [isShuffled, setIsShuffled] = useState(false);
+  // +1 = moving forward (new card slides in from the right), -1 = moving back
+  const [direction, setDirection] = useState(1);
 
   // Reset to natural order, first card, front-side up, each time the dialog opens
   useEffect(() => {
@@ -52,12 +63,14 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
       setIsShuffled(false);
       setIndex(0);
       setFlipped(false);
+      setDirection(1);
     }
   }, [open, total]);
 
   const card = cards[order[index] ?? index];
 
   const shuffle = useCallback(() => {
+    setDirection(1);
     setOrder(shuffledIndices(total));
     setIsShuffled(true);
     setIndex(0);
@@ -65,11 +78,13 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
   }, [total]);
 
   const goPrev = useCallback(() => {
+    setDirection(-1);
     setIndex((i) => (i > 0 ? i - 1 : i));
     setFlipped(false);
   }, []);
 
   const goNext = useCallback(() => {
+    setDirection(1);
     setIndex((i) => (i < total - 1 ? i + 1 : i));
     setFlipped(false);
   }, [total]);
@@ -162,60 +177,72 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
         </Stack>
       </Stack>
 
-      {/* ── Card (click to flip) ── */}
-      <Box sx={{ px: 2.5, pb: 1 }}>
-        <Box
-          role="button"
-          tabIndex={0}
-          onClick={toggleFlip}
-          onKeyDown={(e) => {
-            if (e.key === ' ' || e.key === 'Enter') {
-              e.preventDefault();
-              toggleFlip();
-            }
-          }}
-          sx={{ perspective: '1200px', cursor: 'pointer', outline: 'none' }}
-        >
-          <Box
-            sx={{
-              position: 'relative',
-              width: '100%',
-              height: 260,
-              transformStyle: 'preserve-3d',
-              transition: 'transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1)',
-              transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
-            }}
+      {/* ── Card (click to flip; slides left/right on navigate) ── */}
+      <Box sx={{ px: 2.5, pb: 1, overflow: 'hidden' }}>
+        <AnimatePresence initial={false} custom={direction} mode="popLayout">
+          <motion.div
+            key={index}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.28, ease: 'easeInOut' }}
           >
-            {/* Front */}
-            <FlashcardFace>
-              {card.category && (
-                <Chip
-                  label={card.category}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  sx={{ position: 'absolute', top: 16, left: 16, height: 22, fontSize: 11 }}
-                />
-              )}
-              <Typography variant="h4" fontWeight={700} sx={{ lineHeight: 1.35 }}>
-                {card.front}
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ position: 'absolute', bottom: 16 }}>
-                Click to flip
-              </Typography>
-            </FlashcardFace>
+            <Box
+              role="button"
+              tabIndex={0}
+              onClick={toggleFlip}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  toggleFlip();
+                }
+              }}
+              sx={{ perspective: '1200px', cursor: 'pointer', outline: 'none' }}
+            >
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  height: 260,
+                  transformStyle: 'preserve-3d',
+                  transition: 'transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1)',
+                  transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                }}
+              >
+                {/* Front */}
+                <FlashcardFace>
+                  {card.category && (
+                    <Chip
+                      label={card.category}
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      sx={{ position: 'absolute', top: 16, left: 16, height: 22, fontSize: 11 }}
+                    />
+                  )}
+                  <Typography variant="h4" fontWeight={700} sx={{ lineHeight: 1.35 }}>
+                    {card.front}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ position: 'absolute', bottom: 16 }}>
+                    Click to flip
+                  </Typography>
+                </FlashcardFace>
 
-            {/* Back */}
-            <FlashcardFace back>
-              <Typography variant="h5" sx={{ lineHeight: 1.5, fontWeight: 500 }}>
-                {card.back}
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ position: 'absolute', bottom: 16 }}>
-                Click to flip back
-              </Typography>
-            </FlashcardFace>
-          </Box>
-        </Box>
+                {/* Back */}
+                <FlashcardFace back>
+                  <Typography variant="h5" sx={{ lineHeight: 1.5, fontWeight: 500 }}>
+                    {card.back}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ position: 'absolute', bottom: 16 }}>
+                    Click to flip back
+                  </Typography>
+                </FlashcardFace>
+              </Box>
+            </Box>
+          </motion.div>
+        </AnimatePresence>
       </Box>
 
       {/* ── Nav ── */}
