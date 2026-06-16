@@ -321,4 +321,135 @@ instant.
 | Add a machine-coding problem | Add to `jsProblems` / `reactMcProblems` registry (as before) | None — offline slugs derive from the registry |
 | Add an IndexedDB table/index | New `version(n+1)` carrying all tables; add class field | Keep changes **additive**; avoid destructive schema changes alongside read-path changes |
 
+### Step 16 — Make the app launch offline (warm entry documents on SW install)
+
+**Symptom:** install the app, download all sections, go offline, **launch the installed app** →
+the "You're offline" screen appeared on the app's own landing page.
+
+**Cause:** Serwist's precache manifest (`__SW_MANIFEST`) precaches the build *assets* (JS/CSS
+chunks), not the route *documents*. Launching the installed app does a hard document navigation to
+`start_url` (`/`); that document wasn't cached under a key the launch request matches, so the SW's
+`fallbacks` rule served `/~offline`. Even after "download all" (which fetches `/`), the runtime
+cache stored it under a key the launch navigation didn't hit.
+
+**What didn't work:** adding `{ url: '/' }, { url: '/dashboard' }` to `additionalPrecacheEntries`.
+Verified against the generated `public/sw.js` — only `/~offline` landed in the manifest; the route
+documents were silently dropped. The Serwist maintainer explicitly calls this approach unreliable
+for route documents ("modules imported may change while pages don't").
+
+**The fix (maintainer-recommended):** warm the entry-point documents in the SW `install` handler
+via `serwist.handleRequest`, so they're cached under the **same navigation runtime-cache key** a
+real launch uses — `src/app/sw.ts`:
+
+```ts
+const URLS_TO_WARM = ['/', '/dashboard'];
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    Promise.all(URLS_TO_WARM.map((url) => serwist.handleRequest({ request: new Request(url), event }))).catch(() => undefined)
+  );
+});
+```
+
+`next.config.ts` reverted to precaching only `/~offline`. Verified the install handler + the
+`["/","/dashboard"]` warm array are present in the built `public/sw.js`.
+
+**Verify (prod build):** `npm run build && npm start`, install the app, then **without visiting the
+home page**, go offline and launch the installed app → it should open `/` (not the offline
+screen). DevTools ▸ Application ▸ Cache Storage should show `/` cached right after install.
+
+### Step 17 — Reliable cache detection (fix false "not saved" reports)
+
+**Symptoms:** (1) offline on `/dashboard` (which rendered fine from cache) the
+`OfflineSectionGuard` still showed "This section isn't saved for offline use"; (2) right after
+"download everything", reopening the panel showed sections as `0/16`, `2/6`, "Partially saved" —
+as if data were lost.
+
+**Cause:** both came from `caches.match(url)` in `utils/offline-cache.ts`. Across Workbox's page
+caches (`pages`, `pages-rsc`, `pages-rsc-prefetch`), a naked `caches.match` from the page context
+frequently misses entries the SW's own fetch handler resolves — the stored request keys carry RSC
+headers / vary data a plain string match doesn't reproduce. So detection under-reported; the data
+was actually cached (the pages rendered).
+
+**Fix:** detect by enumerating real stored requests via `cache.keys()` across all caches and
+comparing by **pathname** (ground truth), instead of `caches.match`. `utils/offline-cache.ts` now
+builds a memoised `Set<pathname>` (`getCachedPathnames`), with `refreshCachedPathnames()` to
+invalidate it after a download or on panel/guard re-open. `isCached` / `countCached` are now set
+lookups over that snapshot. The download hook reads the snapshot once per section (cheap per-URL
+skip) and refreshes it after warming; the detection effect and the guard refresh before probing.
+
+**Verify (prod build):** download everything, reopen the panel → every section reads **Saved
+N/N** (no false "partially saved"). Go offline, open `/dashboard` and other downloaded routes →
+they render (the guard does NOT show the "not saved" panel for routes you've downloaded).
+
+### Step 18 — Dedicated high-capacity page cache (the whole app offline)
+
+**Problem:** after a full download, most routes still weren't offline. Cache inspection showed only
+4/16 JavaScript routes cached (and only because Next had *prefetched* them); all 11
+`/js/machine-coding/<slug>` dynamic routes were absent. Root causes (verified in
+`node_modules/@serwist/next/dist/index.worker.mjs`):
+
+1. `defaultCache`'s HTML page rule matches the **request** `Content-Type` header — which a plain
+   document `fetch()` never sends — so warmed documents fell through to the catch-all `others`
+   cache.
+2. Every `defaultCache` page cache is capped at **`maxEntries: 32`** (LRU). ~55 routes can't
+   coexist — they evict each other. (Known v9 limitation per the maintainer.)
+3. No `ignoreSearch`, so RSC entries keyed with `?_rsc=<token>` aren't retrievable by a later
+   navigation using a different token — and our notes pages also carry nuqs filter state in the
+   query (`?difficulty=…&q=…&open=…`).
+
+**Fix (Serwist's own primitives — no hand-rolled Cache API):** a custom `runtimeCaching` rule
+**prepended** to `defaultCache` (`src/app/sw.ts`):
+
+```ts
+const offlinePages: RuntimeCaching = {
+  matcher: ({ request, url: { pathname }, sameOrigin }) =>
+    sameOrigin && !pathname.startsWith('/api/') &&
+    (request.mode === 'navigate' || request.destination === 'document' || request.headers.get('RSC') === '1'),
+  handler: new NetworkFirst({
+    cacheName: 'offline-pages',
+    matchOptions: { ignoreSearch: true },
+    plugins: [new ExpirationPlugin({ maxEntries: 300, maxAgeSeconds: 30*24*60*60 }), new CacheableResponsePlugin({ statuses: [0, 200] })]
+  })
+};
+new Serwist({ /* … */ runtimeCaching: [offlinePages, ...defaultCache] });
+```
+
+- **`ignoreSearch: true`** is essential — one cached entry per route serves every nuqs filter
+  permutation and the build-specific `?_rsc=` token. Do not remove it.
+- **Rule order** matters: the custom rule must precede `defaultCache` or `defaultCache`'s page
+  rules win.
+- **NetworkFirst**: online → fresh (+ refresh cache); offline → served from `offline-pages`.
+
+**Warm all routes at install** (`src/app/sw.ts`), replacing the previous `['/', '/dashboard']`
+warm. Routes come from `OFFLINE_SECTIONS` (imported relatively — Serwist's `swSrc` webpack pass
+*does* resolve the project's tsconfig path aliases transitively, verified at build). Two
+representations per route (document + RSC):
+
+```ts
+const ALL_ROUTES = [...new Set(OFFLINE_SECTIONS.flatMap((s) => s.urls))];
+self.addEventListener('install', (event) => {
+  event.waitUntil(Promise.all(ALL_ROUTES.flatMap((url) => [
+    serwist.handleRequest({ request: new Request(url), event }),
+    serwist.handleRequest({ request: new Request(url, { headers: { RSC: '1' } }), event })
+  ])).catch(() => undefined));
+});
+```
+
+`warmUrl` in the download hook (document + RSC) tops up the same `offline-pages` cache. Detection
+(`utils/offline-cache.ts`, Step 17) enumerates all caches by `cache.keys()`, so it counts the new
+entries correctly — the panel undercount and guard false-positive resolve once routes actually
+persist.
+
+**Verified in the built `public/sw.js`:** `offline-pages` cacheName, `ignoreSearch`, `maxEntries:300`,
+the `RSC:"1"` warm header, the install handler, and the bundled route/registry data.
+
+**Capacity note:** 300 entries covers ~55 routes × 2 representations + headroom. Bump `maxEntries`
+if content grows substantially.
+
+**Verify (prod build, CLEAN SW):** unregister the old SW + clear Cache Storage first. After the new
+SW activates, *without downloading*, `offline-pages` already holds `/` + routes (install warm).
+Download everything → panel reads Saved N/N. Re-run the `cache.keys()` console dump → the formerly
+missing `/js/machine-coding/<slug>` routes are present. Offline: relaunch + sidebar-navigate to a
+machine-coding problem → renders; the guard does not misfire.
+
 <!-- Subsequent steps are appended here as they are performed. -->

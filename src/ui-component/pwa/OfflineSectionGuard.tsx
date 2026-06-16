@@ -19,7 +19,7 @@ import { IconCloudOff, IconCloudDownload, IconChevronRight } from '@tabler/icons
 import useOnlineStatus from 'hooks/useOnlineStatus';
 import useOfflineDownload from 'hooks/useOfflineDownload';
 import { OFFLINE_SECTIONS } from 'data/offline-content';
-import { isCached, countCached } from 'utils/offline-cache';
+import { isCached, countCached, refreshCachedPathnames } from 'utils/offline-cache';
 import OfflineDownloadPanel from './OfflineDownloadPanel';
 
 // ==============================|| PWA - OFFLINE SECTION GUARD ||============================== //
@@ -60,6 +60,7 @@ export default function OfflineSectionGuard({ children }: { children: React.Reac
     let cancelled = false;
 
     void (async () => {
+      refreshCachedPathnames(); // probe live cache state on each offline navigation
       const cached = pathname ? await isCached(pathname) : false;
       if (cancelled) return;
       setRouteCached(cached);

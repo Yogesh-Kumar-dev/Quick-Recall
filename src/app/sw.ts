@@ -11,8 +11,10 @@
 // `types`, which this project's parent-dir `typeRoots` setup doesn't resolve cleanly).
 /// <reference types="@serwist/next/typings" />
 import { defaultCache } from '@serwist/next/worker';
-import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
-import { Serwist } from 'serwist';
+import type { PrecacheEntry, RuntimeCaching, SerwistGlobalConfig } from 'serwist';
+import { CacheableResponsePlugin, ExpirationPlugin, NetworkFirst, Serwist } from 'serwist';
+
+import { OFFLINE_SECTIONS } from '../data/offline-content';
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -50,12 +52,37 @@ self.addEventListener('message', (event) => {
   }
 });
 
+// Dedicated, high-capacity page cache for "the whole app, offline". Serwist's defaultCache page
+// caches are capped at 32 entries (LRU) and its HTML rule matches on the *request* Content-Type
+// header (which a plain fetch never sends), so bulk-downloading ~55 routes can't reliably persist
+// there. This custom rule — prepended to defaultCache so it wins for page requests — uses our own
+// cacheName with a high maxEntries and `ignoreSearch: true`. ignoreSearch is essential: notes
+// pages carry nuqs filter state in the query (`?difficulty=…&q=…&open=…`) and RSC payloads carry a
+// build-specific `?_rsc=…` token — one cached entry per route must serve all of those.
+const OFFLINE_PAGES_CACHE = 'offline-pages';
+
+const offlinePages: RuntimeCaching = {
+  matcher: ({ request, url: { pathname }, sameOrigin }) =>
+    sameOrigin &&
+    !pathname.startsWith('/api/') &&
+    (request.mode === 'navigate' || request.destination === 'document' || request.headers.get('RSC') === '1'),
+  handler: new NetworkFirst({
+    cacheName: OFFLINE_PAGES_CACHE,
+    matchOptions: { ignoreSearch: true },
+    plugins: [
+      new ExpirationPlugin({ maxEntries: 300, maxAgeSeconds: 30 * 24 * 60 * 60 }),
+      new CacheableResponsePlugin({ statuses: [0, 200] })
+    ]
+  })
+};
+
 const serwist = new Serwist({
   precacheEntries,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  // Custom page cache MUST come before defaultCache or defaultCache's page rules match first.
+  runtimeCaching: [offlinePages, ...defaultCache],
   fallbacks: {
     entries: [
       {
@@ -66,6 +93,25 @@ const serwist = new Serwist({
       }
     ]
   }
+});
+
+// Warm EVERY offline route at install so the whole app is available offline immediately — even
+// before the user opens the download panel. Routes come from OFFLINE_SECTIONS (the same source of
+// truth the download UI uses). We warm two representations per route through serwist.handleRequest
+// so both navigation modes resolve offline: the document (hard load / app launch) and the RSC
+// payload (client-side <Link> navigation). Both land in the offline-pages cache above.
+// This is the Serwist maintainer's recommended pattern (handleRequest at install).
+const ALL_ROUTES = [...new Set(OFFLINE_SECTIONS.flatMap((s) => s.urls))];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    Promise.all(
+      ALL_ROUTES.flatMap((url) => [
+        serwist.handleRequest({ request: new Request(url), event }),
+        serwist.handleRequest({ request: new Request(url, { headers: { RSC: '1' } }), event })
+      ])
+    ).catch(() => undefined) // best-effort: a failed warm must not block SW install
+  );
 });
 
 serwist.addEventListeners();
