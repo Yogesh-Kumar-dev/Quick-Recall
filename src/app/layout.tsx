@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 
 import './../scss/style.scss';
+import './../scss/tailwind.css';
 
 // project imports
 import ProviderWrapper from 'store/ProviderWrapper';
