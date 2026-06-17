@@ -1,13 +1,21 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Editor, { type OnMount } from '@monaco-editor/react';
+import dynamic from 'next/dynamic';
+import type { OnMount } from '@monaco-editor/react';
 import type { editor as MonacoEditor } from 'monaco-editor';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { IconCopy, IconCheck } from '@tabler/icons-react';
+
+// Lazy-load Monaco (~300KB+): it's only needed once a machine-coding page is open, so keep it out
+// of the shared/initial chunk. ssr: false — Monaco is browser-only and the viewer is interactive.
+const Editor = dynamic(() => import('@monaco-editor/react'), {
+  ssr: false,
+  loading: () => <Box sx={{ height: '100%', bgcolor: '#1e1e1e' }} />
+});
 
 interface CodeViewerProps {
   code: string;

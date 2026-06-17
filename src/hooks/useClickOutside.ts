@@ -25,7 +25,9 @@ export default function useClickOutside<T extends HTMLElement = HTMLElement>(han
     };
 
     document.addEventListener('mousedown', listener);
-    document.addEventListener('touchstart', listener);
+    // passive: the listener only detects outside taps — it never calls preventDefault(), so this
+    // lets the browser start scrolling immediately on touch instead of waiting for the handler.
+    document.addEventListener('touchstart', listener, { passive: true });
 
     return () => {
       document.removeEventListener('mousedown', listener);
