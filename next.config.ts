@@ -31,6 +31,13 @@ const nextConfig: NextConfig = {
   // todo: this need to set to true or remove it as default is true. set false as chart was giving error when first render
   // https://github.com/apexcharts/apexcharts.js/issues/3652
   reactStrictMode: false,
+  // Eliminate barrel-file import cost for @tabler/icons-react: Next rewrites the named barrel
+  // imports (used across ~80 files) to direct per-icon paths at build time, so we don't pull the
+  // whole icon set into the graph. Faster cold starts + HMR, with no source changes needed.
+  // (@mui/* is handled by modularizeImports below.)
+  experimental: {
+    optimizePackageImports: ['@tabler/icons-react']
+  },
   modularizeImports: {
     '@mui/material': {
       transform: '@mui/material/{{member}}'
