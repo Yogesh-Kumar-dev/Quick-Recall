@@ -47,6 +47,44 @@ interface FlashcardDialogProps {
 }
 
 export default function FlashcardDialog({ open, onClose, cards, title, getKey }: FlashcardDialogProps) {
+  if (cards.length === 0) return null;
+
+  return (
+    <Dialog
+      open={open}
+      // Don't close mid-review on a stray backdrop click; the X button (and Esc) still close.
+      onClose={(_, reason) => {
+        if (reason !== 'backdropClick') onClose();
+      }}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          bgcolor: 'background.paper',
+          backgroundImage: 'none',
+          overflow: 'hidden'
+        }
+      }}
+    >
+      {/*
+        Mount the body only while open, keyed on `open`, so each open starts from the state
+        initializers below (natural order, first card, front-side up) instead of resetting that
+        state in an effect after the prop changes — which would flash the previous session's card
+        for one render. Key-based reset is the canonical fix for adjusting-state-on-prop-change.
+      */}
+      {open && <FlashcardDialogBody key="open" cards={cards} title={title} getKey={getKey} onClose={onClose} />}
+    </Dialog>
+  );
+}
+
+// ─── The actual flashcard UI + its session state ─────────────────────────────
+// Only rendered while the dialog is open. Because the parent keys this on `open`, every open is a
+// fresh mount, so the useState initializers below are the single source of the "reset" behaviour.
+
+type FlashcardDialogBodyProps = Required<Pick<FlashcardDialogProps, 'cards' | 'onClose'>> & Pick<FlashcardDialogProps, 'title' | 'getKey'>;
+
+function FlashcardDialogBody({ cards, title, getKey, onClose }: FlashcardDialogBodyProps) {
   const total = cards.length;
   const dispatch = useDispatch();
   const [index, setIndex] = useState(0);
@@ -55,17 +93,6 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
   const [isShuffled, setIsShuffled] = useState(false);
   // +1 = moving forward (new card slides in from the right), -1 = moving back
   const [direction, setDirection] = useState(1);
-
-  // Reset to natural order, first card, front-side up, each time the dialog opens
-  useEffect(() => {
-    if (open) {
-      setOrder(Array.from({ length: total }, (_, i) => i));
-      setIsShuffled(false);
-      setIndex(0);
-      setFlipped(false);
-      setDirection(1);
-    }
-  }, [open, total]);
 
   const card = cards[order[index] ?? index];
 
@@ -106,9 +133,9 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
     }
   }, [currentKey, dispatch]);
 
-  // Keyboard: ←/→ navigate, Space/Enter flips
+  // Keyboard: ←/→ navigate, Space/Enter flips. The body only mounts while the dialog is open, so
+  // no `open` guard is needed — the listener is added on mount and removed on close (unmount).
   useEffect(() => {
-    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
@@ -126,28 +153,10 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, goPrev, goNext, toggleFlip, shuffle]);
-
-  if (total === 0) return null;
+  }, [goPrev, goNext, toggleFlip, shuffle]);
 
   return (
-    <Dialog
-      open={open}
-      // Don't close mid-review on a stray backdrop click; the X button (and Esc) still close.
-      onClose={(_, reason) => {
-        if (reason !== 'backdropClick') onClose();
-      }}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 3,
-          bgcolor: 'background.paper',
-          backgroundImage: 'none',
-          overflow: 'hidden'
-        }
-      }}
-    >
+    <>
       {/* ── Header: counter + close ── */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 2.5, pt: 2, pb: 1 }}>
         <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: 0.5 }}>
@@ -259,7 +268,7 @@ export default function FlashcardDialog({ open, onClose, cards, title, getKey }:
           <IconArrowRight size={20} />
         </IconButton>
       </Stack>
-    </Dialog>
+    </>
   );
 }
 
