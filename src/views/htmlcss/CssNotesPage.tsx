@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import { IconBrandCss3, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import FilterEmptyState from 'ui-component/FilterEmptyState';
 import VirtualNoteList from 'ui-component/interview-prep/VirtualNoteList';
 import ReduxDevToolsHint from 'ui-component/interview-prep/ReduxDevToolsHint';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
@@ -251,9 +252,7 @@ export default function CssNotesPage() {
           </Box>
         )}
         {filtered.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <Typography color="text.secondary">No notes match your filters.</Typography>
-          </Box>
+          <FilterEmptyState noun="notes" />
         ) : (
           <VirtualNoteList notes={filtered} openId={openId} onToggle={handleToggle} />
         )}

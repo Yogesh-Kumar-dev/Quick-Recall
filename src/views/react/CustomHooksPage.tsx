@@ -1,18 +1,16 @@
 'use client';
 import { useEffect, useMemo } from 'react';
 import { parseAsString, useQueryState } from 'nuqs';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { IconAlertTriangle, IconChevronDown } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
 import CodeBlock from 'ui-component/interview-prep/CodeBlock';
+import FilterEmptyState from 'ui-component/FilterEmptyState';
+import { LGExpandableCard, LGCallout, LGCalloutVariant } from 'ui-component/leafygreen';
 import { reactCustomHooks } from 'data/react-custom-hooks';
 import type { HookDifficulty, HookDoc } from 'types/content';
 
@@ -38,35 +36,22 @@ const difficultyColor = (d: HookDifficulty) => DIFFICULTY_META.find((m) => m.val
 
 function HookCard({ hook, open, onToggle }: { hook: HookDoc; open: boolean; onToggle: (id: string) => void }) {
   return (
-    <Accordion
-      id={`hook-${hook.id}`}
-      expanded={open}
-      onChange={() => onToggle(hook.id)}
-      disableGutters
-      elevation={0}
-      sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '8px !important', '&:before': { display: 'none' }, mb: 1.5 }}
-    >
-      <AccordionSummary
-        expandIcon={<IconChevronDown size={18} />}
-        sx={{
-          borderRadius: open ? '8px 8px 0 0' : '8px',
-          bgcolor: 'action.hover',
-          minHeight: 56,
-          '& .MuiAccordionSummary-content': { my: 1 }
-        }}
+    <Box id={`hook-${hook.id}`} sx={{ mb: 1.5 }}>
+      <LGExpandableCard
+        isOpen={open}
+        onClick={() => onToggle(hook.id)}
+        title={
+          <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 1.25, flexWrap: 'wrap' }}>
+            <Box component="span" sx={{ fontFamily: '"Fira Code", Consolas, monospace', fontWeight: 700 }}>
+              {hook.name}
+            </Box>
+            <Chip label={hook.difficulty} color={difficultyColor(hook.difficulty)} size="small" variant="outlined" />
+            <Box component="span" sx={{ color: 'text.secondary', fontWeight: 400, fontSize: '0.875rem' }}>
+              {hook.tagline}
+            </Box>
+          </Box>
+        }
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flexWrap: 'wrap', pr: 1 }}>
-          <Typography variant="subtitle1" fontWeight={700} sx={{ fontFamily: '"Fira Code", Consolas, monospace' }}>
-            {hook.name}
-          </Typography>
-          <Chip label={hook.difficulty} color={difficultyColor(hook.difficulty)} size="small" variant="outlined" />
-          <Typography variant="body2" color="text.secondary">
-            {hook.tagline}
-          </Typography>
-        </Box>
-      </AccordionSummary>
-
-      <AccordionDetails sx={{ pt: 2, pb: 2.5 }}>
         <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7, mb: 1.5 }}>
           {hook.description}
         </Typography>
@@ -125,20 +110,12 @@ function HookCard({ hook, open, onToggle }: { hook: HookDoc; open: boolean; onTo
 
         {/* Gotcha */}
         {hook.gotcha && (
-          <Box sx={{ p: 1.25, bgcolor: 'warning.light', borderRadius: 1, border: '1px solid', borderColor: 'warning.main' }}>
-            <Typography
-              variant="body2"
-              sx={{ lineHeight: 1.6, color: 'warning.dark', display: 'flex', alignItems: 'flex-start', gap: 0.75 }}
-            >
-              <IconAlertTriangle size={15} style={{ flexShrink: 0, marginTop: 2 }} />
-              <span>
-                <strong>Watch out:</strong> {hook.gotcha}
-              </span>
-            </Typography>
-          </Box>
+          <LGCallout variant={LGCalloutVariant.Warning} title="Watch out">
+            {hook.gotcha}
+          </LGCallout>
         )}
-      </AccordionDetails>
-    </Accordion>
+      </LGExpandableCard>
+    </Box>
   );
 }
 
@@ -244,9 +221,7 @@ export default function CustomHooksPage() {
       </Stack>
 
       {filtered.length === 0 ? (
-        <Box sx={{ textAlign: 'center', py: 6 }}>
-          <Typography color="text.secondary">No hooks match the selected filters.</Typography>
-        </Box>
+        <FilterEmptyState noun="hooks" />
       ) : (
         filtered.map((hook) => <HookCard key={hook.id} hook={hook} open={openId === hook.id} onToggle={handleToggle} />)
       )}

@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { IconBrandTypescript, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import FilterEmptyState from 'ui-component/FilterEmptyState';
 import { PlaylistLauncher } from 'ui-component/playlist-player';
 import { InstagramLauncher } from 'ui-component/instagram-launcher';
 import { TS_NOTES_PLAYLISTS, TS_NOTES_INSTAGRAM } from 'data/video-playlists';
@@ -270,9 +271,7 @@ export default function TypeScriptPage() {
         )}
 
         {filtered.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <Typography color="text.secondary">No notes match your filters.</Typography>
-          </Box>
+          <FilterEmptyState noun="notes" />
         ) : (
           <VirtualNoteList notes={filtered} openId={openId} onToggle={handleToggle} />
         )}

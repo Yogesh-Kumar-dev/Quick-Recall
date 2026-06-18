@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { IconServer, IconSearch } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import FilterEmptyState from 'ui-component/FilterEmptyState';
 import NoteCard from 'ui-component/interview-prep/NoteCard';
 import ReduxDevToolsHint from 'ui-component/interview-prep/ReduxDevToolsHint';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
@@ -231,9 +232,7 @@ export default function RenderingPage() {
           </Box>
         )}
         {filtered.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <Typography color="text.secondary">No notes match your filters.</Typography>
-          </Box>
+          <FilterEmptyState noun="notes" />
         ) : (
           <Stack spacing={1.5}>
             {filtered.map((note) => (

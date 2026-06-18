@@ -9,9 +9,10 @@ import CardActionArea from '@mui/material/CardActionArea';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { IconBookmark, IconCards, IconChevronRight } from '@tabler/icons-react';
+import { IconCards, IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 
+import { LGEmptyState } from 'ui-component/leafygreen';
 import NoteCard from 'ui-component/interview-prep/NoteCard';
 import BookmarkButton from 'ui-component/interview-prep/BookmarkButton';
 import FlashcardDialog from 'ui-component/interview-prep/FlashcardDialog';
@@ -49,7 +50,9 @@ export default function BookmarksPage() {
   const flashcardCards: Flashcard[] = flashcards.map((f) => f.card);
   const flashcardKeyByCardId = useMemo(() => {
     const map = new Map<string, string>();
-    flashcards.forEach((f) => map.set(f.card.id, f.refId));
+    flashcards.forEach((f) => {
+      map.set(f.card.id, f.refId);
+    });
     return map;
   }, [flashcards]);
 
@@ -176,15 +179,9 @@ function SectionHeader({ title, count }: { title: string; count: number }) {
 
 function EmptyState() {
   return (
-    <Card variant="outlined" sx={{ borderRadius: 3, p: 6, textAlign: 'center', borderStyle: 'dashed' }}>
-      <IconBookmark size={48} style={{ opacity: 0.3 }} />
-      <Typography variant="h5" fontWeight={700} sx={{ mt: 2 }}>
-        Nothing saved yet
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 1, maxWidth: 420, mx: 'auto' }}>
-        Tap the bookmark star on any note, flashcard, or problem to save it here for review. Saved flashcards also join your Review deck for
-        spaced practice over time.
-      </Typography>
-    </Card>
+    <LGEmptyState
+      title="Nothing saved yet"
+      description="Tap the bookmark star on any note, flashcard, or problem to save it here for review. Saved flashcards also join your Review deck for spaced practice over time."
+    />
   );
 }
