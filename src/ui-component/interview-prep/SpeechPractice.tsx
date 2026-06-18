@@ -8,12 +8,14 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 // icons
 import { IconMicrophone, IconPlayerStopFilled, IconArrowRight, IconTrash, IconVideo, IconVideoOff, IconLock } from '@tabler/icons-react';
 
 // project imports
+import { ThemeMode } from 'config';
 import MainCard from 'ui-component/cards/MainCard';
 import { predefinedQuestions } from 'data/speak-up-questions';
 
@@ -217,13 +219,13 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
   useEffect(() => () => stopCamera(), []);
 
   return (
-    <MainCard border contentSX={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: { xs: 2.5, sm: 3 } }}>
-      {/* Question */}
-      <Box sx={{ textAlign: 'center' }}>
+    <MainCard border contentSX={{ display: 'flex', flexDirection: 'column', gap: 2, py: { xs: 2.5, sm: 3 } }}>
+      {/* ── Header — Teams "Meeting in …" style title block ── */}
+      <Box sx={{ textAlign: 'center', minWidth: 0 }}>
         <Typography variant="overline" color="text.secondary">
           Practice answering out loud
         </Typography>
-        <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5 }}>
+        <Typography variant="h4" fontWeight={700} sx={{ mt: 0.5, overflowWrap: 'anywhere' }}>
           {predefinedQuestions[questionIndex].question}
         </Typography>
         <Button size="small" variant="text" endIcon={<IconArrowRight size={16} />} onClick={onNextQuestion} sx={{ mt: 1 }}>
@@ -231,177 +233,176 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
         </Button>
       </Box>
 
-      {/* Camera (70%) + mic/transcript (30%).
-            A 2-row grid keeps the camera box and transcript box (row 1) bottom-aligned,
-            with each column's controls sitting in row 2 below. */}
+      {/* ── Video preview (Teams pre-join) — centered, large, with overlaid controls ── */}
       <Box
-        sx={{
+        sx={(theme) => ({
+          position: 'relative',
           width: '100%',
-          display: 'grid',
-          columnGap: 3,
-          rowGap: 1.5,
-          gridTemplateColumns: { xs: '1fr', md: '60fr 40fr' },
-          gridTemplateRows: { md: '1fr auto' }
-        }}
+          maxWidth: 640,
+          mx: 'auto',
+          aspectRatio: '16 / 9',
+          borderRadius: 3,
+          overflow: 'hidden',
+          border: '1px solid',
+          borderColor: 'divider',
+          // Dark neutral stage like the Teams preview, in both modes.
+          bgcolor: theme.palette.mode === ThemeMode.DARK ? alpha(theme.palette.common.black, 0.6) : theme.palette.grey[900]
+        })}
       >
-        {/* Row 1, left — camera preview */}
         <Box
-          sx={(theme) => ({
-            gridColumn: { md: 1 },
-            gridRow: { md: 1 },
-            position: 'relative',
+          component="video"
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          sx={{
             width: '100%',
-            aspectRatio: { xs: '4 / 3', md: 'auto' },
-            minHeight: { md: 300 },
-            borderRadius: 2,
-            overflow: 'hidden',
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: alpha(theme.palette.text.primary, 0.04),
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          })}
+            height: '100%',
+            objectFit: 'cover',
+            transform: 'scaleX(-1)', // mirror, like a real video call
+            display: cameraOn ? 'block' : 'none'
+          }}
+        />
+
+        {/* Camera-off placeholder */}
+        {!cameraOn && (
+          <Stack
+            alignItems="center"
+            justifyContent="center"
+            spacing={0.5}
+            sx={{ position: 'absolute', inset: 0, color: alpha('#fff', 0.65) }}
+          >
+            <IconVideoOff size={34} />
+            <Typography variant="caption">Camera off</Typography>
+          </Stack>
+        )}
+
+        {/* Overlaid control pill bar (bottom-center) — the mic IS the primary start/stop, sized up
+            so it reads as the main action; camera toggle sits beside it. Teams-style. */}
+        <Stack
+          direction="row"
+          spacing={1.25}
+          alignItems="center"
+          sx={{
+            position: 'absolute',
+            bottom: 14,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            px: 1.5,
+            py: 0.75,
+            borderRadius: 999,
+            bgcolor: alpha('#000', 0.55),
+            backdropFilter: 'blur(6px)'
+          }}
         >
-          <Box
-            component="video"
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            sx={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transform: 'scaleX(-1)', // mirror, like a real video call
-              display: cameraOn ? 'block' : 'none'
-            }}
-          />
-          {!cameraOn && (
-            <Stack alignItems="center" spacing={0.5} sx={{ color: 'text.secondary' }}>
-              <IconVideoOff size={32} />
-              <Typography variant="caption">Camera off</Typography>
-            </Stack>
-          )}
-        </Box>
-
-        {/* Row 1, right — mic + transcript */}
-        <Box sx={{ gridColumn: { md: 2 }, gridRow: { md: 1 }, width: '100%', display: 'flex', flexDirection: 'column' }}>
-          {!supported ? (
-            <Typography variant="body1" color="error" sx={{ textAlign: 'center' }}>
-              Speech recognition isn&apos;t supported in this browser — try Chrome or Edge.
-            </Typography>
-          ) : (
-            <Stack alignItems="center" spacing={2} sx={{ flexGrow: 1, width: '100%' }}>
-              {/* Mic button */}
-              <Stack alignItems="center" spacing={1}>
-                <IconButton
-                  onClick={handleToggle}
-                  aria-label={listening ? 'Stop listening' : 'Start listening'}
-                  sx={(theme) => ({
-                    width: 72,
-                    height: 72,
-                    color: '#fff',
-                    bgcolor: listening ? theme.palette.error.main : theme.palette.primary.main,
-                    animation: listening ? `${pulse} 1.6s infinite` : 'none',
-                    transition: 'background-color 0.2s ease',
-                    '&:hover': {
-                      bgcolor: listening ? theme.palette.error.dark : theme.palette.primary.dark
-                    }
-                  })}
-                >
-                  {listening ? <IconPlayerStopFilled size={30} /> : <IconMicrophone size={30} />}
-                </IconButton>
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                  {listening ? 'Listening… click to stop' : 'Click the mic and start speaking your answer'}
-                </Typography>
-              </Stack>
-
-              {errorMsg && (
-                <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
-                  {errorMsg}
-                </Typography>
-              )}
-
-              {/* Transcript — grows to fill the column, scrolls only when overflowing */}
-              <Box
+          {supported && (
+            <Tooltip title={listening ? 'Stop answering' : 'Start answering'}>
+              <IconButton
+                onClick={handleToggle}
+                aria-label={listening ? 'Stop answering' : 'Start answering'}
                 sx={(theme) => ({
-                  width: '100%',
-                  flexGrow: 1,
-                  minHeight: { xs: 140, md: 0 },
-                  overflowY: 'auto',
-                  p: 2,
-                  borderRadius: 2,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  bgcolor: alpha(theme.palette.primary.main, 0.04)
+                  width: 52,
+                  height: 52,
+                  color: '#fff',
+                  bgcolor: listening ? theme.palette.error.main : theme.palette.primary.main,
+                  animation: listening ? `${pulse} 1.6s infinite` : 'none',
+                  transition: 'background-color 0.2s ease',
+                  '&:hover': { bgcolor: listening ? theme.palette.error.dark : theme.palette.primary.dark }
                 })}
               >
-                {transcript || interim ? (
-                  <Typography variant="body1" sx={{ lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                    {transcript}
-                    {interim && (
-                      <Typography component="span" color="text.secondary">
-                        {transcript ? ' ' : ''}
-                        {interim}
-                      </Typography>
-                    )}
-                  </Typography>
-                ) : (
-                  <Typography variant="body1" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                    Your words will appear here as you speak…
-                  </Typography>
-                )}
-              </Box>
-            </Stack>
+                {listening ? <IconPlayerStopFilled size={24} /> : <IconMicrophone size={24} />}
+              </IconButton>
+            </Tooltip>
           )}
-        </Box>
-
-        {/* Row 2, left — camera controls */}
-        <Stack alignItems="center" spacing={1} sx={{ gridColumn: { md: 1 }, gridRow: { md: 2 }, width: '100%' }}>
-          <Button
-            variant="outlined"
-            color={cameraOn ? 'error' : 'primary'}
-            size="small"
-            startIcon={cameraOn ? <IconVideoOff size={18} /> : <IconVideo size={18} />}
-            onClick={handleToggleCamera}
-          >
-            {cameraOn ? 'Turn camera off' : 'Turn camera on'}
-          </Button>
-
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: 'flex', alignItems: 'center', gap: 0.5, textAlign: 'center' }}
-          >
-            <IconLock size={13} />
-            Live preview only — your video stays on your device and is never recorded or saved.
-          </Typography>
-
-          {cameraError && (
-            <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
-              {cameraError}
-            </Typography>
-          )}
+          <Tooltip title={cameraOn ? 'Turn camera off' : 'Turn camera on'}>
+            <IconButton
+              onClick={handleToggleCamera}
+              aria-label={cameraOn ? 'Turn camera off' : 'Turn camera on'}
+              sx={{ width: 44, height: 44, color: '#fff', bgcolor: alpha('#fff', 0.12), '&:hover': { bgcolor: alpha('#fff', 0.24) } }}
+            >
+              {cameraOn ? <IconVideo size={20} /> : <IconVideoOff size={20} />}
+            </IconButton>
+          </Tooltip>
         </Stack>
+      </Box>
 
-        {/* Row 2, right — clear (top-aligned so it sits just below the transcript,
-              matching the camera button's spacing instead of floating in a tall cell) */}
+      {/* Privacy + status line under the video */}
+      <Stack alignItems="center" spacing={0.5} sx={{ width: '100%' }}>
+        {!supported && (
+          <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
+            Speech recognition isn&apos;t supported in this browser — try Chrome or Edge.
+          </Typography>
+        )}
         {supported && (
-          <Box sx={{ gridColumn: { md: 2 }, gridRow: { md: 2 }, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+            {listening ? 'Listening… speak your answer' : 'Press Start answering and speak out loud'}
+          </Typography>
+        )}
+        {errorMsg && (
+          <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
+            {errorMsg}
+          </Typography>
+        )}
+        {cameraError && (
+          <Typography variant="body2" color="error" sx={{ textAlign: 'center' }}>
+            {cameraError}
+          </Typography>
+        )}
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, textAlign: 'center' }}>
+          <IconLock size={13} />
+          Live preview only — your video stays on your device and is never recorded or saved.
+        </Typography>
+      </Stack>
+
+      {/* ── Live transcription panel (full width, below the video) ── */}
+      {supported && (
+        <Box sx={{ width: '100%' }}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+            <Typography variant="subtitle2" fontWeight={700}>
+              Live transcription
+            </Typography>
             <Button
               variant="outlined"
               color="primary"
               size="small"
-              startIcon={<IconTrash size={18} />}
+              startIcon={<IconTrash size={16} />}
               onClick={handleClear}
               disabled={!transcript && !interim}
             >
               Clear
             </Button>
+          </Stack>
+          <Box
+            sx={(theme) => ({
+              width: '100%',
+              minHeight: 120,
+              maxHeight: 280,
+              overflowY: 'auto',
+              p: 2,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider',
+              bgcolor: alpha(theme.palette.primary.main, 0.04)
+            })}
+          >
+            {transcript || interim ? (
+              <Typography variant="body1" sx={{ lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                {transcript}
+                {interim && (
+                  <Typography component="span" color="text.secondary">
+                    {transcript ? ' ' : ''}
+                    {interim}
+                  </Typography>
+                )}
+              </Typography>
+            ) : (
+              <Typography variant="body1" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                Your words will appear here as you speak…
+              </Typography>
+            )}
           </Box>
-        )}
-      </Box>
+        </Box>
+      )}
     </MainCard>
   );
 }
