@@ -5,6 +5,8 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import type { JsProblemMeta } from 'types/content';
 
+import { LGCallout, LGCalloutVariant } from 'ui-component/leafygreen';
+
 type JsProblemStatementProps = Omit<JsProblemMeta, 'title'>;
 
 export default function JsProblemStatement({ description, examples, constraints, interviewTip, tags }: JsProblemStatementProps) {
@@ -87,19 +89,9 @@ export default function JsProblemStatement({ description, examples, constraints,
       )}
 
       {/* Interview Tip */}
-      <Box
-        sx={{
-          p: 1.5,
-          bgcolor: 'rgba(255, 193, 7, 0.12)',
-          borderRadius: 1,
-          border: '1px solid',
-          borderColor: 'warning.main'
-        }}
-      >
-        <Typography variant="body2" sx={{ lineHeight: 1.6, color: 'text.primary' }}>
-          💡 <strong>Interview Tip:</strong> {interviewTip}
-        </Typography>
-      </Box>
+      <LGCallout variant={LGCalloutVariant.Important} title="Interview Tip">
+        {interviewTip}
+      </LGCallout>
     </Box>
   );
 }

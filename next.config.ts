@@ -1,3 +1,4 @@
+import path from 'node:path';
 import type { NextConfig } from 'next';
 import withSerwistInit from '@serwist/next';
 
@@ -62,6 +63,17 @@ const nextConfig: NextConfig = {
         pathname: '/icons/**'
       }
     ]
+  },
+  // React 19 removed ReactDOM.findDOMNode, but react-transition-group@4 (used transitively by
+  // @leafygreen-ui, incl. LeafygreenProvider) still calls it and crashes. Alias the exact `react-dom`
+  // specifier to a shim that re-exports react-dom + a working findDOMNode, so every importer gets it.
+  // `react-dom$` is an exact match — subpaths like `react-dom/client` are untouched.
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'react-dom$': path.resolve(__dirname, 'src/polyfills/react-dom-shim.js')
+    };
+    return config;
   }
 };
 

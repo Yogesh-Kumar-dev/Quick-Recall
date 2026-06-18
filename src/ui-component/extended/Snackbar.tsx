@@ -55,6 +55,9 @@ const animation: KeyedObject = {
 
 // ==============================|| SNACKBAR ||============================== //
 
+// Note: this renders via MUI Snackbar/Alert (not LeafyGreen Toast). LeafyGreen Toast depends on
+// react-transition-group without a `nodeRef`, which calls the removed `ReactDOM.findDOMNode` and
+// crashes on React 19. MUI's transitions are React-19-safe, so the snackbar stays on MUI.
 export default function Snackbar() {
   const dispatch = useDispatch();
   const snackbar = useSelector((state) => state.snackbar);

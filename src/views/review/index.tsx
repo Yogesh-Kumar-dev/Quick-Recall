@@ -10,8 +10,8 @@ import MuiLink from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { IconBrain, IconChecks } from '@tabler/icons-react';
-import Link from 'next/link';
 
+import { LGEmptyState, LGButton, LGButtonVariant } from 'ui-component/leafygreen';
 import useReviews from './useReviews';
 import { review as previewSchedule, formatInterval, formatDuePhrase } from './scheduler';
 import { flashcardByKey } from 'data/flashcards-index';
@@ -212,23 +212,23 @@ function Header() {
 }
 
 function CaughtUp({ enrolledCount }: { enrolledCount: number }) {
+  const description =
+    enrolledCount === 0
+      ? 'Your review deck is empty. Open a flashcard set and use the brain icon (or bookmark a card) to add cards here.'
+      : `No cards are due right now. ${enrolledCount} card${enrolledCount === 1 ? '' : 's'} enrolled — check back later.`;
+
   return (
-    <Card variant="outlined" sx={{ borderRadius: 3, p: 5, textAlign: 'center', borderStyle: 'dashed' }}>
-      <IconChecks size={48} style={{ opacity: 0.4 }} />
-      <Typography variant="h5" fontWeight={700} sx={{ mt: 2 }}>
-        All caught up
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 1, maxWidth: 420, mx: 'auto' }}>
-        {enrolledCount === 0
-          ? 'Your review deck is empty. Open a flashcard set and use the brain icon (or bookmark a card) to add cards here.'
-          : `No cards are due right now. ${enrolledCount} card${enrolledCount === 1 ? '' : 's'} enrolled — check back later.`}
-      </Typography>
-      {enrolledCount === 0 && (
-        <Button component={Link} href="/js/notes" variant="outlined" sx={{ mt: 3 }}>
-          Browse flashcards
-        </Button>
-      )}
-    </Card>
+    <LGEmptyState
+      title="All caught up"
+      description={description}
+      {...(enrolledCount === 0 && {
+        primaryButton: (
+          <LGButton href="/js/notes" variant={LGButtonVariant.Default}>
+            Browse flashcards
+          </LGButton>
+        )
+      })}
+    />
   );
 }
 

@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import { IconBrandReact } from '@tabler/icons-react';
 
 import MainCard from 'ui-component/cards/MainCard';
+import FilterEmptyState from 'ui-component/FilterEmptyState';
 import { PlaylistLauncher } from 'ui-component/playlist-player';
 import { REACT_MACHINE_CODING_PLAYLISTS } from 'data/video-playlists';
 import ProblemCard from 'ui-component/interview-prep/ProblemCard';
@@ -198,9 +199,7 @@ export default function ReactMachineCodingPage() {
         }
       >
         {filtered.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <Typography color="text.secondary">No problems match the selected filters.</Typography>
-          </Box>
+          <FilterEmptyState noun="problems" />
         ) : (
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 1.5 }}>
             {filtered.map((problem) => (
