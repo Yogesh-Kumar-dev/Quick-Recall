@@ -13,12 +13,12 @@
 
   /* target the scrollbar thumb for light mode */
   *::-webkit-scrollbar-thumb {
-    background-color: #aaa;
+    background-color: #c1c7c6; /* LeafyGreen gray.light1 */
     border-radius: 10px;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background-color: #697586;
+    background-color: #889397; /* LeafyGreen gray.base */
   }
 
   /* remove buttons */

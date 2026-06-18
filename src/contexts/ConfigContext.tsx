@@ -34,7 +34,9 @@ type ConfigProviderProps = {
 };
 
 function ConfigProvider({ children }: ConfigProviderProps) {
-  const [config, setConfig] = useLocalStorage('berry-config-next-ts', {
+  // Key bumped so existing users pick up the new MongoDB defaults rather than a persisted
+  // stale config. v2: default flipped back to dark mode (toggle temporarily hidden).
+  const [config, setConfig] = useLocalStorage('mongodb-config-v2', {
     menuOrientation: initialState.menuOrientation,
     miniDrawer: initialState.miniDrawer,
     fontFamily: initialState.fontFamily,

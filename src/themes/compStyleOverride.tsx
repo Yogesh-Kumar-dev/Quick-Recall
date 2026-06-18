@@ -8,18 +8,36 @@ import { ThemeMode } from 'config';
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
   const bgColor = mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[50];
-  const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.15) : theme.palette.secondary.light;
-  const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.dark;
+  // LeafyGreen sidebar selection uses a green tint rather than the Berry secondary (blue).
+  const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.primary.main, 0.15) : theme.palette.primary.light;
+  const menuSelected = mode === ThemeMode.DARK ? theme.palette.primary.main : theme.palette.primary.dark;
+  // LeafyGreen focus state: a 3px Base Blue ring around interactive elements.
+  const focusRing = `0 0 0 3px ${alpha(theme.palette.secondary.main, 0.4)}`;
 
   return {
     MuiButton: {
+      defaultProps: {
+        disableElevation: true
+      },
       styleOverrides: {
         root: {
           fontWeight: 500,
-          borderRadius: '4px',
+          textTransform: 'none',
+          borderRadius: `${borderRadius}px`,
+          '&.Mui-focusVisible': {
+            boxShadow: focusRing
+          },
           ...theme.applyStyles('dark', {
             '&.MuiButton-contained.MuiButton-colorWarning': { color: theme.palette.common.black }
           })
+        },
+        // LeafyGreen default/outlined buttons read as bordered light surfaces.
+        outlined: {
+          borderColor: theme.palette.grey[200],
+          '&:hover': {
+            borderColor: theme.palette.grey[300],
+            backgroundColor: alpha(theme.palette.primary.main, 0.04)
+          }
         }
       }
     },
@@ -41,6 +59,15 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           backgroundImage: 'none'
         },
         rounded: {
+          borderRadius: `${borderRadius}px`
+        }
+      }
+    },
+    // LeafyGreen cards: a subtle 1px border on a light surface rather than elevation.
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          border: `1px solid ${theme.palette.grey[200]}`,
           borderRadius: `${borderRadius}px`
         }
       }
@@ -138,10 +165,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           background: outlinedFilled ? bgColor : 'transparent',
           borderRadius: `${borderRadius}px`,
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[400]
+            borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[200]
           },
-          '&:hover $notchedOutline': {
-            borderColor: theme.palette.primary.light
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.palette.grey[300]
+          },
+          // LeafyGreen focus: Base Blue outline.
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.palette.secondary.main,
+            borderWidth: 1
+          },
+          '&.Mui-focused': {
+            boxShadow: focusRing
           },
           '&.MuiInputBase-multiline': {
             padding: 1
@@ -306,8 +341,16 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         tooltip: {
           margin: 0,
           lineHeight: 1.4,
-          color: theme.palette.background.paper,
-          background: theme.palette.text.primary
+          // LeafyGreen tooltip: a dark navy surface with light text in BOTH modes. We use the
+          // `dark.*` palette (NOT grey[700]) because grey[500–900] are mode-swapped to *light*
+          // values in dark mode — grey[700] there is #E8EDEB, which produced light-on-light.
+          color: theme.palette.common.white,
+          background: theme.palette.dark.main,
+          borderRadius: `${borderRadius}px`,
+          fontWeight: 400
+        },
+        arrow: {
+          color: theme.palette.dark.main
         }
       }
     },

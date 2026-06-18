@@ -49,12 +49,13 @@ const totalDiff: Diff = {
 
 // ─── Overview strip data ─────────────────────────────────────────────────────────
 
+// MongoDB LeafyGreen palette: blue.base, purple.base, green.dark1, yellow.base, red.base
 const OVERVIEW = [
-  { label: 'Total Notes', value: totalNotes, color: '#2196f3' },
-  { label: 'Machine Coding', value: totalProblems, color: '#9c27b0' },
-  { label: 'Easy', value: totalDiff.easy, color: '#4caf50' },
-  { label: 'Medium', value: totalDiff.medium, color: '#ffc107' },
-  { label: 'Hard', value: totalDiff.hard, color: '#f44336' }
+  { label: 'Total Notes', value: totalNotes, color: '#016bf8' },
+  { label: 'Machine Coding', value: totalProblems, color: '#b45af2' },
+  { label: 'Easy', value: totalDiff.easy, color: '#00a35c' },
+  { label: 'Medium', value: totalDiff.medium, color: '#ffc010' },
+  { label: 'Hard', value: totalDiff.hard, color: '#db3030' }
 ];
 
 // ==============================|| DASHBOARD PAGE ||============================== //

@@ -1,18 +1,18 @@
-import Chip from '@mui/material/Chip';
+import { LGBadge, LGBadgeVariant } from 'ui-component/leafygreen';
 import type { ProblemDifficulty } from 'types/content';
 
-const CONFIG: Record<ProblemDifficulty, { label: string; color: 'success' | 'warning' | 'error' }> = {
-  easy: { label: 'Easy', color: 'success' },
-  medium: { label: 'Medium', color: 'warning' },
-  hard: { label: 'Hard', color: 'error' }
+// Real MongoDB LeafyGreen Badge — easy/medium/hard map to LeafyGreen's green/yellow/red variants.
+const CONFIG: Record<ProblemDifficulty, { label: string; variant: (typeof LGBadgeVariant)[keyof typeof LGBadgeVariant] }> = {
+  easy: { label: 'Easy', variant: LGBadgeVariant.Green },
+  medium: { label: 'Medium', variant: LGBadgeVariant.Yellow },
+  hard: { label: 'Hard', variant: LGBadgeVariant.Red }
 };
 
 interface DifficultyBadgeProps {
   difficulty: ProblemDifficulty;
-  size?: 'small' | 'medium';
 }
 
-export default function DifficultyBadge({ difficulty, size = 'small' }: DifficultyBadgeProps) {
-  const { label, color } = CONFIG[difficulty];
-  return <Chip label={label} color={color} size={size} variant="outlined" />;
+export default function DifficultyBadge({ difficulty }: DifficultyBadgeProps) {
+  const { label, variant } = CONFIG[difficulty];
+  return <LGBadge variant={variant}>{label}</LGBadge>;
 }

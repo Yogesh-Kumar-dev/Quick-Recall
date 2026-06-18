@@ -11,6 +11,7 @@ import Tooltip from '@mui/material/Tooltip';
 import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
 import TimerSection from './TimerSection';
+// import ThemeModeSection from './ThemeModeSection'; // temporarily hidden — app defaults to dark mode
 import FullScreenSection from './FullScreenSection';
 import { InstallButton, OfflineDownloadButton, OfflineStatusChip } from 'ui-component/pwa';
 
@@ -93,6 +94,9 @@ export default function Header() {
 
         {/* PWA: offline download shown at all breakpoints — it's most useful on mobile */}
         <OfflineDownloadButton />
+
+        {/* light / dark mode toggle — temporarily hidden while app defaults to dark mode */}
+        {/* <ThemeModeSection /> */}
 
         <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
           <FullScreenSection />

@@ -2,43 +2,51 @@
 import type { Theme, TypographyVariantsOptions } from '@mui/material/styles';
 
 // project imports
-import { ThemeMode } from 'config';
+import { ThemeMode, headingFont } from 'config';
 
 // types
 import type { FontFamily } from 'types/config';
 
 export default function Typography(theme: Theme, borderRadius: number, fontFamily: FontFamily): TypographyVariantsOptions {
+  // LeafyGreen: H1/H2 use the serif display face (MongoDB Value Serif stand-in); everything
+  // else uses the sans body font. Heading color is the high-contrast title token.
+  const headingColor = theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900];
+
   return {
     fontFamily,
     h6: {
-      fontWeight: 500,
-      color: theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900],
-      fontSize: '0.75rem'
+      fontWeight: 600,
+      color: headingColor,
+      fontSize: '0.8125rem'
     },
     h5: {
       fontSize: '0.875rem',
-      color: theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900],
-      fontWeight: 500
+      color: headingColor,
+      fontWeight: 600
     },
     h4: {
-      fontSize: '1rem',
-      color: theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900],
+      fontSize: '1.125rem',
+      color: headingColor,
       fontWeight: 600
     },
     h3: {
-      fontSize: '1.25rem',
-      color: theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900],
+      fontSize: '1.5rem',
+      color: headingColor,
       fontWeight: 600
     },
     h2: {
-      fontSize: '1.5rem',
-      color: theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900],
-      fontWeight: 700
+      fontFamily: headingFont,
+      fontSize: '2rem',
+      color: headingColor,
+      fontWeight: 500,
+      lineHeight: 1.15
     },
     h1: {
-      fontSize: '2.125rem',
-      color: theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900],
-      fontWeight: 700
+      fontFamily: headingFont,
+      fontSize: '2.75rem',
+      color: headingColor,
+      fontWeight: 500,
+      lineHeight: 1.1
     },
     subtitle1: {
       fontSize: '0.875rem',
@@ -67,7 +75,8 @@ export default function Typography(theme: Theme, borderRadius: number, fontFamil
       color: theme.palette.text.primary
     },
     button: {
-      textTransform: 'capitalize'
+      textTransform: 'none',
+      fontWeight: 500
     },
     customInput: {
       marginTop: 1,

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 // PWA: theme-color drives the browser/OS UI tint when installed (matches the manifest's
 // theme_color / app primary). Next 15 expects theme-color in the viewport export, not metadata.
 export const viewport: Viewport = {
-  themeColor: '#2196f3'
+  themeColor: '#00684a' // MongoDB LeafyGreen green.dark2
 };
 
 // ==============================|| ROOT LAYOUT ||============================== //
