@@ -5,13 +5,7 @@ import { alpha, createTheme } from '@mui/material/styles';
 import { ThemeMode } from 'config';
 
 // assets
-import defaultColor from '../scss/_themes-vars.module.scss';
-import theme1 from '../scss/_theme1.module.scss';
-import theme2 from '../scss/_theme2.module.scss';
-import theme3 from '../scss/_theme3.module.scss';
-import theme4 from '../scss/_theme4.module.scss';
-import theme5 from '../scss/_theme5.module.scss';
-import theme6 from '../scss/_theme6.module.scss';
+import mongoColors from '../scss/_themes-vars.module.scss';
 
 // types
 import type { ColorProps } from 'types';
@@ -19,31 +13,10 @@ import type { PresetColor } from 'types/config';
 
 // ==============================|| DEFAULT THEME - PALETTE ||============================== //
 
-export default function Palette(mode: ThemeMode, presetColor: PresetColor) {
-  let colors: ColorProps;
-  switch (presetColor) {
-    case 'theme1':
-      colors = theme1;
-      break;
-    case 'theme2':
-      colors = theme2;
-      break;
-    case 'theme3':
-      colors = theme3;
-      break;
-    case 'theme4':
-      colors = theme4;
-      break;
-    case 'theme5':
-      colors = theme5;
-      break;
-    case 'theme6':
-      colors = theme6;
-      break;
-    case 'default':
-    default:
-      colors = defaultColor;
-  }
+// Single MongoDB (LeafyGreen) identity — the preset switcher was removed, so `presetColor`
+// is accepted for signature compatibility but no longer selects between color sets.
+export default function Palette(mode: ThemeMode, _presetColor: PresetColor) {
+  const colors: ColorProps = mongoColors;
 
   return createTheme({
     palette: {

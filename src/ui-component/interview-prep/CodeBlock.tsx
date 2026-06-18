@@ -6,6 +6,9 @@ import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javasc
 import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+// Source Code Pro — the exact MongoDB LeafyGreen code typeface.
+import { monoFont } from 'config';
+
 // Register only the languages we actually use — keeps the bundle small.
 SyntaxHighlighter.registerLanguage('jsx', jsx);
 SyntaxHighlighter.registerLanguage('tsx', tsx);
@@ -44,7 +47,7 @@ export default function CodeBlock({ code, language = 'tsx', mb = 2 }: CodeBlockP
       }}
       codeTagProps={{
         style: {
-          fontFamily: '"Fira Code", "Cascadia Code", Consolas, "Courier New", monospace'
+          fontFamily: `${monoFont}, "Fira Code", "Cascadia Code", Consolas, "Courier New", monospace`
         }
       }}
     >

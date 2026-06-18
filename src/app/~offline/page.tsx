@@ -37,7 +37,7 @@ export default function OfflinePage() {
           display: 'inline-block',
           padding: '0.6rem 1.25rem',
           borderRadius: '0.5rem',
-          background: '#2196f3',
+          background: '#00684a',
           color: '#fff',
           textDecoration: 'none',
           fontWeight: 600

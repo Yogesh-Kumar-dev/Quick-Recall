@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 // Web app manifest as a typed metadata route — Next serves it at /manifest.webmanifest and
 // auto-links it from <head>, staying consistent with the typed Metadata used in layout.tsx.
 // `display: standalone` + the icon set (incl. a maskable variant) are what make the app
-// installable. theme/background colors track the app's primary (#2196f3 from the SCSS theme).
+// installable. theme/background colors track the app's primary (MongoDB green #00684a).
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'QuickRecall — Developer Interview Prep',
@@ -15,7 +15,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: 'standalone',
     orientation: 'any',
     background_color: '#ffffff',
-    theme_color: '#2196f3',
+    theme_color: '#00684a',
     icons: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },

@@ -2,7 +2,8 @@
 import type { MenuOrientation, ThemeDirection, ThemeMode } from 'config';
 
 export type FontFamily = string;
-export type PresetColor = 'default' | 'theme1' | 'theme2' | 'theme3' | 'theme4' | 'theme5' | 'theme6';
+// Single MongoDB (LeafyGreen) identity — the multi-preset switcher (theme1–theme6) was removed.
+export type PresetColor = 'default';
 export type I18n = 'en' | 'fr' | 'ro' | 'zh'; // 'en' - English, 'fr' - French, 'ro' - Romanian, 'zh' - Chinese
 
 export type ConfigProps = {
@@ -54,15 +55,8 @@ export type ConfigProps = {
   mode: ThemeMode;
 
   /**
-   * the props used for theme primary color variants
-   * we provide static below options thoe s are already defaine in src/themes/theme -
-   * 'default'
-   * 'theme1'
-   * 'theme2'
-   * 'theme3'
-   * 'theme4'
-   * 'theme5'
-   * 'theme6'
+   * Theme color identity. Only 'default' (the MongoDB LeafyGreen palette) remains; the
+   * original Berry multi-preset switcher (theme1–theme6) was removed.
    */
   presetColor: PresetColor;
 

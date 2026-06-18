@@ -50,27 +50,29 @@ export interface SectionLandingProps {
 
 // ─── Dark-mode colour tokens ──────────────────────────────────────────────────
 
+// MongoDB LeafyGreen tints: green.dark1, yellow.base, red.base, blue.base
 const DIFF_BG: Record<string, string> = {
-  success: 'rgba(76, 175, 80, 0.1)',
-  warning: 'rgba(255, 193, 7, 0.1)',
-  error: 'rgba(244, 67, 54, 0.1)',
-  primary: 'rgba(33, 150, 243, 0.1)',
+  success: 'rgba(0, 163, 92, 0.1)',
+  warning: 'rgba(255, 192, 16, 0.1)',
+  error: 'rgba(219, 48, 48, 0.1)',
+  primary: 'rgba(1, 107, 248, 0.1)',
   default: 'rgba(255, 255, 255, 0.04)'
 };
 
 const DIFF_BG_HOVER: Record<string, string> = {
-  success: 'rgba(76, 175, 80, 0.2)',
-  warning: 'rgba(255, 193, 7, 0.2)',
-  error: 'rgba(244, 67, 54, 0.2)',
-  primary: 'rgba(33, 150, 243, 0.2)',
+  success: 'rgba(0, 163, 92, 0.2)',
+  warning: 'rgba(255, 192, 16, 0.2)',
+  error: 'rgba(219, 48, 48, 0.2)',
+  primary: 'rgba(1, 107, 248, 0.2)',
   default: 'rgba(255, 255, 255, 0.1)'
 };
 
+// MongoDB LeafyGreen: green.dark1, yellow.base, red.base, blue.base
 const DIFF_BORDER: Record<string, string> = {
-  success: '#4caf50',
-  warning: '#ffc107',
-  error: '#f44336',
-  primary: '#2196f3',
+  success: '#00a35c',
+  warning: '#ffc010',
+  error: '#db3030',
+  primary: '#016bf8',
   default: 'rgba(255,255,255,0.18)'
 };
 

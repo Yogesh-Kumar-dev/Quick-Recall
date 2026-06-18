@@ -76,7 +76,7 @@ const FEATURES: Feature[] = [
     title: 'Shareable Filters',
     blurb: 'Difficulty, category, and search live in the URL — every filtered view is bookmarkable.',
     tech: 'nuqs',
-    accent: '#2196f3',
+    accent: '#016bf8',
     span: 1
   },
   {

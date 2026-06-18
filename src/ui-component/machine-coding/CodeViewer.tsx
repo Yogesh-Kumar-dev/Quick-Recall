@@ -10,6 +10,9 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { IconCopy, IconCheck } from '@tabler/icons-react';
 
+// Source Code Pro — the exact MongoDB LeafyGreen code typeface.
+import { monoFont } from 'config';
+
 // Lazy-load Monaco (~300KB+): it's only needed once a machine-coding page is open, so keep it out
 // of the shared/initial chunk. ssr: false — Monaco is browser-only and the viewer is interactive.
 const Editor = dynamic(() => import('@monaco-editor/react'), {
@@ -80,7 +83,7 @@ export default function CodeViewer({ code, filename = 'source.tsx' }: CodeViewer
           flexShrink: 0
         }}
       >
-        <Typography variant="caption" sx={{ color: '#9cdcfe', fontFamily: 'monospace', fontSize: 12 }}>
+        <Typography variant="caption" sx={{ color: '#9cdcfe', fontFamily: monoFont, fontSize: 12 }}>
           📄 {filename}
         </Typography>
         <Tooltip title={copied ? 'Copied!' : 'Copy code'}>
@@ -100,6 +103,7 @@ export default function CodeViewer({ code, filename = 'source.tsx' }: CodeViewer
           options={{
             readOnly: true,
             fontSize: 12.5,
+            fontFamily: monoFont,
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
             wordWrap: 'on',
