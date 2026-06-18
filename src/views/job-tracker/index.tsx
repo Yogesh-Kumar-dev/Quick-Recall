@@ -7,11 +7,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -27,6 +22,7 @@ import Fuse from 'fuse.js';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
+import { LGConfirmationModal, LGConfirmationModalVariant } from 'ui-component/leafygreen';
 import JobCard from './JobCard';
 import JobFormDrawer from './JobFormDrawer';
 import JobsEmptyState from './JobsEmptyState';
@@ -309,24 +305,18 @@ export default function JobTracker() {
       )}
 
       {/* Delete confirmation */}
-      <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)} maxWidth="xs" fullWidth>
-        <DialogTitle>Delete this application?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {pendingDelete
-              ? `“${pendingDelete.jobTitle} at ${pendingDelete.companyName}” will be permanently removed. This can’t be undone.`
-              : ''}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button color="inherit" onClick={() => setPendingDelete(null)}>
-            Cancel
-          </Button>
-          <Button variant="contained" color="error" onClick={confirmDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <LGConfirmationModal
+        open={Boolean(pendingDelete)}
+        title="Delete this application?"
+        variant={LGConfirmationModalVariant.Danger}
+        confirmButtonProps={{ children: 'Delete', onClick: confirmDelete }}
+        cancelButtonProps={{ onClick: () => setPendingDelete(null) }}
+        onCancel={() => setPendingDelete(null)}
+      >
+        {pendingDelete
+          ? `“${pendingDelete.jobTitle} at ${pendingDelete.companyName}” will be permanently removed. This can’t be undone.`
+          : ''}
+      </LGConfirmationModal>
     </MainCard>
   );
 }
