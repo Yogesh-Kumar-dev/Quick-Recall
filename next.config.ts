@@ -71,6 +71,10 @@ const nextConfig: NextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
+      // The shim imports the REAL react-dom via this sentinel (an absolute file path bypasses
+      // react-dom's `exports` field, which blocks `react-dom/index.js`). Then `react-dom$` (exact,
+      // bare specifier only) routes every other importer through the shim.
+      'react-dom-original$': require.resolve('react-dom'),
       'react-dom$': path.resolve(__dirname, 'src/polyfills/react-dom-shim.js')
     };
     return config;

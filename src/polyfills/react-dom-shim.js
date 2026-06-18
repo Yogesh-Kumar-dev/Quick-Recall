@@ -11,11 +11,11 @@
 // what react-transition-group reads `.findDOMNode` from. The real module is imported via its concrete
 // path so the `react-dom$` alias doesn't loop back to this shim.
 
-import * as RealReactDOM from 'react-dom/index.js';
+import * as RealReactDOM from 'react-dom-original';
 
 // Keep every named export intact (createPortal, flushSync, createRoot, version, the react-internal
 // preinit/preload helpers, etc.) without hand-maintaining the list.
-export * from 'react-dom/index.js';
+export * from 'react-dom-original';
 
 function findHostNode(fiber) {
   let node = fiber;

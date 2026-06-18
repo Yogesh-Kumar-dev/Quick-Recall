@@ -9,6 +9,11 @@ import { Callout, type CalloutProps, Variant as CalloutVariant } from '@leafygre
 import { Banner, type BannerProps, Variant as BannerVariant } from '@leafygreen-ui/banner';
 import { Code, type CodeProps, Language as CodeLanguage, CopyButtonAppearance } from '@leafygreen-ui/code';
 import { ExpandableCard, type ExpandableCardProps } from '@leafygreen-ui/expandable-card';
+import { Modal, type ModalProps, ModalSize } from '@leafygreen-ui/modal';
+import { ConfirmationModal, type ConfirmationModalProps, Variant as ConfirmationModalVariant } from '@leafygreen-ui/confirmation-modal';
+import { ProgressBar, type ProgressBarProps, Variant as ProgressBarVariant, Size as ProgressBarSize } from '@leafygreen-ui/progress-bar';
+import { PreviewCard, type PreviewCardProps } from '@leafygreen-ui/preview-card';
+import { TextInput, type TextInputProps, State as TextInputState, SizeVariant as TextInputSize } from '@leafygreen-ui/text-input';
 // NOTE: @leafygreen-ui/toast is intentionally NOT used. Its react-transition-group usage omits
 // `nodeRef`, so it calls the removed `ReactDOM.findDOMNode` and crashes on React 19. The app's
 // notifications render via MUI Snackbar instead (see ui-component/extended/Snackbar.tsx).
@@ -38,6 +43,11 @@ export const LGCallout = Callout as ComponentType<CalloutProps>;
 export const LGBanner = Banner as ComponentType<BannerProps>;
 export const LGCode = Code as ComponentType<CodeProps>;
 export const LGExpandableCard = ExpandableCard as ComponentType<ExpandableCardProps>;
+export const LGModal = Modal as ComponentType<ModalProps>;
+export const LGConfirmationModal = ConfirmationModal as ComponentType<ConfirmationModalProps>;
+export const LGProgressBar = ProgressBar as ComponentType<ProgressBarProps>;
+export const LGPreviewCard = PreviewCard as ComponentType<PreviewCardProps>;
+export const LGTextInput = TextInput as ComponentType<TextInputProps>;
 
 export {
   ButtonVariant as LGButtonVariant,
@@ -46,5 +56,11 @@ export {
   CalloutVariant as LGCalloutVariant,
   BannerVariant as LGBannerVariant,
   CodeLanguage as LGCodeLanguage,
-  CopyButtonAppearance as LGCopyButtonAppearance
+  CopyButtonAppearance as LGCopyButtonAppearance,
+  ModalSize as LGModalSize,
+  ConfirmationModalVariant as LGConfirmationModalVariant,
+  ProgressBarVariant as LGProgressBarVariant,
+  ProgressBarSize as LGProgressBarSize,
+  TextInputState as LGTextInputState,
+  TextInputSize as LGTextInputSize
 };

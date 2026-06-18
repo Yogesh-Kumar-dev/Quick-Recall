@@ -7,11 +7,6 @@ import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Chip from '@mui/material/Chip';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
@@ -24,6 +19,7 @@ import { IconBriefcase, IconEdit, IconPlayerPlayFilled, IconPlus, IconTrash } fr
 import { useLiveQuery } from 'dexie-react-hooks';
 
 // project imports
+import { LGConfirmationModal, LGConfirmationModalVariant } from 'ui-component/leafygreen';
 import * as jobsRepository from 'views/job-tracker/jobsRepository';
 import useSpeakUpQAs from './useSpeakUpQAs';
 import QAFormDrawer from './QAFormDrawer';
@@ -428,31 +424,24 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
       )}
 
       {/* Delete confirmation */}
-      <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(null)} maxWidth="xs" fullWidth>
-        <DialogTitle>Delete this answer?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {pendingDelete ? `Your saved answer to “${pendingDelete.question}” will be permanently removed. This can't be undone.` : ''}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button color="inherit" onClick={() => setPendingDelete(null)}>
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={async () => {
-              if (pendingDelete) {
-                await deleteQA(pendingDelete.id);
-                setPendingDelete(null);
-              }
-            }}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <LGConfirmationModal
+        open={Boolean(pendingDelete)}
+        title="Delete this answer?"
+        variant={LGConfirmationModalVariant.Danger}
+        confirmButtonProps={{
+          children: 'Delete',
+          onClick: async () => {
+            if (pendingDelete) {
+              await deleteQA(pendingDelete.id);
+              setPendingDelete(null);
+            }
+          }
+        }}
+        cancelButtonProps={{ onClick: () => setPendingDelete(null) }}
+        onCancel={() => setPendingDelete(null)}
+      >
+        {pendingDelete ? `Your saved answer to “${pendingDelete.question}” will be permanently removed. This can't be undone.` : ''}
+      </LGConfirmationModal>
     </Box>
   );
 }

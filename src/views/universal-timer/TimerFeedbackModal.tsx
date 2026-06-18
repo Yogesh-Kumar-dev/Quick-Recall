@@ -1,12 +1,11 @@
 'use client';
 
 // material-ui
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
+// leafygreen (real MongoDB components)
+import { LGModal, LGModalSize, LGButton, LGButtonVariant } from 'ui-component/leafygreen';
 
 // ==============================|| UNIVERSAL TIMER - COMPLETION FEEDBACK ||============================== //
 
@@ -24,19 +23,21 @@ interface TimerFeedbackModalProps {
 
 export default function TimerFeedbackModal({ open, name, onRespond }: TimerFeedbackModalProps) {
   return (
-    <Dialog open={open} maxWidth="xs" fullWidth>
-      <DialogTitle>Time’s up!</DialogTitle>
-      <DialogContent>
-        <DialogContentText>How did {name ? `“${name}”` : 'it'} go?</DialogContentText>
-      </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button color="inherit" onClick={() => onRespond('fell-short')}>
+    <LGModal open={open} setOpen={() => onRespond('fell-short')} size={LGModalSize.Small}>
+      <Typography variant="h4" gutterBottom>
+        Time’s up!
+      </Typography>
+      <Typography variant="body1" color="text.secondary">
+        How did {name ? `“${name}”` : 'it'} go?
+      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 3 }}>
+        <LGButton variant={LGButtonVariant.Default} onClick={() => onRespond('fell-short')}>
           Ran out of time ⏳
-        </Button>
-        <Button variant="contained" onClick={() => onRespond('achieved')}>
+        </LGButton>
+        <LGButton variant={LGButtonVariant.Primary} onClick={() => onRespond('achieved')}>
           Nailed it 🎯
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </LGButton>
+      </Box>
+    </LGModal>
   );
 }
