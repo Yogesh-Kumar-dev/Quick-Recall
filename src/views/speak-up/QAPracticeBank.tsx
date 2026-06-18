@@ -9,7 +9,6 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -19,7 +18,7 @@ import { IconBriefcase, IconEdit, IconPlayerPlayFilled, IconPlus, IconTrash } fr
 import { useLiveQuery } from 'dexie-react-hooks';
 
 // project imports
-import { LGConfirmationModal, LGConfirmationModalVariant } from 'ui-component/leafygreen';
+import { LGConfirmationModal, LGConfirmationModalVariant, LGPreviewCard } from 'ui-component/leafygreen';
 import * as jobsRepository from 'views/job-tracker/jobsRepository';
 import useSpeakUpQAs from './useSpeakUpQAs';
 import QAFormDrawer from './QAFormDrawer';
@@ -58,10 +57,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
   const [drawer, setDrawer] = useState<DrawerState | null>(null);
   const [pendingDelete, setPendingDelete] = useState<SpeakUpQA | null>(null);
   const [filter, setFilter] = useState<string>(ALL);
-  // Per-row expand override (keyed by predefined id / user QA id). When unset, a row's
-  // answer is expanded iff it's the active question; the toggle flips that default.
-  const [expandedOverride, setExpandedOverride] = useState<Record<string, boolean>>({});
-  const toggleExpanded = (key: string, fallback: boolean) => setExpandedOverride((prev) => ({ ...prev, [key]: !(prev[key] ?? fallback) }));
 
   // Fast lookups: saved answer for a predefined question (by sourceId) and a job by id.
   const answerBySource = useMemo(() => {
@@ -152,44 +147,25 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
     );
   };
 
-  // Answer block: clamped to 2 lines by default, fully expanded for the active row.
-  // The toggle lets any row override that default. Only show the toggle when there's
-  // enough text that clamping would actually hide something.
+  // Answer block. Long answers use a real LeafyGreen PreviewCard (clips to a collapsed height with
+  // a built-in "View more/less"); short ones render plainly so we don't show a pointless toggle.
+  // Default-open for the active row. The wrapper stops click propagation so PreviewCard's View
+  // more/less button doesn't also select the row.
   const renderAnswer = (answer: string, key: string, isActive: boolean) => {
-    const expanded = expandedOverride[key] ?? isActive;
     const canToggle = answer.length > 120 || answer.includes('\n');
+    const answerText = (
+      <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
+        {answer}
+      </Typography>
+    );
+
+    if (!canToggle) return <Box>{answerText}</Box>;
+
     return (
-      <Box>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{
-            whiteSpace: 'pre-wrap',
-            ...(!expanded && {
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            })
-          }}
-        >
-          {answer}
-        </Typography>
-        {canToggle && (
-          <Link
-            component="button"
-            type="button"
-            variant="caption"
-            underline="hover"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleExpanded(key, isActive);
-            }}
-            sx={{ mt: 0.25, display: 'inline-block' }}
-          >
-            {expanded ? 'Show less' : 'Show more'}
-          </Link>
-        )}
+      <Box onClick={(e) => e.stopPropagation()}>
+        <LGPreviewCard key={key} defaultOpen={isActive} collapsedHeight={40} viewMoreText="Show more" viewLessText="Show less">
+          {answerText}
+        </LGPreviewCard>
       </Box>
     );
   };

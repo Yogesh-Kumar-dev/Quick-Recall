@@ -46,8 +46,14 @@ export default function SpeakUpPage() {
           gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) minmax(300px, 360px)' }
         }}
       >
-        <SpeechPractice questionIndex={questionIndex} onNextQuestion={handleNextQuestion} />
-        <QAPracticeBank activeIndex={questionIndex} onSelectQuestion={setQuestionIndex} />
+        {/* minWidth:0 lets each grid item shrink below its content's intrinsic width — without it,
+            long question text / answers push the track wider than the viewport (mobile overflow). */}
+        <Box sx={{ minWidth: 0 }}>
+          <SpeechPractice questionIndex={questionIndex} onNextQuestion={handleNextQuestion} />
+        </Box>
+        <Box sx={{ minWidth: 0 }}>
+          <QAPracticeBank activeIndex={questionIndex} onSelectQuestion={setQuestionIndex} />
+        </Box>
       </Box>
 
       <Divider sx={{ my: 4 }} />

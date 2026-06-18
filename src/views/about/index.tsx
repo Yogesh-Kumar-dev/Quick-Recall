@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import Image from 'next/image';
 
 // material-ui
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -28,7 +28,8 @@ import {
   IconMail,
   IconDatabase,
   IconBrandYoutube,
-  IconCloudDownload
+  IconCloudDownload,
+  IconPalette
 } from '@tabler/icons-react';
 
 // project imports
@@ -43,6 +44,10 @@ interface Feature {
   tech: string;
   accent: string;
   span: 1 | 2;
+  /** Optional vertical span — a content-heavy card can occupy two rows. */
+  rowSpan?: 2;
+  /** Optional external link rendered as a "Learn more →" affordance on the card. */
+  href?: string;
 }
 
 const FEATURES: Feature[] = [
@@ -54,6 +59,17 @@ const FEATURES: Feature[] = [
     tech: 'PWA · Serwist service worker + Cache Storage API',
     accent: '#5a0fc8',
     span: 2
+  },
+  {
+    icon: <IconPalette size={24} />,
+    title: 'MongoDB Design System',
+    blurb:
+      'The entire UI follows MongoDB’s LeafyGreen design system — its colors, typography, and components — for a clean, consistent, accessible interface. Real LeafyGreen components are used where they fit, with MUI themed to match everywhere else.',
+    tech: '@leafygreen-ui + MUI (themed to LeafyGreen)',
+    accent: '#00684A',
+    span: 1,
+    rowSpan: 2,
+    href: 'https://www.mongodb.design/'
   },
   {
     icon: <IconMicrophone size={24} />,
@@ -72,12 +88,14 @@ const FEATURES: Feature[] = [
     span: 1
   },
   {
-    icon: <IconLink size={24} />,
-    title: 'Shareable Filters',
-    blurb: 'Difficulty, category, and search live in the URL — every filtered view is bookmarkable.',
-    tech: 'nuqs',
-    accent: '#016bf8',
-    span: 1
+    icon: <IconBrandYoutube size={24} />,
+    title: 'Embedded Video Player',
+    blurb:
+      'Topic-specific YouTube playlists play right inside the app — shuffled on each launch, with the frame auto-switching between portrait Shorts and landscape videos.',
+    tech: 'react-youtube + YouTube IFrame API + oEmbed',
+    accent: '#FF0000',
+    span: 1,
+    rowSpan: 2
   },
   {
     icon: <IconStack2 size={24} />,
@@ -144,13 +162,12 @@ const FEATURES: Feature[] = [
     span: 1
   },
   {
-    icon: <IconBrandYoutube size={24} />,
-    title: 'Embedded Video Player',
-    blurb:
-      'Topic-specific YouTube playlists play right inside the app — shuffled on each launch, with the frame auto-switching between portrait Shorts and landscape videos.',
-    tech: 'react-youtube + YouTube IFrame API + oEmbed',
-    accent: '#FF0000',
-    span: 2
+    icon: <IconLink size={24} />,
+    title: 'Shareable Filters',
+    blurb: 'Difficulty, category, and search live in the URL — every filtered view is bookmarkable.',
+    tech: 'nuqs',
+    accent: '#016bf8',
+    span: 1
   }
 ];
 
@@ -182,6 +199,10 @@ const CORE_STACK: StackTech[] = [
 // ==============================|| ABOUT — UNDER THE HOOD ||============================== //
 
 export default function AboutPage() {
+  // Theme tokens for the bento cards (divider/paper/secondary) — Tailwind can't express MUI theme
+  // colors and this project doesn't enable MUI CSS variables, so we read them here for inline style.
+  const theme = useTheme();
+
   return (
     <Box>
       {/* The story — why this exists */}
@@ -268,67 +289,60 @@ export default function AboutPage() {
       </Box>
 
       {/* Bento grid */}
-      <Box
-        sx={{
-          display: 'grid',
-          gap: 2,
-          gridAutoFlow: 'dense',
-          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', md: 'repeat(3, minmax(0, 1fr))' }
-        }}
-      >
+      {/* Bento grid — Tailwind for the responsive layout + card structure; inline style only for
+          the dynamic per-card accent and MUI theme-token colors (which Tailwind can't express). */}
+      <div className="grid grid-cols-1 gap-4 [grid-auto-flow:dense] sm:grid-cols-2 md:grid-cols-3">
         {FEATURES.map((f) => (
-          <Box
+          <div
             key={f.title}
-            sx={{
-              gridColumn: { md: f.span === 2 ? 'span 2' : 'span 1' },
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1.25,
-              p: 2.5,
-              borderRadius: 2,
-              border: '1px solid',
-              borderColor: 'divider',
-              borderLeft: '3px solid',
+            className={`flex flex-col gap-3 rounded-lg border border-solid border-l-[3px] p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
+              f.span === 2 ? 'md:col-span-2' : ''
+            } ${f.rowSpan === 2 ? 'md:row-span-2' : ''}`}
+            style={{
+              borderColor: theme.palette.divider,
               borderLeftColor: f.accent,
-              bgcolor: 'background.paper',
-              transition: 'box-shadow 0.2s ease, transform 0.2s ease',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                boxShadow: 3
-              }
+              backgroundColor: theme.palette.background.paper
             }}
           >
             {/* Icon */}
-            <Box
-              sx={{
-                width: 44,
-                height: 44,
-                borderRadius: 1.5,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: f.accent,
-                bgcolor: alpha(f.accent, 0.12)
-              }}
+            <div
+              className="flex h-11 w-11 items-center justify-center rounded-md"
+              style={{ color: f.accent, backgroundColor: alpha(f.accent, 0.12) }}
             >
               {f.icon}
-            </Box>
+            </div>
 
-            {/* Title + blurb */}
+            {/* Title + blurb (kept on MUI typography for the theme's fonts/sizes/colors) */}
             <Typography variant="h5" fontWeight={700}>
               {f.title}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
+            <Typography variant="body2" color="text.secondary" className="grow">
               {f.blurb}
             </Typography>
 
             {/* Built with */}
-            <Typography variant="caption" sx={{ mt: 0.5, fontFamily: 'monospace', color: 'text.secondary', letterSpacing: 0.2 }}>
+            <Typography variant="caption" className="mt-1 font-mono tracking-wide" color="text.secondary">
               built with: {f.tech}
             </Typography>
-          </Box>
+
+            {/* Optional external link */}
+            {f.href && (
+              // biome-ignore lint/a11y/noAmbiguousAnchorText: aria-label provides the accessible name; "Learn more" is intentional UI copy
+              <a
+                href={f.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Learn more about ${f.title}`}
+                className="mt-1 inline-flex items-center gap-1 self-start text-[0.8125rem] font-semibold no-underline hover:underline"
+                style={{ color: f.accent }}
+              >
+                Learn more
+                <IconArrowRight size={15} />
+              </a>
+            )}
+          </div>
         ))}
-      </Box>
+      </div>
 
       <Divider sx={{ my: 4 }} />
 
