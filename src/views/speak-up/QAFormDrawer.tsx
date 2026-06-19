@@ -5,15 +5,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { IconX } from '@tabler/icons-react';
 
-// leafygreen (real MongoDB form fields)
-import { LGTextArea, LGTextAreaState, LGSelect, LGOption } from 'ui-component/leafygreen';
+// leafygreen (real MongoDB drawer shell + form fields)
+import { LGDrawer, LGDrawerDisplayMode, LGTextArea, LGTextAreaState, LGSelect, LGOption } from 'ui-component/leafygreen';
 
 // third party
 import { Controller, useForm } from 'react-hook-form';
@@ -100,25 +96,17 @@ export default function QAFormDrawer({
   });
 
   return (
-    <Drawer
-      anchor="right"
+    // LeafyGreen Drawer (overlay) provides its own title header + close button. We disable its
+    // padding/scroll so our flex layout keeps a scrollable body with a pinned footer.
+    <LGDrawer
       open={open}
-      // Don't discard an in-progress form on a stray outside click; Esc still closes.
-      onClose={(_, reason) => {
-        if (reason !== 'backdropClick') onClose();
-      }}
-      slotProps={{ paper: { sx: { width: { xs: '100%', sm: 480 } } } }}
+      displayMode={LGDrawerDisplayMode.Overlay}
+      title={mode === 'edit' ? 'Edit Answer' : 'Prepare Answer'}
+      onClose={onClose}
+      hasPadding={false}
+      scrollable={false}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2 }}>
-          <Typography variant="h3">{mode === 'edit' ? 'Edit Answer' : 'Prepare Answer'}</Typography>
-          <IconButton onClick={onClose} aria-label="close" size="small">
-            <IconX size={20} />
-          </IconButton>
-        </Box>
-        <Divider />
-
         {/* Body */}
         <Box component="form" onSubmit={submit} noValidate sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
           <Stack spacing={2.5} sx={{ p: 2.5, flex: 1, overflowY: 'auto' }}>
@@ -197,6 +185,6 @@ export default function QAFormDrawer({
           </Stack>
         </Box>
       </Box>
-    </Drawer>
+    </LGDrawer>
   );
 }
