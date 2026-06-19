@@ -16,6 +16,8 @@ import { PreviewCard, type PreviewCardProps } from '@leafygreen-ui/preview-card'
 import { TextInput, type TextInputProps, State as TextInputState, SizeVariant as TextInputSize } from '@leafygreen-ui/text-input';
 import { TextArea, type TextAreaProps, State as TextAreaState } from '@leafygreen-ui/text-area';
 import { Select, type SelectProps, Option, OptionGroup, Size as SelectSize, State as SelectState } from '@leafygreen-ui/select';
+import { Label, type LabelProps } from '@leafygreen-ui/typography';
+import { Drawer, type DrawerProps, DisplayMode as DrawerDisplayMode, Size as DrawerSize, drawerClassName } from '@leafygreen-ui/drawer';
 // NOTE: @leafygreen-ui/toast is intentionally NOT used. Its react-transition-group usage omits
 // `nodeRef`, so it calls the removed `ReactDOM.findDOMNode` and crashes on React 19. The app's
 // notifications render via MUI Snackbar instead (see ui-component/extended/Snackbar.tsx).
@@ -52,8 +54,14 @@ export const LGPreviewCard = PreviewCard as ComponentType<PreviewCardProps>;
 export const LGTextInput = TextInput as ComponentType<TextInputProps>;
 export const LGTextArea = TextArea as ComponentType<TextAreaProps>;
 export const LGSelect = Select as ComponentType<SelectProps>;
+// LeafyGreen's form label, used standalone above non-LeafyGreen fields (e.g. the MUI date pickers)
+// so their label block matches the LeafyGreen inputs' label pixel-for-pixel.
+export const LGLabel = Label as ComponentType<LabelProps>;
 export const LGOption = Option;
 export const LGOptionGroup = OptionGroup;
+export const LGDrawer = Drawer as ComponentType<DrawerProps>;
+// Stable class on the drawer's <dialog> element — for pinning the overlay to the viewport edge.
+export const LGDrawerClassName = drawerClassName;
 
 export {
   ButtonVariant as LGButtonVariant,
@@ -71,5 +79,7 @@ export {
   TextInputSize as LGTextInputSize,
   TextAreaState as LGTextAreaState,
   SelectSize as LGSelectSize,
-  SelectState as LGSelectState
+  SelectState as LGSelectState,
+  DrawerDisplayMode as LGDrawerDisplayMode,
+  DrawerSize as LGDrawerSize
 };
