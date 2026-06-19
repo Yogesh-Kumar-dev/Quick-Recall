@@ -5,9 +5,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -15,7 +13,24 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { IconPlus, IconStar, IconStarFilled, IconTrash, IconX } from '@tabler/icons-react';
+import { IconPlus, IconStar, IconStarFilled, IconTrash } from '@tabler/icons-react';
+
+// leafygreen (real MongoDB drawer shell + form fields). Date pickers + the freeSolo "round name"
+// Autocomplete stay on MUI: LeafyGreen's DatePicker has a more limited constraint API (no dayjs /
+// disableFuture / minDateTime cross-field rules) and Combobox handles freeSolo creation awkwardly.
+import {
+  LGDrawer,
+  LGDrawerDisplayMode,
+  LGDrawerSize,
+  LGDrawerClassName,
+  LGTextInput,
+  LGTextInputState,
+  LGTextArea,
+  LGSelect,
+  LGOption,
+  LGSelectState,
+  LGLabel
+} from 'ui-component/leafygreen';
 
 // third party
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
@@ -97,10 +112,18 @@ const schema = z
   })
   .superRefine((data, ctx) => {
     if (data.status === 'interviewing' && data.rounds.length === 0) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['rounds'], message: 'Add at least one interview round' });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['rounds'],
+        message: 'Add at least one interview round'
+      });
     }
     if (data.salaryMin && data.salaryMax && Number(data.salaryMax) < Number(data.salaryMin)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['salaryMax'], message: 'Max must be ≥ min' });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['salaryMax'],
+        message: 'Max must be ≥ min'
+      });
     }
     // An interview round can't be scheduled before the day the application was sent.
     if (data.appliedAt) {
@@ -109,7 +132,11 @@ const schema = z
       data.rounds.forEach((round, index) => {
         const at = new Date(round.at).getTime();
         if (!Number.isNaN(at) && at < appliedDayStart.getTime()) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['rounds', index, 'at'], message: 'Cannot be before the applied date' });
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['rounds', index, 'at'],
+            message: 'Cannot be before the applied date'
+          });
         }
       });
     }
@@ -118,14 +145,22 @@ const schema = z
       const prev = new Date(data.rounds[i - 1].at).getTime();
       const curr = new Date(data.rounds[i].at).getTime();
       if (!Number.isNaN(prev) && !Number.isNaN(curr) && curr <= prev) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['rounds', i, 'at'], message: 'Must be after the previous round' });
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rounds', i, 'at'],
+          message: 'Must be after the previous round'
+        });
       }
     }
     // Every round except the last must have been passed to justify the round after it:
     //  - a failed round ends the process, so it can't be followed by another round
     //  - a pending round's outcome is unknown, so a later round can't exist yet
     const chronological = data.rounds
-      .map((r, index) => ({ index, time: new Date(r.at).getTime(), outcome: r.outcome }))
+      .map((r, index) => ({
+        index,
+        time: new Date(r.at).getTime(),
+        outcome: r.outcome
+      }))
       .filter((r) => !Number.isNaN(r.time))
       .sort((a, b) => a.time - b.time);
     chronological.forEach((round, position) => {
@@ -181,13 +216,79 @@ function makeId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-const newRound = (): FormValues['rounds'][number] => ({ id: makeId(), at: '', name: '', outcome: 'pending' });
-const newContact = (): FormValues['contacts'][number] => ({ id: makeId(), name: '', role: '', email: '', phone: '' });
-const newDocument = (): FormValues['documents'][number] => ({ id: makeId(), label: '', url: '' });
+const newRound = (): FormValues['rounds'][number] => ({
+  id: makeId(),
+  at: '',
+  name: '',
+  outcome: 'pending'
+});
+const newContact = (): FormValues['contacts'][number] => ({
+  id: makeId(),
+  name: '',
+  role: '',
+  email: '',
+  phone: ''
+});
+const newDocument = (): FormValues['documents'][number] => ({
+  id: makeId(),
+  label: '',
+  url: ''
+});
 
 function formatNoteTime(ts: number): string {
-  return new Date(ts).toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return new Date(ts).toLocaleString(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }
+
+const lgLabelSx = { display: 'block', mb: '4px' } as const;
+
+const LG_INPUT_BORDER = '#889397'; // palette.gray.base — measured border color
+const LG_INPUT_BORDER_HOVER = '#5C6C75'; // palette.gray.dark1
+const LG_FOCUS_RING = '#0498EC'; // palette.blue.light1
+const LG_FOCUS_RING_GLOW = 'rgba(1, 107, 248, 0.12)'; // palette.blue.base @ low alpha
+
+const dateFieldSx = (theme: { palette: { mode: string } }) =>
+  ({
+    '& .MuiOutlinedInput-root': {
+      height: 36,
+      borderRadius: '6px',
+      fontSize: '13px',
+      lineHeight: '20px',
+      // Measured LeafyGreen input fill: #112733 (gray.dark4) in dark, white in light.
+      bgcolor: theme.palette.mode === 'dark' ? '#112733' : '#FFFFFF',
+      transition: 'border-color 150ms ease-in-out, box-shadow 150ms ease-in-out',
+      // Hover: darken the border to match LeafyGreen's hover ring.
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: LG_INPUT_BORDER_HOVER
+      },
+      // Focus: LeafyGreen swaps the border to blue and adds a soft outer glow.
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: LG_FOCUS_RING,
+        borderWidth: '1px'
+      },
+      '&.Mui-focused': { boxShadow: `0 0 0 3px ${LG_FOCUS_RING_GLOW}` }
+    },
+    // Hide the floating MUI label — we render our own <LGLabel> above instead.
+    '& .MuiInputLabel-root': { display: 'none' },
+    '& .MuiOutlinedInput-notchedOutline': {
+      // Measured LeafyGreen border: 0.8px solid #889397 (MUI's default was rgba(232,237,235,0.28)).
+      borderColor: LG_INPUT_BORDER,
+      borderWidth: '0.8px',
+      '& legend': { display: 'none' }
+    },
+    // Match LeafyGreen's 12px horizontal padding and vertically center the text in the 36px box.
+    '& .MuiOutlinedInput-input': {
+      px: '12px',
+      py: 0,
+      height: '100%',
+      boxSizing: 'border-box'
+    }
+  }) as const;
 
 export default function JobFormDrawer({ open, mode, initialValues, onClose, onSubmit }: JobFormDrawerProps) {
   const {
@@ -197,7 +298,10 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
     handleSubmit,
     reset,
     formState: { errors, isSubmitting }
-  } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: EMPTY });
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: EMPTY
+  });
 
   const rounds = useFieldArray({ control, name: 'rounds' });
   const contacts = useFieldArray({ control, name: 'contacts' });
@@ -251,7 +355,12 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
         source: initialValues.source ?? '',
         sourceUrl: initialValues.sourceUrl ?? '',
         appliedAt: initialValues.appliedAt ?? '',
-        rounds: (initialValues.rounds ?? []).map((r) => ({ id: r.id, at: r.at, name: r.name ?? '', outcome: r.outcome })),
+        rounds: (initialValues.rounds ?? []).map((r) => ({
+          id: r.id,
+          at: r.at,
+          name: r.name ?? '',
+          outcome: r.outcome
+        })),
         contacts: (initialValues.contacts ?? []).map((c) => ({
           id: c.id,
           name: c.name ?? '',
@@ -259,7 +368,11 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
           email: c.email ?? '',
           phone: c.phone ?? ''
         })),
-        documents: (initialValues.documents ?? []).map((d) => ({ id: d.id, label: d.label ?? '', url: d.url ?? '' })),
+        documents: (initialValues.documents ?? []).map((d) => ({
+          id: d.id,
+          label: d.label ?? '',
+          url: d.url ?? ''
+        })),
         newNote: ''
       });
     } else {
@@ -288,12 +401,20 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
 
     const cleanDocuments: JobDocument[] = values.documents
       .filter((d) => d.url?.trim())
-      .map((d) => ({ id: d.id, label: d.label?.trim() || 'Document', url: d.url!.trim() }));
+      .map((d) => ({
+        id: d.id,
+        label: d.label?.trim() || 'Document',
+        url: d.url!.trim()
+      }));
 
     // Append the new note (if any) to the existing log.
     const notes: JobNote[] = [...existingNotes];
     if (values.newNote?.trim()) {
-      notes.unshift({ id: makeId(), text: values.newNote.trim(), createdAt: Date.now() });
+      notes.unshift({
+        id: makeId(),
+        text: values.newNote.trim(),
+        createdAt: Date.now()
+      });
     }
 
     const payload: JobApplicationInput = {
@@ -322,415 +443,512 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
   const roundsError = typeof errors.rounds?.message === 'string' ? errors.rounds.message : undefined;
 
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      // Don't discard an in-progress form on a stray outside click; Esc still closes.
-      onClose={(_, reason) => {
-        if (reason !== 'backdropClick') onClose();
+    // LeafyGreen overlay drawers position `absolute` against their parent container, so inside the
+    // page content they overlap/clip against the right-side icon rail. Pin the drawer's <dialog> to
+    // the viewport's right edge (fixed) so it slides in from the actual screen edge, above the rail.
+    <Box
+      sx={{
+        [`& .${LGDrawerClassName}`]: {
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          height: '100dvh',
+          zIndex: (theme) => theme.zIndex.drawer + 2
+        }
       }}
-      slotProps={{ paper: { sx: { width: { xs: '100%', sm: 520 } } } }}
     >
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          {/* Header */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2 }}>
-            <Typography variant="h3">{mode === 'edit' ? 'Edit Job' : 'Add Job'}</Typography>
-            <IconButton onClick={onClose} aria-label="close" size="small">
-              <IconX size={20} />
-            </IconButton>
-          </Box>
-          <Divider />
-
-          {/* Body */}
-          <Box component="form" onSubmit={submit} noValidate sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-            <Stack spacing={2.5} sx={{ p: 2.5, flex: 1, overflowY: 'auto' }}>
-              {/* Basics */}
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-                <TextField
-                  label="Company name"
-                  required
-                  fullWidth
-                  {...register('companyName')}
-                  error={Boolean(errors.companyName)}
-                  helperText={errors.companyName?.message}
-                />
-                <Controller
-                  name="favorite"
-                  control={control}
-                  render={({ field }) => (
-                    <IconButton
-                      onClick={() => field.onChange(!field.value)}
-                      color={favorite ? 'warning' : 'default'}
-                      aria-label="toggle favorite"
-                      sx={{ mt: 0.5 }}
-                    >
-                      {field.value ? <IconStarFilled size={22} /> : <IconStar size={22} />}
-                    </IconButton>
-                  )}
-                />
-              </Box>
-              <TextField
-                label="Job title"
-                required
-                fullWidth
-                {...register('jobTitle')}
-                error={Boolean(errors.jobTitle)}
-                helperText={errors.jobTitle?.message}
-              />
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField select label="Status" required fullWidth {...field}>
-                      {JOB_STATUS_ORDER.map((value) => (
-                        <MenuItem key={value} value={value}>
-                          {JOB_STATUS_CONFIG[value].label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  )}
-                />
-                <Controller
-                  name="appliedAt"
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label="Applied on"
-                      value={isoToDayjs(field.value)}
-                      onChange={(d) => field.onChange(dayjsToIso(d))}
-                      disableFuture
-                      slotProps={{ textField: { fullWidth: true } }}
+      {/* LeafyGreen Drawer (overlay) provides its own title header + close button. Padding/scroll are
+          disabled so our flex layout keeps a scrollable body with a pinned footer. */}
+      <LGDrawer
+        open={open}
+        displayMode={LGDrawerDisplayMode.Overlay}
+        size={LGDrawerSize.Large}
+        title={mode === 'edit' ? 'Edit Job' : 'Add Job'}
+        onClose={onClose}
+        hasPadding={false}
+        scrollable={false}
+      >
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {/* Body */}
+            <Box
+              component="form"
+              onSubmit={submit}
+              noValidate
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1,
+                minHeight: 0
+              }}
+            >
+              <Stack spacing={2.5} sx={{ p: 2.5, flex: 1, overflowY: 'auto' }}>
+                {/* Basics */}
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+                  <Box sx={{ flex: 1 }}>
+                    <LGTextInput
+                      label="Company name"
+                      state={errors.companyName ? LGTextInputState.Error : LGTextInputState.None}
+                      errorMessage={errors.companyName?.message}
+                      {...register('companyName')}
                     />
-                  )}
-                />
-              </Box>
-
-              {/* Compensation & location */}
-              <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
-                Compensation & location
-              </Divider>
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <TextField
-                  label="Salary min"
-                  type="number"
-                  fullWidth
-                  {...register('salaryMin')}
-                  error={Boolean(errors.salaryMin)}
-                  helperText={errors.salaryMin?.message}
-                />
-                <TextField
-                  label="Salary max"
-                  type="number"
-                  fullWidth
-                  {...register('salaryMax')}
-                  error={Boolean(errors.salaryMax)}
-                  helperText={errors.salaryMax?.message}
-                />
-                <TextField label="Currency" fullWidth placeholder="₹ / $ / USD" {...register('salaryCurrency')} sx={{ maxWidth: 120 }} />
-              </Box>
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <TextField label="Location" fullWidth placeholder="City or region" {...register('location')} />
-                <Controller
-                  name="workMode"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField select label="Work mode" fullWidth {...field} sx={{ maxWidth: 180 }}>
-                      <MenuItem value="">—</MenuItem>
-                      {WORK_MODE_ORDER.map((value) => (
-                        <MenuItem key={value} value={value}>
-                          {WORK_MODE_CONFIG[value].label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  )}
-                />
-              </Box>
-
-              {/* Source */}
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Controller
-                  name="source"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField select label="Source" fullWidth {...field} sx={{ maxWidth: 180 }}>
-                      <MenuItem value="">—</MenuItem>
-                      {JOB_SOURCE_ORDER.map((value) => (
-                        <MenuItem key={value} value={value}>
-                          {JOB_SOURCE_CONFIG[value].label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  )}
-                />
-                <TextField
-                  label="Source URL"
-                  fullWidth
-                  placeholder="Link to the posting"
-                  {...register('sourceUrl')}
-                  error={Boolean(errors.sourceUrl)}
-                  helperText={errors.sourceUrl?.message}
-                />
-              </Box>
-
-              <TextField label="Job description" fullWidth multiline minRows={3} {...register('jobDescription')} />
-
-              {/* Interview rounds */}
-              <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
-                Interview rounds{status === 'interviewing' ? '' : ' (optional)'}
-              </Divider>
-              {rounds.fields.length === 0 && (
-                <Typography variant="body2" color={roundsError ? 'error' : 'text.secondary'}>
-                  {roundsError ?? 'No rounds yet. Add one for each interview stage.'}
-                </Typography>
-              )}
-              {rounds.fields.map((field, index) => (
-                <Box key={field.id} sx={{ p: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
-                  <Stack spacing={1.5}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        Round {index + 1}
-                      </Typography>
-                      <IconButton size="small" color="error" onClick={() => rounds.remove(index)} aria-label={`remove round ${index + 1}`}>
-                        <IconTrash size={16} />
+                  </Box>
+                  <Controller
+                    name="favorite"
+                    control={control}
+                    render={({ field }) => (
+                      <IconButton
+                        onClick={() => field.onChange(!field.value)}
+                        color={favorite ? 'warning' : 'default'}
+                        aria-label="toggle favorite"
+                        sx={{ mt: 3.5 }}
+                      >
+                        {field.value ? <IconStarFilled size={22} /> : <IconStar size={22} />}
                       </IconButton>
+                    )}
+                  />
+                </Box>
+                <LGTextInput
+                  label="Job title"
+                  state={errors.jobTitle ? LGTextInputState.Error : LGTextInputState.None}
+                  errorMessage={errors.jobTitle?.message}
+                  {...register('jobTitle')}
+                />
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Controller
+                      name="status"
+                      control={control}
+                      render={({ field }) => (
+                        <LGSelect label="Status" name={field.name} value={field.value} onChange={(value) => field.onChange(value)}>
+                          {JOB_STATUS_ORDER.map((value) => (
+                            <LGOption key={value} value={value}>
+                              {JOB_STATUS_CONFIG[value].label}
+                            </LGOption>
+                          ))}
+                        </LGSelect>
+                      )}
+                    />
+                  </Box>
+                  <Box sx={{ width: 200, flexShrink: 0 }}>
+                    {/* Real LeafyGreen Label so this MUI date picker's label block matches the
+                        LeafyGreen inputs pixel-for-pixel (label above, not a floating inside-label). */}
+                    <Box component={LGLabel} htmlFor="appliedAt" sx={lgLabelSx}>
+                      Applied on
                     </Box>
                     <Controller
-                      name={`rounds.${index}.at` as const}
+                      name="appliedAt"
                       control={control}
-                      render={({ field: atField }) => (
-                        <DateTimePicker
-                          label="Date & time"
-                          value={isoToDayjs(atField.value)}
-                          onChange={(d) => atField.onChange(dayjsToIso(d))}
-                          minDateTime={roundMinDateTime(index)}
+                      render={({ field }) => (
+                        <DatePicker
+                          value={isoToDayjs(field.value)}
+                          onChange={(d) => field.onChange(dayjsToIso(d))}
+                          disableFuture
                           slotProps={{
                             textField: {
-                              required: true,
+                              id: 'appliedAt',
                               fullWidth: true,
                               size: 'small',
-                              error: Boolean(errors.rounds?.[index]?.at),
-                              helperText: errors.rounds?.[index]?.at?.message
+                              sx: dateFieldSx
                             }
                           }}
                         />
                       )}
                     />
+                  </Box>
+                </Box>
+
+                {/* Compensation & location */}
+                <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
+                  Compensation & location
+                </Divider>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                  <Box sx={{ flex: 1 }}>
+                    <LGTextInput
+                      label="Salary min"
+                      type="number"
+                      state={errors.salaryMin ? LGTextInputState.Error : LGTextInputState.None}
+                      errorMessage={errors.salaryMin?.message}
+                      {...register('salaryMin')}
+                    />
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <LGTextInput
+                      label="Salary max"
+                      type="number"
+                      state={errors.salaryMax ? LGTextInputState.Error : LGTextInputState.None}
+                      errorMessage={errors.salaryMax?.message}
+                      {...register('salaryMax')}
+                    />
+                  </Box>
+                  <Box sx={{ maxWidth: 120 }}>
+                    <LGTextInput label="Currency" placeholder="₹ / $ / USD" {...register('salaryCurrency')} />
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                  <Box sx={{ flex: 1 }}>
+                    <LGTextInput label="Location" placeholder="City or region" {...register('location')} />
+                  </Box>
+                  <Box sx={{ maxWidth: 180, flex: 1 }}>
                     <Controller
-                      name={`rounds.${index}.name` as const}
+                      name="workMode"
                       control={control}
-                      render={({ field: nameField }) => (
-                        <Autocomplete
-                          freeSolo
-                          options={INTERVIEW_ROUND_NAME_OPTIONS}
+                      render={({ field }) => (
+                        <LGSelect
+                          label="Work mode"
+                          name={field.name}
+                          value={field.value ?? ''}
+                          onChange={(value) => field.onChange(value)}
+                          allowDeselect
+                          placeholder="—"
+                        >
+                          {WORK_MODE_ORDER.map((value) => (
+                            <LGOption key={value} value={value}>
+                              {WORK_MODE_CONFIG[value].label}
+                            </LGOption>
+                          ))}
+                        </LGSelect>
+                      )}
+                    />
+                  </Box>
+                </Box>
+
+                {/* Source */}
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                  <Box sx={{ maxWidth: 180, flex: 1 }}>
+                    <Controller
+                      name="source"
+                      control={control}
+                      render={({ field }) => (
+                        <LGSelect
+                          label="Source"
+                          name={field.name}
+                          value={field.value ?? ''}
+                          onChange={(value) => field.onChange(value)}
+                          allowDeselect
+                          placeholder="—"
+                        >
+                          {JOB_SOURCE_ORDER.map((value) => (
+                            <LGOption key={value} value={value}>
+                              {JOB_SOURCE_CONFIG[value].label}
+                            </LGOption>
+                          ))}
+                        </LGSelect>
+                      )}
+                    />
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <LGTextInput
+                      label="Source URL"
+                      placeholder="Link to the posting"
+                      state={errors.sourceUrl ? LGTextInputState.Error : LGTextInputState.None}
+                      errorMessage={errors.sourceUrl?.message}
+                      {...register('sourceUrl')}
+                    />
+                  </Box>
+                </Box>
+
+                <LGTextArea label="Job description" rows={3} {...register('jobDescription')} />
+
+                {/* Interview rounds */}
+                <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
+                  Interview rounds
+                  {status === 'interviewing' ? '' : ' (optional)'}
+                </Divider>
+                {rounds.fields.length === 0 && (
+                  <Typography variant="body2" color={roundsError ? 'error' : 'text.secondary'}>
+                    {roundsError ?? 'No rounds yet. Add one for each interview stage.'}
+                  </Typography>
+                )}
+                {rounds.fields.map((field, index) => (
+                  <Box
+                    key={field.id}
+                    sx={{
+                      p: 1.5,
+                      borderRadius: 2,
+                      border: '1px solid',
+                      borderColor: 'divider'
+                    }}
+                  >
+                    <Stack spacing={1.5}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between'
+                        }}
+                      >
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Round {index + 1}
+                        </Typography>
+                        <IconButton
                           size="small"
-                          value={nameField.value ?? ''}
-                          onChange={(_, newValue) => nameField.onChange(newValue ?? '')}
-                          onInputChange={(_, newInput) => nameField.onChange(newInput)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Round name"
-                              placeholder="Pick or type a round name…"
-                              inputRef={nameField.ref}
-                              onBlur={nameField.onBlur}
+                          color="error"
+                          onClick={() => rounds.remove(index)}
+                          aria-label={`remove round ${index + 1}`}
+                        >
+                          <IconTrash size={16} />
+                        </IconButton>
+                      </Box>
+                      <Box>
+                        <Box component={LGLabel} htmlFor={`rounds.${index}.at`} sx={lgLabelSx}>
+                          Date &amp; time
+                        </Box>
+                        <Controller
+                          name={`rounds.${index}.at` as const}
+                          control={control}
+                          render={({ field: atField }) => (
+                            <DateTimePicker
+                              value={isoToDayjs(atField.value)}
+                              onChange={(d) => atField.onChange(dayjsToIso(d))}
+                              minDateTime={roundMinDateTime(index)}
+                              slotProps={{
+                                textField: {
+                                  id: `rounds.${index}.at`,
+                                  required: true,
+                                  fullWidth: true,
+                                  size: 'small',
+                                  sx: dateFieldSx,
+                                  error: Boolean(errors.rounds?.[index]?.at),
+                                  helperText: errors.rounds?.[index]?.at?.message
+                                }
+                              }}
                             />
                           )}
                         />
-                      )}
-                    />
-                    <Controller
-                      name={`rounds.${index}.outcome` as const}
-                      control={control}
-                      render={({ field: outcomeField }) => (
-                        <TextField
-                          select
-                          label="Outcome"
-                          fullWidth
+                      </Box>
+                      <Controller
+                        name={`rounds.${index}.name` as const}
+                        control={control}
+                        render={({ field: nameField }) => (
+                          <Autocomplete
+                            freeSolo
+                            options={INTERVIEW_ROUND_NAME_OPTIONS}
+                            size="small"
+                            value={nameField.value ?? ''}
+                            onChange={(_, newValue) => nameField.onChange(newValue ?? '')}
+                            onInputChange={(_, newInput) => nameField.onChange(newInput)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Round name"
+                                placeholder="Pick or type a round name…"
+                                inputRef={nameField.ref}
+                                onBlur={nameField.onBlur}
+                              />
+                            )}
+                          />
+                        )}
+                      />
+                      <Controller
+                        name={`rounds.${index}.outcome` as const}
+                        control={control}
+                        render={({ field: outcomeField }) => (
+                          <LGSelect
+                            label="Outcome"
+                            size="small"
+                            name={outcomeField.name}
+                            value={outcomeField.value}
+                            onChange={(value) => outcomeField.onChange(value)}
+                            state={errors.rounds?.[index]?.outcome ? LGSelectState.Error : LGSelectState.None}
+                            errorMessage={errors.rounds?.[index]?.outcome?.message}
+                          >
+                            {INTERVIEW_OUTCOME_ORDER.map((value) => (
+                              <LGOption key={value} value={value}>
+                                {INTERVIEW_OUTCOME_CONFIG[value].label}
+                              </LGOption>
+                            ))}
+                          </LGSelect>
+                        )}
+                      />
+                    </Stack>
+                  </Box>
+                ))}
+                {rounds.fields.length >= MAX_ROUNDS ? (
+                  <Typography variant="caption" color="text.secondary">
+                    Maximum of {MAX_ROUNDS} rounds reached.
+                  </Typography>
+                ) : lastRoundOutcome === 'failed' ? (
+                  <Typography variant="caption" color="text.secondary">
+                    The last round was failed — no further rounds can be added.
+                  </Typography>
+                ) : lastRoundOutcome === 'pending' ? (
+                  <Typography variant="caption" color="text.secondary">
+                    Mark the last round as passed before adding the next one.
+                  </Typography>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<IconPlus size={16} />}
+                    onClick={() => rounds.append(newRound())}
+                    sx={{ alignSelf: 'flex-start' }}
+                  >
+                    Add round
+                  </Button>
+                )}
+
+                {/* Contacts */}
+                <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
+                  Contacts (optional)
+                </Divider>
+                {contacts.fields.map((field, index) => (
+                  <Box
+                    key={field.id}
+                    sx={{
+                      p: 1.5,
+                      borderRadius: 2,
+                      border: '1px solid',
+                      borderColor: 'divider'
+                    }}
+                  >
+                    <Stack spacing={1.5}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between'
+                        }}
+                      >
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Contact {index + 1}
+                        </Typography>
+                        <IconButton
                           size="small"
-                          {...outcomeField}
-                          error={Boolean(errors.rounds?.[index]?.outcome)}
-                          helperText={errors.rounds?.[index]?.outcome?.message}
+                          color="error"
+                          onClick={() => contacts.remove(index)}
+                          aria-label={`remove contact ${index + 1}`}
                         >
-                          {INTERVIEW_OUTCOME_ORDER.map((value) => (
-                            <MenuItem key={value} value={value}>
-                              {INTERVIEW_OUTCOME_CONFIG[value].label}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      )}
-                    />
-                  </Stack>
-                </Box>
-              ))}
-              {rounds.fields.length >= MAX_ROUNDS ? (
-                <Typography variant="caption" color="text.secondary">
-                  Maximum of {MAX_ROUNDS} rounds reached.
-                </Typography>
-              ) : lastRoundOutcome === 'failed' ? (
-                <Typography variant="caption" color="text.secondary">
-                  The last round was failed — no further rounds can be added.
-                </Typography>
-              ) : lastRoundOutcome === 'pending' ? (
-                <Typography variant="caption" color="text.secondary">
-                  Mark the last round as passed before adding the next one.
-                </Typography>
-              ) : (
+                          <IconTrash size={16} />
+                        </IconButton>
+                      </Box>
+                      <Box sx={{ display: 'flex', gap: 1.5 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <LGTextInput label="Name" sizeVariant="small" {...register(`contacts.${index}.name` as const)} />
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                          <LGTextInput
+                            label="Role"
+                            sizeVariant="small"
+                            placeholder="Recruiter…"
+                            {...register(`contacts.${index}.role` as const)}
+                          />
+                        </Box>
+                      </Box>
+                      <LGTextInput
+                        label="Email"
+                        sizeVariant="small"
+                        state={errors.contacts?.[index]?.email ? LGTextInputState.Error : LGTextInputState.None}
+                        errorMessage={errors.contacts?.[index]?.email?.message}
+                        {...register(`contacts.${index}.email` as const)}
+                      />
+                      <LGTextInput
+                        label="Phone"
+                        sizeVariant="small"
+                        state={errors.contacts?.[index]?.phone ? LGTextInputState.Error : LGTextInputState.None}
+                        errorMessage={errors.contacts?.[index]?.phone?.message}
+                        {...register(`contacts.${index}.phone` as const)}
+                      />
+                    </Stack>
+                  </Box>
+                ))}
                 <Button
                   variant="outlined"
                   size="small"
                   startIcon={<IconPlus size={16} />}
-                  onClick={() => rounds.append(newRound())}
+                  onClick={() => contacts.append(newContact())}
                   sx={{ alignSelf: 'flex-start' }}
                 >
-                  Add round
+                  Add contact
                 </Button>
-              )}
 
-              {/* Contacts */}
-              <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
-                Contacts (optional)
-              </Divider>
-              {contacts.fields.map((field, index) => (
-                <Box key={field.id} sx={{ p: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
-                  <Stack spacing={1.5}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        Contact {index + 1}
-                      </Typography>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => contacts.remove(index)}
-                        aria-label={`remove contact ${index + 1}`}
-                      >
-                        <IconTrash size={16} />
-                      </IconButton>
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1.5 }}>
-                      <TextField label="Name" fullWidth size="small" {...register(`contacts.${index}.name` as const)} />
-                      <TextField
-                        label="Role"
-                        fullWidth
-                        size="small"
-                        placeholder="Recruiter…"
-                        {...register(`contacts.${index}.role` as const)}
+                {/* Documents */}
+                <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
+                  Documents (optional)
+                </Divider>
+                {documents.fields.map((field, index) => (
+                  <Box key={field.id} sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+                    <Box sx={{ maxWidth: 160 }}>
+                      <LGTextInput
+                        label="Label"
+                        sizeVariant="small"
+                        placeholder="Resume v3"
+                        {...register(`documents.${index}.label` as const)}
                       />
                     </Box>
-                    <TextField
-                      label="Email"
-                      fullWidth
-                      size="small"
-                      {...register(`contacts.${index}.email` as const)}
-                      error={Boolean(errors.contacts?.[index]?.email)}
-                      helperText={errors.contacts?.[index]?.email?.message}
-                    />
-                    <TextField
-                      label="Phone"
-                      fullWidth
-                      size="small"
-                      {...register(`contacts.${index}.phone` as const)}
-                      error={Boolean(errors.contacts?.[index]?.phone)}
-                      helperText={errors.contacts?.[index]?.phone?.message}
-                    />
-                  </Stack>
-                </Box>
-              ))}
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<IconPlus size={16} />}
-                onClick={() => contacts.append(newContact())}
-                sx={{ alignSelf: 'flex-start' }}
-              >
-                Add contact
-              </Button>
-
-              {/* Documents */}
-              <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
-                Documents (optional)
-              </Divider>
-              {documents.fields.map((field, index) => (
-                <Box key={field.id} sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-                  <TextField
-                    label="Label"
-                    size="small"
-                    placeholder="Resume v3"
-                    {...register(`documents.${index}.label` as const)}
-                    sx={{ maxWidth: 160 }}
-                  />
-                  <TextField
-                    label="Link"
-                    fullWidth
-                    size="small"
-                    placeholder="https://…"
-                    {...register(`documents.${index}.url` as const)}
-                    error={Boolean(errors.documents?.[index]?.url)}
-                    helperText={errors.documents?.[index]?.url?.message}
-                  />
-                  <IconButton
-                    size="small"
-                    color="error"
-                    onClick={() => documents.remove(index)}
-                    aria-label={`remove document ${index + 1}`}
-                    sx={{ mt: 0.5 }}
-                  >
-                    <IconTrash size={16} />
-                  </IconButton>
-                </Box>
-              ))}
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<IconPlus size={16} />}
-                onClick={() => documents.append(newDocument())}
-                sx={{ alignSelf: 'flex-start' }}
-              >
-                Add document
-              </Button>
-
-              {/* Notes / activity log */}
-              <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
-                Notes
-              </Divider>
-              <TextField
-                label="Add a note"
-                fullWidth
-                multiline
-                minRows={2}
-                placeholder="Add to the activity log…"
-                {...register('newNote')}
-              />
-              {existingNotes.length > 0 && (
-                <Stack spacing={1}>
-                  {existingNotes.map((note) => (
-                    <Box key={note.id} sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'action.hover' }}>
-                      <Typography variant="caption" color="text.secondary">
-                        {formatNoteTime(note.createdAt)}
-                      </Typography>
-                      <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                        {note.text}
-                      </Typography>
+                    <Box sx={{ flex: 1 }}>
+                      <LGTextInput
+                        label="Link"
+                        sizeVariant="small"
+                        placeholder="https://…"
+                        state={errors.documents?.[index]?.url ? LGTextInputState.Error : LGTextInputState.None}
+                        errorMessage={errors.documents?.[index]?.url?.message}
+                        {...register(`documents.${index}.url` as const)}
+                      />
                     </Box>
-                  ))}
-                </Stack>
-              )}
-            </Stack>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => documents.remove(index)}
+                      aria-label={`remove document ${index + 1}`}
+                      sx={{ mt: 3 }}
+                    >
+                      <IconTrash size={16} />
+                    </IconButton>
+                  </Box>
+                ))}
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<IconPlus size={16} />}
+                  onClick={() => documents.append(newDocument())}
+                  sx={{ alignSelf: 'flex-start' }}
+                >
+                  Add document
+                </Button>
 
-            {/* Footer */}
-            <Divider />
-            <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ p: 2.5 }}>
-              <Button color="inherit" onClick={onClose} disabled={isSubmitting}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="contained" disabled={isSubmitting}>
-                {mode === 'edit' ? 'Save changes' : 'Add job'}
-              </Button>
-            </Stack>
+                {/* Notes / activity log */}
+                <Divider textAlign="left" sx={{ color: 'text.secondary', typography: 'caption' }}>
+                  Notes
+                </Divider>
+                <LGTextArea label="Add a note" rows={2} placeholder="Add to the activity log…" {...register('newNote')} />
+                {existingNotes.length > 0 && (
+                  <Stack spacing={1}>
+                    {existingNotes.map((note) => (
+                      <Box
+                        key={note.id}
+                        sx={{
+                          p: 1.25,
+                          borderRadius: 1.5,
+                          bgcolor: 'action.hover'
+                        }}
+                      >
+                        <Typography variant="caption" color="text.secondary">
+                          {formatNoteTime(note.createdAt)}
+                        </Typography>
+                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                          {note.text}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Stack>
+                )}
+              </Stack>
+
+              {/* Footer */}
+              <Divider />
+              <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ p: 2.5 }}>
+                <Button color="inherit" onClick={onClose} disabled={isSubmitting}>
+                  Cancel
+                </Button>
+                <Button type="submit" variant="contained" disabled={isSubmitting}>
+                  {mode === 'edit' ? 'Save changes' : 'Add job'}
+                </Button>
+              </Stack>
+            </Box>
           </Box>
-        </Box>
-      </LocalizationProvider>
-    </Drawer>
+        </LocalizationProvider>
+      </LGDrawer>
+    </Box>
   );
 }
