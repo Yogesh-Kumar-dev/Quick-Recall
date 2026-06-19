@@ -14,6 +14,8 @@ import { ConfirmationModal, type ConfirmationModalProps, Variant as Confirmation
 import { ProgressBar, type ProgressBarProps, Variant as ProgressBarVariant, Size as ProgressBarSize } from '@leafygreen-ui/progress-bar';
 import { PreviewCard, type PreviewCardProps } from '@leafygreen-ui/preview-card';
 import { TextInput, type TextInputProps, State as TextInputState, SizeVariant as TextInputSize } from '@leafygreen-ui/text-input';
+import { TextArea, type TextAreaProps, State as TextAreaState } from '@leafygreen-ui/text-area';
+import { Select, type SelectProps, Option, OptionGroup, Size as SelectSize, State as SelectState } from '@leafygreen-ui/select';
 // NOTE: @leafygreen-ui/toast is intentionally NOT used. Its react-transition-group usage omits
 // `nodeRef`, so it calls the removed `ReactDOM.findDOMNode` and crashes on React 19. The app's
 // notifications render via MUI Snackbar instead (see ui-component/extended/Snackbar.tsx).
@@ -48,6 +50,10 @@ export const LGConfirmationModal = ConfirmationModal as ComponentType<Confirmati
 export const LGProgressBar = ProgressBar as ComponentType<ProgressBarProps>;
 export const LGPreviewCard = PreviewCard as ComponentType<PreviewCardProps>;
 export const LGTextInput = TextInput as ComponentType<TextInputProps>;
+export const LGTextArea = TextArea as ComponentType<TextAreaProps>;
+export const LGSelect = Select as ComponentType<SelectProps>;
+export const LGOption = Option;
+export const LGOptionGroup = OptionGroup;
 
 export {
   ButtonVariant as LGButtonVariant,
@@ -62,5 +68,8 @@ export {
   ProgressBarVariant as LGProgressBarVariant,
   ProgressBarSize as LGProgressBarSize,
   TextInputState as LGTextInputState,
-  TextInputSize as LGTextInputSize
+  TextInputSize as LGTextInputSize,
+  TextAreaState as LGTextAreaState,
+  SelectSize as LGSelectSize,
+  SelectState as LGSelectState
 };

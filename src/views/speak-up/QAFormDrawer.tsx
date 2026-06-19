@@ -7,11 +7,13 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { IconX } from '@tabler/icons-react';
+
+// leafygreen (real MongoDB form fields)
+import { LGTextArea, LGTextAreaState, LGSelect, LGOption } from 'ui-component/leafygreen';
 
 // third party
 import { Controller, useForm } from 'react-hook-form';
@@ -120,28 +122,22 @@ export default function QAFormDrawer({
         {/* Body */}
         <Box component="form" onSubmit={submit} noValidate sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
           <Stack spacing={2.5} sx={{ p: 2.5, flex: 1, overflowY: 'auto' }}>
-            <TextField
+            <LGTextArea
               label="Question"
-              required
-              fullWidth
-              multiline
-              minRows={2}
               placeholder="What question are you preparing for?"
               disabled={questionLocked}
+              rows={2}
+              state={errors.question ? LGTextAreaState.Error : LGTextAreaState.None}
+              errorMessage={errors.question?.message}
               {...register('question')}
-              error={Boolean(errors.question)}
-              helperText={errors.question?.message}
             />
-            <TextField
+            <LGTextArea
               label="Your answer"
-              required
-              fullWidth
-              multiline
-              minRows={6}
               placeholder="Write out the answer you want to practice…"
+              rows={6}
+              state={errors.answer ? LGTextAreaState.Error : LGTextAreaState.None}
+              errorMessage={errors.answer?.message}
               {...register('answer')}
-              error={Boolean(errors.answer)}
-              helperText={errors.answer?.message}
             />
             <Controller
               name="tag"
@@ -170,20 +166,21 @@ export default function QAFormDrawer({
               name="jobId"
               control={control}
               render={({ field }) => (
-                <TextField
-                  select
+                <LGSelect
                   label="Linked job (optional)"
-                  fullWidth
-                  {...field}
-                  helperText="Tie this question to a company from your Job Tracker."
+                  description="Tie this question to a company from your Job Tracker."
+                  placeholder="None"
+                  name={field.name}
+                  value={field.value ?? ''}
+                  onChange={(value) => field.onChange(value)}
+                  allowDeselect
                 >
-                  <MenuItem value="">None</MenuItem>
                   {jobs.map((job) => (
-                    <MenuItem key={job.id} value={job.id}>
+                    <LGOption key={job.id} value={job.id}>
                       {job.companyName} — {job.jobTitle}
-                    </MenuItem>
+                    </LGOption>
                   ))}
-                </TextField>
+                </LGSelect>
               )}
             />
           </Stack>
