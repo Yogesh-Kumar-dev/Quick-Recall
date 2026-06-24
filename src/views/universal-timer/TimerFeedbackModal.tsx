@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 // leafygreen (real MongoDB components)
-import { LGModal, LGModalSize, LGButton, LGButtonVariant } from 'ui-component/leafygreen';
+import { LGModal, LGButton } from 'ui-component/leafygreen';
 
 // ==============================|| UNIVERSAL TIMER - COMPLETION FEEDBACK ||============================== //
 
@@ -23,7 +23,7 @@ interface TimerFeedbackModalProps {
 
 export default function TimerFeedbackModal({ open, name, onRespond }: TimerFeedbackModalProps) {
   return (
-    <LGModal open={open} setOpen={() => onRespond('fell-short')} size={LGModalSize.Small}>
+    <LGModal open={open} setOpen={() => onRespond('fell-short')} size="small">
       <Typography variant="h4" gutterBottom>
         Time’s up!
       </Typography>
@@ -31,10 +31,10 @@ export default function TimerFeedbackModal({ open, name, onRespond }: TimerFeedb
         How did {name ? `“${name}”` : 'it'} go?
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 3 }}>
-        <LGButton variant={LGButtonVariant.Default} onClick={() => onRespond('fell-short')}>
+        <LGButton variant="default" onClick={() => onRespond('fell-short')}>
           Ran out of time ⏳
         </LGButton>
-        <LGButton variant={LGButtonVariant.Primary} onClick={() => onRespond('achieved')}>
+        <LGButton variant="primary" onClick={() => onRespond('achieved')}>
           Nailed it 🎯
         </LGButton>
       </Box>

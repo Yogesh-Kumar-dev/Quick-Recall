@@ -10,6 +10,7 @@ import about from './about';
 import speakUp from './speak-up';
 import jobTracker from './job-tracker';
 import study from './study';
+import deepDives from './deep-dives';
 
 // types
 import type { NavItemType } from 'types';
@@ -17,7 +18,7 @@ import type { NavItemType } from 'types';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [dashboard, about, study, jobTracker, speakUp, htmlcss, javascript, react, redux, nextjs, engineering]
+  items: [dashboard, about, study, deepDives, jobTracker, speakUp, htmlcss, javascript, react, redux, nextjs, engineering]
 };
 
 export default menuItems;

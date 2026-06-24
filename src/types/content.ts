@@ -126,3 +126,22 @@ export interface ApproachData {
   code: string; // raw file content (read at build time via readFileSync)
   filename: string; // e.g. 'solution-brute.js' — shown in CodeViewer header
 }
+
+// ---------------------------------------------------------------------------
+// Deep Dive walkthrough — annotated implementation file
+// ---------------------------------------------------------------------------
+// A single teaching note keyed to a line range of the displayed source. The
+// AnnotatedFile component renders these alongside the code (CodeViewer).
+export interface Annotation {
+  lines: [number, number]; // 1-based, inclusive line range in the displayed `code`
+  title: string; // short label, e.g. 'queryKey = cache identity'
+  body: string; // the explanation
+}
+
+// One library variant shown in a WalkthroughLayout (e.g. TanStack Query / RTK Query).
+export interface WalkthroughVariant {
+  label: string; // pill label, e.g. 'TanStack Query'
+  code: string; // the implementation source shown in the annotated viewer
+  filename: string; // header shown in CodeViewer, drives syntax highlighting
+  annotations: Annotation[];
+}
