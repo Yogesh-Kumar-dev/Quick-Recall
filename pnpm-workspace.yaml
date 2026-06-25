@@ -1,0 +1,6 @@
+allowBuilds:
+  '@parcel/watcher': true
+  sharp: true
+
+overrides:
+  motion-dom: '12.9.6'

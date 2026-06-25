@@ -9,13 +9,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev          # Start dev server (Next.js)
-npm run build        # Production build
-npm run lint         # Biome lint on ./src
-npm run lint:fix     # Biome lint with safe auto-fixes
-npm run format       # Biome format all src files
-npm run check        # Biome lint + format + safe fixes in one pass
-npm run knip         # Find unused exports/dependencies
+pnpm dev             # Start dev server (Next.js)
+pnpm build           # Production build
+pnpm lint            # Biome lint on ./src
+pnpm lint:fix        # Biome lint with safe auto-fixes
+pnpm format          # Biome format all src files
+pnpm check           # Biome lint + format + safe fixes in one pass
+pnpm knip            # Find unused exports/dependencies
 ```
 
 No test runner is configured.
@@ -85,6 +85,6 @@ Dynamic routing: `src/app/(dashboard)/js/machine-coding/[slug]/page.tsx` maintai
 
 ## Code Style
 
-Formatting and linting are handled by **Biome** (`biome.json`): single quotes, 140 line width, 2-space indent, no trailing commas, semicolons. Run `npm run check` (lint + format + safe fixes) before committing. The raw `solution-*.js` and `*.jsx` demo files under `src/views/**/machine-coding/` are excluded from Biome since they're displayed verbatim via `readFileSync`.
+Formatting and linting are handled by **Biome** (`biome.json`): single quotes, 140 line width, 2-space indent, no trailing commas, semicolons. Run `pnpm check` (lint + format + safe fixes) before committing. The raw `solution-*.js` and `*.jsx` demo files under `src/views/**/machine-coding/` are excluded from Biome since they're displayed verbatim via `readFileSync`.
 
 `reactStrictMode` is set to `false` in `next.config.ts` due to a known chart rendering issue.
