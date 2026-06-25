@@ -1,0 +1,73 @@
+name: CI/CD for QuickRecall
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Cancel superseded runs on the same ref (e.g. new push to an open PR).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      # Lint and knip are report-only for now: the repo carries pre-existing debt
+      # (198 Biome errors, unused exports). They run on every PR so the debt is visible and
+      # doesn't grow, but they don't block merges/deploys yet. Once the backlog is burned
+      # down, drop `continue-on-error` to make them hard gates.
+      - name: Lint & format (Biome)
+        run: pnpm lint:ci
+        continue-on-error: true
+
+      # Blocking: the codebase is type-clean and must stay that way.
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Dead-code check (Knip)
+        run: pnpm knip
+        continue-on-error: true
+
+      # Blocking: the placeholder test must pass (real tests get added here later).
+      - name: Test
+        run: pnpm test
+
+  deploy-production:
+    name: Deploy production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: quality
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Pull Vercel environment (production)
+        run: pnpm exec vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build (Vercel)
+        run: pnpm exec vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy prebuilt to Vercel (production)
+        run: |
+          url=$(pnpm exec vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "Production deployment: $url"
+          echo "### 🚀 Production deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "$url" >> "$GITHUB_STEP_SUMMARY"

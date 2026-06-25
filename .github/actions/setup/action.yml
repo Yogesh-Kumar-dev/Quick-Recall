@@ -1,0 +1,20 @@
+name: Setup
+description: Install pnpm + Node (pinned via .nvmrc) and project dependencies with a warm pnpm cache.
+
+runs:
+  using: composite
+  steps:
+    # Version is read from the `packageManager` field in package.json (pnpm@11.9.0),
+    # so it stays in lockstep with local dev — no version pinned here on purpose.
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile

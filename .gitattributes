@@ -1,1 +1,16 @@
-* text=auto
+# Normalize all text files to LF in the repo and on checkout (matches Biome's lineEnding: lf).
+# eol=lf forces LF on checkout too, so Windows working trees match Linux CI — no CRLF churn.
+* text=auto eol=lf
+
+# Binary assets — never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
