@@ -15,25 +15,23 @@ import { useState } from 'react';
 
 export default function APIDataFetching() {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [fetched, setFetched] = useState(false);
+  // One state for the request lifecycle: { status: 'idle' | 'loading' | 'success' | 'error', message? }
+  const [request, setRequest] = useState({ status: 'idle' });
 
   async function fetchPosts() {
-    setLoading(true);
-    setError(null);
+    setRequest({ status: 'loading' });
     try {
       const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const data = await res.json();
       setPosts(data);
-      setFetched(true);
+      setRequest({ status: 'success' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
+      setRequest({ status: 'error', message: err instanceof Error ? err.message : 'Unknown error' });
     }
   }
+
+  const loading = request.status === 'loading';
 
   return (
     <div style={{ padding: 24 }}>
@@ -74,7 +72,7 @@ export default function APIDataFetching() {
               />
               Loading…
             </>
-          ) : fetched ? (
+          ) : request.status === 'success' ? (
             '↻ Refresh'
           ) : (
             '⬇ Fetch Posts'
@@ -84,7 +82,7 @@ export default function APIDataFetching() {
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
-      {error && (
+      {request.status === 'error' && (
         <div
           style={{
             padding: '10px 14px',
@@ -96,7 +94,7 @@ export default function APIDataFetching() {
             marginBottom: 12
           }}
         >
-          ⚠️ {error}
+          ⚠️ {request.message}
         </div>
       )}
 
@@ -118,7 +116,7 @@ export default function APIDataFetching() {
         </div>
       )}
 
-      {!loading && posts.length > 0 && (
+      {request.status === 'success' && posts.length > 0 && (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {posts.map((post) => (
             <li key={post.id} style={{ padding: '12px 14px', borderRadius: 8, border: '1px solid #e5e7eb', background: '#fafafa' }}>
@@ -139,7 +137,7 @@ export default function APIDataFetching() {
         </ul>
       )}
 
-      {!loading && !fetched && !error && (
+      {request.status === 'idle' && (
         <div style={{ textAlign: 'center', color: '#9ca3af', padding: 40 }}>
           <div style={{ fontSize: 32, marginBottom: 8 }}>🌐</div>
           <p style={{ margin: 0, fontSize: 14 }}>Click &ldquo;Fetch Posts&rdquo; to load data from the API</p>

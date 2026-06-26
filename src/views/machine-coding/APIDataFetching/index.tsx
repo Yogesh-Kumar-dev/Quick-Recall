@@ -14,26 +14,21 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const PROBLEM: ProblemMeta = {
   title: '🟡 API Data Fetching',
   description:
-    'Fetch data from a public REST API and display it in a list. Handle all three async states: loading, error, and success. Uses the JSONPlaceholder API.',
+    'Fetch data from a public REST API and display it in a list. Model the request lifecycle — idle, loading, success, error — as one status value rather than parallel boolean flags. Uses the JSONPlaceholder API.',
   requirements: [
-    'A "Fetch Posts" button triggers the API call',
-    'Show a loading state (spinner or skeleton) while fetching',
-    'Display the fetched posts in a list once loaded',
-    'Handle fetch errors — show an error message',
-    'A "Refresh" button re-fetches the data',
-    'Show skeleton placeholders while loading (not just a spinner)',
-    'Display post id, title, and body excerpt per item'
+    'A "Fetch Posts" button triggers the API call ("Refresh" once loaded)',
+    'Show a loading state (skeleton) while fetching',
+    'Display the fetched posts once loaded; show an error message on failure',
+    'Distinguish the initial idle state from a loaded-but-empty result'
   ],
   keyPatterns: [
-    'data: Post[] state (default [])',
-    'loading: boolean state',
-    'error: string | null state',
-    'async fetchData() with try/catch/finally',
-    'finally { setLoading(false) } — always runs',
-    'fetched flag to distinguish "not yet loaded" from "loaded 0 items"'
+    'one status: idle | loading | success | error — not parallel loading/error/fetched flags',
+    'discriminated union so the error message lives only in the error case',
+    'check res.ok before parsing JSON, throw on failure → caught as error',
+    'data stored separately; each terminal status sets its own end state (no finally reset)'
   ],
   interviewTip:
-    'The three-state pattern: data (what to show), loading (show skeleton/spinner), error (show error message). Always use a try/catch/finally block — put setLoading(false) in finally so it runs even if the fetch throws. Check res.ok before parsing JSON: if (!res.ok) throw new Error(`HTTP ${res.status}`). Keep a separate `fetched` flag to distinguish initial state from loaded-but-empty.'
+    'Two booleans (loading + error) are perfectly fine for a single fetch — don\'t reach for more ceremony than the problem needs. The senior signal is naming the tradeoff: as soon as states can contradict each other ("loading AND error" at once) or you need an idle state distinct from "loaded 0 items", collapse them into one status (idle → loading → success | error) so illegal states become unrepresentable. In TS a discriminated union ({ status: "error"; message } | …) lets the compiler guarantee you only read the message in the error branch. Knowing when NOT to use it matters as much as knowing the pattern. Either way, check res.ok before parsing JSON: if (!res.ok) throw new Error(`HTTP ${res.status}`).'
 };
 
 export default function APIDataFetchingApp() {

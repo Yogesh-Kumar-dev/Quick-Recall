@@ -17,27 +17,27 @@ interface Post {
   userId: number;
 }
 
+// One state models the whole request lifecycle: idle → loading → success | error.
+type RequestState = { status: 'idle' } | { status: 'loading' } | { status: 'success' } | { status: 'error'; message: string };
+
 export default function APIDataFetching() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fetched, setFetched] = useState(false);
+  const [request, setRequest] = useState<RequestState>({ status: 'idle' });
 
   async function fetchPosts() {
-    setLoading(true);
-    setError(null);
+    setRequest({ status: 'loading' });
     try {
       const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const data: Post[] = await res.json();
       setPosts(data);
-      setFetched(true);
+      setRequest({ status: 'success' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
+      setRequest({ status: 'error', message: err instanceof Error ? err.message : 'Unknown error' });
     }
   }
+
+  const loading = request.status === 'loading';
 
   return (
     <Box sx={{ p: 2 }}>
@@ -56,16 +56,24 @@ export default function APIDataFetching() {
           size="small"
           onClick={fetchPosts}
           disabled={loading}
-          startIcon={loading ? <CircularProgress size={14} color="inherit" /> : fetched ? <RefreshIcon /> : <CloudDownloadIcon />}
+          startIcon={
+            loading ? (
+              <CircularProgress size={14} color="inherit" />
+            ) : request.status === 'success' ? (
+              <RefreshIcon />
+            ) : (
+              <CloudDownloadIcon />
+            )
+          }
         >
-          {loading ? 'Loading…' : fetched ? 'Refresh' : 'Fetch Posts'}
+          {loading ? 'Loading…' : request.status === 'success' ? 'Refresh' : 'Fetch Posts'}
         </Button>
       </Box>
 
       {/* Error */}
-      {error && (
+      {request.status === 'error' && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
+          {request.message}
         </Alert>
       )}
 
@@ -79,7 +87,7 @@ export default function APIDataFetching() {
       )}
 
       {/* Results */}
-      {!loading && posts.length > 0 && (
+      {request.status === 'success' && posts.length > 0 && (
         <Stack spacing={1.5}>
           {posts.map((post) => (
             <Card key={post.id} variant="outlined">
@@ -100,8 +108,8 @@ export default function APIDataFetching() {
         </Stack>
       )}
 
-      {/* Empty state */}
-      {!loading && !fetched && !error && (
+      {/* Empty / idle state */}
+      {request.status === 'idle' && (
         <Box sx={{ textAlign: 'center', color: 'text.disabled', py: 6 }}>
           <CloudDownloadIcon sx={{ fontSize: 40, mb: 1, opacity: 0.4 }} />
           <Typography variant="body2">Click &ldquo;Fetch Posts&rdquo; to load data from the API</Typography>

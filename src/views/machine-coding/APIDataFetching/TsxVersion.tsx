@@ -3,13 +3,12 @@
  * API DATA FETCHING — PLAIN HTML VERSION
  * ──────────────────────────────────────────────────────────────────────────────
  * Zero MUI. Fetches posts from JSONPlaceholder on button click.
- * Manages loading / error / data states.
  *
- * Pattern:
- *   const [data, setData] = useState([]);
- *   const [loading, setLoading] = useState(false);
- *   const [error, setError] = useState(null);
- *   async function fetchData() { setLoading(true); try {...} catch {...} finally { setLoading(false) } }
+ * One `request` state models the whole lifecycle as a discriminated union:
+ *   idle → loading → success | error
+ * No parallel loading/error/fetched flags, so impossible combos (e.g. loading
+ * AND error at once) can't be represented. The error message only exists in the
+ * 'error' variant, so TS won't let you read it elsewhere.
  */
 import { useState } from 'react';
 
@@ -20,27 +19,26 @@ interface Post {
   userId: number;
 }
 
+type RequestState = { status: 'idle' } | { status: 'loading' } | { status: 'success' } | { status: 'error'; message: string };
+
 export default function APIDataFetching() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fetched, setFetched] = useState(false);
+  const [request, setRequest] = useState<RequestState>({ status: 'idle' });
 
   async function fetchPosts() {
-    setLoading(true);
-    setError(null);
+    setRequest({ status: 'loading' });
     try {
       const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const data: Post[] = await res.json();
       setPosts(data);
-      setFetched(true);
+      setRequest({ status: 'success' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
+      setRequest({ status: 'error', message: err instanceof Error ? err.message : 'Unknown error' });
     }
   }
+
+  const loading = request.status === 'loading';
 
   return (
     <div style={{ padding: 24 }}>
@@ -57,7 +55,7 @@ export default function APIDataFetching() {
             padding: '8px 18px',
             borderRadius: 8,
             border: 'none',
-            background: loading ? '#9ca3af' : fetched ? '#0f172a' : '#2563eb',
+            background: loading ? '#9ca3af' : request.status === 'success' ? '#0f172a' : '#2563eb',
             color: '#fff',
             cursor: loading ? 'not-allowed' : 'pointer',
             fontWeight: 600,
@@ -82,7 +80,7 @@ export default function APIDataFetching() {
               />
               Loading…
             </>
-          ) : fetched ? (
+          ) : request.status === 'success' ? (
             '↻ Refresh'
           ) : (
             '⬇ Fetch Posts'
@@ -94,7 +92,7 @@ export default function APIDataFetching() {
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
       {/* Error */}
-      {error && (
+      {request.status === 'error' && (
         <div
           style={{
             padding: '10px 14px',
@@ -106,7 +104,7 @@ export default function APIDataFetching() {
             marginBottom: 12
           }}
         >
-          ⚠️ {error}
+          ⚠️ {request.message}
         </div>
       )}
 
@@ -130,7 +128,7 @@ export default function APIDataFetching() {
       )}
 
       {/* Results */}
-      {!loading && posts.length > 0 && (
+      {request.status === 'success' && posts.length > 0 && (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {posts.map((post) => (
             <li
@@ -174,8 +172,8 @@ export default function APIDataFetching() {
         </ul>
       )}
 
-      {/* Empty state */}
-      {!loading && !fetched && !error && (
+      {/* Empty / idle state */}
+      {request.status === 'idle' && (
         <div style={{ textAlign: 'center', color: '#9ca3af', padding: 40 }}>
           <div style={{ fontSize: 32, marginBottom: 8 }}>🌐</div>
           <p style={{ margin: 0, fontSize: 14 }}>Click &ldquo;Fetch Posts&rdquo; to load data from the API</p>
