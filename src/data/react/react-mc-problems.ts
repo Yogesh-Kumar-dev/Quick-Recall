@@ -135,6 +135,22 @@ export const reactMcProblems: ReactMcProblem[] = [
     category: 'advanced-ui',
     tags: ['useState', 'grid', 'derived-state', 'booking']
   },
+  {
+    id: 'product-filter',
+    title: 'Product Filter',
+    slug: 'product-filter',
+    difficulty: 'medium',
+    category: 'data-fetching',
+    tags: ['useEffect', 'fetch', 'debounce', 'derived-state', 'category-filter']
+  },
+  {
+    id: 'sortable-table',
+    title: 'Sortable Employee Table',
+    slug: 'sortable-table',
+    difficulty: 'medium',
+    category: 'ui-state',
+    tags: ['useState', 'useMemo', 'sorting', 'derived-state', 'table']
+  },
 
   // ── 🔴 Hard ───────────────────────────────────────────────────────────────────
   {
