@@ -29,7 +29,8 @@ import {
   IconDatabase,
   IconBrandYoutube,
   IconCloudDownload,
-  IconPalette
+  IconPalette,
+  IconFileTypePdf
 } from '@tabler/icons-react';
 
 // project imports
@@ -70,6 +71,15 @@ const FEATURES: Feature[] = [
     span: 1,
     rowSpan: 2,
     href: 'https://www.mongodb.design/'
+  },
+  {
+    icon: <IconFileTypePdf size={24} />,
+    title: 'Cache-Once PDF Guides',
+    blurb:
+      'Interview tip-sheet PDFs open in a browser-style tabbed reader right inside the app. Each one streams once from blob storage, then is served from cache forever — available offline and easy on bandwidth.',
+    tech: 'EmbedPDF (PDFium/WASM) + Cache Storage API + Vercel Blob',
+    accent: '#e94235',
+    span: 2
   },
   {
     icon: <IconMicrophone size={24} />,
