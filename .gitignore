@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# generated: PDFium WASM copied from @embedpdf/pdfium by scripts/copy-pdfium-wasm.mjs (pre dev/build)
+/public/pdfium.wasm
+
 # dependencies
 /node_modules
 /.pnp

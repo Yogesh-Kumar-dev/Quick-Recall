@@ -1,6 +1,20 @@
+import crypto from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { NextConfig } from 'next';
 import withSerwistInit from '@serwist/next';
+
+// Content hash of the self-hosted PDFium WASM (see scripts/copy-pdfium-wasm.mjs). Used as the
+// precache revision so the service worker re-fetches the binary only when it actually changes
+// (e.g. an EmbedPDF version bump). Falls back to a constant if the file isn't present yet.
+function pdfiumWasmRevision(): string {
+  try {
+    const buf = readFileSync(path.join(__dirname, 'public', 'pdfium.wasm'));
+    return crypto.createHash('sha1').update(buf).digest('hex').slice(0, 12);
+  } catch {
+    return 'pdfium-missing';
+  }
+}
 
 // PWA: wire up the Serwist service worker. `swSrc` is our TypeScript worker source; `swDest` is
 // the generated worker Next serves at /sw.js. `revision` busts the precached offline fallback on
@@ -19,7 +33,13 @@ const withSerwist = withSerwistInit({
   // are warmed in the SW `install` handler (src/app/sw.ts) instead — additionalPrecacheEntries
   // for route *documents* is unreliable (the Serwist maintainer's own guidance), so we cache them
   // through the runtime navigation strategy so a launch request actually matches. See sw.ts.
-  additionalPrecacheEntries: [{ url: '/~offline', revision: process.env.VERCEL_GIT_COMMIT_SHA ?? Date.now().toString() }]
+  // /~offline: the navigation fallback. /pdfium.wasm: the EmbedPDF engine, self-hosted and precached
+  // so the PDF viewer initialises offline (it is fetched cross-origin from a CDN by default — see
+  // scripts/copy-pdfium-wasm.mjs). Its revision is the file's content hash so it busts only on change.
+  additionalPrecacheEntries: [
+    { url: '/~offline', revision: process.env.VERCEL_GIT_COMMIT_SHA ?? Date.now().toString() },
+    { url: '/pdfium.wasm', revision: pdfiumWasmRevision() }
+  ]
 });
 
 const nextConfig: NextConfig = {

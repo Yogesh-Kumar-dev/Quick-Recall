@@ -8,8 +8,9 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "next dev",
-    "build": "next build",
+    "copy:wasm": "node scripts/copy-pdfium-wasm.mjs",
+    "dev": "pnpm copy:wasm && next dev",
+    "build": "pnpm copy:wasm && next build",
     "start": "next start",
     "lint": "biome lint ./src",
     "lint:fix": "biome lint --write ./src",
@@ -21,6 +22,7 @@
     "knip": "knip"
   },
   "dependencies": {
+    "@embedpdf/react-pdf-viewer": "^2.14.4",
     "@emotion/cache": "11.14.0",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",

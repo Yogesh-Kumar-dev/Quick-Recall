@@ -452,4 +452,66 @@ Download everything → panel reads Saved N/N. Re-run the `cache.keys()` console
 missing `/js/machine-coding/<slug>` routes are present. Offline: relaunch + sidebar-navigate to a
 machine-coding problem → renders; the guard does not misfire.
 
+### Step 19 — PDF guides from Vercel Blob (self-hosted WASM + dedicated `pdf-cache`)
+
+**Goal:** surface PDF "tip sheet" guides on `/js/quick-recall` (and reusable elsewhere) via a header
+icon → bottom drawer, mirroring the YouTube `PlaylistLauncher`. Reusable entry point:
+`<PdfLauncher guides={JS_QUICK_RECALL_PDFS} />` (`src/ui-component/pdf-viewer/`), rendered by the
+EmbedPDF drop-in viewer (`@embedpdf/react-pdf-viewer`, browser-style tab bar).
+
+**Why PDFs live in Vercel Blob, not `/public`:** they'd bloat the build and the precache manifest.
+Keeping them in Blob (public URLs in `src/data/pdf-guides.ts`) keeps the build small. The trade-off is
+egress on Vercel Blob's free tier, so the client caches each PDF aggressively.
+
+**Caching model (`src/utils/pdf-cache.ts`) — download once, forever:**
+
+- A dedicated `pdf-cache` Cache Storage bucket, **CacheFirst**. `ensurePdfBuffer(url)` returns the bytes
+  from cache, fetching from Blob only on a miss → a PDF is fetched **exactly once per device, ever**.
+  This is the egress protection. Read directly via the Cache API (no SW rule needed); works offline.
+- EmbedPDF opens tabs from in-memory bytes (`openDocumentBuffer({ buffer })`), so the hook hands back an
+  `ArrayBuffer` — the URL is never given to EmbedPDF, keeping fetch/caching fully under our control.
+- **On demand:** the drawer auto-opens the first guide (one download); others download only when their
+  tab/chip is picked. Closing a tab keeps the file in `pdf-cache` → reopening is instant + offline.
+- **No "clear cache" button by design.** A clear button is the only thing that would hand a user a
+  repeatable re-download trigger — the exact free-tier risk. Instead: `prunePdfCache(ALL_PDF_GUIDE_URLS)`
+  evicts entries no longer referenced (so swapping a PDF's URL self-cleans), and
+  `requestPersistentStorage()` asks the browser not to evict under storage pressure. Result: cached
+  forever; the OS wipes it when the PWA is uninstalled (there is no uninstall event to hook, and none is
+  needed). Updating a PDF = re-upload to Blob (new random-suffixed URL) → paste the new `url` in
+  `pdf-guides.ts`; the changed URL is a natural one-time re-fetch.
+
+**Why the PDFium WASM is self-hosted in `/public` (the important bit):** EmbedPDF renders with PDFium
+compiled to **WebAssembly** — a separate ~4.6 MB binary the browser must download and instantiate before
+it can draw a page. By default EmbedPDF fetches it **cross-origin from jsDelivr**
+(`https://cdn.jsdelivr.net/npm/@embedpdf/pdfium@<v>/dist/pdfium.wasm`). That breaks our goals two ways:
+
+1. **Offline:** if the WASM is on a third-party CDN, an offline user can't fetch it → the viewer never
+   initialises, *even though the PDF bytes are cached*. A cached PDF you can't render.
+2. **SW scope:** Serwist only controls **same-origin** requests, so it can't reliably cache a cross-origin
+   CDN response.
+
+**Fix:** `scripts/copy-pdfium-wasm.mjs` copies the WASM that ships with the installed
+`@embedpdf/pdfium` (resolved through the `react-pdf-viewer → snippet → pdfium` chain so it always matches
+the installed version) into `public/pdfium.wasm`. It runs before `dev`/`build` (see `package.json`); the
+file is git-ignored (generated). The viewer is pointed at it via `config.wasmUrl =
+${origin}/pdfium.wasm`. Now it's a same-origin static asset → **precached** by the SW via
+`additionalPrecacheEntries` in `next.config.ts`, with the file's **content hash as the revision** (busts
+only on an actual WASM change, e.g. an EmbedPDF version bump). Net: WASM + PDFs both cached →
+fully offline. The `.wasm` is a static asset, never part of the JS bundle, so build size is unaffected.
+
+**Also neutralised for offline/privacy:** `config.fontFallback = null` and `config.fonts = { ui: null,
+signature: null }` so the viewer makes **no** third-party font requests (jsDelivr fallback fonts + Google
+Fonts UI font by default); the UI falls back to the system font stack.
+
+**Files:** `src/data/pdf-guides.ts` (guide URLs + `ALL_PDF_GUIDE_URLS`), `src/utils/pdf-cache.ts`,
+`src/ui-component/pdf-viewer/{PdfLauncher,PdfButton,PdfDrawer,PdfViewerPanel,index}`,
+`scripts/copy-pdfium-wasm.mjs`, edits to `next.config.ts`, `package.json`, `.gitignore`, and
+`src/views/js/QuickRecallPage.tsx`.
+
+**Verify (prod build):** `pnpm build` → confirm `public/pdfium.wasm` exists and is precached (it appears
+in the Serwist manifest). On `/js/quick-recall` open the PDF icon → Network shows **one** request to the
+Blob URL and the WASM served from **same-origin** `/pdfium.wasm` (not jsDelivr). Reopen → no Blob request
+(served from `pdf-cache`). Go offline → reopen → still renders. Application → Cache Storage shows
+`pdf-cache`; Storage shows `persisted: true`.
+
 <!-- Subsequent steps are appended here as they are performed. -->

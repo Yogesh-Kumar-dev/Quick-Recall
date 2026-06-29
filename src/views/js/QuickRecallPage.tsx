@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 
 import MainCard from 'ui-component/cards/MainCard';
 import VirtualQuickRecallList from 'ui-component/interview-prep/VirtualQuickRecallList';
+import { PdfLauncher } from 'ui-component/pdf-viewer';
+import { JS_QUICK_RECALL_PDFS } from 'data/pdf-guides';
 import { useSelector } from 'store';
 import useInjectReducer from 'store/useInjectReducer';
 import javascriptReducer, { selectJsQuickRecall, selectTsQuickRecall } from 'store/slices/javascript';
@@ -28,13 +30,14 @@ export default function QuickRecallPage() {
     <MainCard
       title="⚡ JS & TypeScript Quick Recall"
       secondary={
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} alignItems="center">
           <Button size="small" variant="outlined" onClick={() => toggleAll(true)}>
             Expand All
           </Button>
           <Button size="small" variant="outlined" onClick={() => toggleAll(false)}>
             Collapse All
           </Button>
+          <PdfLauncher guides={JS_QUICK_RECALL_PDFS} title="JS Best Practices" buttonLabel="JS best-practices PDFs" />
         </Stack>
       }
     >
