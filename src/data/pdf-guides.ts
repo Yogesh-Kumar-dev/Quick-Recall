@@ -77,11 +77,56 @@ export const JS_QUICK_RECALL_PDFS: PdfGuide[] = [
     title: 'Date Methods',
     url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/Javascript%20Date%20Methods%20.pdf'
   }
-  // append more PDFs here; add new arrays (REACT_*, TS_*, …) for other pages
+  // append more PDFs here
+];
+
+// React Quick Recall companion tip sheets.
+export const REACT_QUICK_RECALL_PDFS: PdfGuide[] = [
+  {
+    id: 'react-interview-qa',
+    title: 'Interview Q&A',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/react-interview-questions-and-answers.pdf'
+  },
+  {
+    id: 'react-top-50',
+    title: 'Top 50 Questions',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/TOP%2050%20REACT%20INTERVIEW%20QUESTIONS.pdf'
+  },
+  {
+    id: 'react-top-100',
+    title: 'Top 100 Q&A',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/TOP%20100%20REACT%20INTERVIEW%20QUESTIONS%20AND%20ANSWERS%20.pdf'
+  },
+  {
+    id: 'react-interview-questions',
+    title: 'Interview Questions',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/Reactjs%20interview%20questions.pdf'
+  },
+  {
+    id: 'react-interview-qa-collection',
+    title: 'Q&A Collection',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/React%20Interview%20Questions%20and%20Answers.pdf'
+  },
+  {
+    id: 'react-interview-questions-cheatsheet',
+    title: 'Questions Cheatsheet',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/React%20Interview%20Questions%F0%9F%92%AB.pdf'
+  },
+  {
+    id: 'react-interview-book',
+    title: 'Interview Free Book',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/React%20Interview%20Free%20Book.pdf'
+  },
+  {
+    id: 'react-solid-principles',
+    title: 'SOLID Principles',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/React%20Solid%20principles.pdf'
+  }
+  // append more PDFs here
 ];
 
 // Every guide across the app. Keep this in sync when adding new per-page arrays — it's the set of
 // URLs the cache prune treats as "still referenced", so anything not listed here is evicted from
 // `pdf-cache`. (Pruning per-page would wrongly drop other pages' cached PDFs.)
-export const ALL_PDF_GUIDES: PdfGuide[] = [...JS_QUICK_RECALL_PDFS];
+export const ALL_PDF_GUIDES: PdfGuide[] = [...JS_QUICK_RECALL_PDFS, ...REACT_QUICK_RECALL_PDFS];
 export const ALL_PDF_GUIDE_URLS: string[] = ALL_PDF_GUIDES.map((g) => g.url);

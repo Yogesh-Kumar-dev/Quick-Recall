@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 
 import MainCard from 'ui-component/cards/MainCard';
 import VirtualQuickRecallList from 'ui-component/interview-prep/VirtualQuickRecallList';
+import { PdfLauncher } from 'ui-component/pdf-viewer';
+import { REACT_QUICK_RECALL_PDFS } from 'data/pdf-guides';
 import { useSelector } from 'store';
 import useInjectReducer from 'store/useInjectReducer';
 import reactReducer, { selectReactQuickRecall } from 'store/slices/react';
@@ -26,13 +28,14 @@ export default function ReactQuickRecallPage() {
     <MainCard
       title="⚡ React Quick Recall"
       secondary={
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} alignItems="center">
           <Button size="small" variant="outlined" onClick={() => toggleAll(true)}>
             Expand All
           </Button>
           <Button size="small" variant="outlined" onClick={() => toggleAll(false)}>
             Collapse All
           </Button>
+          <PdfLauncher guides={REACT_QUICK_RECALL_PDFS} title="React Interview PDFs" buttonLabel="React interview PDFs" />
         </Stack>
       }
     >
