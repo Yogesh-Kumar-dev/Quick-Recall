@@ -125,8 +125,18 @@ export const REACT_QUICK_RECALL_PDFS: PdfGuide[] = [
   // append more PDFs here
 ];
 
+// Next.js Notes companion tip sheets (no dedicated quick-recall page yet, so surfaced on Notes).
+export const NEXTJS_NOTES_PDFS: PdfGuide[] = [
+  {
+    id: 'nextjs-interview-mastery',
+    title: 'Interview Mastery (80 Q)',
+    url: 'https://794uh0torwo6zts4.public.blob.vercel-storage.com/pdfs/Next.js%20Interview%20Mastery%20%2880%20Q%20%E2%80%94%20Basic%20%E2%86%92%20Advanced%29.pdf'
+  }
+  // append more PDFs here
+];
+
 // Every guide across the app. Keep this in sync when adding new per-page arrays — it's the set of
 // URLs the cache prune treats as "still referenced", so anything not listed here is evicted from
 // `pdf-cache`. (Pruning per-page would wrongly drop other pages' cached PDFs.)
-export const ALL_PDF_GUIDES: PdfGuide[] = [...JS_QUICK_RECALL_PDFS, ...REACT_QUICK_RECALL_PDFS];
+export const ALL_PDF_GUIDES: PdfGuide[] = [...JS_QUICK_RECALL_PDFS, ...REACT_QUICK_RECALL_PDFS, ...NEXTJS_NOTES_PDFS];
 export const ALL_PDF_GUIDE_URLS: string[] = ALL_PDF_GUIDES.map((g) => g.url);

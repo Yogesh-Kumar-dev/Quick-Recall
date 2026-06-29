@@ -11,6 +11,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import FilterEmptyState from 'ui-component/FilterEmptyState';
 import VirtualNoteList from 'ui-component/interview-prep/VirtualNoteList';
 import ReduxDevToolsHint from 'ui-component/interview-prep/ReduxDevToolsHint';
+import { PdfLauncher } from 'ui-component/pdf-viewer';
+import { NEXTJS_NOTES_PDFS } from 'data/pdf-guides';
 import FilterShell from 'ui-component/topic-dashboard/FilterShell';
 import MobileFilterDrawer from 'ui-component/topic-dashboard/MobileFilterDrawer';
 import SectionLanding, { type LandingCategoryCard, type LandingDifficultyCard } from 'ui-component/topic-dashboard/SectionLanding';
@@ -153,7 +155,15 @@ export default function NextjsNotesPage() {
 
   if (isLanding) {
     return (
-      <MainCard title={PAGE_TITLE} secondary={<ReduxDevToolsHint />}>
+      <MainCard
+        title={PAGE_TITLE}
+        secondary={
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <PdfLauncher guides={NEXTJS_NOTES_PDFS} title="Next.js Interview PDF" buttonLabel="Next.js interview PDF" />
+            <ReduxDevToolsHint />
+          </Box>
+        }
+      >
         <SectionLanding
           icon={<IconBook size={28} />}
           title="Next.js App Router"
@@ -180,6 +190,7 @@ export default function NextjsNotesPage() {
           <Typography variant="caption" color="text.secondary">
             {filtered.length} of {nextjsNotes.length}
           </Typography>
+          <PdfLauncher guides={NEXTJS_NOTES_PDFS} title="Next.js Interview PDF" buttonLabel="Next.js interview PDF" />
           <ReduxDevToolsHint />
         </Box>
       }
