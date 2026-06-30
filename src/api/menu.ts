@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 // project imports
 import { fetcher } from 'utils/axios';
+import defaultConfig from 'config';
 
 // types
 import type { MenuProps } from 'types/menu';
@@ -10,7 +11,11 @@ import type { NavItemType } from 'types';
 
 const initialState: MenuProps = {
   openedItem: 'dashboard',
-  isDashboardDrawerOpened: false
+  // Seed the drawer to its settled desktop state (open when miniDrawer is off). MainLayout's mount
+  // effect runs handlerDrawerOpen(!miniDrawer), so seeding the same value means the server-rendered
+  // layout already matches what the client settles on — without this the server rendered the drawer
+  // closed and the mount effect opened it, reflowing the entire main-content area (large CLS).
+  isDashboardDrawerOpened: !defaultConfig.miniDrawer
 };
 
 const endpoints = {
@@ -42,6 +47,10 @@ export function useGetMenu() {
 
 export function useGetMenuMaster() {
   const { data, isLoading } = useSWR(endpoints.key + endpoints.master, () => initialState, {
+    // Seed the cache so the very first render (server + hydration) already has the menu state.
+    // Without this, isLoading is true on the initial render and MainLayout renders only <Loader/>,
+    // leaving the server HTML empty until SWR resolves on the client — a major LCP regression.
+    fallbackData: initialState,
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false

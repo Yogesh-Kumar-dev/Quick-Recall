@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useEffect, useMemo } from 'react';
+import { type ReactNode, Suspense, useEffect, useMemo } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -97,14 +97,17 @@ export default function MainLayout({ children }: Props) {
           maxWidth={false}
           sx={{ px: { xs: 0 }, mx: 0, minHeight: 'calc(100vh - 128px)', display: 'flex', flexDirection: 'column' }}
         >
-          {/* breadcrumb */}
-          <Breadcrumbs />
+          {/* breadcrumb — reads useSearchParams; isolate in Suspense so its CSR bailout doesn't
+              de-opt the whole route (the crumb itself is not the LCP element). */}
+          <Suspense fallback={null}>
+            <Breadcrumbs />
+          </Suspense>
           {children}
         </Container>
       </MainContentStyled>
 
-      {/* menu / drawer */}
-      {menu}
+      {/* menu / drawer — NavItem reads useSearchParams; isolate in Suspense for the same reason. */}
+      <Suspense fallback={null}>{menu}</Suspense>
     </Box>
   );
 }

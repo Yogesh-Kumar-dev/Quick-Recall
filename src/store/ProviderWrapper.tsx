@@ -14,16 +14,21 @@ import Notistack from 'ui-component/third-party/Notistack';
 import NotificationProvider from 'notifications/NotificationProvider';
 import LeafyGreenBridge from 'ui-component/leafygreen/LeafyGreenBridge';
 
-import dynamic from 'next/dynamic';
-
 import ThemeCustomization from 'themes';
 
 import { store } from 'store';
 import { ConfigProvider } from 'contexts/ConfigContext';
-
-const DevTools = dynamic(() => import('./DevTools'), { ssr: false });
+import { useLazyDefault } from 'utils/useLazyDefault';
 
 export default function ProviderWrapper({ children }: { children: ReactNode }) {
+  // The Redux DevTools panel is client-only (kept in production by choice). Importing it via
+  // next/dynamic({ ssr: false }) throws "Bail out to client-side rendering: next/dynamic" during
+  // SSR; because this renders at the app root with no boundary that contains it, that bailout
+  // de-opted the ENTIRE app to client rendering — every page shipped an empty SSR shell and the
+  // real content (the LCP element) only painted after hydration (LCP ~6.6s). useLazyDefault imports
+  // it in a post-mount effect, so it never touches the server render and the bailout is gone.
+  const DevTools = useLazyDefault(() => import('./DevTools'));
+
   return (
     <Provider store={store}>
       <ConfigProvider>
@@ -42,7 +47,7 @@ export default function ProviderWrapper({ children }: { children: ReactNode }) {
           {/* </RTLLayout> */}
         </ThemeCustomization>
       </ConfigProvider>
-      <DevTools />
+      {DevTools && <DevTools />}
     </Provider>
   );
 }
