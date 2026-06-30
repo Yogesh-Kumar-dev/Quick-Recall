@@ -52,3 +52,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 .vercel
+
+# Unlighthouse audit output (pnpm audit:lh)
+.unlighthouse/

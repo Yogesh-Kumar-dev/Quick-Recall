@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
 
 import './../scss/style.scss';
 import './../scss/tailwind.css';
@@ -32,10 +31,6 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/* suppressHydrationWarning silences the attribute react-scan adds to <head> */}
-      <head suppressHydrationWarning>
-        <Script src="//unpkg.com/react-scan/dist/auto.global.js" crossOrigin="anonymous" strategy="beforeInteractive" />
-      </head>
       <body>
         <NuqsAdapter>
           <ProviderWrapper>{children}</ProviderWrapper>
