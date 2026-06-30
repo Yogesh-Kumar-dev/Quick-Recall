@@ -6,8 +6,11 @@ import Box from '@mui/material/Box';
 
 export default function Loader() {
   return (
-    <Box sx={{ position: 'fixed', top: 0, left: 0, zIndex: 1301, width: '100%' }}>
+    <Box role="status" aria-live="polite" sx={{ position: 'fixed', top: 0, left: 0, zIndex: 1301, width: '100%' }}>
       <LinearProgress color="primary" />
+      <Box component="span" className="sr-only">
+        Loading…
+      </Box>
     </Box>
   );
 }

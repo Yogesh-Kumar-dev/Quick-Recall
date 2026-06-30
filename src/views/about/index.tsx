@@ -257,6 +257,7 @@ export default function AboutPage() {
             alt="Claude hard at work building QuickRecall"
             width={1079}
             height={719}
+            priority
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
         </Box>
@@ -323,7 +324,7 @@ export default function AboutPage() {
             </div>
 
             {/* Title + blurb (kept on MUI typography for the theme's fonts/sizes/colors) */}
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h5" component="h4" fontWeight={700}>
               {f.title}
             </Typography>
             <Typography variant="body2" color="text.secondary" className="grow">
@@ -337,16 +338,14 @@ export default function AboutPage() {
 
             {/* Optional external link */}
             {f.href && (
-              // biome-ignore lint/a11y/noAmbiguousAnchorText: aria-label provides the accessible name; "Learn more" is intentional UI copy
               <a
                 href={f.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Learn more about ${f.title}`}
                 className="mt-1 inline-flex items-center gap-1 self-start text-[0.8125rem] font-semibold no-underline hover:underline"
-                style={{ color: f.accent }}
+                style={{ color: theme.palette.primary.main }}
               >
-                Learn more
+                Learn more about {f.title}
                 <IconArrowRight size={15} />
               </a>
             )}

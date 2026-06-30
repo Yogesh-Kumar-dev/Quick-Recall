@@ -203,7 +203,7 @@ function Header() {
         right before you&apos;d forget it, stretching the gap longer every time you recall it. Rate each card honestly and it schedules
         itself.{' '}
         <MuiLink href="https://apps.ankiweb.net/" target="_blank" rel="noopener noreferrer">
-          Learn more
+          Learn how spaced repetition works
         </MuiLink>
         .
       </Typography>

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 
@@ -42,8 +42,9 @@ export default function FullScreen() {
   return (
     <Box sx={{ ml: 2 }}>
       <Tooltip title={open ? 'Exit Fullscreen' : 'Fullscreen'}>
-        <Avatar
-          variant="rounded"
+        <IconButton
+          disableRipple
+          aria-label={open ? 'Exit fullscreen' : 'Enter fullscreen'}
           sx={{
             ...theme.typography.commonAvatar,
             ...theme.typography.mediumAvatar,
@@ -52,19 +53,17 @@ export default function FullScreen() {
             bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
             color: 'primary.dark',
             transition: 'all .2s ease-in-out',
-            '&[aria-controls="menu-list-grow"],&:hover': {
+            '&:hover': {
               borderColor: 'primary.main',
               bgcolor: 'primary.main',
               color: 'primary.light'
             }
           }}
-          aria-controls={open ? 'menu-list-grow' : undefined}
-          aria-haspopup="true"
           onClick={handleToggle}
           color="inherit"
         >
           {open ? <IconArrowsMinimize /> : <IconArrowsMaximize />}
-        </Avatar>
+        </IconButton>
       </Tooltip>
     </Box>
   );

@@ -56,6 +56,29 @@ export default function MainLayout({ children }: Props) {
 
   return (
     <Box sx={{ display: 'flex', bgcolor: 'background.default', minHeight: '100vh' }}>
+      {/* skip link — first focusable element; visually hidden until focused, then jumps to <main> */}
+      <Box
+        component="a"
+        href="#main-content"
+        sx={{
+          position: 'absolute',
+          top: 8,
+          left: 8,
+          px: 2,
+          py: 1,
+          borderRadius: 1,
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+          boxShadow: 3,
+          zIndex: (t) => t.zIndex.modal + 1,
+          transform: 'translateY(-200%)',
+          transition: 'transform .2s ease-in-out',
+          '&:focus': { transform: 'translateY(0)' }
+        }}
+      >
+        Skip to main content
+      </Box>
+
       {/* header */}
       <AppBar enableColorOnDark position="fixed" color="inherit" elevation={0} sx={{ bgcolor: 'background.default' }}>
         <Toolbar sx={{ py: 0, px: 2, minHeight: 64 }}>
@@ -64,7 +87,12 @@ export default function MainLayout({ children }: Props) {
       </AppBar>
 
       {/* main content */}
-      <MainContentStyled {...{ borderRadius, menuOrientation, open: drawerOpen! }}>
+      <MainContentStyled
+        id="main-content"
+        tabIndex={-1}
+        sx={{ '&:focus': { outline: 'none' } }}
+        {...{ borderRadius, menuOrientation, open: drawerOpen! }}
+      >
         <Container
           maxWidth={false}
           sx={{ px: { xs: 0 }, mx: 0, minHeight: 'calc(100vh - 128px)', display: 'flex', flexDirection: 'column' }}

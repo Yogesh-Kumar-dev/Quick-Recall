@@ -179,6 +179,7 @@ export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
           shuffleAndStart(e.target);
         }}
         onStateChange={handleStateChange}
+        title="Interview-prep video playlist"
         iframeClassName="playlist-iframe"
         style={{ width: '100%', height: '100%' }}
         className="playlist-yt"

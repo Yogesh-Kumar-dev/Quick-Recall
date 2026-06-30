@@ -121,7 +121,7 @@ export default function PdfViewerPanel({ guides }: PdfViewerPanelProps) {
         </Stack>
       )}
 
-      <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
+      <Box role="region" aria-label="PDF document viewer" sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
         <PDFViewer config={config} onReady={handleReady} style={{ width: '100%', height: '100%' }} />
 
         {busy && !error && (
@@ -169,6 +169,8 @@ export default function PdfViewerPanel({ guides }: PdfViewerPanelProps) {
 function Overlay({ children }: { children: React.ReactNode }) {
   return (
     <Stack
+      role="status"
+      aria-live="polite"
       spacing={1.5}
       alignItems="center"
       justifyContent="center"

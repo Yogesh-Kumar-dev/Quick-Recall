@@ -19,7 +19,8 @@
     "check": "biome check --write ./src",
     "typecheck": "tsc --noEmit",
     "test": "echo \"No tests yet — placeholder\" && exit 0",
-    "knip": "knip"
+    "knip": "knip",
+    "audit:lh": "pnpm dlx unlighthouse --site https://quickrecall.vercel.app"
   },
   "dependencies": {
     "@embedpdf/react-pdf-viewer": "^2.14.4",

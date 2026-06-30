@@ -3,7 +3,7 @@
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -56,16 +56,14 @@ export default function Header() {
         {!isHorizontal && (
           <Box sx={{ ml: 2 }}>
             <Tooltip title={drawerOpen ? 'Close navigation' : 'Open navigation'} placement="bottom">
-              <Avatar
-                variant="rounded"
-                role="button"
+              <IconButton
+                disableRipple
                 aria-label={drawerOpen ? 'Close navigation' : 'Open navigation'}
                 sx={{
                   ...theme.typography.commonAvatar,
                   ...theme.typography.mediumAvatar,
                   overflow: 'hidden',
                   transition: 'all .2s ease-in-out',
-                  cursor: 'pointer',
                   bgcolor: mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
                   color: mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
                   '&:hover': {
@@ -77,7 +75,7 @@ export default function Header() {
                 color="inherit"
               >
                 <IconMenu2 stroke={1.5} size="20px" />
-              </Avatar>
+              </IconButton>
             </Tooltip>
           </Box>
         )}

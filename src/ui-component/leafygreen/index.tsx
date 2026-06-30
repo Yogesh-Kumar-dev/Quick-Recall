@@ -7,7 +7,6 @@ import { Badge, Variant as BadgeVariant } from '@leafygreen-ui/badge';
 import { BasicEmptyState, type BasicEmptyStateProps } from '@leafygreen-ui/empty-state';
 import { Callout, type CalloutProps, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { Banner, type BannerProps, Variant as BannerVariant } from '@leafygreen-ui/banner';
-import { Code, type CodeProps, Language as CodeLanguage, CopyButtonAppearance } from '@leafygreen-ui/code';
 import { ExpandableCard, type ExpandableCardProps } from '@leafygreen-ui/expandable-card';
 import { Modal, type ModalProps, ModalSize } from '@leafygreen-ui/modal';
 import { ConfirmationModal, type ConfirmationModalProps, Variant as ConfirmationModalVariant } from '@leafygreen-ui/confirmation-modal';
@@ -45,7 +44,6 @@ export const LGBadge = Badge;
 export const LGEmptyState = BasicEmptyState as ComponentType<BasicEmptyStateProps>;
 export const LGCallout = Callout as ComponentType<CalloutProps>;
 export const LGBanner = Banner as ComponentType<BannerProps>;
-export const LGCode = Code as ComponentType<CodeProps>;
 export const LGExpandableCard = ExpandableCard as ComponentType<ExpandableCardProps>;
 export const LGModal = Modal as ComponentType<ModalProps>;
 export const LGConfirmationModal = ConfirmationModal as ComponentType<ConfirmationModalProps>;
@@ -69,8 +67,6 @@ export {
   BadgeVariant as LGBadgeVariant,
   CalloutVariant as LGCalloutVariant,
   BannerVariant as LGBannerVariant,
-  CodeLanguage as LGCodeLanguage,
-  CopyButtonAppearance as LGCopyButtonAppearance,
   ModalSize as LGModalSize,
   ConfirmationModalVariant as LGConfirmationModalVariant,
   ProgressBarVariant as LGProgressBarVariant,

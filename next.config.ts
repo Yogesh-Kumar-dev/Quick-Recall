@@ -57,7 +57,31 @@ const nextConfig: NextConfig = {
   // whole icon set into the graph. Faster cold starts + HMR, with no source changes needed.
   // (@mui/* is handled by modularizeImports below.)
   experimental: {
-    optimizePackageImports: ['@tabler/icons-react']
+    // Barrel-file optimization: rewrite named imports to direct module paths at build time so
+    // importing one member doesn't pull a package's whole surface into the graph. Critical for the
+    // @leafygreen-ui set — the ui-component/leafygreen barrel re-exports 18 of them, so without this
+    // a page that needs only <LGCode> was dragging in Modal/Drawer/Select/etc. (lodash-es likewise).
+    optimizePackageImports: [
+      '@tabler/icons-react',
+      'lodash-es',
+      '@leafygreen-ui/badge',
+      '@leafygreen-ui/banner',
+      '@leafygreen-ui/button',
+      '@leafygreen-ui/callout',
+      '@leafygreen-ui/card',
+      '@leafygreen-ui/code',
+      '@leafygreen-ui/confirmation-modal',
+      '@leafygreen-ui/drawer',
+      '@leafygreen-ui/empty-state',
+      '@leafygreen-ui/expandable-card',
+      '@leafygreen-ui/modal',
+      '@leafygreen-ui/preview-card',
+      '@leafygreen-ui/progress-bar',
+      '@leafygreen-ui/select',
+      '@leafygreen-ui/text-area',
+      '@leafygreen-ui/text-input',
+      '@leafygreen-ui/typography'
+    ]
   },
   modularizeImports: {
     '@mui/material': {

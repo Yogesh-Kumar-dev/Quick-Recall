@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -170,8 +169,8 @@ export default function TimerSection() {
   return (
     <Box sx={{ ml: 2 }}>
       <Tooltip title="Start a timer">
-        <Avatar
-          variant="rounded"
+        <IconButton
+          disableRipple
           sx={{
             ...theme.typography.commonAvatar,
             ...theme.typography.mediumAvatar,
@@ -180,7 +179,6 @@ export default function TimerSection() {
             bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
             color: 'primary.dark',
             transition: 'all .2s ease-in-out',
-            cursor: 'pointer',
             '&:hover': { borderColor: 'primary.main', bgcolor: 'primary.main', color: 'primary.light' }
           }}
           aria-label="Start a timer"
@@ -188,7 +186,7 @@ export default function TimerSection() {
           color="inherit"
         >
           <IconClock stroke={1.5} size="20px" />
-        </Avatar>
+        </IconButton>
       </Tooltip>
       <TimerFormModal open={modalOpen} onClose={() => setModalOpen(false)} />
       <TimerFeedbackModal open={feedbackOpen} name={finishedName} onRespond={handleFeedback} />

@@ -1,4 +1,6 @@
-import { alpha } from '@mui/material/styles';
+'use client';
+
+import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -9,7 +11,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
+
+import { flattenColor, readableColor } from 'utils/readableColor';
 
 export interface TopicStat {
   label: string;
@@ -44,6 +48,25 @@ export default function TopicStatCard({
   quickLinks,
   primaryHref
 }: TopicStatCardProps) {
+  const { palette } = useTheme();
+  const paper = palette.background.paper;
+  // Brand accents are kept for borders/backgrounds/icons, but accent *text* on the dark card
+  // surface (stat values, CTA, chips) is nudged to meet AA contrast against its real (tinted) bg.
+  // readableColor runs an iterative contrast loop, so memoize on the only inputs that vary (the
+  // card accent + theme surface) rather than re-deriving on every render / per chip.
+  const { statValueColor, ctaTextColor, diffColors } = useMemo(() => {
+    const adjust = (color: string, opacity: number) => readableColor(color, flattenColor(color, opacity, paper));
+    return {
+      statValueColor: adjust(accentColor, 0.08),
+      ctaTextColor: readableColor(accentColor, paper),
+      diffColors: {
+        easy: adjust(DIFF_COLORS.easy, 0.12),
+        medium: adjust(DIFF_COLORS.medium, 0.12),
+        hard: adjust(DIFF_COLORS.hard, 0.12)
+      } as Record<keyof typeof DIFF_COLORS, string>
+    };
+  }, [accentColor, paper]);
+
   return (
     <Card
       variant="outlined"
@@ -77,7 +100,7 @@ export default function TopicStatCard({
           >
             {icon}
           </Box>
-          <Typography variant="h5" fontWeight={700}>
+          <Typography variant="h5" component="h4" fontWeight={700}>
             {title}
           </Typography>
         </Stack>
@@ -101,7 +124,7 @@ export default function TopicStatCard({
                 borderColor: alpha(accentColor, 0.18)
               }}
             >
-              <Typography variant="h4" fontWeight={700} sx={{ color: accentColor, lineHeight: 1.1 }}>
+              <Typography variant="h4" fontWeight={700} sx={{ color: statValueColor, lineHeight: 1.1 }}>
                 {s.value}
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -124,7 +147,7 @@ export default function TopicStatCard({
                   fontSize: 11,
                   textTransform: 'capitalize',
                   bgcolor: alpha(DIFF_COLORS[d], 0.12),
-                  color: DIFF_COLORS[d],
+                  color: diffColors[d],
                   border: '1px solid',
                   borderColor: alpha(DIFF_COLORS[d], 0.3)
                 }}
@@ -171,7 +194,7 @@ export default function TopicStatCard({
             mt: 'auto',
             borderRadius: 1.5,
             fontWeight: 600,
-            color: accentColor,
+            color: ctaTextColor,
             borderColor: alpha(accentColor, 0.5),
             '&:hover': { borderColor: accentColor, bgcolor: alpha(accentColor, 0.08) }
           }}

@@ -183,6 +183,7 @@ export default function Breadcrumbs({
     CollapseIcon = main.icon ? main.icon : AccountTreeTwoToneIcon;
     mainContent = (
       <Typography
+        component="span"
         {...(main.url && { component: Link, to: main.url })}
         variant="h6"
         noWrap
@@ -221,7 +222,7 @@ export default function Breadcrumbs({
                 separator={separatorIcon}
                 sx={{ '& .MuiBreadcrumbs-separator': { width: 16, ml: 1.25, mr: 1.25 } }}
               >
-                <Typography component={Link} href="/" color="textSecondary" variant="h6" sx={linkSX}>
+                <Typography component={Link} href="/" aria-label="Home" color="textSecondary" variant="h6" sx={linkSX}>
                   {icons && <HomeTwoToneIcon style={iconSX} />}
                   {icon && !icons && <HomeIcon style={{ ...iconSX, marginRight: 0 }} />}
                   {(!icon || icons) && 'Dashboard'}
@@ -244,6 +245,7 @@ export default function Breadcrumbs({
     ItemIcon = item?.icon ? item.icon : AccountTreeTwoToneIcon;
     itemContent = (
       <Typography
+        component="span"
         variant="h6"
         noWrap
         sx={{
@@ -269,7 +271,7 @@ export default function Breadcrumbs({
         separator={separatorIcon}
         sx={{ '& .MuiBreadcrumbs-separator': { width: 16, mx: 0.75 } }}
       >
-        <Typography component={Link} href="/" color="textSecondary" variant="h6" sx={linkSX}>
+        <Typography component={Link} href="/" aria-label="Home" color="textSecondary" variant="h6" sx={linkSX}>
           {icons && (
             <HomeTwoToneIcon style={{ ...iconSX, ...(themeDirection === ThemeDirection.RTL && { marginLeft: 6, marginRight: 0 }) }} />
           )}
@@ -300,6 +302,7 @@ export default function Breadcrumbs({
             return (
               <Typography
                 key={index}
+                component="span"
                 {...(link.to && { component: Link, href: link.to })}
                 variant="h6"
                 sx={linkSX}
@@ -372,7 +375,7 @@ export default function Breadcrumbs({
                 separator={separatorIcon}
                 sx={{ '& .MuiBreadcrumbs-separator': { width: 16, mx: 0.75 } }}
               >
-                <Typography component={Link} href="/" color="textSecondary" variant="h6" sx={linkSX}>
+                <Typography component={Link} href="/" aria-label="Home" color="textSecondary" variant="h6" sx={linkSX}>
                   {icons && <HomeTwoToneIcon style={iconSX} />}
                   {icon && !icons && <HomeIcon style={{ ...iconSX, marginRight: 0 }} />}
                   {(!icon || icons) && 'Dashboard'}
@@ -421,7 +424,7 @@ export default function Breadcrumbs({
                 separator={separatorIcon}
                 sx={{ '& .MuiBreadcrumbs-separator': { width: 16, mx: 0.75 } }}
               >
-                <Typography component={Link} href="/" color="textSecondary" variant="h6" sx={linkSX}>
+                <Typography component={Link} href="/" aria-label="Home" color="textSecondary" variant="h6" sx={linkSX}>
                   {icons && <HomeTwoToneIcon style={iconSX} />}
                   {icon && !icons && <HomeIcon style={{ ...iconSX, marginRight: 0 }} />}
                   {(!icon || icons) && 'Dashboard'}

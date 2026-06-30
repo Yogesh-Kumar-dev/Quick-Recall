@@ -30,7 +30,7 @@ export default function Logo() {
           flexShrink: 0
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
           <path d="M13 2L4.5 13.5H11L10 22L20.5 10H14L13 2Z" fill="white" strokeWidth="1.5" strokeLinejoin="round" />
         </svg>
       </Box>
