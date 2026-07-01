@@ -2,7 +2,17 @@ import type { ComponentType } from 'react';
 import { notFound } from 'next/navigation';
 
 const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
-  debounce: () => import('@/views/js-machine-coding/Debounce')
+  debounce: () => import('@/views/js-machine-coding/Debounce'),
+  throttle: () => import('@/views/js-machine-coding/Throttle'),
+  'flatten-array': () => import('@/views/js-machine-coding/FlattenArray'),
+  'deep-clone': () => import('@/views/js-machine-coding/DeepClone'),
+  'promise-all': () => import('@/views/js-machine-coding/PromiseAll'),
+  curry: () => import('@/views/js-machine-coding/Curry'),
+  memoize: () => import('@/views/js-machine-coding/Memoize'),
+  'custom-bind': () => import('@/views/js-machine-coding/CustomBind'),
+  'group-by': () => import('@/views/js-machine-coding/GroupBy'),
+  'electricity-bill': () => import('@/views/js-machine-coding/ElectricityBill'),
+  'frequency-calculator': () => import('@/views/js-machine-coding/FrequencyCalculator')
 };
 
 export function generateStaticParams() {
