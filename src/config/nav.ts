@@ -14,6 +14,7 @@ import {
   IconBriefcase,
   IconCode,
   IconCpu,
+  IconCards,
   IconInfoCircle,
   IconMicrophone,
   IconNotes,
@@ -51,6 +52,7 @@ export const navSections: NavSection[] = [
     title: 'Study & Review',
     icon: IconBookmarks,
     items: [
+      { title: 'Flashcards', url: '/flashcards', icon: IconCards },
       { title: 'Saved', url: '/bookmarks', icon: IconBookmark },
       { title: 'Review', url: '/review', icon: IconBrain }
     ]

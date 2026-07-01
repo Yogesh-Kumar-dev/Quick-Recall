@@ -3,6 +3,7 @@
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
 import type { Note } from '@/types/content';
+import BookmarkButton from '@/components/bookmarks/BookmarkButton';
 import CodeBlock from './code-block';
 
 // difficulty → badge accent (MongoDB palette tokens). These chips were MUI in the original, so they
@@ -28,10 +29,13 @@ export default function NoteCard({ note }: { note: Note }) {
   const showDeepDive = note.difficulty !== 'basic';
 
   const title = (
-    <span className="flex w-full flex-wrap items-center gap-2">
-      <span className="font-semibold">{note.title}</span>
-      <Badge className={`capitalize ${DIFFICULTY_BADGE[note.difficulty]}`}>{note.difficulty}</Badge>
-      <Badge className="border-border text-muted-foreground">{note.category}</Badge>
+    <span className="flex w-full flex-wrap items-center justify-between gap-2">
+      <span className="flex flex-wrap items-center gap-2">
+        <span className="font-semibold">{note.title}</span>
+        <Badge className={`capitalize ${DIFFICULTY_BADGE[note.difficulty]}`}>{note.difficulty}</Badge>
+        <Badge className="border-border text-muted-foreground">{note.category}</Badge>
+      </span>
+      <BookmarkButton kind="note" refId={note.id} stopPropagation />
     </span>
   );
 
