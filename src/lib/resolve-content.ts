@@ -1,16 +1,17 @@
 // ==============================|| RESOLVE CONTENT (refId → item) ||============================== //
 
 // Bookmarks/reviews store only a `kind` + namespaced `refId`. This resolves that back to the
-// real content item, so the Saved view can render bookmarks without each feature
-// re-implementing the lookup. Pure (no React) — it reads the same static `src/data` arrays.
-//
-// ponytail: 'problem' kind resolution is omitted until machine-coding lands (Phase 4); a
-// bookmarked problem simply resolves to null and is skipped until then.
+// real content item plus a route-stable URL, so the Saved view can render bookmarks without each
+// feature re-implementing the lookup. Pure (no React) — it reads the same static `src/data` arrays.
 
-import type { Flashcard, Note } from '@/types/content';
+import type { BaseProblemEntry, Flashcard, Note } from '@/types/content';
 import type { BookmarkKind } from '@/types/study';
 
 import { flashcardByKey } from '@/data/flashcards-index';
+
+// Problems
+import { jsProblems } from '@/data/javascript/js-problems';
+import { reactMcProblems } from '@/data/react/react-mc-problems';
 
 // Notes
 import { jsNotes } from '@/data/javascript/js-notes';
@@ -51,11 +52,22 @@ ALL_NOTES.forEach((n) => {
   if (!noteById.has(n.id)) noteById.set(n.id, n);
 });
 
+// ─── Problem lookup (by slug) + its route ─────────────────────────────────────
+// JS and React problems live at different base paths.
+const problemBySlug = new Map<string, { problem: BaseProblemEntry; url: string }>();
+jsProblems.forEach((p) => {
+  problemBySlug.set(p.slug, { problem: p, url: `/js/machine-coding/${p.slug}` });
+});
+reactMcProblems.forEach((p) => {
+  problemBySlug.set(p.slug, { problem: p, url: `/react/machine-coding/${p.slug}` });
+});
+
 // ─── Resolved shapes ──────────────────────────────────────────────────────────
 
 type ResolvedNote = { kind: 'note'; refId: string; note: Note };
 type ResolvedFlashcard = { kind: 'flashcard'; refId: string; card: Flashcard };
-export type ResolvedContent = ResolvedNote | ResolvedFlashcard;
+type ResolvedProblem = { kind: 'problem'; refId: string; problem: BaseProblemEntry; url: string };
+export type ResolvedContent = ResolvedNote | ResolvedFlashcard | ResolvedProblem;
 
 // Returns the real content for a bookmark/review, or null if the refId no longer resolves
 // (e.g. content removed since it was saved, or a not-yet-supported kind). Callers skip nulls.
@@ -68,6 +80,7 @@ export function resolveContent(kind: BookmarkKind, refId: string): ResolvedConte
     const indexed = flashcardByKey.get(refId);
     return indexed ? { kind, refId, card: indexed.card } : null;
   }
-  // 'problem' — resolved once machine-coding data lands (Phase 4).
-  return null;
+  // problem — refId is the problem slug
+  const hit = problemBySlug.get(refId);
+  return hit ? { kind, refId, problem: hit.problem, url: hit.url } : null;
 }
