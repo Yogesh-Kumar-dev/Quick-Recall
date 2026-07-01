@@ -2,9 +2,9 @@
 
 import { type ReactNode, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Card } from '@/components/ui/card';
 import CodeBlock from '@/components/content/code-block';
+import Segmented from './segmented';
 import ProblemStatement from './problem-statement';
 import type { ProblemMeta } from '@/types/content';
 
@@ -19,8 +19,8 @@ interface Props {
 }
 
 const VERSIONS = [
-  { key: 'jsx' as const, label: 'JSX', filename: 'JsxVersion.jsx' },
-  { key: 'tsx' as const, label: 'TSX', filename: 'TsxVersion.tsx' }
+  { value: 'jsx' as const, label: 'JSX' },
+  { value: 'tsx' as const, label: 'TSX' }
 ];
 
 export default function ProblemShell({ problem, versions }: Props) {
@@ -45,13 +45,7 @@ export default function ProblemShell({ problem, versions }: Props) {
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="code">Code</TabsTrigger>
           </TabsList>
-          <ToggleGroup value={[active]} onValueChange={(v) => v.length > 0 && setActive(v[0] as 'jsx' | 'tsx')} variant="outline" size="sm">
-            {VERSIONS.map((v) => (
-              <ToggleGroupItem key={v.key} value={v.key}>
-                {v.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+          <Segmented options={VERSIONS} value={active} onChange={(v) => setActive(v as 'jsx' | 'tsx')} />
         </div>
 
         <TabsContent value="preview" className="max-h-[80vh] overflow-auto p-4">

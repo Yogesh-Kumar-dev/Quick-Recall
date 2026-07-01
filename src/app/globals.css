@@ -97,3 +97,29 @@
     @apply font-sans;
   }
 }
+
+/* Thin rounded scrollbars, applied globally (ported from legacy scrollbar.scss) so every scroll
+   region — page, panels, and the LeafyGreen Code viewer — shares one look. */
+@supports (-webkit-appearance: none) {
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 4px;
+    background: transparent;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #c1c7c6; /* LeafyGreen gray.light1 */
+    border-radius: 10px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #889397; /* LeafyGreen gray.base */
+  }
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+}
+* {
+  scrollbar-width: thin;
+}
