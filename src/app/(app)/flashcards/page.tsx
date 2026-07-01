@@ -18,7 +18,11 @@ export default function FlashcardsIndexPage() {
         <h1 className="mb-2 text-3xl font-bold">Flashcards</h1>
         <p className="text-muted-foreground">
           Quick keyword/definition drills across every topic. Flip a card, and bookmark the ones worth repeating — bookmarked cards are
-          added to your <Link href="/review" className="text-primary underline underline-offset-2">Review</Link> deck.
+          added to your{' '}
+          <Link href="/review" className="text-primary underline underline-offset-2">
+            Review
+          </Link>{' '}
+          deck.
         </p>
       </div>
 

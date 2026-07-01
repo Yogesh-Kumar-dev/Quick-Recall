@@ -38,8 +38,8 @@ export default function BookmarksPage() {
       <div className="mb-6">
         <h1 className="mb-2 text-3xl font-bold">Saved</h1>
         <p className="text-muted-foreground">
-          Everything you&apos;ve starred for review — notes and flashcards in one place. Saved flashcards are also added to your Review deck,
-          where they resurface for practice over time.
+          Everything you&apos;ve starred for review — notes and flashcards in one place. Saved flashcards are also added to your Review
+          deck, where they resurface for practice over time.
         </p>
       </div>
 

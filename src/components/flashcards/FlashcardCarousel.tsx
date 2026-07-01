@@ -8,15 +8,7 @@ import { flashcardKey, type FlashcardSource } from '@/data/flashcards-index';
 
 import type { Flashcard } from '@/types/content';
 
-export default function FlashcardCarousel({
-  cards,
-  source,
-  title
-}: {
-  cards: Flashcard[];
-  source: FlashcardSource;
-  title?: string;
-}) {
+export default function FlashcardCarousel({ cards, source, title }: { cards: Flashcard[]; source: FlashcardSource; title?: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -79,9 +71,7 @@ export default function FlashcardCarousel({
             style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
           >
             {/* Front side */}
-            <div
-              className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden]"
-            >
+            <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden]">
               <div className="text-center">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">Question</p>
                 <p className="mt-4 text-lg font-medium">{current.front}</p>
@@ -89,9 +79,7 @@ export default function FlashcardCarousel({
             </div>
 
             {/* Back side */}
-            <div
-              className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]"
-            >
+            <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]">
               <div className="text-center">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">Answer</p>
                 <p className="mt-4 text-base text-foreground">{current.back}</p>
@@ -129,20 +117,13 @@ export default function FlashcardCarousel({
           <span className="text-sm font-medium text-muted-foreground">{progress}</span>
         )}
 
-        <Button
-          onClick={handleNext}
-          variant="outline"
-          size="sm"
-          aria-label="Next card"
-        >
+        <Button onClick={handleNext} variant="outline" size="sm" aria-label="Next card">
           Next
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
 
-      <p className="text-center text-xs text-muted-foreground">
-        Click the card to flip • Use arrow keys to navigate • Space to flip
-      </p>
+      <p className="text-center text-xs text-muted-foreground">Click the card to flip • Use arrow keys to navigate • Space to flip</p>
     </section>
   );
 }

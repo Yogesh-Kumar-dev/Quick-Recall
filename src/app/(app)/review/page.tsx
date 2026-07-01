@@ -185,12 +185,7 @@ function Header() {
         Practice the flashcards you&apos;ve added using <strong>spaced repetition</strong> — a proven study method that shows each card
         right before you&apos;d forget it, stretching the gap longer every time you recall it. Rate each card honestly and it schedules
         itself.{' '}
-        <a
-          href="https://apps.ankiweb.net/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline underline-offset-2"
-        >
+        <a href="https://apps.ankiweb.net/" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
           Learn how spaced repetition works
         </a>
         .
@@ -209,9 +204,7 @@ function CaughtUp({ enrolledCount }: { enrolledCount: number }) {
     <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
       <h2 className="text-xl font-semibold">All caught up</h2>
       <p className="mt-2 text-sm text-muted-foreground">{description}</p>
-      {enrolledCount === 0 && (
-        <Button variant="outline" className="mt-6" render={<a href="/flashcards">Browse flashcards</a>} />
-      )}
+      {enrolledCount === 0 && <Button variant="outline" className="mt-6" render={<a href="/flashcards">Browse flashcards</a>} />}
     </div>
   );
 }
