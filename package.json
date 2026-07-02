@@ -95,7 +95,7 @@
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "knip": "5.51.1",
+    "knip": "6.24.0",
     "postcss": "^8.5.15",
     "sass": "1.87.0",
     "serwist": "^9.5.11",
