@@ -52,7 +52,7 @@
     "@mui/icons-material": "7.0.2",
     "@mui/lab": "^7.0.0-beta.11",
     "@mui/material": "7.0.2",
-    "@mui/system": "7.0.2",
+    "@mui/system": "9.1.2",
     "@mui/x-date-pickers": "^7.29.4",
     "@redux-devtools/core": "^5.0.0",
     "@redux-devtools/dock-monitor": "^5.0.0",
