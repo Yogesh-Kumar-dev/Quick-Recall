@@ -150,9 +150,9 @@ export function IntersectionDemo() {
   const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({ threshold: 0.5 });
   return (
     <div>
-      <p className="mb-1 flex items-center gap-2 text-sm">
+      <div className="mb-1 flex items-center gap-2 text-sm">
         Status: <Badge variant={isIntersecting ? 'default' : 'secondary'}>{isIntersecting ? '👁️ visible' : 'scrolled away'}</Badge>
-      </p>
+      </div>
       <div className="h-[120px] overflow-y-auto rounded-md border border-border p-1">
         <div className="h-[160px]" />
         <div ref={ref} className={`rounded-md p-4 text-center transition-colors ${isIntersecting ? 'bg-primary/20' : 'bg-muted'}`}>

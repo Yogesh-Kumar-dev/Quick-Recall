@@ -1,4 +1,5 @@
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import TimerSection from '@/components/timer/timer-section';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
@@ -20,6 +21,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger />
             {/* breadcrumbs land here in a later phase */}
+            <TimerSection />
           </header>
           <div id="main-content" tabIndex={-1} className="flex flex-1 flex-col p-4 focus:outline-none md:p-6">
             {children}

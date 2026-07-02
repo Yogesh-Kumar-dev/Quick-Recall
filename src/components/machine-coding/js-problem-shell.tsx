@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import CodeBlock from '@/components/content/code-block';
@@ -16,6 +16,7 @@ interface Props {
 
 export default function JsProblemShell({ problem, approaches }: Props) {
   const [idx, setIdx] = useState(0);
+  const [tab, setTab] = useState('details');
   const current = approaches[idx];
 
   return (
@@ -31,7 +32,7 @@ export default function JsProblemShell({ problem, approaches }: Props) {
         />
       </div>
 
-      <Tabs defaultValue="details" className="w-full gap-0">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as string)} className="w-full gap-0">
         <div className="flex items-center gap-2 border-b border-border px-4 py-2">
           <TabsList>
             <TabsTrigger value="details">Details</TabsTrigger>
@@ -47,12 +48,18 @@ export default function JsProblemShell({ problem, approaches }: Props) {
           />
         </div>
 
-        <TabsContent value="details" className="max-h-[75vh] overflow-auto p-4">
-          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Approach — {current.label}</p>
-          <ApproachDetails approach={current} />
+        {/* keepMounted lets base-ui render both panels; <Activity> prerenders the
+            hidden one at low priority and defers its effects until it's shown. */}
+        <TabsContent value="details" keepMounted className="max-h-[75vh] overflow-auto p-4">
+          <Activity mode={tab === 'details' ? 'visible' : 'hidden'}>
+            <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Approach — {current.label}</p>
+            <ApproachDetails approach={current} />
+          </Activity>
         </TabsContent>
-        <TabsContent value="code" className="max-h-[75vh] overflow-auto p-4">
-          <CodeBlock code={current.code} language="javascript" />
+        <TabsContent value="code" keepMounted className="max-h-[75vh] overflow-auto p-4">
+          <Activity mode={tab === 'code' ? 'visible' : 'hidden'}>
+            <CodeBlock code={current.code} language="javascript" />
+          </Activity>
         </TabsContent>
       </Tabs>
     </Card>
