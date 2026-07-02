@@ -48,6 +48,15 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true
   },
+  // Machine-coding pages read their raw source files via readFileSync at render time to show the
+  // code alongside the live demo. Under the `force-dynamic` (dashboard) segment that read runs inside
+  // the serverless function, but Next's output file tracer only bundles *compiled* modules — the raw
+  // source (even the imported .tsx/.jsx demos) is never traced, so the Lambda hits ENOENT and the page
+  // 500s / falls into the error boundary. Explicitly trace the raw sources into each function bundle.
+  outputFileTracingIncludes: {
+    '/js/machine-coding/[slug]': ['./src/views/js-machine-coding/**/*.js'],
+    '/machine-coding/**': ['./src/views/machine-coding/**/*.{tsx,jsx}']
+  },
   transpilePackages: ['react-resizable-panels'],
   // todo: this need to set to true or remove it as default is true. set false as chart was giving error when first render
   // https://github.com/apexcharts/apexcharts.js/issues/3652
