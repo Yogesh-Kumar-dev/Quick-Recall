@@ -1,4 +1,8 @@
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import InstallButton from '@/components/pwa/install-button';
+import OfflineDownloadButton from '@/components/pwa/offline-download-button';
+import OfflineSectionGuard from '@/components/pwa/offline-section-guard';
+import OfflineStatusChip from '@/components/pwa/offline-status-chip';
 import TimerSection from '@/components/timer/timer-section';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -22,9 +26,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <SidebarTrigger />
             {/* breadcrumbs land here in a later phase */}
             <TimerSection />
+            <div className="ml-auto flex items-center gap-2">
+              <OfflineStatusChip />
+              <InstallButton />
+              <OfflineDownloadButton />
+            </div>
           </header>
           <div id="main-content" tabIndex={-1} className="flex flex-1 flex-col p-4 focus:outline-none md:p-6">
-            {children}
+            <OfflineSectionGuard>{children}</OfflineSectionGuard>
           </div>
         </SidebarInset>
       </SidebarProvider>
