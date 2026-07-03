@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import FilterPanel from '@/components/content/filter-panel';
 import type { BaseProblemEntry, ProblemDifficulty } from '@/types/content';
 
@@ -15,9 +16,11 @@ interface Props {
   problems: BaseProblemEntry[];
   basePath: string; // e.g. '/react/machine-coding'
   params: ProblemSearchParams;
+  // Optional slot next to the title (e.g. a PlaylistLauncher for companion videos).
+  headerAction?: ReactNode;
 }
 
-export default function ProblemList({ title, problems, basePath, params }: Props) {
+export default function ProblemList({ title, problems, basePath, params, headerAction }: Props) {
   const q = (params.q ?? '').toLowerCase();
   const cat = params.cat ?? 'all';
   const diff = params.diff ?? 'all';
@@ -43,9 +46,12 @@ export default function ProblemList({ title, problems, basePath, params }: Props
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <div className="flex items-baseline justify-between gap-2">
         <h1 className="font-heading text-2xl font-bold">{title}</h1>
-        <span className="text-sm text-muted-foreground">
-          {shown.length} of {problems.length}
-        </span>
+        <div className="flex items-center gap-2">
+          {headerAction}
+          <span className="text-sm text-muted-foreground">
+            {shown.length} of {problems.length}
+          </span>
+        </div>
       </div>
 
       {/* Grid on the left, sticky filter rail on the right; on mobile the rail becomes a slide-over. */}
