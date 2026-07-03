@@ -1,3 +1,4 @@
+import Fuse from 'fuse.js';
 import type { ReactNode } from 'react';
 import type { Note } from '@/types/content';
 import FilterPanel from './filter-panel';
@@ -25,16 +26,18 @@ export default function NotesView({
   // Optional slot next to the title (e.g. a PdfLauncher on pages with companion PDF guides).
   headerAction?: ReactNode;
 }) {
-  const q = (params.q ?? '').toLowerCase();
+  const q = params.q ?? '';
   const cat = params.cat ?? 'all';
   const diff = params.diff ?? 'all';
 
-  const filtered = notes.filter(
-    (n) =>
-      (!q || n.title.toLowerCase().includes(q) || n.summary.toLowerCase().includes(q)) &&
-      (cat === 'all' || n.category === cat) &&
-      (diff === 'all' || n.difficulty === diff)
-  );
+  // Fuzzy title/summary match (fuse.js, ranked) when a query is present, otherwise the full set
+  // in natural order — then the exact category/difficulty filters narrow it further.
+  const textMatched = q.trim()
+    ? new Fuse(notes, { keys: ['title', 'summary'], threshold: 0.4, ignoreLocation: true, minMatchCharLength: 2 })
+        .search(q)
+        .map((r) => r.item)
+    : notes;
+  const filtered = textMatched.filter((n) => (cat === 'all' || n.category === cat) && (diff === 'all' || n.difficulty === diff));
 
   const categories = [...new Set(notes.map((n) => n.category))].sort();
 

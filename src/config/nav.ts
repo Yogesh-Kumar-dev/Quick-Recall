@@ -39,7 +39,7 @@ export interface NavSection {
 
 // Standalone links (rendered together at the top of the sidebar).
 export const primaryNav: NavLink[] = [
-  { title: 'Dashboard', url: '/dashboard', icon: IconBrandChrome },
+  { title: 'Dashboard', url: '/', icon: IconBrandChrome },
   { title: 'About', url: '/about', icon: IconInfoCircle },
   { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase },
   { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone }

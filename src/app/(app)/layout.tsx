@@ -3,6 +3,7 @@ import InstallButton from '@/components/pwa/install-button';
 import OfflineDownloadButton from '@/components/pwa/offline-download-button';
 import OfflineSectionGuard from '@/components/pwa/offline-section-guard';
 import OfflineStatusChip from '@/components/pwa/offline-status-chip';
+import HeaderSearch from '@/components/search/header-search';
 import TimerSection from '@/components/timer/timer-section';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -24,6 +25,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarInset>
           <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger />
+            <HeaderSearch />
             {/* breadcrumbs land here in a later phase */}
             <TimerSection />
             <div className="ml-auto flex items-center gap-2">

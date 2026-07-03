@@ -1,3 +1,4 @@
+import Fuse from 'fuse.js';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import FilterPanel from '@/components/content/filter-panel';
@@ -21,16 +22,18 @@ interface Props {
 }
 
 export default function ProblemList({ title, problems, basePath, params, headerAction }: Props) {
-  const q = (params.q ?? '').toLowerCase();
+  const q = params.q ?? '';
   const cat = params.cat ?? 'all';
   const diff = params.diff ?? 'all';
 
-  const shown = problems.filter(
-    (p) =>
-      (!q || p.title.toLowerCase().includes(q) || p.tags.some((t) => t.toLowerCase().includes(q))) &&
-      (cat === 'all' || p.category === cat) &&
-      (diff === 'all' || p.difficulty === diff)
-  );
+  // Fuzzy title/tag match (fuse.js, ranked) when a query is present, otherwise the full set in
+  // natural order — then the exact category/difficulty filters narrow it further.
+  const textMatched = q.trim()
+    ? new Fuse(problems, { keys: ['title', 'tags'], threshold: 0.4, ignoreLocation: true, minMatchCharLength: 2 })
+        .search(q)
+        .map((r) => r.item)
+    : problems;
+  const shown = textMatched.filter((p) => (cat === 'all' || p.category === cat) && (diff === 'all' || p.difficulty === diff));
 
   const categories = [...new Set(problems.map((p) => p.category))].sort();
 
