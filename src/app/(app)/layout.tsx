@@ -1,4 +1,5 @@
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import FullscreenButton from '@/components/layout/fullscreen-button';
 import InstallButton from '@/components/pwa/install-button';
 import OfflineDownloadButton from '@/components/pwa/offline-download-button';
 import OfflineSectionGuard from '@/components/pwa/offline-section-guard';
@@ -32,6 +33,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <OfflineStatusChip />
               <InstallButton />
               <OfflineDownloadButton />
+              <FullscreenButton />
             </div>
           </header>
           <div id="main-content" tabIndex={-1} className="flex flex-1 flex-col p-4 focus:outline-none md:p-6">

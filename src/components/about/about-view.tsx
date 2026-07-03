@@ -1,13 +1,16 @@
 import {
   IconArrowRight,
+  IconArrowsMaximize,
   IconBell,
+  IconCloudDownload,
   IconCode,
   IconDatabase,
   IconFileTypePdf,
   IconLink,
   IconMail,
   IconMicrophone,
-  IconPalette
+  IconPalette,
+  IconSearch
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
@@ -25,6 +28,15 @@ interface Feature {
 }
 
 const FEATURES: Feature[] = [
+  {
+    icon: <IconCloudDownload size={24} />,
+    title: 'Installable & Offline-First',
+    blurb:
+      'Install QuickRecall like a native app, then download sections for offline study — pick what you need or grab everything, with live per-section progress. It even detects what is already saved and refreshes after a new release.',
+    tech: 'PWA · Serwist service worker + Cache Storage API',
+    accent: '#5a0fc8',
+    span: 2
+  },
   {
     icon: <IconPalette size={24} />,
     title: 'MongoDB Design System',
@@ -76,11 +88,27 @@ const FEATURES: Feature[] = [
     span: 1
   },
   {
+    icon: <IconSearch size={24} />,
+    title: 'Fuzzy Search',
+    blurb: 'Type into the header search to jump to any problem, custom hook, or page — typo-tolerant, ranked, and keyboard-navigable.',
+    tech: 'fuse.js',
+    accent: '#10b981',
+    span: 1
+  },
+  {
     icon: <IconLink size={24} />,
     title: 'Shareable Filters',
     blurb: 'Difficulty, category, and search live in the URL — every filtered view is bookmarkable.',
     tech: 'nuqs',
     accent: '#016bf8',
+    span: 1
+  },
+  {
+    icon: <IconArrowsMaximize size={24} />,
+    title: 'Distraction-Free Fullscreen',
+    blurb: 'One click expands the whole app to full screen for heads-down study sessions.',
+    tech: 'Fullscreen API',
+    accent: '#ff9800',
     span: 1
   }
 ];

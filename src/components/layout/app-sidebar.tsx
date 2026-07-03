@@ -39,7 +39,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/dashboard" className="flex items-center gap-2 px-2 py-1.5">
+        <Link href="/" className="flex items-center gap-2 px-2 py-1.5">
           <IconBolt className="size-5 text-primary" />
           <span className="font-heading text-lg font-semibold">QuickRecall</span>
         </Link>
