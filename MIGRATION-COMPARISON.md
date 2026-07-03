@@ -24,9 +24,14 @@ against the live legacy Berry/MUI app. Method notes at the bottom.
 
 ## ✅ Gap (FIXED): Home / Dashboard page not built
 
-| Legacy (`/dashboard`) | New app (`/`) |
+| Legacy (`/dashboard`) | New app (`/dashboard`) |
 |---|---|
-| Full landing page: stat tiles (Total Notes, Machine Coding, Easy/Medium/Hard counts), per-topic cards (HTML & CSS, JavaScript & TypeScript, React, Redux, Next.js) each with note/problem counts and quick links, Instagram launcher | Placeholder: "QuickRecall — RSC-first rebuild on the MongoDB design system. Pick a topic from the sidebar." |
+| Full landing page: stat tiles (Total Notes, Machine Coding, Easy/Medium/Hard counts), per-topic cards (HTML & CSS, JavaScript & TypeScript, React, Redux, Next.js) each with note/problem counts and quick links, Instagram launcher | Same layout, ported |
+
+Note: legacy also has a separate standalone marketing landing page at `/` (Hero/Navbar/Stats/Topics/
+Footer, outside the app shell) — out of scope, not ported. The new app's `/` keeps its simple
+placeholder; the dashboard below lives at `/dashboard`, matching legacy's actual route split (an
+earlier pass wrongly merged the dashboard into `/` — corrected).
 
 **Fixed** — `src/components/home/dashboard-view.tsx` + `topic-stat-card.tsx` port the same stat-strip
 + 5-card layout, server-computed from the existing data registries. Verified counts match legacy
