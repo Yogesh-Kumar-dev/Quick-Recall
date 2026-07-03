@@ -131,7 +131,7 @@ export default function DashboardView() {
         />
 
         <TopicStatCard
-          className="md:col-start-2 md:row-start-1 md:row-span-2 md:self-center"
+          className="md:col-start-2 md:row-start-1 md:row-span-2 md:h-auto md:self-center"
           icon={<IconBrandJavascript size={26} />}
           title="JavaScript & TypeScript"
           description="ES6→ES2024 feature notes, TypeScript patterns, machine coding problems, and a quick-recall cheatsheet."

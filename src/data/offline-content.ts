@@ -36,7 +36,7 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
     id: 'core',
     label: 'Core app',
     // app shell + home + the standalone single-page areas
-    urls: ['/', '/about', '/speak-up', '/job-tracker', '/~offline']
+    urls: ['/', '/dashboard', '/about', '/speak-up', '/job-tracker', '/~offline']
   },
   {
     id: 'study',
