@@ -4,9 +4,14 @@ import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import { Button } from '@/components/ui/button';
 import type { QuickRecallItem, QuickRecallSection } from '@/types/content';
 import CodeBlock from './code-block';
+
+// Below this many sections, a plain list is simpler. Above it, virtualize so hundreds of
+// ExpandableCard instances don't all mount at once.
+const VIRTUALIZE_THRESHOLD = 50;
 
 function QRItem({ concept, bullets, codeSnippet, warning }: QuickRecallItem) {
   return (
@@ -42,6 +47,22 @@ export default function QuickRecallView({
   const [open, setOpen] = useState<Record<string, boolean>>(() => Object.fromEntries(sections.map((s) => [s.title, true])));
   const setAll = (v: boolean) => setOpen(Object.fromEntries(sections.map((s) => [s.title, v])));
 
+  const renderSection = (section: QuickRecallSection) => (
+    <ExpandableCard
+      key={section.title}
+      className="mb-2"
+      isOpen={open[section.title]}
+      onClick={() => setOpen((m) => ({ ...m, [section.title]: !m[section.title] }))}
+      title={section.title}
+    >
+      <div className="space-y-3">
+        {section.items.map((item) => (
+          <QRItem key={item.concept} {...item} />
+        ))}
+      </div>
+    </ExpandableCard>
+  );
+
   return (
     <div className="mx-auto w-full max-w-5xl space-y-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -58,21 +79,16 @@ export default function QuickRecallView({
       </div>
       {intro && <p className="text-sm text-muted-foreground">{intro}</p>}
 
-      {sections.map((section) => (
-        <ExpandableCard
-          key={section.title}
-          className="mb-2"
-          isOpen={open[section.title]}
-          onClick={() => setOpen((m) => ({ ...m, [section.title]: !m[section.title] }))}
-          title={section.title}
-        >
-          <div className="space-y-3">
-            {section.items.map((item) => (
-              <QRItem key={item.concept} {...item} />
-            ))}
-          </div>
-        </ExpandableCard>
-      ))}
+      {sections.length > VIRTUALIZE_THRESHOLD ? (
+        <Virtuoso
+          useWindowScroll
+          data={sections}
+          computeItemKey={(_, section) => section.title}
+          itemContent={(_, section) => renderSection(section)}
+        />
+      ) : (
+        sections.map(renderSection)
+      )}
     </div>
   );
 }

@@ -2,8 +2,14 @@ import type { ReactNode } from 'react';
 import type { Note } from '@/types/content';
 import FilterPanel from './filter-panel';
 import NoteCard from './note-card';
+import VirtualNoteList from './virtual-note-list';
 
 export type NotesSearchParams = { q?: string; cat?: string; diff?: string };
+
+// Below this many filtered notes, a plain server-rendered list is both simpler and keeps content
+// in the initial HTML. Above it, virtualize (client-only render) so hundreds of ExpandableCard
+// instances don't all mount at once.
+const VIRTUALIZE_THRESHOLD = 50;
 
 // Shared Server Component for every notes route. Filters `notes` from the URL params (server-side)
 // and renders the list + the client filter island.
@@ -60,6 +66,8 @@ export default function NotesView({
         <main className="min-w-0 flex-1">
           {filtered.length === 0 ? (
             <p className="py-12 text-center text-muted-foreground">No notes match your filters.</p>
+          ) : filtered.length > VIRTUALIZE_THRESHOLD ? (
+            <VirtualNoteList notes={filtered} />
           ) : (
             <div className="space-y-2">
               {filtered.map((note) => (
