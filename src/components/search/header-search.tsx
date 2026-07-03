@@ -64,7 +64,13 @@ export default function HeaderSearch() {
         <kbd className="hidden rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] sm:inline">Ctrl K</kbd>
       </Button>
 
-      <CommandDialog open={open} onOpenChange={setOpen} title="Search" description="Search problems, hooks, and pages">
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Search"
+        description="Search problems, hooks, and pages"
+        className="sm:max-w-xl"
+      >
         <Command shouldFilter={false}>
           <CommandInput placeholder="Search problems, hooks, pages…" value={value} onValueChange={setValue} />
           <CommandList>
