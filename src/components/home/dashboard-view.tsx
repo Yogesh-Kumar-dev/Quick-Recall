@@ -1,4 +1,5 @@
 import { IconBrandCss3, IconBrandJavascript, IconBrandNextjs, IconBrandReact, IconBrandRedux } from '@tabler/icons-react';
+import InstagramLauncher from '@/components/instagram-launcher/instagram-launcher';
 import { jsProblems } from '@/data/javascript/js-problems';
 import { jsNotes } from '@/data/javascript/js-notes';
 import { tsNotes } from '@/data/javascript/ts-notes';
@@ -12,6 +13,7 @@ import { nextjsNotes } from '@/data/nextjs/nextjs-notes';
 import { nextjsRenderingNotes } from '@/data/nextjs/nextjs-rendering';
 import { htmlNotes } from '@/data/htmlcss/html-notes';
 import { cssNotes } from '@/data/htmlcss/css-notes';
+import { DASHBOARD_INSTAGRAM } from '@/data/video-playlists';
 import TopicStatCard from './topic-stat-card';
 
 // ─── Difficulty tally helper ───────────────────────────────────────────────────
@@ -62,11 +64,14 @@ const OVERVIEW = [
 export default function DashboardView() {
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="font-heading text-3xl font-bold">Interview Prep</h1>
-        <p className="mt-1 text-muted-foreground">
-          Your personal reference for JavaScript, TypeScript, React, Redux, and Next.js — notes, machine coding, and cheat sheets.
-        </p>
+      <div className="mb-6 flex items-start justify-between gap-2">
+        <div>
+          <h1 className="font-heading text-3xl font-bold">Interview Prep</h1>
+          <p className="mt-1 text-muted-foreground">
+            Your personal reference for JavaScript, TypeScript, React, Redux, and Next.js — notes, machine coding, and cheat sheets.
+          </p>
+        </div>
+        <InstagramLauncher links={DASHBOARD_INSTAGRAM} />
       </div>
 
       {/* Overview strip */}

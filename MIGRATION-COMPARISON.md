@@ -6,8 +6,8 @@ against the live legacy Berry/MUI app. Method notes at the bottom.
 
 ## TL;DR
 
-- **One real gap found: the Home/Dashboard page.** Legacy has a rich landing page; the new app's
-  `/` is still a placeholder stub. Everything else checked out.
+- **One real gap found: the Home/Dashboard page — now FIXED** (commit `b6c7fe0`). Legacy has a rich
+  landing page; the new app's `/` was still a placeholder stub. Ported.
 - **Three real bugs found and fixed during this pass** (already committed): a hydration mismatch
   in the PWA offline hooks, a missing `?open=` deep-link on Custom Hooks, and a spurious React key
   warning on both Quick Recall pages.
@@ -17,19 +17,23 @@ against the live legacy Berry/MUI app. Method notes at the bottom.
   (About page copy, dropped SectionLanding pages, generic vs. branded icons) or a pre-existing
   legacy bug (a React hydration error present on nearly every legacy page, unrelated to this
   migration).
+- **No known concrete gaps remain.** Only the manual PWA browser test and a final cutover parity
+  pass are left.
 
 ---
 
-## 🔴 Gap: Home / Dashboard page not built
+## ✅ Gap (FIXED): Home / Dashboard page not built
 
 | Legacy (`/dashboard`) | New app (`/`) |
 |---|---|
 | Full landing page: stat tiles (Total Notes, Machine Coding, Easy/Medium/Hard counts), per-topic cards (HTML & CSS, JavaScript & TypeScript, React, Redux, Next.js) each with note/problem counts and quick links, Instagram launcher | Placeholder: "QuickRecall — RSC-first rebuild on the MongoDB design system. Pick a topic from the sidebar." |
 
-This is the single biggest visual/functional gap. It was flagged in the migration plan's Phase 6
-notes ("home page is still a placeholder") but never built. Worth a dedicated pass before cutover —
-likely wants the same stat-tile + category-card layout, server-computed counts from the existing
-data registries (no new data needed, just aggregation + a page).
+**Fixed** — `src/components/home/dashboard-view.tsx` + `topic-stat-card.tsx` port the same stat-strip
++ 5-card layout, server-computed from the existing data registries. Verified counts match legacy
+exactly (294 total notes, 34 machine coding, 13/14/7 easy/medium/hard). Restored `DASHBOARD_INSTAGRAM`
+(dropped in an earlier phase pending this page's existence) and wired the `InstagramLauncher` into
+the header, matching legacy. Dropped MUI's WCAG contrast-adjustment utility (accents are inline
+styles against one fixed dark background, same as the About page). Route stays static (`○`).
 
 ---
 

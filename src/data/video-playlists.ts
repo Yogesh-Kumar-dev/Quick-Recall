@@ -45,6 +45,15 @@ export interface InstagramLink {
   url: string;
 }
 
+// Dashboard (home) Instagram links.
+export const DASHBOARD_INSTAGRAM: InstagramLink[] = [
+  { label: 'coding_.master', url: 'https://www.instagram.com/coding_.master/reels/' },
+  { label: 'coders_section', url: 'https://www.instagram.com/coders_section/' },
+  { label: 'coding.artist', url: 'https://www.instagram.com/coding.artist/reels/' },
+  { label: 'greatfrontend', url: 'https://www.instagram.com/greatfrontend/reels/' },
+  { label: 'itsnextwork', url: 'https://www.instagram.com/itsnextwork/reels/' }
+];
+
 // JS Notes landing-page Instagram links.
 export const JS_NOTES_INSTAGRAM: InstagramLink[] = [
   { label: 'javascript.js', url: 'https://www.instagram.com/javascript.js/reels/' },
