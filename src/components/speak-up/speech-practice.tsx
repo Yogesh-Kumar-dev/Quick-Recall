@@ -113,6 +113,10 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
         setErrorMsg('Microphone access was blocked. Please allow microphone permission and try again.');
       } else if (event.error === 'no-speech') {
         setErrorMsg("Didn't catch that — try speaking a bit louder.");
+      } else if (event.error === 'audio-capture') {
+        setErrorMsg('No microphone was found. Please connect a mic and try again.');
+      } else if (event.error === 'network') {
+        setErrorMsg('Speech recognition needs a network connection to Google — check your connection or ad blocker.');
       } else {
         setErrorMsg('Something went wrong with speech recognition. Please try again.');
       }
