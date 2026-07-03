@@ -145,7 +145,14 @@ export default function useOfflineDownload(): UseOfflineDownload {
   // Tracks the previous isRunning value so we can detect the moment a run finishes.
   const wasRunningRef = useRef(false);
 
-  const isSupported = useMemo(() => typeof navigator !== 'undefined' && 'serviceWorker' in navigator, []);
+  // Starts false (matching SSR, which has no `navigator`) and flips after mount — computing this
+  // synchronously via useMemo would read the real browser value on the client's first render,
+  // mismatching the server-rendered null and causing a hydration error in every SW-capable browser.
+  const [isSupported, setIsSupported] = useState(false);
+  useEffect(() => {
+    setIsSupported(typeof navigator !== 'undefined' && 'serviceWorker' in navigator);
+  }, []);
+
   const isRunning = activeId !== null || queue.length > 0;
 
   // Detect the running→idle transition (a download run just finished). At that point the marker has

@@ -2,7 +2,8 @@
 
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
-import { useMemo, useState } from 'react';
+import { parseAsString, useQueryState } from 'nuqs';
+import { useEffect, useMemo } from 'react';
 import { reactCustomHooks } from '@/data/react/react-custom-hooks';
 import type { HookDifficulty, HookDoc } from '@/types/content';
 import CodeBlock from './code-block';
@@ -88,20 +89,24 @@ function HookCard({ hook, open, onToggle }: { hook: HookDoc; open: boolean; onTo
 }
 
 export default function CustomHooksView() {
-  const [difficulty, setDifficultyState] = useState<HookDifficulty | 'all'>('all');
-  const [category, setCategoryState] = useState('all');
-  const [openId, setOpenId] = useState<string | null>(null);
+  // URL state (nuqs, shallow — no server refetch needed, the full hook list is already client-side)
+  // so filters are shareable and search results can deep-link a hook via ?open=<id>. Safe here
+  // because the route is forced dynamic (see page.tsx), avoiding the CSR-bailout that nuqs would
+  // otherwise cause on a statically-prerendered page — see the custom-hooks-ssr-nuqs memory.
+  const [difficulty, setDifficultyState] = useQueryState('diff', { defaultValue: 'all', clearOnDefault: true });
+  const [category, setCategoryState] = useQueryState('cat', { defaultValue: 'all', clearOnDefault: true });
+  const [openId, setOpenId] = useQueryState('open', parseAsString);
 
   // Changing any filter collapses the open card so its id can't point at a now-hidden hook.
   const setDifficulty = (val: HookDifficulty | 'all') => {
-    setDifficultyState(val);
-    setOpenId(null);
+    void setDifficultyState(val);
+    void setOpenId(null);
   };
   const setCategory = (val: string) => {
-    setCategoryState(val);
-    setOpenId(null);
+    void setCategoryState(val);
+    void setOpenId(null);
   };
-  const handleToggle = (id: string) => setOpenId((cur) => (cur === id ? null : id));
+  const handleToggle = (id: string) => void setOpenId(openId === id ? null : id);
 
   const categories = useMemo(() => {
     const map = new Map<string, number>();
@@ -120,6 +125,15 @@ export default function CustomHooksView() {
       }),
     [difficulty, category]
   );
+
+  // When a hook is deep-linked via ?open=<id> (e.g. from header fuzzy search), scroll it into view
+  // once its card is actually visible (i.e. it survived the active filters).
+  useEffect(() => {
+    if (!openId) return;
+    if (!filtered.some((h) => h.id === openId)) return;
+    const el = document.getElementById(`hook-${openId}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [openId, filtered]);
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-4">

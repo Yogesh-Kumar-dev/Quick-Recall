@@ -51,8 +51,6 @@ const reactProblemItems: SearchItem[] = reactMcProblems.map((p) => ({
   url: `/react/machine-coding/${p.slug}`
 }));
 
-// No ?open=<id> deep-link yet (the page uses local state, not URL state, to stay statically
-// prerendered — see the custom-hooks-ssr-nuqs memory) — search lands on the page, not the card.
 const hookItems: SearchItem[] = reactCustomHooks.map((h) => ({
   id: `hook-${h.id}`,
   label: h.name,
@@ -61,7 +59,7 @@ const hookItems: SearchItem[] = reactCustomHooks.map((h) => ({
   category: h.category,
   section: 'React',
   kind: 'Custom Hook',
-  url: '/react/custom-hooks'
+  url: `/react/custom-hooks?open=${h.id}`
 }));
 
 // Flat nav config (src/config/nav.ts) — no tree to walk, unlike legacy's NavItemType recursion.

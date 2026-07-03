@@ -2,8 +2,8 @@
 
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
+import { Fragment, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { Button } from '@/components/ui/button';
 import type { QuickRecallItem, QuickRecallSection } from '@/types/content';
@@ -68,7 +68,12 @@ export default function QuickRecallView({
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="font-heading text-2xl font-bold">{title}</h1>
         <div className="flex items-center gap-2">
-          {headerAction}
+          {/* Keyed wrapper: headerAction is created in the (server) page.tsx and crosses into this
+              Client Component as a prop — rendered bare alongside the Buttons below (elements this
+              component creates itself), that RSC-boundary crossing spuriously trips React's dev-only
+              "missing key" warning even though there's no real list here. A stable key on a Fragment
+              wrapper silences it. */}
+          <Fragment key="header-action">{headerAction}</Fragment>
           <Button variant="outline" size="sm" onClick={() => setAll(true)}>
             Expand all
           </Button>
