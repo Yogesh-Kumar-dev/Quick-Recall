@@ -40,16 +40,10 @@ export default function JsProblemShell({ problem, approaches }: Props) {
           </TabsList>
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto border-b border-border px-4 py-2">
-          <Segmented
-            options={approaches.map((a, i) => ({ label: a.label, value: String(i) }))}
-            value={String(idx)}
-            onChange={(v) => setIdx(Number(v))}
-          />
-        </div>
-
         {/* keepMounted lets base-ui render both panels; <Activity> prerenders the
-            hidden one at low priority and defers its effects until it's shown. */}
+            hidden one at low priority and defers its effects until it's shown. The approach
+            picker only shows under Code — Details always describes whichever approach was last
+            picked there (matches legacy's JsProblemLayout). */}
         <TabsContent value="details" keepMounted className="max-h-[75vh] overflow-auto p-4">
           <Activity mode={tab === 'details' ? 'visible' : 'hidden'}>
             <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Approach — {current.label}</p>
@@ -58,6 +52,13 @@ export default function JsProblemShell({ problem, approaches }: Props) {
         </TabsContent>
         <TabsContent value="code" keepMounted className="max-h-[75vh] overflow-auto p-4">
           <Activity mode={tab === 'code' ? 'visible' : 'hidden'}>
+            <div className="mb-3 flex items-center gap-2 overflow-x-auto">
+              <Segmented
+                options={approaches.map((a, i) => ({ label: a.label, value: String(i) }))}
+                value={String(idx)}
+                onChange={(v) => setIdx(Number(v))}
+              />
+            </div>
             <CodeBlock code={current.code} language="javascript" />
           </Activity>
         </TabsContent>
