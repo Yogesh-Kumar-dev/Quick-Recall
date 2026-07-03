@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Note } from '@/types/content';
 import FilterPanel from './filter-panel';
 import NoteCard from './note-card';
@@ -6,7 +7,18 @@ export type NotesSearchParams = { q?: string; cat?: string; diff?: string };
 
 // Shared Server Component for every notes route. Filters `notes` from the URL params (server-side)
 // and renders the list + the client filter island.
-export default function NotesView({ title, notes, params }: { title: string; notes: Note[]; params: NotesSearchParams }) {
+export default function NotesView({
+  title,
+  notes,
+  params,
+  headerAction
+}: {
+  title: string;
+  notes: Note[];
+  params: NotesSearchParams;
+  // Optional slot next to the title (e.g. a PdfLauncher on pages with companion PDF guides).
+  headerAction?: ReactNode;
+}) {
   const q = (params.q ?? '').toLowerCase();
   const cat = params.cat ?? 'all';
   const diff = params.diff ?? 'all';
@@ -33,9 +45,12 @@ export default function NotesView({ title, notes, params }: { title: string; not
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <div className="flex items-baseline justify-between gap-2">
         <h1 className="font-heading text-2xl font-bold">{title}</h1>
-        <span className="text-sm text-muted-foreground">
-          {filtered.length} of {notes.length}
-        </span>
+        <div className="flex items-center gap-2">
+          {headerAction}
+          <span className="text-sm text-muted-foreground">
+            {filtered.length} of {notes.length}
+          </span>
+        </div>
       </div>
 
       {/* List on the left, sticky filter rail on the right; on mobile the rail becomes a slide-over. */}

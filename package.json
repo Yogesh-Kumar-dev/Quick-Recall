@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "portless quickrecall next dev",
-    "build": "next build",
+    "copy:wasm": "node scripts/copy-pdfium-wasm.mjs",
+    "dev": "pnpm copy:wasm && portless quickrecall next dev",
+    "build": "pnpm copy:wasm && next build",
     "start": "next start",
     "lint": "biome lint ./src",
     "format": "biome format --write ./src",
@@ -13,6 +14,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@embedpdf/react-pdf-viewer": "^2.14.4",
     "@hookform/resolvers": "^5.4.0",
     "@leafygreen-ui/callout": "^12.1.5",
     "@leafygreen-ui/code": "^20.2.7",

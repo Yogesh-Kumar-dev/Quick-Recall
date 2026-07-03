@@ -2,6 +2,7 @@
 
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import type { QuickRecallItem, QuickRecallSection } from '@/types/content';
@@ -26,7 +27,18 @@ function QRItem({ concept, bullets, codeSnippet, warning }: QuickRecallItem) {
   );
 }
 
-export default function QuickRecallView({ title, intro, sections }: { title: string; intro?: string; sections: QuickRecallSection[] }) {
+export default function QuickRecallView({
+  title,
+  intro,
+  sections,
+  headerAction
+}: {
+  title: string;
+  intro?: string;
+  sections: QuickRecallSection[];
+  // Optional slot next to the expand/collapse buttons (e.g. a PdfLauncher for companion PDF guides).
+  headerAction?: ReactNode;
+}) {
   const [open, setOpen] = useState<Record<string, boolean>>(() => Object.fromEntries(sections.map((s) => [s.title, true])));
   const setAll = (v: boolean) => setOpen(Object.fromEntries(sections.map((s) => [s.title, v])));
 
@@ -34,7 +46,8 @@ export default function QuickRecallView({ title, intro, sections }: { title: str
     <div className="mx-auto w-full max-w-5xl space-y-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="font-heading text-2xl font-bold">{title}</h1>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          {headerAction}
           <Button variant="outline" size="sm" onClick={() => setAll(true)}>
             Expand all
           </Button>
