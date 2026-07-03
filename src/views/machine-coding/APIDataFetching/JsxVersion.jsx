@@ -32,6 +32,7 @@ export default function APIDataFetching() {
   }
 
   const loading = request.status === 'loading';
+  const fetched = request.status === 'success';
 
   return (
     <div style={{ padding: 24 }}>

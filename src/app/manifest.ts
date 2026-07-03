@@ -1,5 +1,8 @@
 import type { MetadataRoute } from 'next';
 
+// Required under `output: 'export'` — metadata routes must opt into static generation.
+export const dynamic = 'force-static';
+
 // Web app manifest as a typed metadata route — Next serves it at /manifest.webmanifest and
 // auto-links it from <head>, staying consistent with the typed Metadata used in layout.tsx.
 // `display: standalone` + the icon set (incl. a maskable variant) are what make the app

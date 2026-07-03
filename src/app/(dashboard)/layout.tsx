@@ -3,13 +3,12 @@ import DashboardLayout from 'layout/MainLayout';
 import ReviewReminderMount from 'views/review/ReviewReminderMount';
 import { OfflineSectionGuard } from 'ui-component/pwa';
 
-// The shell (Breadcrumbs, NavItem) and nearly every page read URL search params via
-// useSearchParams / nuqs to drive filters and active-item state. Under static prerendering that
-// triggers Next's BAILOUT_TO_CLIENT_SIDE_RENDERING, shipping an empty shell so the real content
-// (the LCP element) only paints after hydration — LCP ~6.6s. Rendering this segment dynamically
-// lets useSearchParams resolve on the server, so the content lands in the initial HTML. TTFB is
-// ~30ms on Vercel, so the static→dynamic trade is well worth the LCP win.
-export const dynamic = 'force-dynamic';
+// `output: 'export'` requires every segment to be statically renderable, so this must be static.
+// Tradeoff: the shell (Breadcrumbs, NavItem) and pages that read URL search params via
+// useSearchParams / nuqs will hit Next's BAILOUT_TO_CLIENT_SIDE_RENDERING and only paint the
+// real content after hydration (the LCP regression the old force-dynamic avoided). There is no
+// server at request time under static export, so that regression is unavoidable here.
+export const dynamic = 'force-static';
 
 // ==============================|| DASHBOARD LAYOUT ||============================== //
 

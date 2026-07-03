@@ -43,6 +43,12 @@ const withSerwist = withSerwistInit({
 });
 
 const nextConfig: NextConfig = {
+  // Static export: `next build` emits a fully static `out/` folder (HTML + assets) that can be
+  // dumped straight into an S3 bucket / any static host. No Node runtime is used at request time —
+  // every page is prerendered at build. This disables all server-at-runtime features (API routes,
+  // middleware, on-demand SSR, next/image optimization). The machine-coding pages still work because
+  // their readFileSync runs at build time, and the [slug] route enumerates paths via generateStaticParams.
+  output: 'export',
   // Pre-existing lint debt (e.g. react/no-unescaped-entities in some machine-coding
   // demo files) should not block production builds. Type-checking stays enforced.
   eslint: {
@@ -104,6 +110,8 @@ const nextConfig: NextConfig = {
     }
   },
   images: {
+    // `output: 'export'` has no server to run the image optimizer, so images must be served as-is.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
