@@ -204,7 +204,9 @@ function CaughtUp({ enrolledCount }: { enrolledCount: number }) {
     <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
       <h2 className="text-xl font-semibold">All caught up</h2>
       <p className="mt-2 text-sm text-muted-foreground">{description}</p>
-      {enrolledCount === 0 && <Button variant="outline" className="mt-6" render={<a href="/flashcards">Browse flashcards</a>} />}
+      {enrolledCount === 0 && (
+        <Button variant="outline" className="mt-6" nativeButton={false} render={<a href="/flashcards">Browse flashcards</a>} />
+      )}
     </div>
   );
 }

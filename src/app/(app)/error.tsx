@@ -28,10 +28,15 @@ export default function AppError({ error, reset }: { error: Error & { digest?: s
         <Button size="lg" onClick={reset}>
           <IconRefresh /> Try again
         </Button>
-        <Button variant="outline" size="lg" render={<Link href="/" />}>
+        <Button variant="outline" size="lg" nativeButton={false} render={<Link href="/" />}>
           <IconHome /> Dashboard
         </Button>
-        <Button variant="outline" size="lg" render={<a href={CONTACT_URL} target="_blank" rel="noopener noreferrer" />}>
+        <Button
+          variant="outline"
+          size="lg"
+          nativeButton={false}
+          render={<a href={CONTACT_URL} target="_blank" rel="noopener noreferrer" />}
+        >
           <IconMail /> Contact
         </Button>
       </div>
