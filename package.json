@@ -9,9 +9,12 @@
     "build": "pnpm copy:wasm && next build",
     "start": "next start",
     "lint": "biome lint ./src",
+    "lint:ci": "biome ci ./src",
     "format": "biome format --write ./src",
     "check": "biome check --write ./src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "knip": "knip",
+    "test": "echo \"No tests yet — placeholder\" && exit 0"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -52,6 +55,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "knip": "6.20.0",
     "portless": "^0.15.1",
     "serwist": "^9.5.11",
     "tailwindcss": "^4",

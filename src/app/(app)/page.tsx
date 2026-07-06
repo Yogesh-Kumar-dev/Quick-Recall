@@ -37,7 +37,10 @@ export default function Home() {
 
         <div className="mt-8 grid justify-items-center gap-6 @lg:grid-cols-3 @lg:justify-items-start">
           {FEATURES.map((f) => (
-            <div key={f.title} className="flex flex-row items-center justify-center gap-3 @lg:flex-col @lg:items-start @lg:justify-start @lg:gap-2">
+            <div
+              key={f.title}
+              className="flex flex-row items-center justify-center gap-3 @lg:flex-col @lg:items-start @lg:justify-start @lg:gap-2"
+            >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">{f.icon}</div>
               <h3 className="font-heading text-sm font-semibold">{f.title}</h3>
             </div>
