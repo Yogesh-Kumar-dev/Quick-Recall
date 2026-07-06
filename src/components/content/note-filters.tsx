@@ -5,7 +5,12 @@ import { Input } from '@/components/ui/input';
 
 const NOTE_DIFFICULTIES = ['all', 'basic', 'intermediate', 'advanced'];
 
-export type FilterCounts = { total: number; byCategory: Record<string, number>; byDifficulty: Record<string, number> };
+export type FilterCounts = {
+  categoryTotal: number; // "all" topic chip — matches under the current difficulty + query
+  difficultyTotal: number; // "all" difficulty chip — matches under the current topic + query
+  byCategory: Record<string, number>;
+  byDifficulty: Record<string, number>;
+};
 
 export type FilterConfig = { difficulties?: string[]; searchPlaceholder?: string; topicLabel?: string };
 
@@ -56,7 +61,7 @@ export default function NoteFilters({
               key={d}
               active={diff === d}
               label={d}
-              count={d === 'all' ? counts.total : (counts.byDifficulty[d] ?? 0)}
+              count={d === 'all' ? counts.difficultyTotal : (counts.byDifficulty[d] ?? 0)}
               onClick={() => setDiff(d)}
             />
           ))}
@@ -65,7 +70,7 @@ export default function NoteFilters({
       <div>
         <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{topicLabel}</p>
         <div className="flex flex-wrap gap-1.5">
-          <Chip active={cat === 'all'} label="all" count={counts.total} onClick={() => setCat('all')} />
+          <Chip active={cat === 'all'} label="all" count={counts.categoryTotal} onClick={() => setCat('all')} />
           {categories.map((c) => (
             <Chip key={c} active={cat === c} label={c} count={counts.byCategory[c] ?? 0} onClick={() => setCat(c)} />
           ))}

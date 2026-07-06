@@ -35,15 +35,27 @@ export default function ProblemList({ title, problems, basePath, params, headerA
     : problems;
   const shown = textMatched.filter((p) => (cat === 'all' || p.category === cat) && (diff === 'all' || p.difficulty === diff));
 
+  // Chip labels always list every category (even ones the current filters zero out) so users can
+  // still navigate back to them — only the counts next to each chip are cross-filtered.
   const categories = [...new Set(problems.map((p) => p.category))].sort();
 
+  // Cross-filtered (faceted) counts: each facet's numbers reflect the OTHER active facet + the
+  // text query, but ignore its own current selection — see notes-view.tsx for the same pattern.
+  const byCategoryScope = textMatched.filter((p) => diff === 'all' || p.difficulty === diff);
+  const byDifficultyScope = textMatched.filter((p) => cat === 'all' || p.category === cat);
+
   const byCategory: Record<string, number> = {};
+  for (const p of byCategoryScope) byCategory[p.category] = (byCategory[p.category] ?? 0) + 1;
+
   const byDifficulty: Record<string, number> = {};
-  for (const p of problems) {
-    byCategory[p.category] = (byCategory[p.category] ?? 0) + 1;
-    byDifficulty[p.difficulty] = (byDifficulty[p.difficulty] ?? 0) + 1;
-  }
-  const counts = { total: problems.length, byCategory, byDifficulty };
+  for (const p of byDifficultyScope) byDifficulty[p.difficulty] = (byDifficulty[p.difficulty] ?? 0) + 1;
+
+  const counts = {
+    categoryTotal: byCategoryScope.length,
+    difficultyTotal: byDifficultyScope.length,
+    byCategory,
+    byDifficulty
+  };
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">

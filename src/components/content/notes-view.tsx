@@ -40,16 +40,29 @@ export default function NotesView({
     : notes;
   const filtered = textMatched.filter((n) => (cat === 'all' || n.category === cat) && (diff === 'all' || n.difficulty === diff));
 
+  // Chip labels always list every topic (even ones the current filters zero out) so users can
+  // still navigate back to them — only the counts next to each chip are cross-filtered.
   const categories = [...new Set(notes.map((n) => n.category))].sort();
 
-  // Counts across the full set (stable orientation numbers, not affected by the active filter).
+  // Cross-filtered (faceted) counts: each facet's numbers reflect the OTHER active facet + the
+  // text query, but ignore its own current selection — so picking "Basic" updates the Topic
+  // counts to "how many Basic notes per topic", while every topic chip (including the selected
+  // one) stays visible with an accurate, live count instead of a frozen global total.
+  const byCategoryScope = textMatched.filter((n) => diff === 'all' || n.difficulty === diff);
+  const byDifficultyScope = textMatched.filter((n) => cat === 'all' || n.category === cat);
+
   const byCategory: Record<string, number> = {};
+  for (const n of byCategoryScope) byCategory[n.category] = (byCategory[n.category] ?? 0) + 1;
+
   const byDifficulty: Record<string, number> = {};
-  for (const n of notes) {
-    byCategory[n.category] = (byCategory[n.category] ?? 0) + 1;
-    byDifficulty[n.difficulty] = (byDifficulty[n.difficulty] ?? 0) + 1;
-  }
-  const counts = { total: notes.length, byCategory, byDifficulty };
+  for (const n of byDifficultyScope) byDifficulty[n.difficulty] = (byDifficulty[n.difficulty] ?? 0) + 1;
+
+  const counts = {
+    categoryTotal: byCategoryScope.length, // "all" topic chip: matches under the current difficulty + query
+    difficultyTotal: byDifficultyScope.length, // "all" difficulty chip: matches under the current topic + query
+    byCategory,
+    byDifficulty
+  };
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
