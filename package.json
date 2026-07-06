@@ -2,6 +2,7 @@
   "name": "quickrecall",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@11.9.0",
   "scripts": {
     "copy:wasm": "node scripts/copy-pdfium-wasm.mjs",
     "dev": "pnpm copy:wasm && portless quickrecall next dev",
