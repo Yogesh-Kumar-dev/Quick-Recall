@@ -59,6 +59,7 @@
     "portless": "^0.15.1",
     "serwist": "^9.5.11",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vercel": "^54.20.1"
   }
 }
