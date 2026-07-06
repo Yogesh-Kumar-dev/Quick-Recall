@@ -346,5 +346,91 @@ export const reactFlashcards: Flashcard[] = [
     front: 'CI/CD for a React app — typical pipeline?',
     back: 'On push, CI runs lint + type-check + tests + build; on merge, CD deploys the built bundle to a host/CDN (Vercel, Netlify, S3+CloudFront). Tools: GitHub Actions, GitLab CI.',
     category: 'Q&A'
+  },
+
+  // ─── ADDED: gaps surfaced from the "React interview questions" PDF sweep ────
+  {
+    id: 'react-proptypes',
+    front: 'PropTypes',
+    back: 'The prop-types package runtime-checks prop shapes in plain JS codebases, logging a console warning in dev on mismatch — unlike TypeScript, it only catches issues on code paths that actually execute, and only in development.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-shadow-vs-virtual-dom',
+    front: 'Shadow DOM vs Virtual DOM',
+    back: 'Shadow DOM is a browser-native API for scoping CSS/DOM in Web Components (encapsulation). Virtual DOM is a JS-library concept (React) built on top of normal DOM APIs for diffing/reconciliation performance — different problems, unrelated mechanisms.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-vs-reactdom',
+    front: 'react vs react-dom packages',
+    back: 'react exports environment-agnostic APIs (createElement, Component, Children) — the core reused by React Native. react-dom supplies the web renderer (createRoot/render); react-dom/server adds renderToString/renderToStaticMarkup for SSR.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-key-source',
+    front: 'Where should a key value come from?',
+    back: 'From the data itself, matched to its source: a DB row already has a unique id/key — use it. For purely client-generated items (e.g. new todo rows), use an incrementing counter or crypto.randomUUID() (no library needed) at creation time — never re-derive it from array index on every render.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-lifting-state-up',
+    front: 'Lifting State Up',
+    back: 'When sibling components need the same changing data, move the state to their closest common ancestor and pass it down via props/callbacks — instead of duplicating local state in each sibling.',
+    category: 'Keyword'
+  },
+  {
+    id: 'react-force-update',
+    front: 'forceUpdate()',
+    back: 'A class-component escape hatch that re-renders without a state change, bypassing shouldComponentUpdate. No hook equivalent exists on purpose — needing it usually means state isn’t modeled correctly.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-synthetic-events',
+    front: 'SyntheticEvent',
+    back: 'React wraps native browser events in a SyntheticEvent that normalizes properties (target, type, ...) across browsers. Since React 17, event pooling was removed — e.persist() is no longer needed.',
+    category: 'Keyword'
+  },
+  {
+    id: 'react-prop-drilling',
+    front: 'Prop Drilling',
+    back: 'Passing data through several intermediate components that don’t use it, just to reach a deeply nested child. Fixes: Context, a state library, or composition (pass components as children instead of drilling values).',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-dangerously-set-innerhtml',
+    front: 'dangerouslySetInnerHTML',
+    back: 'Escape hatch to inject a raw HTML string ({ __html: string }), bypassing React’s default escaping — a direct XSS vector if the content isn’t sanitized (e.g. with DOMPurify) first.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-purecomponent',
+    front: 'PureComponent',
+    back: 'A class-component base that auto-implements shouldComponentUpdate with a shallow prop/state comparison — the class-era equivalent of wrapping a function component in React.memo.',
+    category: 'Keyword'
+  },
+  {
+    id: 'react-devtools-profiler',
+    front: 'React DevTools Profiler',
+    back: 'A DevTools tab that records render timings/flame graphs per commit — the practical tool for answering "how would you find what’s causing unnecessary re-renders or slow renders?"',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-vs-react-native',
+    front: 'React vs React Native',
+    back: 'React renders to the DOM for the web. React Native reuses the same component/hooks model but compiles to native mobile UI elements via a different renderer — not HTML, not a WebView.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-effect-deps-objectis',
+    front: 'How does useEffect compare dependencies?',
+    back: 'With Object.is per dependency (like === but correct for NaN/+0/-0). Objects/arrays/functions compare by reference — a new inline literal in the deps array is "different" every render, re-triggering the effect.',
+    category: 'Q&A'
+  },
+  {
+    id: 'react-render-vs-commit-phase',
+    front: 'Render phase vs Commit phase',
+    back: 'Trigger → Render (React calls components, computes the diff — can be paused/discarded) → Commit (applies changes to the real DOM, runs layout effects) → browser paint. "What happens between a state update and the DOM changing?" expects these named phases.',
+    category: 'Q&A'
   }
 ];

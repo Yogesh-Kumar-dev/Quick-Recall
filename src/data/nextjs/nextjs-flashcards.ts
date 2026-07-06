@@ -257,6 +257,128 @@ export const nextjsFlashcards: Flashcard[] = [
     front: 'getInitialProps — why avoid it?',
     back: 'A legacy Pages Router data method that runs on both server and client and disables Automatic Static Optimization (forces SSR for the whole app). Prefer getStaticProps/getServerSideProps, or the App Router.',
     category: 'Q&A'
+  },
+
+  // ─── ADDED: from the Next.js Interview Mastery (80 Q) deck ─────────────────
+  {
+    id: 'next-image-priority',
+    front: 'priority prop on next/image',
+    back: 'Loads the image eagerly instead of lazily and adds a preload hint — use only on the LCP (above-the-fold) image, since it directly affects Largest Contentful Paint.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-image-fill',
+    front: 'fill prop on next/image',
+    back: 'Makes the image fill its parent container instead of taking explicit width/height — the parent needs position:relative, and sizes should be set for correct srcset selection.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-font-display-swap',
+    front: 'next/font display: "swap"',
+    back: 'Shows a fallback font immediately and swaps in the web font once loaded, avoiding invisible text and layout shift — fonts are self-hosted at build time, no external request.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-revalidate-path-tag',
+    front: 'revalidatePath vs revalidateTag',
+    back: 'revalidatePath("/blog") invalidates the cache for a specific route. revalidateTag("posts") invalidates every fetch tagged with that string, wherever it was called — more precise for CMS webhooks.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-stale-while-revalidate',
+    front: 'Stale-while-revalidate (ISR)',
+    back: 'When a page becomes stale after its revalidate window, the current visitor still gets the old cached HTML instantly while Next.js regenerates it in the background — the next visitor gets the fresh version.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-use-hook',
+    front: 'use() hook (React)',
+    back: 'Unwraps a Promise (or Context) inside a Client Component, suspending until it resolves — pairs with a Server Component that starts a fetch without awaiting it, then passes the promise down.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-edge-runtime',
+    front: 'Edge Runtime',
+    back: 'A lightweight, globally-distributed runtime with only Web APIs (fetch, Web Crypto) — near-zero cold starts, ~128MB memory limit, no Node.js built-ins like fs. middleware.ts always runs here.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-runtime-export',
+    front: 'export const runtime',
+    back: "Set to 'edge' or 'nodejs' in a route/layout to choose its server runtime. Default is 'nodejs' (full Node APIs); 'edge' trades API access for latency and global distribution.",
+    category: 'Keyword'
+  },
+  {
+    id: 'next-cookies-headers-fn',
+    front: 'cookies() / headers() (next/headers)',
+    back: 'Server-only functions to read (and, in Server Actions/Route Handlers, write) request cookies and headers. Reading either opts the current route into dynamic rendering.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-httponly-cookie',
+    front: 'httpOnly cookies',
+    back: "Cookies set with httpOnly: true are invisible to JavaScript (document.cookie can't read them) — always use this for auth tokens to block XSS-based theft.",
+    category: 'Q&A'
+  },
+  {
+    id: 'next-nextauth',
+    front: 'NextAuth.js (Auth.js)',
+    back: 'The standard Next.js auth library — OAuth/Credentials/Email providers, JWT or database sessions, and a single auth.ts config exposing { handlers, signIn, signOut, auth }.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-auth-server-vs-client',
+    front: 'auth() vs useSession()',
+    back: 'auth() (server) reads the session directly in Server Components with zero client JS. useSession() (client) is reactive but requires wrapping the tree in a Client Component SessionProvider.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-react-cache',
+    front: 'React cache()',
+    back: 'Memoizes a server-side async function per request — if a layout and a page both call the same cache()-wrapped getUser(id), only one DB query actually runs.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-bundle-analyzer',
+    front: '@next/bundle-analyzer',
+    back: 'A plugin that visualizes what is inside each JS bundle/chunk — run with ANALYZE=true to spot oversized dependencies worth dynamic-importing or replacing.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-sitemap-robots-files',
+    front: 'sitemap.ts / robots.ts',
+    back: 'File-convention APIs in app/ that auto-generate /sitemap.xml and /robots.txt from exported functions — no manual XML/text file needed.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-jsonld',
+    front: 'JSON-LD structured data',
+    back: 'A <script type="application/ld+json"> block with schema.org markup (Article, Product) embedded in a page — enables Google rich results like author, date, or price in search listings.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-output-standalone',
+    front: 'output: "standalone"',
+    back: 'A next.config.js option that produces a minimal, self-contained server.js build (only the files actually needed at runtime) — the standard base for a lean Docker image.',
+    category: 'Keyword'
+  },
+  {
+    id: 'next-output-export',
+    front: 'output: "export"',
+    back: 'Produces a fully static site (plain HTML/CSS/JS in out/) hostable on any static host — but drops SSR, Route Handlers, middleware, and ISR entirely.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-turborepo',
+    front: 'Turborepo',
+    back: "Vercel's monorepo build tool — caches task outputs (build/lint/test) per package and only reruns what actually changed, with optional remote caching shared across a team/CI.",
+    category: 'Keyword'
+  },
+  {
+    id: 'next-transpile-packages',
+    front: 'transpilePackages (next.config.js)',
+    back: 'Tells Next.js to transpile listed workspace packages (e.g. a shared "@repo/ui") that ship untranspiled TS/JSX — required in Turborepo/monorepo setups.',
+    category: 'Keyword'
   }
 ];
 

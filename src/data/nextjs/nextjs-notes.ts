@@ -703,5 +703,305 @@ export async function OPTIONS() {
 export async function GET() {
   return Response.json({ ok: true }, { headers: cors });
 }`
+  },
+
+  // ─── ADDED: from the Next.js Interview Mastery (80 Q) deck ───────────────────
+  {
+    id: 'image-optimization',
+    title: 'next/image — Image Optimization',
+    summary: '<Image> auto-generates responsive srcsets, lazy loads, converts to WebP/AVIF, and reserves space to prevent layout shift.',
+    difficulty: 'basic',
+    category: 'optimization',
+    keyPoints: [
+      'Required: src, alt, and either width+height or fill (fill needs a position:relative parent).',
+      'priority — loads eagerly, skips lazy loading; use only for the LCP (above-the-fold) image.',
+      'placeholder="blur" — shows a blurred preview while the full image loads.',
+      'sizes — hints the browser which srcset entry to pick for fill/responsive images.',
+      'External images must be allowlisted via images.remotePatterns in next.config.js.'
+    ],
+    gotcha:
+      'Forgetting priority on the hero/LCP image hurts Core Web Vitals — it gets lazy-loaded like everything else, delaying Largest Contentful Paint.',
+    codeSnippet: `import Image from 'next/image';
+
+<Image src={hero} alt="Hero" priority placeholder="blur" />
+
+<div className="relative aspect-square w-full">
+  <Image src={product.src} alt={product.name} fill sizes="(max-width: 768px) 100vw, 50vw" />
+</div>
+
+// next.config.js
+module.exports = {
+  images: { remotePatterns: [{ protocol: 'https', hostname: 'cdn.example.com' }] }
+};`
+  },
+  {
+    id: 'font-optimization',
+    title: 'next/font — Font Optimization',
+    summary: 'Self-hosts Google/local fonts at build time — no external network request, and display:"swap" avoids layout shift.',
+    difficulty: 'basic',
+    category: 'optimization',
+    keyPoints: [
+      'import { Inter } from "next/font/google" — downloaded and self-hosted at build time, no runtime request.',
+      'display: "swap" shows a fallback font immediately, then swaps in the web font — avoids invisible text.',
+      'variable: "--font-inter" exposes the font as a CSS variable for use with Tailwind/CSS.',
+      'Apply className/variable on <html> or <body> in the root layout so it cascades everywhere.'
+    ],
+    codeSnippet: `import { Inter } from 'next/font/google';
+const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
+
+export default function RootLayout({ children }) {
+  return <html className={inter.variable}><body>{children}</body></html>;
+}`
+  },
+  {
+    id: 'isr-deep-dive',
+    title: 'ISR — Time-based vs On-demand Revalidation',
+    summary: 'Static pages can be refreshed after build without a full rebuild — either on a timer or immediately via a webhook.',
+    difficulty: 'intermediate',
+    category: 'data',
+    keyPoints: [
+      'Time-based: fetch(url, { next: { revalidate: 3600 } }) — stale-while-revalidate, regenerates in the background after 1 hour.',
+      'On-demand: revalidatePath("/blog") or revalidateTag("posts") from a Server Action or Route Handler — instant freshness.',
+      'Tag-based caching (next: { tags: ["posts"] }) lets you revalidate precisely without guessing which paths are affected.',
+      'The visitor who triggers a stale request still gets the OLD page instantly — the NEXT visitor gets the regenerated one.',
+      'CMS webhook pattern: editor publishes → webhook hits /api/revalidate → revalidateTag(...) → pages update without a deploy.'
+    ],
+    gotcha:
+      'revalidate: 0 (or reading cookies()/headers()) forces the route to render dynamically on every request — that is SSR, not ISR.',
+    codeSnippet: `// Time-based
+const data = await fetch(url, { next: { revalidate: 3600, tags: ['products'] } });
+
+// On-demand — app/api/revalidate/route.ts
+import { revalidateTag } from 'next/cache';
+export async function POST(req: Request) {
+  const { tag } = await req.json();
+  revalidateTag(tag);
+  return Response.json({ revalidated: true });
+}`
+  },
+  {
+    id: 'streaming-suspense',
+    title: 'Streaming & Suspense',
+    summary: 'Send the HTML shell immediately, then stream in each async section as its data resolves — instead of blocking on everything.',
+    difficulty: 'intermediate',
+    category: 'components',
+    keyPoints: [
+      'Wrap a slow async Server Component in <Suspense fallback={...}> — the rest of the page renders immediately.',
+      'loading.tsx is an automatic, route-level Suspense boundary around page.tsx.',
+      'Granular Suspense (one boundary per independent section) beats one big loading spinner for perceived performance.',
+      'use() (React) unwraps a Promise inside a Client Component and suspends until it resolves — pair with a Server Component that starts the fetch without awaiting it.'
+    ],
+    gotcha:
+      'Suspense only helps if the slow work is isolated in its own component — awaiting everything in one parent component still blocks the whole subtree.',
+    codeSnippet: `<div>
+  <Header />                                    {/* renders instantly */}
+  <Suspense fallback={<StatsSkeleton />}>
+    <Stats />                                   {/* async Server Component */}
+  </Suspense>
+  <Suspense fallback={<OrdersSkeleton />}>
+    <RecentOrders />                             {/* streams independently */}
+  </Suspense>
+</div>`
+  },
+  {
+    id: 'edge-vs-node-runtime',
+    title: 'Edge Runtime vs Node.js Runtime',
+    summary: 'Edge runs on a lightweight, globally-distributed Web API sandbox with near-zero cold starts; Node.js gives full server APIs.',
+    difficulty: 'intermediate',
+    category: 'app-router',
+    keyPoints: [
+      'export const runtime = "edge" opts a route/layout into the Edge runtime (default is "nodejs").',
+      'Edge: only Web APIs (fetch, Request/Response, Web Crypto) — no fs, no native addons, ~128MB memory limit.',
+      'Node.js: full Node APIs (fs, native modules, Prisma, bcrypt) — larger cold starts, single-region by default.',
+      'middleware.ts always runs at the Edge — ideal for cheap, latency-sensitive checks (auth redirects, A/B bucketing).',
+      'Use jose (pure-JS JWT) instead of jsonwebtoken at the Edge — the latter relies on Node crypto internals.'
+    ],
+    codeSnippet: `// app/api/geo/route.ts — Edge
+export const runtime = 'edge';
+export async function GET(req: Request) {
+  return Response.json({ country: req.headers.get('x-vercel-ip-country') });
+}
+
+// app/api/users/route.ts — Node.js (default), can use Prisma/bcrypt
+export const runtime = 'nodejs';`
+  },
+  {
+    id: 'cookies-headers-api',
+    title: 'cookies() & headers() (next/headers)',
+    summary:
+      'Server-only, request-scoped APIs for reading/writing cookies and inspecting request headers — reading either opts a route into dynamic rendering.',
+    difficulty: 'intermediate',
+    category: 'api',
+    keyPoints: [
+      'cookies() and headers() work in Server Components, Server Actions, and Route Handlers — never in Client Components.',
+      'Setting cookies (cookies().set(name, value, opts)) is only allowed in Server Actions and Route Handlers, not in a Server Component render.',
+      'Always set httpOnly: true, secure: true (prod), and sameSite for auth cookies — prevents XSS/CSRF from reading or forging them.',
+      'Reading cookies() or headers() automatically makes the route dynamic (no static/ISR caching for that render).'
+    ],
+    gotcha:
+      'Calling cookies() inside a helper that is imported but never actually used for the current request still forces the whole route dynamic — check what your shared utils touch.',
+    codeSnippet: `import { cookies, headers } from 'next/headers';
+
+// Read (Server Component)
+const theme = cookies().get('theme')?.value ?? 'light';
+const ua = headers().get('user-agent');
+
+// Write (Server Action)
+'use server';
+export async function login(formData: FormData) {
+  cookies().set('token', await issueToken(formData), {
+    httpOnly: true, secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7,
+  });
+}`
+  },
+  {
+    id: 'nextauth-authjs',
+    title: 'Authentication with NextAuth.js (Auth.js)',
+    summary: 'The standard Next.js auth library — OAuth providers, credentials, JWT or DB sessions, wired through a single auth.ts config.',
+    difficulty: 'intermediate',
+    category: 'app-router',
+    keyPoints: [
+      'Central config in auth.ts exports { handlers, signIn, signOut, auth }; app/api/auth/[...nextauth]/route.ts re-exports { GET, POST } = handlers.',
+      'Providers: OAuth (Google/GitHub/...), Credentials (custom email+password via authorize()), Email (magic link).',
+      'Sessions: JWT (default, no DB) or database (needs an adapter, e.g. Prisma) for server-tracked sessions.',
+      'jwt() and session() callbacks customize what ends up in the token and what is exposed to session.user.',
+      'Server: const session = await auth() inside Server Components — no client JS needed. Client: useSession() from "next-auth/react" for reactive UI.'
+    ],
+    gotcha:
+      "Prefer server-side auth() in Server Components over useSession() — useSession requires wrapping the tree in a Client Component <SessionProvider>, adding JS just to read a session that's already known on the server.",
+    codeSnippet: `// auth.ts
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [Google({ clientId, clientSecret })],
+  callbacks: {
+    jwt({ token, user }) { if (user) token.id = user.id; return token; },
+    session({ session, token }) { session.user.id = token.id as string; return session; },
+  },
+});
+
+// Server Component
+const session = await auth();
+if (!session) redirect('/login');`
+  },
+  {
+    id: 'performance-optimization',
+    title: 'Performance Optimization Checklist',
+    summary: 'Push "use client" to the leaves, stream instead of waterfall, and let SSG/ISR do the heavy lifting for public pages.',
+    difficulty: 'intermediate',
+    category: 'optimization',
+    keyPoints: [
+      'Minimize "use client" boundaries — a page where only the interactive widget is client-side ships far less JS than a page wrapped entirely in "use client".',
+      'Prefer SSG/ISR for public content (CDN delivery) over SSR/CSR wherever data freshness allows it.',
+      'Dynamic-import heavy libraries (charts, rich-text editors, maps) with next/dynamic and ssr: false — 200–500KB saved for users who never trigger them.',
+      'Fetch independent data in parallel (Promise.all) instead of sequential awaits — avoids request waterfalls.',
+      'React cache() deduplicates the same server-side data function called from multiple components (e.g. layout + page both need the current user).',
+      'Targets: LCP < 2.5s, INP < 200ms, CLS < 0.1.'
+    ],
+    codeSnippet: `// Push interactivity to a leaf component
+function LikeButton() { 'use client'; /* useState here */ }
+export default async function ProductPage({ params }) {
+  const product = await getProduct(params.id);          // server
+  return <div><h1>{product.title}</h1><LikeButton /></div>;
+}
+
+// Dedup server fetches across layout + page
+import { cache } from 'react';
+const getUser = cache(async (id: string) => db.users.findById(id));`
+  },
+  {
+    id: 'testing-nextjs',
+    title: 'Testing Next.js Apps',
+    summary: 'Unit/integration test with Jest + React Testing Library, and cover critical user flows end-to-end with Playwright.',
+    difficulty: 'intermediate',
+    category: 'fundamentals',
+    keyPoints: [
+      'Jest + React Testing Library for components and utilities; next/jest.js provides a preconfigured Next-aware Jest setup.',
+      'Route Handlers can be unit-tested directly: import { GET } from "./route" and call it with a NextRequest.',
+      'Server Components are harder to unit test — usually better to test the underlying data functions (getProduct, getUser) in isolation instead of rendering the RSC tree.',
+      'Playwright/Cypress for E2E — test real flows (login, checkout) across browsers.',
+      'MSW (Mock Service Worker) to stub network calls in both unit and E2E layers.'
+    ],
+    gotcha:
+      "Don't try to exhaustively unit-test simple Server Components — invest that effort in E2E coverage of the critical paths and isolated tests of the data-fetching functions they call.",
+    codeSnippet: `// __tests__/api/users.test.ts
+import { GET } from '@/app/api/users/route';
+import { NextRequest } from 'next/server';
+
+test('GET /api/users returns a list', async () => {
+  const res = await GET(new NextRequest('http://localhost/api/users'));
+  expect(res.status).toBe(200);
+});
+
+// e2e/login.spec.ts (Playwright)
+test('user can log in', async ({ page }) => {
+  await page.goto('/login');
+  await page.fill('[name=email]', 'a@b.com');
+  await page.click('button[type=submit]');
+  await expect(page).toHaveURL('/dashboard');
+});`
+  },
+  {
+    id: 'seo-sitemap-jsonld',
+    title: 'SEO: sitemap.ts, robots.ts & JSON-LD',
+    summary: 'File-convention APIs auto-generate sitemap.xml and robots.txt; JSON-LD structured data unlocks rich search results.',
+    difficulty: 'intermediate',
+    category: 'metadata',
+    keyPoints: [
+      'app/sitemap.ts exports a default function returning { url, lastModified, changeFrequency, priority }[] — served at /sitemap.xml.',
+      'app/robots.ts returns { rules, sitemap } — served at /robots.txt.',
+      'JSON-LD: embed a <script type="application/ld+json"> with schema.org markup (Article, Product) for rich snippets — takes minutes, high SEO ROI.',
+      'metadataBase in the root layout must be set or relative Open Graph image URLs resolve incorrectly in production.'
+    ],
+    codeSnippet: `// app/sitemap.ts
+export default async function sitemap() {
+  const posts = await getPosts();
+  return posts.map(p => ({ url: \`https://x.com/blog/\${p.slug}\`, lastModified: p.updatedAt }));
+}
+
+// JSON-LD in a page
+<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'Article', headline: post.title,
+}) }} />`
+  },
+  {
+    id: 'deployment-options',
+    title: 'Deployment: Vercel, Docker & Static Export',
+    summary: 'Vercel is zero-config; Docker needs output:"standalone"; fully static sites use output:"export" (no SSR/ISR/API routes).',
+    difficulty: 'intermediate',
+    category: 'fundamentals',
+    keyPoints: [
+      'Vercel: git push → auto-deploy, preview URLs per PR, global CDN, serverless functions, ISR supported out of the box.',
+      'Docker: set output: "standalone" in next.config.js so the build produces a minimal self-contained server.js — pair with a multi-stage Dockerfile.',
+      'Self-hosted Node: next build && next start — works anywhere Node runs, but ISR needs your own cache invalidation story.',
+      'Static export: output: "export" — pure HTML/CSS/JS, hostable anywhere (S3, GitHub Pages) but drops SSR, Route Handlers, and ISR; images.unoptimized: true is required.'
+    ],
+    codeSnippet: `// Docker
+// next.config.js
+module.exports = { output: 'standalone' };
+
+// Static export
+module.exports = { output: 'export', images: { unoptimized: true } };
+// next build → out/ directory of static files`
+  },
+  {
+    id: 'monorepo-turborepo',
+    title: 'Monorepo with Turborepo',
+    summary: 'Host multiple Next.js apps and shared packages (ui, db, config) in one repo with cached, parallelized builds.',
+    difficulty: 'advanced',
+    category: 'fundamentals',
+    keyPoints: [
+      'Typical layout: apps/web, apps/docs (Next.js apps) + packages/ui, packages/db, packages/config (shared code).',
+      'turbo.json defines the task pipeline (build depends on ^build of dependencies) and what to cache (.next/**).',
+      'transpilePackages: ["@repo/ui"] in next.config.js is needed so a Next.js app can consume un-built workspace packages.',
+      'turbo build --filter=web only rebuilds the affected app and its dependencies — not the whole repo.',
+      'Remote caching shares build artifacts across team members and CI — if the inputs match, you download the output instead of rebuilding.'
+    ],
+    codeSnippet: `// apps/web/next.config.js
+module.exports = { transpilePackages: ['@repo/ui', '@repo/db'] };
+
+// usage
+import { Button } from '@repo/ui';
+import { db } from '@repo/db';
+
+// turbo build --filter=web`
   }
 ];

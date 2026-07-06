@@ -199,6 +199,36 @@ useEffect(() => { ... }, [id]);`
           'To opt out: flushSync(() => setState(val)) — synchronously flush updates',
           'Rarely need to opt out — batching is almost always the right behaviour'
         ]
+      },
+      {
+        concept: 'Conditional rendering patterns',
+        bullets: [
+          '{condition && <X />} — render-or-nothing',
+          '{condition ? <A /> : <B />} — render-or-else',
+          'Early return before the main JSX — swap the whole component output',
+          '{list.length > 0 && <List />} beats {list.length && <List />} — a falsy 0/NaN renders literally on screen'
+        ],
+        codeSnippet: `// ❌ renders a stray "0" when count is 0
+{count && <Badge count={count} />}
+
+// ✅ coerce to boolean
+{count > 0 && <Badge count={count} />}`,
+        warning:
+          'count && <X /> prints 0 on screen when count is 0 — booleans, null, and undefined render nothing, but 0 and NaN render as text.'
+      }
+    ]
+  },
+  {
+    title: '🗃️ Redux vs Context',
+    items: [
+      {
+        concept: 'When to reach for each',
+        bullets: [
+          'Context: built-in, fine for low-frequency updates (theme, auth user, locale) — no middleware/devtools/selectors',
+          'Redux (Toolkit): middleware (thunks/sagas), time-travel devtools, memoized selectors (reselect) — better for large or frequently-updating state',
+          'React-Redux uses Context internally to pass the store down, but does not expose it — Redux is not "just Context"',
+          'Any Context value change re-renders every consumer; Redux + selectors re-renders only components reading the changed slice'
+        ]
       }
     ]
   }

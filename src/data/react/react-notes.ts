@@ -1043,5 +1043,72 @@ fetch(\`\${base}/users\`);
 
 // server-only secret — NOT exposed to the browser
 const key = process.env.STRIPE_SECRET_KEY;`
+  },
+
+  // ─── ADDED: gaps surfaced from the "React interview questions" PDF sweep ─────
+  {
+    id: 'redux-fundamentals',
+    title: 'Redux Fundamentals (Store, Actions, Reducers)',
+    summary:
+      'A single external state container: one Store, plain-object Actions describing what happened, pure Reducers computing the next state.',
+    difficulty: 'intermediate',
+    category: 'state-management',
+    keyPoints: [
+      'Three principles: (1) single source of truth — one Store holds the whole state tree; (2) state is read-only — only changed by dispatching an Action; (3) changes are made by pure functions — Reducers, (state, action) => newState, never mutate.',
+      'Action: a plain object with a type field describing what happened, plus an optional payload — dispatch(action) is the only way to trigger a state change.',
+      'Reducer: a pure function — no side effects, no mutation, same input always produces the same output.',
+      'Redux Toolkit (createSlice, configureStore) is the modern standard — it replaces hand-written action types/creators and uses Immer so "mutating" draft state is actually safe.',
+      'Container vs Presentational split: containers connect to the store and dispatch actions; presentational components just render props — a pattern predating hooks but still asked about.'
+    ],
+    gotcha:
+      'React-Redux uses Context internally to pass the store down, but doesn\'t expose it publicly — "is Redux built on Context?" is a common trap question. The real comparison: Context has no built-in devtools/middleware/selectors and re-renders every consumer on change; Redux adds middleware (thunks/sagas), time-travel debugging, and memoized selectors (reselect) for large or frequently-updating state.',
+    codeSnippet: `// Redux Toolkit — the modern way
+import { createSlice, configureStore } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    incremented(state) { state.value += 1; },        // Immer makes this safe
+  },
+});
+
+const store = configureStore({ reducer: { counter: counterSlice.reducer } });
+store.dispatch(counterSlice.actions.incremented());   // dispatch an Action`
+  },
+  {
+    id: 'react-router',
+    title: 'React Router — Client-Side Routing',
+    summary:
+      'react-router-dom maps URL paths to components and keeps the browser URL in sync with the rendered UI, without full page reloads.',
+    difficulty: 'intermediate',
+    category: 'routing',
+    keyPoints: [
+      '<BrowserRouter> uses the History API for clean URLs but needs server config to serve index.html for every path (deep links). <HashRouter> uses a # fragment and needs no server config, at the cost of uglier URLs.',
+      '<Routes>/<Route path="..." element={...} /> declare which component renders for which path; nested <Route>s + <Outlet /> build shared layouts.',
+      '<Link>/<NavLink> render an <a> under the hood but intercept the click for client-side navigation (no full reload); NavLink adds an "active" styling hook.',
+      'Hooks (v6+): useNavigate() for programmatic navigation, useParams() to read dynamic segments (/users/:id), useLocation() for the current path/search/state.',
+      'withRouter and the injected history prop are legacy (pre-v6, class-component era) — v6+ replaced them with hooks.'
+    ],
+    gotcha:
+      'BrowserRouter looks identical to HashRouter in local dev (both just work), but deploying BrowserRouter to a static host without a rewrite rule (serve index.html for all paths) breaks every deep link and page refresh with a 404.',
+    codeSnippet: `import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Link to="/users/42">Profile</Link>
+      <Routes>
+        <Route path="/users/:id" element={<UserPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function UserPage() {
+  const { id } = useParams();          // dynamic segment
+  const navigate = useNavigate();
+  return <button onClick={() => navigate(-1)}>Back (user {id})</button>;
+}`
   }
 ];
