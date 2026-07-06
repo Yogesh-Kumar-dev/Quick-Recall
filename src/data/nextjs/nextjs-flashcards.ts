@@ -1,4 +1,4 @@
-import type { Flashcard } from 'types/content';
+import type { Flashcard } from '@/types/content';
 
 // ─── Next.js flashcards — keyword/abbreviation defs + small Q&A ───────────────
 // Seeded incrementally; empty arrays hide the Flashcards button on the landing.

@@ -52,6 +52,7 @@ export default function Counter() {
       {/* Controls */}
       <div style={{ display: 'flex', gap: 12 }}>
         <button
+          type="button"
           onClick={() => setCount((c) => c - 1)}
           style={{
             width: 48,
@@ -71,6 +72,7 @@ export default function Counter() {
           −
         </button>
         <button
+          type="button"
           onClick={() => setCount(0)}
           style={{
             padding: '0 20px',
@@ -87,6 +89,7 @@ export default function Counter() {
           Reset
         </button>
         <button
+          type="button"
           onClick={() => setCount((c) => c + 1)}
           style={{
             width: 48,

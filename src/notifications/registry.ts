@@ -1,4 +1,3 @@
-// types
 import type { NotificationCategory, NotificationChannel } from './types';
 
 // ==============================|| NOTIFICATIONS - CATEGORY REGISTRY ||============================== //
@@ -19,9 +18,9 @@ export const NOTIFICATION_CATEGORIES: Record<NotificationCategory, CategoryConfi
   // Native-only, silent if permission not granted — preserves the original
   // distraction-alert behavior.
   distraction: { tag: 'distraction-alert', icon: '/favicon.ico', defaultChannel: 'native', sound: false },
-  // Native when granted, snackbar fallback otherwise; plays a chime on fire.
+  // Native when granted, toast fallback otherwise; plays a chime on fire.
   timer: { tag: 'universal-timer', icon: '/favicon.ico', defaultChannel: 'auto', sound: true },
   // "Cards due for review" reminder. Auto: native when the tab is backgrounded + permission
-  // granted, in-app snackbar otherwise — never both. Silent (it's a gentle nudge, not an alarm).
+  // granted, in-app toast otherwise — never both. Silent (it's a gentle nudge, not an alarm).
   review: { tag: 'review-due', icon: '/favicon.ico', defaultChannel: 'auto', sound: false }
 };

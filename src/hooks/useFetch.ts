@@ -18,6 +18,7 @@ interface FetchState<T> {
 export default function useFetch<T = unknown>(url: string, options?: RequestInit): FetchState<T> {
   const [state, setState] = useState<FetchState<T>>({ data: null, loading: true, error: null });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: options is intentionally omitted — callers rarely memoise it; key on url
   useEffect(() => {
     const controller = new AbortController();
     setState({ data: null, loading: true, error: null });
@@ -37,8 +38,6 @@ export default function useFetch<T = unknown>(url: string, options?: RequestInit
       });
 
     return () => controller.abort();
-    // options is intentionally omitted — callers rarely memoise it; key on url
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   return state;

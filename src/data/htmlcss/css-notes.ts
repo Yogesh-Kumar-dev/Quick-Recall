@@ -1,4 +1,4 @@
-import type { Note } from 'types/content';
+import type { Note } from '@/types/content';
 
 // category values: 'box-model' | 'layout' | 'positioning' | 'selectors' | 'responsive' | 'visual' | 'architecture'
 

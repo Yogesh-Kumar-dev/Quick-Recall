@@ -6,7 +6,7 @@
 // for "every flashcard in the app", reused by both Bookmarks (render a saved flashcard) and
 // SRS Review (resolve a due card's content). Mirrors the structure of `search-index.ts`.
 
-import type { Flashcard } from 'types/content';
+import type { Flashcard } from '@/types/content';
 
 import { jsFlashcards, tsFlashcards } from './javascript/js-flashcards';
 import { reactFlashcards } from './react/react-flashcards';
@@ -53,7 +53,7 @@ const SOURCES: { source: FlashcardSource; cards: Flashcard[] }[] = [
 ];
 
 // Build the namespaced key for a card from a known source. Exported so callers that render a
-// FlashcardDialog (and already know the source) can hand the dialog each card's refId.
+// flashcard set (and already know the source) can hand each card's refId to BookmarkButton.
 export function flashcardKey(source: FlashcardSource, cardId: string): string {
   return `${source}:${cardId}`;
 }

@@ -1,18 +1,21 @@
 // ==============================|| OFFLINE CONTENT MANIFEST ||============================== //
 //
 // Declares the routes that the "Download for offline" flow fetches, grouped by top-level
-// sidebar area (see src/menu-items/*). The download manager (src/hooks/useOfflineDownload.ts)
+// sidebar area (see src/config/nav.ts). The download manager (src/hooks/useOfflineDownload.ts)
 // fetches each URL so the service worker's runtime caching stores the HTML + the _next/static
 // chunks it pulls in — which is why we list **route paths**, not internal chunk URLs (stable,
 // low-maintenance). The grouping is what the progress UI renders per section.
 //
-// Machine-coding slugs are DERIVED from the existing problem registries (the single source of
-// truth) rather than hardcoded — add a problem there and it's automatically included here. Only
-// the static page routes (notes, quick-recall, etc.) are listed by hand below, since they have
-// no registry to derive from.
+// Machine-coding and flashcard slugs are DERIVED from the existing registries (the single source
+// of truth) rather than hardcoded — add a problem/flashcard set there and it's automatically
+// included here. Only the static page routes (notes, quick-recall, etc.) are listed by hand below,
+// since they have no registry to derive from.
 
-import { jsProblems } from 'data/javascript/js-problems';
-import { reactMcProblems } from 'data/react/react-mc-problems';
+// Relative (not @/) imports here: this file is bundled by esbuild for the service worker
+// (see src/app/serwist/[path]/route.ts), which doesn't understand the tsconfig `@/*` alias.
+import { jsProblems } from './javascript/js-problems';
+import { reactMcProblems } from './react/react-mc-problems';
+import { FLASHCARD_SETS } from './flashcard-sets';
 
 export interface OfflineSection {
   /** stable id, mirrors the sidebar group id */
@@ -26,6 +29,7 @@ export interface OfflineSection {
 // Derived from the authoritative registries — no manual slug lists to keep in sync.
 const JS_MC_SLUGS = jsProblems.map((p) => p.slug);
 const REACT_MC_SLUGS = reactMcProblems.map((p) => p.slug);
+const FLASHCARD_SLUGS = Object.keys(FLASHCARD_SETS);
 
 export const OFFLINE_SECTIONS: OfflineSection[] = [
   {
@@ -37,7 +41,7 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
   {
     id: 'study',
     label: 'Study & Review',
-    urls: ['/bookmarks', '/review']
+    urls: ['/bookmarks', '/review', '/flashcards', ...FLASHCARD_SLUGS.map((slug) => `/flashcards/${slug}`)]
   },
   {
     id: 'javascript',
@@ -59,7 +63,7 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
       '/react/custom-hooks',
       '/react/quick-recall',
       '/react/machine-coding',
-      ...REACT_MC_SLUGS.map((slug) => `/machine-coding/${slug}`)
+      ...REACT_MC_SLUGS.map((slug) => `/react/machine-coding/${slug}`)
     ]
   },
   {

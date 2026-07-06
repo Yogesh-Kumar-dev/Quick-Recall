@@ -1,4 +1,4 @@
-import type { Note } from 'types/content';
+import type { Note } from '@/types/content';
 
 export type TsReactCategory = 'typed-props' | 'typed-hooks' | 'typed-events' | 'generic-components' | 'typed-context' | 'utility-patterns';
 

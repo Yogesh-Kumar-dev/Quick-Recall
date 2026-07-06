@@ -1,15 +1,14 @@
-// Server Component — readFileSync runs at next build (static generation)
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import ProblemLayout, { type ProblemMeta } from 'ui-component/machine-coding/ProblemLayout';
-import MuiVersion from './MuiVersion';
-import TsxVersion from './TsxVersion';
+// Server Component — readFileSync runs at build time (static generation)
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import ProblemShell from '@/components/machine-coding/problem-shell';
+import type { ProblemMeta } from '@/types/content';
 import JsxVersion from './JsxVersion';
+import TsxVersion from './TsxVersion';
 
 const BASE = join(process.cwd(), 'src/views/machine-coding/APIDataFetching');
-const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
-const muiCode = readFileSync(join(BASE, 'MuiVersion.tsx'), 'utf-8');
 const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
+const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
   title: '🟡 API Data Fetching',
@@ -28,17 +27,16 @@ const PROBLEM: ProblemMeta = {
     'data stored separately; each terminal status sets its own end state (no finally reset)'
   ],
   interviewTip:
-    'Two booleans (loading + error) are perfectly fine for a single fetch — don\'t reach for more ceremony than the problem needs. The senior signal is naming the tradeoff: as soon as states can contradict each other ("loading AND error" at once) or you need an idle state distinct from "loaded 0 items", collapse them into one status (idle → loading → success | error) so illegal states become unrepresentable. In TS a discriminated union ({ status: "error"; message } | …) lets the compiler guarantee you only read the message in the error branch. Knowing when NOT to use it matters as much as knowing the pattern. Either way, check res.ok before parsing JSON: if (!res.ok) throw new Error(`HTTP ${res.status}`).'
+    'Two booleans (loading + error) are perfectly fine for a single fetch — don\'t reach for more ceremony than the problem needs. The senior signal is naming the tradeoff: as soon as states can contradict each other ("loading AND error" at once) or you need an idle state distinct from "loaded 0 items", collapse them into one status (idle → loading → success | error) so illegal states become unrepresentable. In TS a discriminated union ({ status: "error"; message } | …) lets the compiler guarantee you only read the message in the error branch. Knowing when NOT to use it matters as much as knowing the pattern. Either way, check res.ok before parsing JSON: if (!res.ok) throw new Error("HTTP " + res.status).'
 };
 
 export default function APIDataFetchingApp() {
   return (
-    <ProblemLayout
+    <ProblemShell
       problem={PROBLEM}
       versions={{
         jsx: { component: <JsxVersion />, code: jsxCode },
-        tsx: { component: <TsxVersion />, code: tsxCode },
-        mui: { component: <MuiVersion />, code: muiCode }
+        tsx: { component: <TsxVersion />, code: tsxCode }
       }}
     />
   );

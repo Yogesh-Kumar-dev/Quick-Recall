@@ -1,12 +1,11 @@
 // ==============================|| PDF GUIDES (per page) ||============================== //
 //
 // PDF "tip sheet" guides surfaced via the <PdfLauncher> (a header icon → bottom drawer with the
-// EmbedPDF viewer), mirroring how `video-playlists.ts` feeds <PlaylistLauncher>. One ordered array
-// per page; pass the relevant array to the launcher on that page.
+// EmbedPDF viewer). One ordered array per page; pass the relevant array to the launcher on that page.
 //
 // Files live in **Vercel Blob storage** (public URLs), NOT in /public — keeping them out of the
 // build keeps build size down. On first open the viewer downloads a guide once and caches it in a
-// dedicated `pdf-cache` bucket (see src/hooks/usePdfCache.ts), then serves from cache forever
+// dedicated `pdf-cache` bucket (see src/utils/pdf-cache.ts), then serves from cache forever
 // (offline-friendly, minimal Blob egress).
 //
 // Updating a PDF: re-upload to Vercel Blob — the new public URL carries a fresh random suffix, so
@@ -21,8 +20,6 @@ export interface PdfGuide {
   title: string;
   // Public Vercel Blob URL.
   url: string;
-  // Optional human-readable size shown in the picker (e.g. '2.3 MB').
-  sizeLabel?: string;
 }
 
 // JS Quick Recall companion tip sheets.

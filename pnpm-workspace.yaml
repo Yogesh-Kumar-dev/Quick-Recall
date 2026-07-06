@@ -1,7 +1,16 @@
 allowBuilds:
-  '@parcel/watcher': true
+  '@swc/core': true
   esbuild: true
   sharp: true
+  unrs-resolver: true
 
+# Collapse React to one version so every @leafygreen-ui/emotion resolves to a single instance
+# (otherwise legacy's React 19.1.0 splits emotion into two caches and breaks SSR style flushing).
 overrides:
-  motion-dom: '12.9.6'
+  react: 19.2.4
+  react-dom: 19.2.4
+  "@types/react": 19.2.17
+  # Collapse zod to one copy. Otherwise @hookform/resolvers resolves its `zod` peer to the
+  # v3.25 copy (pulled by @modelcontextprotocol/sdk tooling), whose `zod/v4` preview brands as
+  # minor 0 and clashes with our zod 4.4 schemas. Every consumer accepts ^4, so this is safe.
+  zod: 4.4.3

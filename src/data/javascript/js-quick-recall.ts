@@ -1,4 +1,4 @@
-import type { QuickRecallSection } from 'types/content';
+import type { QuickRecallSection } from '@/types/content';
 
 export const jsQuickRecall: QuickRecallSection[] = [
   {

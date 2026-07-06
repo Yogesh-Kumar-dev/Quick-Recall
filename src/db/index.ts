@@ -3,9 +3,9 @@
 import Dexie, { type Table } from 'dexie';
 
 // types
-import type { JobApplication } from 'types/job-tracker';
-import type { SpeakUpQA } from 'types/speak-up';
-import type { Bookmark, ReviewState } from 'types/study';
+import type { JobApplication } from '@/types/job-tracker';
+import type { SpeakUpQA } from '@/types/speak-up';
+import type { Bookmark, ReviewState } from '@/types/study';
 
 // ==============================|| DEXIE - SHARED CLIENT DATABASE ||============================== //
 
@@ -29,19 +29,12 @@ class QuickRecallDB extends Dexie {
     // The store string lists the primary key + indexed fields only (not every
     // column) — Dexie stores the whole object regardless; indexes are for
     // querying/sorting. `createdAt` is indexed so getAll can sort newest-first.
+    //
+    // Single clean v1: greenfield rebuild, so the legacy v1→v2→v3 chain is collapsed
+    // into one schema. ponytail: no migration path from legacy DBs — fine because the
+    // new app is a fresh origin; if this ever cuts over to the same origin as a shipped
+    // app whose users hold a higher IndexedDB version, restore the version chain.
     this.version(1).stores({
-      jobs: 'id, status, favorite, createdAt'
-    });
-    // v2 adds the Speak Up Q&A bank. Dexie keeps the version chain and migrates each
-    // browser automatically; existing `jobs` data is preserved untouched.
-    this.version(2).stores({
-      jobs: 'id, status, favorite, createdAt',
-      speakUpQAs: 'id, sourceId, jobId, createdAt'
-    });
-    // v3 adds the Study layer: `bookmarks` (mark-for-review stars on any content) and
-    // `reviews` (per-flashcard spaced-repetition scheduling state). Existing jobs/speakUp data is
-    // preserved — Dexie migrates the version chain in each browser automatically.
-    this.version(3).stores({
       jobs: 'id, status, favorite, createdAt',
       speakUpQAs: 'id, sourceId, jobId, createdAt',
       bookmarks: 'id, kind, createdAt',

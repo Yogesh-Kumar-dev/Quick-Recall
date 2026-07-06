@@ -1,28 +1,22 @@
-// project imports
-import { openSnackbar } from 'store/slices/snackbar';
-import { NOTIFICATION_CATEGORIES } from './registry';
+import { toast } from 'sonner';
 import { isBlocked } from './policy';
-
-// types
-import type { AppDispatch } from 'store';
+import { NOTIFICATION_CATEGORIES } from './registry';
 import type { NotificationCategory, NotificationHandle, NotificationPolicyContext, NotifyRequest } from './types';
 
 // ==============================|| NOTIFICATIONS - MANAGER (core) ||============================== //
 
 // The framework-agnostic brain. The ONLY place that touches the Web Notification
-// API or decides native-vs-snackbar. React glue (NotificationProvider) injects
-// `dispatch` (for the snackbar fallback) and a getter for the live policy context.
+// API or decides native-vs-toast. React glue (notification-provider) injects a
+// getter for the live policy context; the in-app fallback goes straight to sonner.
 
 const NOOP_HANDLE: NotificationHandle = { dismiss: () => {} };
 
-let dispatch: AppDispatch | null = null;
 let getPolicyContext: () => NotificationPolicyContext = () => ({ timerActive: false });
 
 // Track the active native notification per category so dismissCategory can close it.
 const activeByCategory = new Map<NotificationCategory, Notification>();
 
-export function configureManager(deps: { dispatch: AppDispatch; getPolicyContext: () => NotificationPolicyContext }): void {
-  dispatch = deps.dispatch;
+export function configureManager(deps: { getPolicyContext: () => NotificationPolicyContext }): void {
   getPolicyContext = deps.getPolicyContext;
 }
 
@@ -69,16 +63,7 @@ export function playChime(): void {
 }
 
 function fireSnackbar(req: NotifyRequest): void {
-  if (!dispatch) return;
-  dispatch(
-    openSnackbar({
-      open: true,
-      message: req.body ? `${req.title} — ${req.body}` : req.title,
-      variant: 'alert',
-      alert: { color: 'info' },
-      close: true
-    })
-  );
+  toast(req.title, { description: req.body });
 }
 
 function fireNative(req: NotifyRequest): NotificationHandle {

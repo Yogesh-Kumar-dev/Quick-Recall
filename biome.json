@@ -1,69 +1,42 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
-	"vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
-	"files": {
-		"ignoreUnknown": false,
-		"includes": [
-			"**",
-			"!**/.next",
-			"!**/node_modules",
-			"!src/views/js-machine-coding/**/solution-*.js",
-			"!src/views/machine-coding/**/*.jsx"
-		]
-	},
-	"formatter": {
-		"enabled": true,
-		"formatWithErrors": false,
-		"indentStyle": "space",
-		"indentWidth": 2,
-		"lineEnding": "lf",
-		"lineWidth": 140,
-		"attributePosition": "auto",
-		"bracketSameLine": false,
-		"bracketSpacing": true,
-		"expand": "auto",
-		"useEditorconfig": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"preset": "recommended",
-			"style": {
-				"noRestrictedImports": {
-					"level": "error",
-					"options": {
-						"patterns": [
-							{
-								"group": ["@mui/*/*/*", "!@mui/material/test-utils/*"],
-								"message": "Deep MUI imports are restricted; import from the package entry (e.g. @mui/material/Button)."
-							}
-						]
-					}
-				}
-			}
-		}
-	},
-	"javascript": {
-		"formatter": {
-			"jsxQuoteStyle": "double",
-			"quoteProperties": "asNeeded",
-			"trailingCommas": "none",
-			"semicolons": "always",
-			"arrowParentheses": "always",
-			"bracketSameLine": false,
-			"quoteStyle": "single",
-			"attributePosition": "auto",
-			"bracketSpacing": true
-		}
-	},
-	"html": {
-		"formatter": {
-			"indentScriptAndStyle": false,
-			"selfCloseVoidElements": "always"
-		}
-	},
-	"assist": {
-		"enabled": true,
-		"actions": { "source": { "organizeImports": "off" } }
-	}
+  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": ["**", "!**/.next", "!**/node_modules", "!legacy/**", "!src/components/ui/**", "!**/*.css", "!src/views/**/*.jsx", "!src/views/**/solution-*.js", "!src/views/machine-coding/*/TsxVersion.tsx"]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 140,
+    "attributePosition": "auto",
+    "bracketSameLine": false,
+    "bracketSpacing": true,
+    "expand": "auto",
+    "useEditorconfig": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": { "preset": "recommended" }
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "none",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "quoteStyle": "single",
+      "attributePosition": "auto",
+      "bracketSpacing": true
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": { "source": { "organizeImports": "off" } }
+  }
 }

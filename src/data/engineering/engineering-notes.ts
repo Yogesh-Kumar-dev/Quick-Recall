@@ -1,4 +1,4 @@
-import type { Note } from 'types/content';
+import type { Note } from '@/types/content';
 
 // category values:
 //   Engineering:  'fundamentals' | 'oop' | 'apis' | 'databases' | 'system-design' | 'practices' | 'version-control'

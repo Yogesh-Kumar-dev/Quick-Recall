@@ -1,7 +1,4 @@
-// project imports
 import { isCategoryEnabled } from './prefs';
-
-// types
 import type { NotificationCategory, NotificationPolicyContext } from './types';
 
 // ==============================|| NOTIFICATIONS - POLICY ||============================== //

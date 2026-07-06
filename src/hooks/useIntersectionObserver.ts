@@ -18,6 +18,7 @@ export default function useIntersectionObserver<T extends HTMLElement = HTMLElem
   const [isIntersecting, setIsIntersecting] = useState(false);
   const frozen = useRef(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: observerInit is spread fresh each render; keyed on its primitive fields, callers pass stable values
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof IntersectionObserver === 'undefined' || frozen.current) {
@@ -35,8 +36,6 @@ export default function useIntersectionObserver<T extends HTMLElement = HTMLElem
     observer.observe(el);
 
     return () => observer.disconnect();
-    // observerInit is spread fresh each render; callers should pass stable values
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [freezeOnceVisible, observerInit.root, observerInit.rootMargin, observerInit.threshold]);
 
   return { ref, isIntersecting } as const;

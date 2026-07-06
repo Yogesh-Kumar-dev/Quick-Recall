@@ -55,17 +55,6 @@ export async function ensurePdfBuffer(url: string): Promise<ArrayBuffer> {
   }
 }
 
-/** True if `url` is already cached (no network). Lets the UI label a guide "Saved". */
-export async function isPdfCached(url: string): Promise<boolean> {
-  if (!cachesAvailable()) return false;
-  try {
-    const cache = await caches.open(PDF_CACHE);
-    return (await cache.match(url)) !== undefined;
-  } catch {
-    return false;
-  }
-}
-
 /**
  * Drop cached PDFs that are no longer referenced by the current guide list — bounds device storage
  * without any user-facing clear button. Call with every URL still in use (across all pages' arrays).
@@ -83,9 +72,8 @@ export async function prunePdfCache(currentUrls: string[]): Promise<void> {
 }
 
 /**
- * Ask the browser to mark this origin's storage as persistent so the cached PDFs (and the rest of the
- * PWA's offline data) aren't evicted under storage pressure → "cached forever until the PWA is
- * uninstalled". Best-effort and idempotent; auto-granted for installed PWAs.
+ * Ask the browser to mark this origin's storage as persistent so the cached PDFs aren't evicted
+ * under storage pressure → "cached forever until uninstalled". Best-effort and idempotent.
  */
 export async function requestPersistentStorage(): Promise<void> {
   try {

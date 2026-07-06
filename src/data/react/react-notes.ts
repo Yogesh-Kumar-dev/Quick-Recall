@@ -1,4 +1,4 @@
-import type { Note } from 'types/content';
+import type { Note } from '@/types/content';
 
 export const reactNotes: Note[] = [
   // ─── CORE ───────────────────────────────────────────────────────────────────

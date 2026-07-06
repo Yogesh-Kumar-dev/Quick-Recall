@@ -21,11 +21,11 @@ export default function useLocalStorage<ValueType>(key: string, defaultValue: Va
     return () => {
       window.removeEventListener('storage', listener);
     };
-  }, [key, defaultValue]);
+  }, [key]);
 
-  const setValueInLocalStorage = (newValue: ValueType) => {
-    setValue((currentValue: any) => {
-      const result = typeof newValue === 'function' ? newValue(currentValue) : newValue;
+  const setValueInLocalStorage = (newValue: ValueType | ((prev: ValueType) => ValueType)) => {
+    setValue((currentValue: ValueType) => {
+      const result = typeof newValue === 'function' ? (newValue as (prev: ValueType) => ValueType)(currentValue) : newValue;
       localStorage.setItem(key, JSON.stringify(result));
       return result;
     });

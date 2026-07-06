@@ -1,4 +1,4 @@
-import type { Note } from 'types/content';
+import type { Note } from '@/types/content';
 
 // category values:
 //   ES versions: 'es6' | 'es7' | 'es8' | 'es9' | 'es10' | 'es11' | 'es12' | 'es13' | 'es14' | 'es2024'

@@ -1,4 +1,4 @@
-import type { Flashcard } from 'types/content';
+import type { Flashcard } from '@/types/content';
 
 // ─── Engineering Essentials flashcards (engineering + testing) ────────────────
 

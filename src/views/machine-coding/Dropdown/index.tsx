@@ -1,15 +1,14 @@
-// Server Component — readFileSync runs at next build (static generation)
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import ProblemLayout, { type ProblemMeta } from 'ui-component/machine-coding/ProblemLayout';
-import MuiVersion from './MuiVersion';
-import TsxVersion from './TsxVersion';
+// Server Component — readFileSync runs at build time (static generation)
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import ProblemShell from '@/components/machine-coding/problem-shell';
+import type { ProblemMeta } from '@/types/content';
 import JsxVersion from './JsxVersion';
+import TsxVersion from './TsxVersion';
 
 const BASE = join(process.cwd(), 'src/views/machine-coding/Dropdown');
-const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
-const muiCode = readFileSync(join(BASE, 'MuiVersion.tsx'), 'utf-8');
 const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
+const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
   title: '🟢 Dropdown / Custom Select',
@@ -37,12 +36,11 @@ const PROBLEM: ProblemMeta = {
 
 export default function DropdownApp() {
   return (
-    <ProblemLayout
+    <ProblemShell
       problem={PROBLEM}
       versions={{
         jsx: { component: <JsxVersion />, code: jsxCode },
-        tsx: { component: <TsxVersion />, code: tsxCode },
-        mui: { component: <MuiVersion />, code: muiCode }
+        tsx: { component: <TsxVersion />, code: tsxCode }
       }}
     />
   );

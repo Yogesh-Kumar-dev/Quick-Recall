@@ -1,4 +1,4 @@
-import type { ReactMcProblem } from 'types/content';
+import type { ReactMcProblem } from '@/types/content';
 
 // ─── React Machine Coding Problem Registry ───────────────────────────────────
 // Slugs match existing /machine-coding/[slug] routes — do NOT change slugs.

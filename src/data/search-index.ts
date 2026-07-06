@@ -3,19 +3,10 @@ import Fuse from 'fuse.js';
 // data sources
 import { jsProblems } from './javascript/js-problems';
 import { reactMcProblems } from './react/react-mc-problems';
-import { reactCustomHooks } from './react-custom-hooks';
+import { reactCustomHooks } from './react/react-custom-hooks';
 
-// menu trees
-import dashboard from 'menu-items/dashboard';
-import javascript from 'menu-items/javascript';
-import react from 'menu-items/react';
-import htmlcss from 'menu-items/htmlcss';
-import redux from 'menu-items/redux';
-import nextjs from 'menu-items/nextjs';
-import engineering from 'menu-items/engineering';
-import about from 'menu-items/about';
-
-import type { NavItemType } from 'types';
+// nav config
+import { primaryNav, navSections } from '@/config/nav';
 
 // ─── Unified search item ──────────────────────────────────────────────────────
 
@@ -57,7 +48,7 @@ const reactProblemItems: SearchItem[] = reactMcProblems.map((p) => ({
   category: p.category,
   section: 'React',
   kind: 'React Problem',
-  url: `/machine-coding/${p.slug}`
+  url: `/react/machine-coding/${p.slug}`
 }));
 
 const hookItems: SearchItem[] = reactCustomHooks.map((h) => ({
@@ -71,24 +62,27 @@ const hookItems: SearchItem[] = reactCustomHooks.map((h) => ({
   url: `/react/custom-hooks?open=${h.id}`
 }));
 
-// Recursively collect navigable leaf items (type === 'item' with a url) from a menu tree.
-function collectNavItems(node: NavItemType, acc: SearchItem[]): void {
-  if (node.type === 'item' && node.url) {
-    acc.push({
-      id: `nav-${node.id ?? node.url}`,
-      label: node.title ?? node.url,
-      description: node.caption,
-      category: 'Navigation',
-      section: 'Navigation',
-      kind: 'Page',
-      url: node.url
-    });
-  }
-  node.children?.forEach((child) => collectNavItems(child, acc));
-}
-
-const navItems: SearchItem[] = [];
-[dashboard, htmlcss, javascript, react, redux, nextjs, engineering, about].forEach((group) => collectNavItems(group, navItems));
+// Flat nav config (src/config/nav.ts) — no tree to walk, unlike legacy's NavItemType recursion.
+const navItems: SearchItem[] = [
+  ...primaryNav.map((n) => ({
+    id: `nav-${n.url}`,
+    label: n.title,
+    category: 'Navigation',
+    section: 'Navigation' as const,
+    kind: 'Page' as const,
+    url: n.url
+  })),
+  ...navSections.flatMap((s) =>
+    s.items.map((n) => ({
+      id: `nav-${n.url}`,
+      label: n.title,
+      category: s.title,
+      section: 'Navigation' as const,
+      kind: 'Page' as const,
+      url: n.url
+    }))
+  )
+];
 
 // Prefer the richer problem/hook entries: drop nav pages whose url is already
 // represented by a problem/hook entry.

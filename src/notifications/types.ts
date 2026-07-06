@@ -6,8 +6,8 @@ export type NotificationCategory = 'distraction' | 'timer' | 'review';
 
 // Where a notification is shown:
 //  - 'native'   → OS-level Web Notification only (silent if permission not granted)
-//  - 'snackbar' → in-app Notistack/Redux snackbar only
-//  - 'auto'     → native when permission is granted, otherwise fall back to snackbar
+//  - 'snackbar' → in-app toast (sonner) only
+//  - 'auto'     → native when permission is granted, otherwise fall back to toast
 export type NotificationChannel = 'native' | 'snackbar' | 'auto';
 
 // Reserved for future rate-limiting / queueing. Not acted on yet, but carried
@@ -29,13 +29,13 @@ export interface NotifyRequest {
 }
 
 // Returned by `notify` so callers can dismiss a still-visible native notification.
-// Snackbar notifications return a no-op handle (they auto-hide).
+// Toast notifications return a no-op handle (they auto-hide).
 export interface NotificationHandle {
   dismiss: () => void;
 }
 
 // Context the policy layer reads to decide whether a notification should fire.
-// Supplied by the React binding, which sources it from Redux + user prefs.
+// Supplied by the React binding, which sources it from the timer store + user prefs.
 export interface NotificationPolicyContext {
   /** A universal timer is active (running or paused) — distraction nudges are suppressed. */
   timerActive: boolean;

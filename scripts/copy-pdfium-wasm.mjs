@@ -1,9 +1,8 @@
 // Copies the PDFium WASM that ships with the installed EmbedPDF viewer into /public so it is served
 // SAME-ORIGIN as /pdfium.wasm. EmbedPDF otherwise fetches this ~4.6 MB binary from the jsDelivr CDN
-// at runtime, which (a) fails when the PWA is offline — the viewer can't initialise even though the
-// PDF bytes are cached — and (b) can't be cached by our same-origin-only Serwist service worker.
-// Self-hosting lets the SW precache it (see next.config.ts) so the viewer works fully offline. The
-// .wasm is a static asset, not part of the JS bundle, so build size is unaffected.
+// at runtime, which fails offline and can't be cached by a same-origin-only service worker.
+// Self-hosting lets it be precached once a service worker is wired up. The .wasm is a static asset,
+// not part of the JS bundle, so build size is unaffected.
 //
 // Runs before `next dev` / `next build` (see package.json). The source is resolved through the
 // dependency chain (react-pdf-viewer → snippet → pdfium) so it always matches the installed version

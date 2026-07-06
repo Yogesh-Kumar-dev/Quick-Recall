@@ -1,12 +1,11 @@
-// types
 import type { NotificationCategory } from './types';
 
 // ==============================|| NOTIFICATIONS - USER PREFERENCES ||============================== //
 
 // Persisted, cross-tab notification preferences. Backed by localStorage directly
-// (rather than the useLocalStorage hook) so the framework-agnostic manager can
-// read prefs synchronously when deciding whether to fire. React consumers use
-// `useNotificationPrefs` (in NotificationProvider) which subscribes to changes.
+// (rather than a hook) so the framework-agnostic manager can read prefs
+// synchronously when deciding whether to fire. React consumers use
+// `useNotificationPrefs` (in notification-provider) which subscribes to changes.
 
 const STORAGE_KEY = 'quickrecall.notifications';
 
@@ -47,7 +46,9 @@ if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
     if (e.storageArea === window.localStorage && e.key === STORAGE_KEY) {
       const next = read();
-      listeners.forEach((l) => l(next));
+      listeners.forEach((l) => {
+        l(next);
+      });
     }
   });
 }
@@ -64,7 +65,9 @@ export function setPrefs(next: NotificationPrefs): void {
     // quota / serialization failure — no-op
   }
   // The storage event does NOT fire in the tab that wrote it, so notify locally.
-  listeners.forEach((l) => l(next));
+  listeners.forEach((l) => {
+    l(next);
+  });
 }
 
 export function subscribePrefs(listener: Listener): () => void {

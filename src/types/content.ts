@@ -96,6 +96,17 @@ export interface ReactMcProblem extends BaseProblemEntry {
 }
 
 // ---------------------------------------------------------------------------
+// React Machine Coding — individual problem meta (used in server component)
+// ---------------------------------------------------------------------------
+export interface ProblemMeta {
+  title: string;
+  description: string;
+  requirements: string[];
+  keyPatterns: string[];
+  interviewTip: string;
+}
+
+// ---------------------------------------------------------------------------
 // JS Machine Coding — individual problem (used in server component)
 // ---------------------------------------------------------------------------
 export interface JsProblemExample {

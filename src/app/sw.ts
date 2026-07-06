@@ -7,10 +7,7 @@
 //   work without a network.
 // - fallbacks: serve the precached /~offline page for navigations that miss the cache offline.
 //
-// The triple-slash reference pulls in Serwist's worker typings here (rather than via tsconfig
-// `types`, which this project's parent-dir `typeRoots` setup doesn't resolve cleanly).
-/// <reference types="@serwist/next/typings" />
-import { defaultCache } from '@serwist/next/worker';
+import { defaultCache } from '@serwist/turbopack/worker';
 import type { PrecacheEntry, RuntimeCaching, SerwistGlobalConfig } from 'serwist';
 import { CacheableResponsePlugin, ExpirationPlugin, NetworkFirst, Serwist } from 'serwist';
 

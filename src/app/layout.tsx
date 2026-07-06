@@ -1,40 +1,26 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Lora, Source_Code_Pro } from 'next/font/google';
+import './globals.css';
+import Providers from './providers';
 
-import './../scss/style.scss';
-import './../scss/tailwind.css';
-
-// project imports
-import ProviderWrapper from 'store/ProviderWrapper';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const lora = Lora({ subsets: ['latin'], variable: '--font-lora', display: 'swap' });
+const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code', display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'QuickRecall — Developer Interview Prep',
   description:
     'A personal knowledge base for developer interview prep. Notes, machine-coding problems with a side-by-side code viewer, and quick-recall sheets — any source distilled into one searchable format.',
-  // PWA: enables the iOS standalone web-app chrome + a sensible status-bar style and home-screen
-  // title when added to the home screen. Apple ignores the manifest for these, hence appleWebApp.
-  appleWebApp: {
-    capable: true,
-    title: 'QuickRecall',
-    statusBarStyle: 'default'
-  }
+  appleWebApp: { capable: true, title: 'QuickRecall', statusBarStyle: 'default' }
 };
 
-// PWA: theme-color drives the browser/OS UI tint when installed (matches the manifest's
-// theme_color / app primary). Next 15 expects theme-color in the viewport export, not metadata.
-export const viewport: Viewport = {
-  themeColor: '#00684a' // MongoDB LeafyGreen green.dark2
-};
+export const viewport: Viewport = { themeColor: '#00684a' };
 
-// ==============================|| ROOT LAYOUT ||============================== //
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body>
-        <NuqsAdapter>
-          <ProviderWrapper>{children}</ProviderWrapper>
-        </NuqsAdapter>
+    <html lang="en" className={`dark ${inter.variable} ${lora.variable} ${sourceCodePro.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

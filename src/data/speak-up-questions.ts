@@ -1,5 +1,5 @@
 // types
-import type { PredefinedQuestion } from 'types/speak-up';
+import type { PredefinedQuestion } from '@/types/speak-up';
 
 // ==============================|| SPEAK UP - PREDEFINED QUESTIONS ||============================== //
 

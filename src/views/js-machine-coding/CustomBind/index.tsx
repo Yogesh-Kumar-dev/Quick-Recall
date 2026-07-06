@@ -1,8 +1,8 @@
 // Server Component — readFileSync runs at build time (static generation)
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import JsProblemLayout from 'ui-component/js-problem/JsProblemLayout';
-import type { JsProblemMeta, ApproachData } from 'types/content';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import JsProblemShell from '@/components/machine-coding/js-problem-shell';
+import type { JsProblemMeta, ApproachData } from '@/types/content';
 
 const BASE = join(process.cwd(), 'src/views/js-machine-coding/CustomBind');
 
@@ -71,5 +71,5 @@ const APPROACHES: ApproachData[] = [
 ];
 
 export default function CustomBindProblem() {
-  return <JsProblemLayout problem={PROBLEM} approaches={APPROACHES} />;
+  return <JsProblemShell problem={PROBLEM} approaches={APPROACHES} />;
 }

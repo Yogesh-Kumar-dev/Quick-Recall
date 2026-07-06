@@ -47,7 +47,7 @@ export default function APIDataFetching() {
             padding: '8px 18px',
             borderRadius: 8,
             border: 'none',
-            background: loading ? '#9ca3af' : fetched ? '#0f172a' : '#2563eb',
+            background: loading ? '#9ca3af' : request.status === 'success' ? '#0f172a' : '#2563eb',
             color: '#fff',
             cursor: loading ? 'not-allowed' : 'pointer',
             fontWeight: 600,

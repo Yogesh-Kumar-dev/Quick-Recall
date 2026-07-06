@@ -1,4 +1,4 @@
-import type { JsProblemEntry } from 'types/content';
+import type { JsProblemEntry } from '@/types/content';
 
 export const jsProblems: JsProblemEntry[] = [
   {
