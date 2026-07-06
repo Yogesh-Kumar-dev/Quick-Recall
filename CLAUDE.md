@@ -4,87 +4,69 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**QuickRecall** — A Next.js 15 interview preparation tool for JavaScript, TypeScript, and React. Features machine coding problems with side-by-side live output + code viewer, concept cards, and quick-recall cheat sheets.
+**QuickRecall** — a personal developer interview-prep knowledge base built with Next.js 16 (App Router, Turbopack, React 19). Covers JavaScript, TypeScript, React, Next.js, Redux, HTML/CSS, and general engineering topics through notes, quick-recall cheat sheets, flashcards, and machine-coding problems with a side-by-side live demo + code viewer. Also includes a Job Tracker (kanban), a Speak Up rehearsal tool for behavioral/technical answers, bookmarks, and a spaced-repetition review queue — all persisted client-side. Ships as an installable, offline-capable PWA. There is no auth and no backend — everything runs and persists locally in the browser.
 
 ## Commands
 
 ```bash
-pnpm dev             # Start dev server (Next.js)
-pnpm build           # Production build
+pnpm dev             # copy pdfium wasm, then start dev server (Turbopack, via `portless`)
+pnpm build           # copy pdfium wasm, then production build
+pnpm start           # start production server
 pnpm lint            # Biome lint on ./src
-pnpm lint:fix        # Biome lint with safe auto-fixes
-pnpm format          # Biome format all src files
+pnpm lint:ci         # Biome lint in CI mode (no writes)
+pnpm format          # Biome format --write ./src
 pnpm check           # Biome lint + format + safe fixes in one pass
-pnpm knip            # Find unused exports/dependencies
+pnpm typecheck       # tsc --noEmit
+pnpm knip            # find unused exports/dependencies
 ```
 
-No test runner is configured.
+No test suite exists yet — `pnpm test` is a no-op placeholder.
 
 ## Architecture
 
-### Route Groups (Next.js App Router)
+### App Router structure
 
-- `src/app/(dashboard)/` — Main interview prep content; uses `MainLayout` (sidebar + header)
-- `src/app/(minimal)/(auth)/` — Login/register pages; uses `MinimalLayout`
-- `src/app/(simple)/` — Utility pages; uses `SimpleLayout`
+All routed pages live under the single `src/app/(app)/` group, wrapped by `AppLayout` (shadcn `Sidebar` + `Tooltip` providers, `AppHeader`/`AppSidebar`). Topic sections: `js/`, `react/`, `nextjs/`, `redux/`, `html-css/`, `engineering/`; feature routes: `job-tracker/`, `speak-up/`, `bookmarks/`, `review/`, `flashcards/[section]/`, `dashboard/`, `about/`. `src/app/serwist/[path]/route.ts` and `src/app/~offline/` back the PWA service worker (see below).
 
-Auth is **disabled in v1** — the `AuthGuard` wrapper is commented out in `src/app/(dashboard)/layout.tsx`. To re-enable auth, wrap `DashboardLayout` with `<AuthGuard>`.
+### Client-side persistence — Dexie (IndexedDB), not localStorage
 
-### Provider Stack (ProviderWrapper)
+`src/db/index.ts` defines one Dexie database (`quickrecall`) with one table per feature: `jobs`, `speakUpQAs`, `bookmarks`, `reviews`. Each feature owns a repository module in `src/db/*.ts` (e.g. `src/db/jobs.ts`) — **components never touch the `db` object directly**; they go through the repository, and through a `use*` hook built on `dexie-react-hooks`'s `useLiveQuery` (e.g. `src/components/job-tracker/use-jobs.ts`, `src/components/speak-up/use-speak-up-qas.ts`). Live queries re-run automatically on any table mutation — including from another browser tab — so there's no manual state sync or optimistic patching; mutations just write.
 
-`src/store/ProviderWrapper.tsx` wraps the app in this order: Redux `Provider` → `ConfigProvider` → `ThemeCustomization` → `Locales` → `NavigationScroll` → `AuthProvider` → `Notistack` → `Snackbar`.
+When adding a new persisted feature, add a table to the single `version(1).stores({...})` schema (bump the version and add an `.upgrade()` if changing an existing table) rather than creating a new Dexie instance.
 
-**Active auth provider**: `JWTContext`. Alternatives (Firebase, Auth0, AWS Cognito, Supabase) exist in `src/contexts/` and can be swapped in `ProviderWrapper.tsx`.
+### Content data
 
-### State Management
+`src/data/` holds static TypeScript content, organized by topic subfolder: `javascript/`, `react/`, `nextjs/`, `redux/`, `htmlcss/`, `engineering/` (each with `*-notes.ts`, `*-flashcards.ts`, `*-quick-recall.ts`, and problem-registry files). Shared shapes live in `src/types/content.ts` (`Note`, `Flashcard`, `QuickRecallSection`, `BaseProblemEntry`, `ProblemMeta`, etc.). `src/data/flashcards-index.ts` and `src/data/search-index.ts` aggregate across topics for cross-cutting features (flashcard lookup by key, global search).
 
-Redux Toolkit store (`src/store/`) with a single `snackbar` slice. `ConfigContext` (`src/contexts/ConfigContext.tsx`) manages theme settings (mode, direction, presetColor, etc.) — not stored in Redux. Use `useConfig()` hook to read/write config values.
+`src/lib/resolve-content.ts` bridges the generic Bookmarks/Review features to this static content: a bookmark/review only stores a `kind` (`note` | `flashcard` | `problem`) plus a namespaced `refId`; `resolveContent()` looks that up against the merged `src/data` arrays and returns the real item plus its route. Any new content type that should be bookmarkable/reviewable needs a case added here.
 
-### Theme System
+### Spaced-repetition review
 
-`src/themes/` builds an MUI theme dynamically from `ConfigContext`. Palette presets, typography, shadows, and component overrides are composed in `src/themes/index.tsx`. MUI imports are tree-shaken via `modularizeImports` in `next.config.ts` — always import from the specific path (e.g., `import Button from '@mui/material/Button'`).
+`src/lib/review-scheduler.ts` is a pure, framework-free SM-2-inspired scheduler (no Dexie/React/`Date.now()` inside — the caller passes `now`), retuned for short interview-prep timeframes: intervals start in minutes (Again 1m / Hard 10m / Good 1d / Easy 3d) and are capped around two weeks so nothing falls off the radar. `ReviewState` persists via the `reviews` Dexie table; the `/review` route consumes it.
 
-### Content Data
+### Machine Coding Problems
 
-`src/data/` contains static TypeScript arrays for all content:
-- `js-concepts.ts`, `react-concepts.ts`, `ts-concepts.ts` — concept cards
-- `js-quick-recall.ts`, `react-quick-recall.ts` — cheat sheet sections
-- `js-problems.ts`, `react-mc-problems.ts` — problem registries (metadata only, no code)
+Both React and JS variants follow the same shape: a `src/views/{machine-coding,js-machine-coding}/<ProblemName>/index.tsx` **Server Component** that reads its sibling source file(s) via `readFileSync` at render time (so the raw, unminified source can be shown next to the live demo) and renders `ProblemShell` / `JsProblemShell` (`src/components/machine-coding/`).
 
-Types for all content shapes live in `src/types/content.ts`.
+- **React problems**: `JsxVersion.jsx` + `TsxVersion.tsx` siblings; registered in `PROBLEM_MAP` in `src/app/(app)/react/machine-coding/[slug]/page.tsx`, with metadata in `src/data/react/react-mc-problems.ts`.
+- **JS problems**: one or more `solution-*.js` files (brute/optimal/builtin/recursive/...); registered in `PROBLEM_MAP` in `src/app/(app)/js/machine-coding/[slug]/page.tsx`, with metadata in `src/data/javascript/js-problems.ts`.
 
-### Machine Coding Problems — React
+**Gotcha:** because `readFileSync` reads *raw, uncompiled* source files, Next's output file tracer doesn't pick them up automatically for serverless bundling. `outputFileTracingIncludes` in `next.config.ts` explicitly traces `src/views/**/*.{tsx,jsx,js}` into the relevant function bundles — forgetting to extend this when adding a new problem shape causes an ENOENT/500 in production despite working locally.
 
-Each problem lives in `src/views/machine-coding/<ProblemName>/` with four files:
-- `index.tsx` — **Server Component** that reads source files via `readFileSync` at build time, defines `PROBLEM` metadata, and renders `<ProblemLayout>`
-- `JsxVersion.jsx`, `TsxVersion.tsx`, `MuiVersion.tsx` — three live implementations
+### PWA / offline support
 
-`ProblemLayout` (`src/ui-component/machine-coding/ProblemLayout.tsx`) splits the page into a resizable left panel (live output) and right panel (Monaco code viewer with version picker).
+The app builds with **Turbopack**, and `@serwist/next`'s webpack-based compilation doesn't support that — so the service worker is compiled via a Route Handler instead (`src/app/serwist/[path]/route.ts`, wired through `@serwist/turbopack`). `withSerwist(nextConfig)` in `next.config.ts` only adds `esbuild`/`esbuild-wasm` to `serverExternalPackages` so that route handler can bundle in the Node runtime. `SerwistProvider` (in `src/app/providers.tsx`) registers the worker at `/serwist/sw.js` and is disabled in dev — its install-time warm-up would otherwise trigger a Turbopack recompile per route on every "download for offline" run. Offline content selection/caching lives in `src/utils/offline-cache.ts` and `src/utils/pdf-cache.ts`, driven by `src/data/offline-content.ts` and the `useOfflineDownload` hook.
 
-**To add a new React machine coding problem:**
-1. Create `src/views/machine-coding/<Name>/` with `index.tsx`, `JsxVersion.jsx`, `TsxVersion.tsx`, `MuiVersion.tsx`
-2. Add a route page at `src/app/(dashboard)/machine-coding/<slug>/page.tsx` that imports and renders the index
-3. Add a nav entry in `src/menu-items/react.tsx`
+### Providers & UI stack
 
-### Machine Coding Problems — JS
+`src/app/providers.tsx` composes, outside-in: `SerwistProvider` → `NuqsAdapter` (URL state, e.g. notes/flashcard filters) → `EmotionRegistry` (flushes LeafyGreen's Emotion styles into the streamed SSR HTML via `useServerInsertedHTML` — without it, LeafyGreen markup ships classNames with no styles) → `LeafyGreenProvider darkMode` → `NotificationProvider` (`src/notifications/`, a manager/policy/prefs/registry split wrapping native Web Notifications with a `sonner` toast fallback) → `Toaster`.
 
-Each problem lives in `src/views/js-machine-coding/<ProblemName>/` with:
-- `index.tsx` — **Server Component** that reads `solution-*.js` files via `readFileSync`, defines `PROBLEM` metadata + `APPROACHES` array, renders `<JsProblemLayout>`
-- `solution-*.js` files — raw JS solution files (brute, optimal, builtin, recursive, etc.)
+The app is **dark-mode only** (forced `dark` class on the root `<html>`, MongoDB-style design) — there's no theme toggle or `next-themes`. Two UI systems intentionally coexist: shadcn/ui + Tailwind v4 (`src/components/ui/`) for most of the app, and `@leafygreen-ui/*` for a handful of MongoDB-styled components (callout, code, expandable-card). Check which pattern a given surface already uses before introducing a third.
 
-Dynamic routing: `src/app/(dashboard)/js/machine-coding/[slug]/page.tsx` maintains a `PROBLEM_MAP` registry mapping slugs to lazy imports.
+### Search & navigation
 
-**To add a new JS machine coding problem:**
-1. Add entry to `jsProblems` array in `src/data/js-problems.ts`
-2. Create `src/views/js-machine-coding/<Name>/` with `index.tsx` + solution files
-3. Register the slug in `PROBLEM_MAP` in `src/app/(dashboard)/js/machine-coding/[slug]/page.tsx`
-
-### Navigation
-
-`src/menu-items/index.tsx` composes the sidebar from `dashboard`, `javascript`, and `react` menu groups. Each group is a `NavItemType` tree rendered by `src/layout/MainLayout/MenuList/`.
+Global search (`src/components/search/header-search.tsx`) is a `cmdk` command palette over `fuse.js`, indexed from `src/data/search-index.ts`. Sidebar navigation is a flat config in `src/config/nav.ts` (not a component tree), rendered by `src/components/layout/app-sidebar.tsx`.
 
 ## Code Style
 
-Formatting and linting are handled by **Biome** (`biome.json`): single quotes, 140 line width, 2-space indent, no trailing commas, semicolons. Run `pnpm check` (lint + format + safe fixes) before committing. The raw `solution-*.js` and `*.jsx` demo files under `src/views/**/machine-coding/` are excluded from Biome since they're displayed verbatim via `readFileSync`.
-
-`reactStrictMode` is set to `false` in `next.config.ts` due to a known chart rendering issue.
+Biome (`biome.json`): single quotes in JS/TS, double quotes in JSX, 140 line width, 2-space indent, no trailing commas, semicolons, `arrowParentheses: always`. Run `pnpm check` before committing. Raw machine-coding demo/solution files (`src/views/**/*.jsx`, `src/views/**/solution-*.js`, `src/views/machine-coding/*/TsxVersion.tsx`) and `src/components/ui/**` (shadcn-generated) are excluded from Biome since they're either displayed verbatim or vendored.
