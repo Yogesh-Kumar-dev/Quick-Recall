@@ -7,6 +7,21 @@ import { withSerwist } from "@serwist/turbopack";
 // `withSerwist` here only adds the esbuild/esbuild-wasm packages to serverExternalPackages so
 // that route handler can bundle in a Node runtime.
 const nextConfig: NextConfig = {
+  // Machine-coding pages read their raw source files via readFileSync at render time to show the
+  // code alongside the live demo. Under the `force-dynamic` (dashboard) segment that read runs inside
+  // the serverless function, but Next's output file tracer only bundles *compiled* modules — the raw
+  // source (even the imported .tsx/.jsx demos) is never traced, so the Lambda hits ENOENT and the page
+  // 500s / falls into the error boundary. Explicitly trace the raw sources into each function bundle.
+  outputFileTracingIncludes: {
+    '/js/machine-coding/[slug]': ['./src/views/js-machine-coding/**/*.js'],
+    '/machine-coding/**': ['./src/views/machine-coding/**/*.{tsx,jsx}']
+  },
+  // Eliminate barrel-file import cost for @tabler/icons-react and the @leafygreen-ui packages we
+  // use: Next rewrites the named barrel imports to direct per-icon/per-component paths at build
+  // time, so we don't pull the whole package surface into the graph.
+  experimental: {
+    optimizePackageImports: ['@tabler/icons-react', '@leafygreen-ui/callout', '@leafygreen-ui/code', '@leafygreen-ui/expandable-card']
+  },
   images: {
     remotePatterns: [
       {
