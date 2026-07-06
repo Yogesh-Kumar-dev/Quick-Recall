@@ -3,6 +3,7 @@ import type { FlashcardSource } from './flashcards-index';
 import { jsFlashcards, tsFlashcards } from './javascript/js-flashcards';
 import { reactFlashcards } from './react/react-flashcards';
 import { nextjsFlashcards, nextjsRenderingFlashcards } from './nextjs/nextjs-flashcards';
+import { nodejsFlashcards } from './nodejs/nodejs-flashcards';
 import { htmlFlashcards, cssFlashcards } from './htmlcss/htmlcss-flashcards';
 import { engineeringFlashcards } from './engineering/engineering-flashcards';
 import { reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from './redux/redux-flashcards';
@@ -21,6 +22,7 @@ export const FLASHCARD_SETS: Record<string, FlashcardSet> = {
   react: { cards: reactFlashcards, source: 'react', title: '⚛️ React Flashcards' },
   nextjs: { cards: nextjsFlashcards, source: 'nextjs', title: '▲ Next.js Flashcards' },
   'nextjs-rendering': { cards: nextjsRenderingFlashcards, source: 'nextjsRendering', title: '▲ Next.js Rendering Flashcards' },
+  nodejs: { cards: nodejsFlashcards, source: 'nodejs', title: '🟢 Node.js Flashcards' },
   html: { cards: htmlFlashcards, source: 'html', title: '🌐 HTML Flashcards' },
   css: { cards: cssFlashcards, source: 'css', title: '🎨 CSS Flashcards' },
   engineering: { cards: engineeringFlashcards, source: 'engineering', title: '⚙️ Engineering Essentials Flashcards' },

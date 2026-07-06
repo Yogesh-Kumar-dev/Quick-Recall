@@ -11,6 +11,7 @@ import type { Flashcard } from '@/types/content';
 import { jsFlashcards, tsFlashcards } from './javascript/js-flashcards';
 import { reactFlashcards } from './react/react-flashcards';
 import { nextjsFlashcards, nextjsRenderingFlashcards } from './nextjs/nextjs-flashcards';
+import { nodejsFlashcards } from './nodejs/nodejs-flashcards';
 import { reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from './redux/redux-flashcards';
 import { htmlFlashcards, cssFlashcards } from './htmlcss/htmlcss-flashcards';
 import { engineeringFlashcards } from './engineering/engineering-flashcards';
@@ -23,6 +24,7 @@ export type FlashcardSource =
   | 'react'
   | 'nextjs'
   | 'nextjsRendering'
+  | 'nodejs'
   | 'redux'
   | 'reduxToolkit'
   | 'rtkQuery'
@@ -43,6 +45,7 @@ const SOURCES: { source: FlashcardSource; cards: Flashcard[] }[] = [
   { source: 'react', cards: reactFlashcards },
   { source: 'nextjs', cards: nextjsFlashcards },
   { source: 'nextjsRendering', cards: nextjsRenderingFlashcards },
+  { source: 'nodejs', cards: nodejsFlashcards },
   { source: 'redux', cards: reduxFlashcards },
   { source: 'reduxToolkit', cards: reduxToolkitFlashcards },
   { source: 'rtkQuery', cards: rtkQueryFlashcards },

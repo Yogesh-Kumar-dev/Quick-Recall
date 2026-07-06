@@ -8,6 +8,7 @@ import {
   IconBrandHtml5,
   IconBrandJavascript,
   IconBrandNextjs,
+  IconBrandNodejs,
   IconBrandReact,
   IconBrandRedux,
   IconBrandTypescript,
@@ -107,6 +108,15 @@ export const navSections: NavSection[] = [
     items: [
       { title: 'Next.js Notes', url: '/nextjs/notes', icon: IconBrandNextjs },
       { title: 'Rendering Strategies', url: '/nextjs/rendering', icon: IconServer }
+    ]
+  },
+  {
+    id: 'nodejs',
+    title: 'Node.js',
+    icon: IconBrandNodejs,
+    items: [
+      { title: 'Node.js Notes', url: '/nodejs/notes', icon: IconBrandNodejs },
+      { title: 'Quick Recall ⚡', url: '/nodejs/quick-recall', icon: IconBolt }
     ]
   },
   {

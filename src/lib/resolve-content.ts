@@ -20,6 +20,7 @@ import { tsReactNotes } from '@/data/javascript/ts-react';
 import { reactNotes } from '@/data/react/react-notes';
 import { nextjsNotes } from '@/data/nextjs/nextjs-notes';
 import { nextjsRenderingNotes } from '@/data/nextjs/nextjs-rendering';
+import { nodejsNotes } from '@/data/nodejs/nodejs-notes';
 import { reduxNotes } from '@/data/redux/redux-notes';
 import { reduxToolkitNotes } from '@/data/redux/redux-toolkit-notes';
 import { rtkQueryNotes } from '@/data/redux/rtk-query-notes';
@@ -38,6 +39,7 @@ const ALL_NOTES: Note[] = [
   ...reactNotes,
   ...nextjsNotes,
   ...nextjsRenderingNotes,
+  ...nodejsNotes,
   ...reduxNotes,
   ...reduxToolkitNotes,
   ...rtkQueryNotes,
