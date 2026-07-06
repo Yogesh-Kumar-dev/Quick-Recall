@@ -36,6 +36,10 @@ function NavItem({ item, pathname }: { item: NavLink; pathname: string }) {
 export function AppSidebar() {
   const pathname = usePathname();
 
+  if (pathname === '/') {
+    return null;
+  }
+
   return (
     <Sidebar>
       <SidebarHeader>

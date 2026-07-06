@@ -1,12 +1,7 @@
+import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
-import FullscreenButton from '@/components/layout/fullscreen-button';
-import InstallButton from '@/components/pwa/install-button';
-import OfflineDownloadButton from '@/components/pwa/offline-download-button';
 import OfflineSectionGuard from '@/components/pwa/offline-section-guard';
-import OfflineStatusChip from '@/components/pwa/offline-status-chip';
-import HeaderSearch from '@/components/search/header-search';
-import TimerSection from '@/components/timer/timer-section';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -24,18 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <AppSidebar />
 
         <SidebarInset>
-          <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger />
-            <HeaderSearch />
-            {/* breadcrumbs land here in a later phase */}
-            <TimerSection />
-            <div className="ml-auto flex items-center gap-2">
-              <OfflineStatusChip />
-              <InstallButton />
-              <OfflineDownloadButton />
-              <FullscreenButton />
-            </div>
-          </header>
+          <AppHeader />
           <div id="main-content" tabIndex={-1} className="flex flex-1 flex-col p-4 focus:outline-none md:p-6">
             <OfflineSectionGuard>{children}</OfflineSectionGuard>
           </div>
