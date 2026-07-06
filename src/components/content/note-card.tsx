@@ -2,6 +2,7 @@
 
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
+import { parseAsString, useQueryState } from 'nuqs';
 import type { Note } from '@/types/content';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
 import CodeBlock from './code-block';
@@ -28,6 +29,13 @@ function Badge({ children, className = '' }: { children: React.ReactNode; classN
 export default function NoteCard({ note }: { note: Note }) {
   const showDeepDive = note.difficulty !== 'basic';
 
+  // Each card owns its slice of the shared `open` URL param — nuqs keeps every instance in sync,
+  // so clicking one card's header updates the URL and every other card observing the same key
+  // re-renders closed. This makes a single note deep-linkable/shareable via ?open=<note.id>.
+  const [openId, setOpenId] = useQueryState('open', parseAsString);
+  const isOpen = openId === note.id;
+  const handleClick = () => void setOpenId(isOpen ? null : note.id);
+
   const title = (
     <span className="flex w-full flex-wrap items-center justify-between gap-2">
       <span className="flex flex-wrap items-center gap-2">
@@ -40,7 +48,14 @@ export default function NoteCard({ note }: { note: Note }) {
   );
 
   return (
-    <ExpandableCard className={`mb-2 ${DIFFICULTY_BORDER[note.difficulty]}`} title={title} description={note.summary}>
+    <ExpandableCard
+      id={`note-${note.id}`}
+      isOpen={isOpen}
+      onClick={handleClick}
+      className={`mb-2 ${DIFFICULTY_BORDER[note.difficulty]}`}
+      title={title}
+      description={note.summary}
+    >
       <div className="space-y-4">
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Key Points</p>

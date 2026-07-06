@@ -3,9 +3,10 @@ import type { ReactNode } from 'react';
 import type { Note } from '@/types/content';
 import FilterPanel from './filter-panel';
 import NoteCard from './note-card';
+import ScrollToNote from './scroll-to-note';
 import VirtualNoteList from './virtual-note-list';
 
-export type NotesSearchParams = { q?: string; cat?: string; diff?: string };
+export type NotesSearchParams = { q?: string; cat?: string; diff?: string; open?: string };
 
 // Below this many filtered notes, a plain server-rendered list is both simpler and keeps content
 // in the initial HTML. Above it, virtualize (client-only render) so hundreds of ExpandableCard
@@ -70,7 +71,7 @@ export default function NotesView({
           {filtered.length === 0 ? (
             <p className="py-12 text-center text-muted-foreground">No notes match your filters.</p>
           ) : filtered.length > VIRTUALIZE_THRESHOLD ? (
-            <VirtualNoteList notes={filtered} />
+            <VirtualNoteList notes={filtered} openId={params.open} />
           ) : (
             <div className="space-y-2">
               {filtered.map((note) => (
@@ -78,6 +79,7 @@ export default function NotesView({
               ))}
             </div>
           )}
+          <ScrollToNote id={params.open} />
         </main>
       </div>
     </div>
