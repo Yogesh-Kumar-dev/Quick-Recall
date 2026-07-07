@@ -25,6 +25,7 @@
     "@leafygreen-ui/emotion": "5.2.0",
     "@leafygreen-ui/expandable-card": "^5.2.4",
     "@leafygreen-ui/leafygreen-provider": "^5.0.4",
+    "@sentry/nextjs": "^10.63.0",
     "@serwist/turbopack": "^9.5.11",
     "@tabler/icons-react": "^3.44.0",
     "class-variance-authority": "^0.7.1",

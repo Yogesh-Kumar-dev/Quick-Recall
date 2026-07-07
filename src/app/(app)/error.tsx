@@ -1,6 +1,7 @@
 'use client';
 
 import { IconHome, IconMail, IconRefresh } from '@tabler/icons-react';
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ const CONTACT_URL = 'https://yogesh-kumar-portfolio-v2.vercel.app/#contact';
 export default function AppError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error(error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (
