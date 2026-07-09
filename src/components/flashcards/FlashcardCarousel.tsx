@@ -57,7 +57,7 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') handlePrev();
     if (e.key === 'ArrowRight') handleNext();
-    if (e.key === ' ') {
+    if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       setIsFlipped((f) => !f);
     }
@@ -79,9 +79,14 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
           <BookmarkButton kind="flashcard" refId={flashcardKey(source, current.id)} stopPropagation />
         </div>
 
-        {/* ponytail: CSS-based flip animation; no framer-motion dependency */}
-        <button
-          type="button"
+        {/* ponytail: CSS-based flip animation; no framer-motion dependency.
+            div[role="button"] instead of a native <button> because the back face can render
+            a CodeBlock, whose copy control is itself a <button> — nesting a <button> inside a
+            <button> is invalid HTML and triggers a hydration error. */}
+        {/* biome-ignore lint/a11y/useSemanticElements: must be a div, not a button — see comment above */}
+        <div
+          role="button"
+          tabIndex={0}
           className="h-full w-full cursor-pointer [perspective:1000px]"
           onClick={() => setIsFlipped((f) => !f)}
           onKeyDown={handleKeyDown}
@@ -107,18 +112,14 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
                 {current.code && (
                   // biome-ignore lint/a11y/noStaticElementInteractions: intercept clicks to prevent card flip
                   // biome-ignore lint/a11y/useKeyWithClickEvents: intercept clicks to prevent card flip
-                  <div
-                    className="mt-3 text-left"
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <div className="mt-3 text-left" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
                     <CodeBlock code={current.code} language="javascript" />
                   </div>
                 )}
               </div>
             </div>
           </div>
-        </button>
+        </div>
       </div>
 
       {/* Navigation controls */}

@@ -136,7 +136,14 @@ const navItems: SearchItem[] = [
 const richUrls = new Set([...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems].map((i) => i.url));
 const dedupedNavItems = navItems.filter((i) => !richUrls.has(i.url));
 
-export const searchIndex: SearchItem[] = [...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems, ...dedupedNavItems];
+export const searchIndex: SearchItem[] = [
+  ...jsProblemItems,
+  ...reactProblemItems,
+  ...hookItems,
+  ...noteItems,
+  ...flashcardItems,
+  ...dedupedNavItems
+];
 
 // ─── Fuse factory ─────────────────────────────────────────────────────────────
 
