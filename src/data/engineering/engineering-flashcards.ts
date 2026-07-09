@@ -232,5 +232,35 @@ export const engineeringFlashcards: Flashcard[] = [
     front: 'Containers vs serverless',
     back: 'Containers (Docker/K8s): portable image you run/scale yourself. Serverless (Lambda): run code per request, auto-scales to zero, pay per execution , trades control + cold-start latency for zero ops.',
     category: 'Q&A'
+  },
+  {
+    id: 'eng-rate-limiting',
+    front: 'Rate limiting algorithms',
+    back: 'Fixed window: simple, but boundary bursts can 2x the rate. Sliding log: accurate, memory-heavy. Sliding window counter: the practical middle ground. Token bucket: allows bursts up to bucket size. Leaky bucket: smooths bursts into a steady rate.',
+    category: 'Q&A'
+  },
+  {
+    id: 'eng-consistent-hashing',
+    front: 'Consistent hashing',
+    back: 'Places nodes and keys on a hash ring , a key belongs to the next node clockwise. Adding/removing a node only remaps ~1/N of keys, unlike hash(key) % N which remaps almost everything. Virtual nodes even out the load.',
+    category: 'Keyword'
+  },
+  {
+    id: 'eng-race-condition',
+    front: 'Race condition',
+    back: 'The outcome depends on the unpredictable timing of concurrent operations , e.g. two requests read-then-write the same counter and one update gets lost. Fix with a mutex/lock, or better, an atomic operation (UPDATE ... SET x = x - 1).',
+    category: 'Keyword'
+  },
+  {
+    id: 'eng-deadlock',
+    front: 'Deadlock',
+    back: 'Two or more processes each hold a lock the other needs and neither releases theirs , they wait forever. Standard fix: always acquire locks in the same consistent order across the codebase.',
+    category: 'Keyword'
+  },
+  {
+    id: 'eng-authn-vs-authz',
+    front: 'Authentication vs authorization',
+    back: 'Authentication: who are you? (login, token). Authorization: what are you allowed to do? (runs after authn). 401 = not authenticated. 403 = authenticated, but forbidden , a commonly mixed-up pair.',
+    category: 'Q&A'
   }
 ];

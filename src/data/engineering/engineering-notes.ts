@@ -54,6 +54,7 @@ for (const x of list) { if (seen.has(x)) …; seen.add(x); }`
     summary: 'Arrays, hash maps, stacks, queues, trees, graphs , each trades off lookup, insertion, and ordering.',
     difficulty: 'intermediate',
     category: 'fundamentals',
+    prerequisites: ['eng-big-o'],
     keyPoints: [
       'Array/List: indexed, ordered; O(1) access by index, O(n) search/insert-in-middle.',
       'Hash map / Set: O(1) average lookup/insert by key, unordered.',
@@ -97,6 +98,7 @@ class Circle extends Shape {                   // inheritance
     summary: 'Five design principles for code that’s easier to maintain, extend, and test.',
     difficulty: 'intermediate',
     category: 'oop',
+    prerequisites: ['eng-oop-principles'],
     keyPoints: [
       'S , Single Responsibility: a class/module should have one reason to change.',
       'O , Open/Closed: open for extension, closed for modification (add behaviour without editing existing code).',
@@ -141,6 +143,7 @@ DELETE /users/42     → 204 no content`
     summary: 'An idempotent operation has the same effect whether you run it once or many times , vital for retries.',
     difficulty: 'intermediate',
     category: 'apis',
+    prerequisites: ['eng-rest-api'],
     keyPoints: [
       'Idempotent: GET, PUT, DELETE , repeating the request leaves the server in the same state.',
       'Not idempotent: POST , calling it twice usually creates two resources.',
@@ -187,6 +190,7 @@ JOIN orders o ON o.user_id = u.id;
     summary: 'An index is a lookup structure that turns a full-table scan into a fast seek , at the cost of write speed.',
     difficulty: 'intermediate',
     category: 'databases',
+    prerequisites: ['eng-sql-vs-nosql'],
     keyPoints: [
       'An index (usually a B-tree) lets the DB find rows by a column without scanning every row , O(log n) vs O(n).',
       'Index the columns you filter (WHERE), join, or sort (ORDER BY) on.',
@@ -210,6 +214,7 @@ EXPLAIN SELECT * FROM users WHERE email = ?;
     summary: 'Store the result of expensive work close to where it’s needed so you don’t redo it.',
     difficulty: 'intermediate',
     category: 'system-design',
+    prerequisites: ['eng-db-indexing'],
     keyPoints: [
       'Cache layers: browser, CDN (edge), application (in-memory/Redis), and database query cache.',
       'Cache-aside: app checks the cache, falls back to the DB on a miss, then stores the result.',
@@ -232,6 +237,7 @@ if (!user) {
     summary: 'Scale up (a bigger machine) or scale out (more machines behind a load balancer).',
     difficulty: 'intermediate',
     category: 'system-design',
+    prerequisites: ['eng-caching'],
     keyPoints: [
       'Vertical scaling: add CPU/RAM to one server , simple, but a hard ceiling and a single point of failure.',
       'Horizontal scaling: add more servers behind a load balancer , near-unlimited, but needs stateless services.',
@@ -252,6 +258,7 @@ if (!user) {
     summary: 'One deployable app vs many small independently-deployable services , a trade-off, not an upgrade.',
     difficulty: 'advanced',
     category: 'system-design',
+    prerequisites: ['eng-scaling'],
     keyPoints: [
       'Monolith: one codebase/deployment , simple to build, test, and deploy early on.',
       'Microservices: independent services per domain, each with its own deploy and often its own DB.',
@@ -296,6 +303,7 @@ git push -u origin feature/login  # open a PR`
     summary: 'Readable, well-named, small-unit code , and the deliberate trade-offs that create "debt".',
     difficulty: 'intermediate',
     category: 'practices',
+    prerequisites: ['eng-solid'],
     keyPoints: [
       'Names should reveal intent; functions should do one thing and stay small.',
       'DRY (don’t repeat yourself) , but don’t abstract prematurely; some duplication is cheaper than the wrong abstraction.',
@@ -319,6 +327,7 @@ function activeUsers(users) {
     summary: 'Automate building, testing, and deploying so changes ship safely and often.',
     difficulty: 'intermediate',
     category: 'practices',
+    prerequisites: ['eng-git-basics'],
     keyPoints: [
       'Continuous Integration: every push triggers an automated build + test run, catching breakage early.',
       'Continuous Delivery: every passing change is automatically prepared for release (deploy is one click).',
@@ -364,6 +373,7 @@ jobs:
     summary: 'Functional checks WHAT the system does; non-functional checks HOW WELL it does it.',
     difficulty: 'basic',
     category: 'testing-types',
+    prerequisites: ['test-pyramid'],
     keyPoints: [
       'Functional: does the feature meet the requirement? (login works, form validates, checkout succeeds).',
       'Non-functional: performance, load, security, accessibility, usability , quality attributes.',
@@ -382,6 +392,7 @@ jobs:
     summary: 'Web-specific non-functional testing: it works everywhere, stays fast under load, and is usable by everyone.',
     difficulty: 'intermediate',
     category: 'testing-types',
+    prerequisites: ['test-functional-nonfunctional'],
     keyPoints: [
       'Cross-browser/responsive: verify across Chrome/Firefox/Safari and screen sizes (BrowserStack, Playwright).',
       'Performance/load: measure response time and throughput under expected and peak traffic (k6, JMeter, Lighthouse).',
@@ -403,6 +414,7 @@ expect(results.violations).toEqual([]);`
     summary: 'Automate repetitive tests so they run on every change , the foundation of CI and regression safety.',
     difficulty: 'intermediate',
     category: 'testing-automation',
+    prerequisites: ['test-pyramid'],
     keyPoints: [
       'Unit/integration runners: Jest, Vitest, Mocha , assertions, mocking, coverage.',
       'E2E/browser automation: Playwright, Cypress, Selenium , drive a real browser.',
@@ -428,6 +440,7 @@ await expect(page).toHaveURL('/dashboard');`
     summary: 'Test-Driven Development writes the test first; mocks isolate the unit from its dependencies.',
     difficulty: 'intermediate',
     category: 'testing-automation',
+    prerequisites: ['test-automation'],
     keyPoints: [
       'TDD cycle: Red (write a failing test) → Green (make it pass simply) → Refactor (clean up).',
       'Writing tests first clarifies the API and guarantees the code is testable.',
@@ -451,6 +464,7 @@ jest.spyOn(api, 'getUser').mockResolvedValue({ id: 1 });`
     summary: 'The Software Testing Life Cycle structures testing into phases; coverage metrics measure how much is exercised.',
     difficulty: 'intermediate',
     category: 'testing-automation',
+    prerequisites: ['test-automation'],
     keyPoints: [
       'STLC phases: requirement analysis → test planning → test case design → environment setup → execution → closure.',
       'Code coverage: % of lines/branches/functions executed by tests , a guide, not a guarantee of quality.',
@@ -473,6 +487,7 @@ function fee(amount) {
     summary: 'Reusable solutions for how objects get created , Singleton, Factory, Builder.',
     difficulty: 'intermediate',
     category: 'architecture',
+    prerequisites: ['eng-oop-principles'],
     keyPoints: [
       'Singleton: guarantees one shared instance (e.g. a config or DB connection pool).',
       'Factory Method: a method decides which concrete class to instantiate , callers ask for an interface, not a class.',
@@ -493,6 +508,7 @@ function createLogger(env) {
     summary: 'Patterns for composing objects into larger structures , Adapter, Decorator, Facade, Proxy.',
     difficulty: 'intermediate',
     category: 'architecture',
+    prerequisites: ['arch-design-patterns-creational'],
     keyPoints: [
       'Adapter: wraps an incompatible interface so it matches what the client expects (a plug converter).',
       'Decorator: wraps an object to add behaviour without changing its class (e.g. adding logging/caching).',
@@ -510,6 +526,7 @@ const cached = withCache(withLogging(fetchUser));
     summary: 'Patterns for how objects communicate , Observer, Strategy, Command, Chain of Responsibility.',
     difficulty: 'intermediate',
     category: 'architecture',
+    prerequisites: ['arch-design-patterns-structural'],
     keyPoints: [
       'Observer: subjects notify subscribers of changes (the basis of event systems and reactivity).',
       'Strategy: swap an algorithm at runtime by passing in a function/object (e.g. different sort comparators).',
@@ -529,6 +546,7 @@ sortBy(users, (a, b) => a.age - b.age);
     summary: 'Give an object its dependencies from outside instead of having it create them , for flexible, testable code.',
     difficulty: 'intermediate',
     category: 'architecture',
+    prerequisites: ['eng-solid'],
     keyPoints: [
       'Instead of a class instantiating its collaborators, they’re passed in (constructor, setter, or parameter).',
       'Decouples a class from concrete implementations , it depends on an interface it’s handed.',
@@ -550,6 +568,7 @@ class Service { constructor(private db: Database) {} }`
     summary: 'Three API styles with different trade-offs in flexibility, performance, and tooling.',
     difficulty: 'intermediate',
     category: 'architecture',
+    prerequisites: ['eng-rest-api'],
     keyPoints: [
       'REST: resource URLs + HTTP verbs; simple, cacheable, ubiquitous , but can over/under-fetch and need many round-trips.',
       'GraphQL: one endpoint, the client asks for exactly the fields it needs , solves over-fetching; caching and rate-limiting are harder.',
@@ -571,6 +590,7 @@ query { user(id: 1) { name orders { total } } }
     summary: 'Services communicate by emitting and reacting to events through a queue/broker instead of calling each other directly.',
     difficulty: 'advanced',
     category: 'architecture',
+    prerequisites: ['eng-microservices'],
     keyPoints: [
       'Producers publish events to a broker (Kafka, RabbitMQ, SQS); consumers subscribe and react asynchronously.',
       'Decouples services: the producer doesn’t know or wait for consumers , better resilience and scalability.',
@@ -593,6 +613,7 @@ on('OrderPlaced', decrementInventory);`
     summary: 'Design so the system keeps working despite failures , through redundancy, failover, and graceful degradation.',
     difficulty: 'advanced',
     category: 'architecture',
+    prerequisites: ['eng-scaling'],
     keyPoints: [
       'Availability is measured in "nines" (99.9% ≈ 8.7h downtime/year); HA means no single point of failure.',
       'Redundancy + failover: replicas across availability zones; if one dies, traffic shifts automatically.',
@@ -613,6 +634,7 @@ on('OrderPlaced', decrementInventory);`
     summary: 'Distribute incoming traffic across multiple servers for scale, redundancy, and even utilisation.',
     difficulty: 'intermediate',
     category: 'architecture',
+    prerequisites: ['eng-scaling'],
     keyPoints: [
       'A load balancer spreads requests across a pool of servers and removes unhealthy nodes via health checks.',
       'Algorithms: round-robin, least-connections, IP-hash (sticky sessions), weighted.',
@@ -633,6 +655,7 @@ on('OrderPlaced', decrementInventory);`
     summary: 'Scale databases by copying data (replication) for reads and splitting it (sharding) for writes.',
     difficulty: 'advanced',
     category: 'architecture',
+    prerequisites: ['eng-sql-vs-nosql', 'eng-scaling'],
     keyPoints: [
       'Replication: copy data to replicas. Reads spread across replicas; writes go to the primary (read scaling + redundancy).',
       'Replication lag means replicas can briefly serve stale data (eventual consistency).',
@@ -655,6 +678,7 @@ on('OrderPlaced', decrementInventory);`
     summary: 'CQRS separates read and write models; event sourcing stores changes as an append-only log of events.',
     difficulty: 'advanced',
     category: 'architecture',
+    prerequisites: ['arch-event-driven'],
     keyPoints: [
       'CQRS (Command Query Responsibility Segregation): separate the write model (commands) from the read model (queries), each optimised independently.',
       'Reads can use denormalized views/replicas; writes enforce business rules , they scale separately.',
@@ -674,6 +698,7 @@ on('OrderPlaced', decrementInventory);`
     summary: 'Package apps as portable containers or run them as on-demand functions managed by the cloud.',
     difficulty: 'advanced',
     category: 'architecture',
+    prerequisites: ['eng-microservices'],
     keyPoints: [
       'Containers (Docker): bundle app + dependencies into a portable image that runs the same everywhere.',
       'Orchestration (Kubernetes): schedules, scales, heals, and networks containers across a cluster.',
@@ -695,6 +720,7 @@ export async function handler(event) { return respond(event); }`
     summary: 'In a distributed system facing a network partition, you must trade consistency for availability.',
     difficulty: 'advanced',
     category: 'architecture',
+    prerequisites: ['arch-db-replication-sharding'],
     keyPoints: [
       'CAP: Consistency, Availability, Partition tolerance , you can’t fully have all three at once.',
       'Networks partition in practice, so the real choice under a partition is Consistency vs Availability.',
@@ -707,5 +733,116 @@ export async function handler(event) { return respond(event); }`
     codeSnippet: `// During a network partition, choose:
 //   CP → refuse the request (stay consistent)
 //   AP → answer with possibly-stale data (stay available)`
+  },
+  {
+    id: 'eng-rate-limiting-algorithms',
+    title: 'Rate Limiting Algorithms',
+    summary:
+      'Four standard ways to cap how many requests a client can make , each trades off burst tolerance, boundary accuracy, and memory cost differently.',
+    difficulty: 'advanced',
+    category: 'system-design',
+    prerequisites: ['eng-scaling'],
+    keyPoints: [
+      'Fixed window counter: count requests in a fixed interval (e.g. per 60s), reject once the cap is hit. Simple, but a burst right at the boundary between two windows can let through nearly double the intended rate.',
+      'Sliding window log: store a timestamp per request and count how many fall in the last N seconds. Perfectly accurate, but storing a timestamp per request gets expensive at high volume.',
+      'Sliding window counter: approximate the sliding log by weighting the previous fixed window’s count proportionally into the current one , most of the accuracy of the log, close to the memory cost of the fixed counter, the usual production choice.',
+      'Token bucket: a bucket refills with tokens at a steady rate up to a cap; each request consumes one token, and requests are rejected when the bucket is empty. Naturally allows short bursts up to the bucket size while enforcing a steady average rate.',
+      'Leaky bucket: requests queue up and are processed (leak out) at a fixed rate, smoothing bursty traffic into a steady stream , good for protecting a downstream system that can’t handle spikes, at the cost of added latency for queued requests.'
+    ],
+    gotcha:
+      'The fixed window counter’s boundary problem is a classic interview follow-up: a client sending its full quota at 0:59 and again at 1:01 gets through 2x the intended rate within 2 seconds, because each burst lands in a different "fixed" window.',
+    codeSnippet: `// Token bucket sketch
+class TokenBucket {
+  tokens: number;
+  constructor(private capacity: number, private refillPerSec: number) {
+    this.tokens = capacity;
+  }
+  tryConsume() {
+    if (this.tokens > 0) { this.tokens--; return true; } // allowed
+    return false; // rate-limited
+  }
+  // a timer/interval adds refillPerSec tokens each second, capped at capacity
+}`
+  },
+  {
+    id: 'eng-consistent-hashing',
+    title: 'Consistent Hashing',
+    summary:
+      'A hashing scheme that keeps most keys in place when nodes are added or removed , simple hash(key) % N reshuffles nearly everything.',
+    difficulty: 'advanced',
+    category: 'architecture',
+    prerequisites: ['arch-db-replication-sharding'],
+    keyPoints: [
+      'The problem with plain hash(key) % N sharding: changing N (adding or removing a node) changes the result for almost every key, forcing a massive, expensive remap/rebalance across the whole cluster.',
+      'Consistent hashing places both nodes and keys on a conceptual ring (hash values 0…max wrapping back to 0) , a key belongs to the first node found going clockwise from its position.',
+      'Adding or removing one node only affects the keys between it and its clockwise neighbour , on average just a 1/N slice of the keyspace moves, not everything.',
+      'Virtual nodes: give each physical server many positions on the ring (not just one) so load spreads evenly even with few real nodes , without them, one unlucky node placement can take a disproportionate share of the keyspace.',
+      'Used by Cassandra, DynamoDB, and CDNs like Akamai for exactly this reason , it lets a cluster scale up/down without a full data reshuffle.'
+    ],
+    gotcha:
+      'Consistent hashing without virtual nodes can still land unevenly , a handful of real servers randomly placed on the ring might end up with wildly different key-share sizes purely by chance. Virtual nodes fix this by averaging out the placement randomness.',
+    codeSnippet: `// Plain modulo sharding: adding a node remaps ~everything
+shard = hash(key) % N;   // N changes → almost every key's shard changes
+
+// Consistent hashing: adding a node only remaps the slice
+// between it and its clockwise neighbor on the ring
+shard = ring.nodeClockwiseFrom(hash(key));`
+  },
+  {
+    id: 'eng-race-conditions-concurrency',
+    title: 'Race Conditions & Concurrency Control',
+    summary:
+      'A race condition happens when the outcome depends on timing between concurrent operations , locks and atomic operations exist to prevent it.',
+    difficulty: 'advanced',
+    category: 'fundamentals',
+    prerequisites: ['eng-data-structures'],
+    keyPoints: [
+      'A race condition occurs when two or more operations access shared state concurrently and the final result depends on the unpredictable order they happen to run in , classic example: two requests both read a counter as 5, both increment locally, both write back 6, losing an update.',
+      'A mutex (mutual exclusion lock) lets only one thread/process hold it at a time , others block until it’s released, serializing access to the shared resource.',
+      'A semaphore is a generalized lock that allows up to N holders at once (a mutex is just a semaphore with N=1) , useful for capping concurrent access to a limited resource pool (e.g. N DB connections).',
+      'A deadlock happens when two or more processes each hold a lock the other needs and neither will release theirs , they wait on each other forever. The classic fix is a consistent lock-acquisition order across the whole codebase.',
+      'In distributed systems (multiple processes/machines, not just threads), a distributed lock (often backed by Redis or Zookeeper) coordinates access across machines , the same race-condition problem, at a larger scale.'
+    ],
+    gotcha:
+      'JavaScript’s single-threaded event loop doesn’t have thread-level races, but it absolutely has async races , two overlapping async operations that both read-then-write the same state (e.g. two API calls both doing "read balance, then write balance - amount") can still lose an update exactly like a classic race condition. The fix is the same idea: an atomic operation (a DB’s `UPDATE ... SET balance = balance - ?`) instead of a separate read-then-write.',
+    codeSnippet: `// ❌ race condition: read-then-write isn't atomic
+const balance = await db.getBalance(userId);
+await db.setBalance(userId, balance - amount); // another request could interleave here
+
+// ✅ atomic update — the database does the read+write as one operation
+await db.query('UPDATE accounts SET balance = balance - ? WHERE id = ?', [amount, userId]);`
+  },
+  {
+    id: 'eng-authn-vs-authz',
+    title: 'Authentication vs Authorization',
+    summary:
+      'Authentication proves who you are; authorization decides what you’re allowed to do , two distinct steps, often confused as one.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'Authentication (authn) answers "who are you?" , logging in with a password, a valid JWT, an API key, or an OAuth token all prove identity.',
+      'Authorization (authz) answers "what are you allowed to do?" , it runs AFTER authentication succeeds, checking the now-known identity against permissions/roles for the specific action requested.',
+      'A request can be authenticated but still unauthorized , a logged-in user is definitely who they say they are, but might still get a 403 trying to access another user’s data or an admin-only route.',
+      'Common authz models: role-based access control (RBAC , permissions attached to roles like "admin"/"editor"), and attribute/policy-based access control (ABAC , permissions computed from attributes of the user, resource, and context).',
+      'HTTP status codes map to the distinction: 401 Unauthorized actually means "not authenticated" (no/invalid credentials); 403 Forbidden means "authenticated, but not allowed" , a frequently misused pair of codes.'
+    ],
+    gotcha:
+      'The HTTP status code names are famously backwards from what they sound like , 401 is really about missing/bad authentication, not "not authorized." Using 403 when credentials are simply missing (should be 401) is a common API design mistake.',
+    codeSnippet: `// Authentication: who is this? (runs first, e.g. as middleware)
+function authenticate(req, res, next) {
+  const user = verifyToken(req.headers.authorization);
+  if (!user) return res.status(401).json({ error: 'Not authenticated' });
+  req.user = user;
+  next();
+}
+
+// Authorization: are they allowed to do THIS? (runs after, per-route)
+function requireRole(role) {
+  return (req, res, next) =>
+    req.user.role === role ? next() : res.status(403).json({ error: 'Forbidden' });
+}
+
+app.delete('/users/:id', authenticate, requireRole('admin'), deleteUser);`
   }
 ];
