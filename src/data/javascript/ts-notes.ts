@@ -8,6 +8,7 @@ export const tsNotes: Note[] = [
     summary: 'Both describe object shapes; interfaces are open (mergeable), types are closed but more flexible.',
     difficulty: 'basic',
     category: 'types',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       'interface can be extended with extends and merged via declaration merging.',
       'type alias can represent any type: union, intersection, primitives, tuples.',
@@ -30,6 +31,7 @@ type Result<T> = { data: T } | { error: string }; // union`
     summary: 'Type variables that let you write reusable, type-safe functions and data structures.',
     difficulty: 'intermediate',
     category: 'generics',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       '<T> introduces a type parameter , T is resolved when the function/class is used.',
       'Constraints: <T extends SomeType> limits what T can be.',
@@ -65,6 +67,7 @@ interface ApiResponse<T> {
     summary: 'Built-in generic helpers that transform existing types.',
     difficulty: 'intermediate',
     category: 'utility-types',
+    prerequisites: ['generics'],
     keyPoints: [
       'Partial<T> , makes all properties optional.',
       'Required<T> , makes all properties required.',
@@ -103,6 +106,7 @@ type FnReturn = ReturnType<typeof fetchUser>; // inferred return type`
     summary: 'Union (A | B) means either; Intersection (A & B) means both.',
     difficulty: 'basic',
     category: 'types',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       'Union: A | B , value can be type A or type B.',
       'Intersection: A & B , value must satisfy both A and B (combined properties).',
@@ -132,6 +136,7 @@ function area(s: Shape) {
     summary: 'Narrowing refines a broad type to a specific one inside a conditional block.',
     difficulty: 'intermediate',
     category: 'types',
+    prerequisites: ['union-intersection'],
     keyPoints: [
       'typeof narrowing: typeof x === "string".',
       'instanceof narrowing: x instanceof Date.',
@@ -164,6 +169,7 @@ function isUser(x: unknown): x is User {
     summary: 'Mapped types transform object types key-by-key; conditional types choose between types based on a condition.',
     difficulty: 'advanced',
     category: 'advanced',
+    prerequisites: ['generics', 'keyof-typeof'],
     keyPoints: [
       'Mapped type: { [K in keyof T]: NewType } , transform each property.',
       'Add/remove modifiers: +readonly, -readonly, +?, -?.',
@@ -195,6 +201,7 @@ type MyReturn<T> = T extends (...args: any[]) => infer R ? R : never;`
     summary: 'Named constant sets , numeric (default) or string enums.',
     difficulty: 'basic',
     category: 'types',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       'Numeric enum: members auto-increment from 0 by default.',
       'String enum: each member must have an explicit string literal value.',
@@ -214,6 +221,7 @@ type Dir = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';`
     summary: "`keyof` produces a union of an object type's keys; `typeof` captures the type of a value.",
     difficulty: 'intermediate',
     category: 'advanced',
+    prerequisites: ['type-vs-interface'],
     keyPoints: [
       'keyof T , union of all keys of T as literal string/number types.',
       'T[K] , index access type, the type of property K in T.',
@@ -265,6 +273,7 @@ num = 'oops'; // ❌ Type 'string' is not assignable to type 'number'
     summary: 'The built-in type set: primitives, arrays, tuples, enums, and the special any / void / never.',
     difficulty: 'basic',
     category: 'fundamentals',
+    prerequisites: ['ts-what-is'],
     keyPoints: [
       'Primitives: boolean, number, string, plus null and undefined.',
       'Array: number[] or Array<number>. Tuple: fixed-length, mixed types [string, number].',
@@ -305,6 +314,7 @@ arr.push(4);                       // ✅ contents mutable
     summary: 'TypeScript automatically derives types from values, reducing the need for explicit annotations.',
     difficulty: 'basic',
     category: 'fundamentals',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       'Assigning a value infers the variable’s type (let x = 10 → number).',
       'Uses a "best common type" algorithm across multiple candidate types.',
@@ -328,6 +338,7 @@ const sum = add(5, 7); // sum: number`
     summary: 'Annotate parameters and return types; support optional, default, and rest parameters.',
     difficulty: 'basic',
     category: 'functions',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       'Annotate each parameter and the return type: function f(a: number): string.',
       'void return type for functions that return nothing.',
@@ -351,6 +362,7 @@ function sum(...nums: number[]): number {
     summary: 'Declare multiple signatures for one function whose behavior varies by argument shape.',
     difficulty: 'intermediate',
     category: 'functions',
+    prerequisites: ['ts-functions'],
     keyPoints: [
       'Write several overload signatures, then ONE implementation that satisfies them all.',
       'Callers see only the overloads , the implementation signature is hidden.',
@@ -376,6 +388,7 @@ greet('Dr', 'Ada');     // ok`
     summary: 'TypeScript classes add typing and OOP features on top of standard ES6 classes.',
     difficulty: 'intermediate',
     category: 'oop',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       'Shares ES6 features: constructor, inheritance (extends), polymorphism, encapsulation.',
       'TS adds: access modifiers (public/private/protected) and readonly properties.',
@@ -400,6 +413,7 @@ greet('Dr', 'Ada');     // ok`
     summary: 'Subclass with extends and call super(); override methods, reusing the parent via super.method().',
     difficulty: 'intermediate',
     category: 'oop',
+    prerequisites: ['ts-classes'],
     keyPoints: [
       'class Child extends Parent , inherits properties and methods.',
       'A subclass constructor must call super(...) before using this.',
@@ -422,6 +436,7 @@ new Snake('Cobra').move(); // Slithering… Cobra moved 5m`
     summary: 'public, private, and protected control class-member visibility for encapsulation.',
     difficulty: 'basic',
     category: 'oop',
+    prerequisites: ['ts-classes'],
     keyPoints: [
       'public (default): accessible everywhere, inside and outside the class.',
       'private: accessible only within the declaring class.',
@@ -448,6 +463,7 @@ p.name;  // ✅
     summary: 'Non-instantiable base classes that declare abstract members subclasses must implement.',
     difficulty: 'intermediate',
     category: 'oop',
+    prerequisites: ['ts-inheritance'],
     keyPoints: [
       'Declared with abstract; cannot be instantiated directly (new Shape() is an error).',
       'abstract methods have no body , subclasses must implement them.',
@@ -471,6 +487,7 @@ class Circle extends Shape {
     summary: 'Initialize instances with constructor(); parameter properties declare + assign fields in one step.',
     difficulty: 'basic',
     category: 'oop',
+    prerequisites: ['ts-classes'],
     keyPoints: [
       'The constructor runs automatically on new and sets up initial state.',
       'A class has exactly one constructor (no true overloading , use optional params).',
@@ -494,6 +511,7 @@ class B {
     summary: 'tsc transpiles .ts → .js; tsconfig.json configures the target, module system, and strictness.',
     difficulty: 'intermediate',
     category: 'config',
+    prerequisites: ['ts-what-is'],
     keyPoints: [
       'Run tsc to compile; tsc --watch recompiles on change.',
       'tsconfig.json key options: target, module, strict, outDir, rootDir, lib.',
@@ -520,6 +538,7 @@ class B {
     summary: '"strict": true turns on a family of stricter type checks , the recommended baseline.',
     difficulty: 'intermediate',
     category: 'config',
+    prerequisites: ['ts-compilation'],
     keyPoints: [
       'strict: true enables several flags at once.',
       'noImplicitAny: error on variables/params that implicitly become any.',
@@ -544,6 +563,7 @@ function len2(s: string | null) {
     summary: 'Tell the compiler to treat a value as a specific type , a compile-time-only override, not a runtime conversion.',
     difficulty: 'intermediate',
     category: 'types',
+    prerequisites: ['ts-basic-types'],
     keyPoints: [
       'value as Type (or the older <Type>value) reinterprets the static type.',
       'No runtime effect , assertions are erased; they do NOT convert the value.',
@@ -565,6 +585,7 @@ const n = ('5' as unknown as number) + 1; // '51' at runtime`
     summary: 'A union of object types sharing a literal "tag" field, enabling safe narrowing and exhaustiveness checks.',
     difficulty: 'intermediate',
     category: 'types',
+    prerequisites: ['union-intersection', 'type-guards'],
     keyPoints: [
       'Each member has a common literal discriminant (e.g. kind: "circle" | "rect").',
       'Switching/branching on the tag narrows to the exact member type.',
@@ -590,6 +611,7 @@ function area(s: Shape): number {
     summary: 'Limit what a type parameter can be with `extends`, so you can safely use the constrained members.',
     difficulty: 'intermediate',
     category: 'generics',
+    prerequisites: ['generics'],
     keyPoints: [
       '<T extends U> requires T to be assignable to U.',
       'Lets you safely access U’s members inside the generic body.',
@@ -611,6 +633,7 @@ function getProp<T, K extends keyof T>(obj: T, key: K): T[K] {
     summary: 'Functions that annotate or modify classes and their members at definition time, prefixed with @.',
     difficulty: 'advanced',
     category: 'advanced',
+    prerequisites: ['ts-classes'],
     keyPoints: [
       'Targets: class, method, accessor, property, and parameter.',
       'A decorator runs when the class is defined , it can observe, wrap, or replace its target.',
@@ -636,6 +659,7 @@ class Api { @log fetch() { /* ... */ } }`
     summary: 'ES modules (import/export) are the modern standard; namespaces are a legacy grouping mechanism.',
     difficulty: 'intermediate',
     category: 'modules',
+    prerequisites: ['ts-compilation'],
     keyPoints: [
       'ES modules: one module per file, explicit import/export , the recommended approach.',
       'Namespaces (namespace X {}) group code under a single global name , legacy.',
@@ -659,6 +683,7 @@ MathUtil.add(1, 2);`
     summary: 'Type-only .d.ts files describe JS shapes; DefinitelyTyped publishes them under the @types scope.',
     difficulty: 'intermediate',
     category: 'modules',
+    prerequisites: ['ts-modules-namespaces'],
     keyPoints: [
       '.d.ts files declare types with NO implementation , they only describe shapes.',
       'They let TypeScript type-check otherwise-untyped JavaScript libraries.',
@@ -673,5 +698,148 @@ MathUtil.add(1, 2);`
 declare module 'my-lib' {
   export function greet(name: string): string;
 }`
+  },
+  {
+    id: 'ts-satisfies-operator',
+    title: 'The satisfies Operator',
+    summary:
+      'Checks a value against a type without widening it , you keep validation AND the narrowest inferred type, which `as` and `:` can’t both give you.',
+    difficulty: 'advanced',
+    category: 'types',
+    prerequisites: ['type-guards'],
+    keyPoints: [
+      'A `: Type` annotation validates the value but widens it to exactly that type , you lose the more specific inferred type of individual properties.',
+      '`as Type` skips validation entirely , it lies to the compiler if the value doesn’t actually match.',
+      '`expr satisfies Type` does both jobs at once: it errors if expr doesn’t match Type, but the variable keeps its own narrower, inferred type afterwards.',
+      'The classic use case: a config object where you want every key checked against a shape, but still want each individual value typed as specifically as possible afterwards.',
+      'Introduced in TypeScript 4.9 , if you’re on an older version, satisfies isn’t available and you’re back to choosing between annotation and assertion.'
+    ],
+    gotcha:
+      'A plain `: Record<Colors, string | RGB>` annotation would widen every value to the union , you’d lose the fact that palette.green is specifically a string, and .toUpperCase() would stop type-checking as safe.',
+    codeSnippet: `type Colors = 'red' | 'green' | 'blue';
+type RGB = [red: number, green: number, blue: number];
+
+const palette = {
+  red: [255, 0, 0],
+  green: '#00ff00',
+  blue: [0, 0, 255]
+} satisfies Record<Colors, string | RGB>;
+
+// palette.green is still known as exactly 'string', not 'string | RGB'
+palette.green.toUpperCase(); // ✅ fully type-checked`
+  },
+  {
+    id: 'ts-template-literal-types',
+    title: 'Template Literal Types',
+    summary: 'Build new string literal types the same way you build template strings at runtime , including cross-products across unions.',
+    difficulty: 'advanced',
+    category: 'advanced',
+    prerequisites: ['union-intersection'],
+    keyPoints: [
+      'Same syntax as a JS template literal, but in a type position , interpolating a string literal type into a backtick-delimited type produces a new, more specific string literal type.',
+      'Interpolating a union produces the cross-product of every combination , combining two 2-member unions inside a template literal type expands to all 4 combined literal types.',
+      'Four built-in string-transform types ride along: Uppercase<T>, Lowercase<T>, Capitalize<T>, Uncapitalize<T>.',
+      'A common real use: deriving event-name types (a key suffixed with "Changed") directly from an object’s own keys, so the event name and the property it refers to can never drift apart.',
+      'These are purely compile-time , they generate no runtime code, just a (sometimes very large) union of string literal types.'
+    ],
+    codeSnippet: `type Lang = 'en' | 'ja';
+type Page = 'home' | 'about';
+type RouteKey = \`\${Lang}_\${Page}\`;
+// 'en_home' | 'en_about' | 'ja_home' | 'ja_about'
+
+type Shout = Uppercase<'hello'>; // 'HELLO'
+
+// deriving event names from an object's own keys
+type ChangeEvent<T> = { [K in keyof T & string as \`\${K}Changed\`]: (v: T[K]) => void };`
+  },
+  {
+    id: 'ts-using-declarations',
+    title: 'using & await using Declarations',
+    summary: 'A const-like declaration that automatically cleans up a resource when it goes out of scope , no try/finally needed.',
+    difficulty: 'advanced',
+    category: 'advanced',
+    prerequisites: ['ts-classes'],
+    keyPoints: [
+      'using x = ... requires x to implement Disposable (a [Symbol.dispose]() method) , that method runs automatically the moment x goes out of scope, on a normal exit, an early return, or a thrown error.',
+      'await using x = ... is the async version, for AsyncDisposable ([Symbol.asyncDispose]()) , the cleanup is awaited before the scope truly finishes.',
+      'Resources are disposed in last-in-first-out order, like a stack , the most recently declared using variable is cleaned up first.',
+      'This solves the classic "forgot to close the file/connection in one of the early-return branches" bug class , the compiler-enforced cleanup can’t be skipped by a stray return.',
+      'A relatively new TypeScript 5.2+ / stage-3 JS feature , confirm your target runtime and tsconfig lib actually support it before relying on it in production code.'
+    ],
+    codeSnippet: `class TempFile implements Disposable {
+  #path: string;
+  constructor(path: string) { this.#path = path; /* open it */ }
+  [Symbol.dispose]() { /* close + delete it */ }
+}
+
+function process() {
+  using file = new TempFile('/tmp/data');
+  if (somethingWentWrong()) return; // cleanup still runs automatically
+  // ...use file...
+} // cleanup runs here too`
+  },
+  {
+    id: 'ts-variance-annotations',
+    title: 'Variance Annotations (in / out)',
+    summary:
+      'in / out on a generic type parameter declare whether it’s only consumed, only produced, or both , documenting and speeding up variance checks.',
+    difficulty: 'advanced',
+    category: 'generics',
+    prerequisites: ['generics'],
+    keyPoints: [
+      'out T (covariant): T only appears in output/return positions , a Getter<Dog> can stand in for a Getter<Animal> if Dog extends Animal, same direction as the subtype relationship.',
+      'in T (contravariant): T only appears in input/parameter positions , the relationship flips: a Setter<Animal> can stand in for a Setter<Dog>.',
+      'in out T (invariant): T appears in both positions , no substitution is allowed in either direction, the types must match exactly.',
+      'Marking something out that’s actually used in an input position is a compile error , the annotation isn’t just documentation, TypeScript verifies it.',
+      'Mainly a library-author tool: for deeply recursive or generic-heavy type definitions, explicit variance annotations let the compiler skip expensive structural variance inference, speeding up type-checking.'
+    ],
+    codeSnippet: `type Getter<out T> = () => T;        // covariant: only produces T
+type Setter<in T> = (value: T) => void; // contravariant: only consumes T
+
+interface State<in out T> {           // invariant: does both
+  get(): T;
+  set(value: T): void;
+}`
+  },
+  {
+    id: 'ts-import-type',
+    title: 'import type & export type',
+    summary: 'Explicitly mark an import/export as type-only, guaranteeing it’s fully erased and never shows up in the compiled output.',
+    difficulty: 'intermediate',
+    category: 'modules',
+    prerequisites: ['ts-modules-namespaces'],
+    keyPoints: [
+      'A tool that transpiles one file at a time (esbuild, SWC, Babel, or TypeScript’s own isolatedModules mode) can’t always tell whether an imported name is a type or a value , it would need the whole dependency graph to know for sure.',
+      'import type { Foo } from "./mod" removes all doubt: Foo is guaranteed type-only and is completely erased from the emitted JS, with zero runtime trace.',
+      'export type { Foo } does the same for re-exports.',
+      'Mixed imports can inline the type-only ones: import { type Foo, bar } from "./mod" marks just Foo as type-only within a single import statement.',
+      'This matters in real projects because bundlers relying on isolatedModules-style single-file compilation would otherwise sometimes fail to safely tree-shake type-only imports, or (worse) leave a dangling runtime import to something that doesn’t exist at runtime.'
+    ],
+    codeSnippet: `import type { Component } from 'react'; // erased entirely at compile time
+import { type ReactNode, useState } from 'react'; // mixed: ReactNode erased, useState kept
+
+export type { Props }; // re-export a type only`
+  },
+  {
+    id: 'ts-awaited-noinfer',
+    title: 'Awaited<T> & NoInfer<T>',
+    summary:
+      'Awaited<T> mirrors what await does to nested Promises at the type level; NoInfer<T> stops a parameter from influencing generic inference.',
+    difficulty: 'advanced',
+    category: 'utility-types',
+    prerequisites: ['generics', 'union-intersection'],
+    keyPoints: [
+      'Awaited<Promise<string>> resolves to string , and it unwraps recursively, so Awaited<Promise<Promise<number>>> is still just number, matching what repeated await calls would actually produce at runtime.',
+      'It also distributes over unions: Awaited<boolean | Promise<number>> becomes number | boolean.',
+      'Without Awaited<T>, correctly typing the return value of a function that might return a Promise or a plain value would need manual conditional-type gymnastics , this ships it as a built-in.',
+      'NoInfer<T> (TypeScript 5.4+) is a different problem: it marks a generic position that TypeScript should NOT use when inferring T, so a mistyped default/fallback argument doesn’t silently widen the inferred type.',
+      'Classic NoInfer<T> use case: a function that takes an array of allowed values plus a default , without NoInfer, passing a default outside that array would just widen T to include it instead of erroring.'
+    ],
+    codeSnippet: `type A = Awaited<Promise<Promise<number>>>; // number, both levels unwrapped
+
+function createLight<C extends string>(colors: C[], defaultColor?: NoInfer<C>) {}
+
+createLight(['red', 'yellow', 'green'], 'red');  // ✅
+createLight(['red', 'yellow', 'green'], 'blue'); // ❌ 'blue' can't influence C, and isn't in it`
   }
 ];

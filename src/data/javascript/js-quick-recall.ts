@@ -318,6 +318,48 @@ export const tsQuickRecall: QuickRecallSection[] = [
           'Custom guards: function isUser(x): x is User { ... } , your own check, trusted by the compiler.',
           'Discriminated unions: switch on a literal "kind"/"type" field and each case narrows automatically.'
         ]
+      },
+      {
+        concept: 'satisfies',
+        bullets: [
+          'expr satisfies Type checks expr against Type WITHOUT widening it , unlike a `:` annotation (which widens) or `as` (which skips checking entirely).',
+          'You get both: a compile error if a key is wrong, and the narrowest inferred type afterwards for every value.',
+          'The classic use case: a config/palette object where each individual value should stay as specific as possible after validation.'
+        ],
+        codeSnippet: `const palette = { red: [255, 0, 0], green: '#0f0' } satisfies Record<string, string | number[]>;
+palette.green.toUpperCase(); // still known as string`
+      },
+      {
+        concept: 'Template Literal Types',
+        bullets: [
+          'Build new string literal types the same way you build template strings at runtime , interpolating a literal type into a backtick-delimited type produces a new, more specific string literal type.',
+          "Interpolating a union produces the cross-product of every combination , great for deriving event-name types from an object's own keys.",
+          'Ships with Uppercase<T>, Lowercase<T>, Capitalize<T>, Uncapitalize<T> built in.'
+        ]
+      },
+      {
+        concept: 'using / await using',
+        bullets: [
+          'A const-like declaration that auto-runs cleanup ([Symbol.dispose]()) the moment it leaves scope , on a normal exit, an early return, or a thrown error, no try/finally needed.',
+          'await using is the async version, for AsyncDisposable ([Symbol.asyncDispose]()).',
+          'Resources dispose in last-in-first-out order, like a stack.'
+        ]
+      },
+      {
+        concept: 'in / out Variance',
+        bullets: [
+          'out T (covariant): T only in output/return positions , a Getter<Dog> can stand in for a Getter<Animal>.',
+          'in T (contravariant): T only in input/parameter positions , the substitution direction flips.',
+          "The compiler verifies the annotation is actually true , it's not just documentation."
+        ]
+      },
+      {
+        concept: 'import type & Awaited<T>',
+        bullets: [
+          'import type { Foo } from "./mod" guarantees the import is fully erased at compile time , zero runtime trace, needed by single-file transpilers like esbuild/SWC.',
+          'Awaited<Promise<Promise<number>>> resolves to number , it recursively unwraps nested Promises, mirroring what repeated await calls actually do at runtime.',
+          'NoInfer<T> (TS 5.4+) blocks a parameter from influencing generic inference , useful for a "default value" argument that shouldn\'t widen the inferred type.'
+        ]
       }
     ]
   }

@@ -1044,5 +1044,48 @@ export const tsFlashcards: Flashcard[] = [
     front: 'Index signature',
     back: '{ [key: string]: T } , "any number of keys, each holding a T". The way to type dictionary-like objects; Record<K, V> is the utility-type spelling of the same idea.',
     category: 'Keyword'
+  },
+  {
+    id: 'ts-satisfies-operator',
+    front: 'The satisfies operator',
+    back: 'expr satisfies Type checks expr against Type without widening it , unlike `:` (which widens) or `as` (which skips checking entirely). You get validation AND the narrowest inferred type.',
+    code: `const palette = { red: [255, 0, 0], green: '#0f0' } satisfies Record<string, string | number[]>;
+palette.green.toUpperCase(); // still known as string, not the union`,
+    category: 'Q&A'
+  },
+  {
+    id: 'ts-template-literal-types',
+    front: 'Template literal types',
+    back: "Build new string literal types the same way you build template strings at runtime. Interpolating a union produces the cross-product of every combination , a favourite for deriving event-name types from an object's own keys.",
+    category: 'Keyword'
+  },
+  {
+    id: 'ts-using-declarations',
+    front: 'using / await using',
+    back: 'A const-like declaration that auto-runs cleanup ([Symbol.dispose]()) when it leaves scope , on normal exit, early return, or a thrown error. No try/finally needed. await using is the async version.',
+    category: 'Keyword'
+  },
+  {
+    id: 'ts-variance-annotations',
+    front: 'in / out variance annotations',
+    back: 'out T: T only in output positions (covariant). in T: T only in input positions (contravariant). in out T: both (invariant). The compiler verifies the annotation, not just documents it.',
+    code: `type Getter<out T> = () => T;
+type Setter<in T> = (value: T) => void;`,
+    category: 'Keyword'
+  },
+  {
+    id: 'ts-import-type',
+    front: 'import type / export type',
+    back: "Explicitly marks an import/export as type-only, guaranteeing it's fully erased with zero runtime trace , needed by single-file transpilers (esbuild, SWC, isolatedModules) that can't always tell type from value imports.",
+    code: `import type { Component } from 'react';
+import { type ReactNode, useState } from 'react'; // mixed`,
+    category: 'Q&A'
+  },
+  {
+    id: 'ts-awaited',
+    front: 'Awaited<T>',
+    back: 'Mirrors what await does at the type level , recursively unwraps nested Promises. Awaited<Promise<Promise<number>>> is number, matching what repeated awaits would actually produce at runtime.',
+    code: `type A = Awaited<Promise<Promise<number>>>; // number`,
+    category: 'Keyword'
   }
 ];
