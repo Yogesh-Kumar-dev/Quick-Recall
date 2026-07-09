@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { FLASHCARD_SETS } from '@/data/flashcard-sets';
 import FlashcardCarousel from '@/components/flashcards/FlashcardCarousel';
 
@@ -24,7 +25,9 @@ export default async function FlashcardsPage({ params }: { params: Promise<{ sec
 
   return (
     <div className="min-h-screen space-y-6 py-12">
-      <FlashcardCarousel cards={entry.cards} source={entry.source} title={entry.title} />
+      <Suspense>
+        <FlashcardCarousel cards={entry.cards} source={entry.source} title={entry.title} />
+      </Suspense>
     </div>
   );
 }
