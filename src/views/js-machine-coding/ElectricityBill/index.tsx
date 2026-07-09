@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟢 Calculate Electricity Bill',
+  title: 'Calculate Electricity Bill',
   description:
     'Given a number of consumed units, calculate the total electricity bill using tiered (slab-based) pricing. Each slab covers a band of units at a fixed per-unit rate, and any units beyond the last fixed slab are charged at the top rate. This is a classic "slab/bracket" problem (the same shape as income-tax calculation) that tests whether you can turn a rule table into clean, maintainable code.',
   examples: [

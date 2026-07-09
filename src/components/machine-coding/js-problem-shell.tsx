@@ -46,7 +46,7 @@ export default function JsProblemShell({ problem, approaches }: Props) {
             picked there (matches legacy's JsProblemLayout). */}
         <TabsContent value="details" keepMounted className="max-h-[75vh] overflow-auto p-4">
           <Activity mode={tab === 'details' ? 'visible' : 'hidden'}>
-            <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Approach — {current.label}</p>
+            <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Approach: {current.label}</p>
             <ApproachDetails approach={current} />
           </Activity>
         </TabsContent>

@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟡 Implement Throttle',
+  title: 'Implement Throttle',
   description:
     'Implement a throttle function that ensures a callback runs at most once per specified time interval, no matter how often it is called. Throttle is the natural counterpart to debounce and a very common interview question — typically used for scroll, resize, and mousemove handlers.',
   examples: [

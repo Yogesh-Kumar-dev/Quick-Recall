@@ -71,7 +71,7 @@ export default function VirtualizedList() {
         </div>
 
         {visible >= TOTAL ? (
-          <p style={{ textAlign: 'center', fontSize: 14, color: '#999', padding: '12px 0' }}>✅ All {TOTAL} divs revealed.</p>
+          <p style={{ textAlign: 'center', fontSize: 14, color: '#999', padding: '12px 0' }}>All {TOTAL} divs revealed.</p>
         ) : (
           <div ref={sentinelRef} style={{ height: 1 }} />
         )}

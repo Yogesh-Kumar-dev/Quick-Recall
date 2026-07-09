@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 Debounced Search / Typeahead',
+  title: 'Debounced Search / Typeahead',
   description:
     'Build a search box that filters a list of results — but only after the user stops typing for 400ms, not on every single keystroke.',
   requirements: [

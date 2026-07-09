@@ -32,16 +32,16 @@ export function useTimerTick() {
         const isLastBreak = s.phase === 'break' && s.currentCycle >= (s.pomodoro?.cycles ?? 1);
         if (isLastBreak) {
           s.advancePhase(); // resolves to completed
-          notify({ category: 'timer', title: 'Pomodoro complete 🎉', body: `${name} — all cycles done. Nice work!` });
+          notify({ category: 'timer', title: 'Pomodoro complete', body: `${name} — all cycles done. Nice work!` });
         } else {
-          const next = s.phase === 'focus' ? 'Break time ☕' : 'Back to focus 🔥';
+          const next = s.phase === 'focus' ? 'Break time' : 'Back to focus';
           const body = s.phase === 'focus' ? `${name} — take a short break.` : `${name} — next focus block.`;
           s.advancePhase();
           notify({ category: 'timer', title: next, body });
         }
       } else {
         s.complete();
-        notify({ category: 'timer', title: 'Time’s up ⏰', body: `${name} — countdown finished.` });
+        notify({ category: 'timer', title: "Time's up", body: `${name} — countdown finished.` });
       }
     };
 

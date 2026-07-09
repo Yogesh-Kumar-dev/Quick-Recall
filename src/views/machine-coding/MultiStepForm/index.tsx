@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Multi-Step Form with Progress Bar',
+  title: 'Multi-Step Form with Progress Bar',
   description:
     'Build a multi-step form (wizard) with 4 steps. A progress bar shows how far along the user is. Each step validates its own fields before allowing the user to advance.',
   requirements: [

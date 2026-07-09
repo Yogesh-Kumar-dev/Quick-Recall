@@ -49,8 +49,8 @@ export default function TimerSection() {
   const respondFeedback = (achieved: boolean) => {
     setFeedbackOpen(false);
     reset();
-    if (achieved) toast.success('Nice work — onto the next one! 🎯');
-    else toast('No worries — progress is progress. Try another block? ⏳');
+    if (achieved) toast.success('Nice work, onto the next one!');
+    else toast('No worries — progress is progress. Try another block?');
   };
 
   if (active) {
@@ -137,9 +137,9 @@ function FeedbackDialog({ open, name, onRespond }: { open: boolean; name: string
         </DialogHeader>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onRespond(false)}>
-            Ran out of time ⏳
+            Ran out of time
           </Button>
-          <Button onClick={() => onRespond(true)}>Nailed it 🎯</Button>
+          <Button onClick={() => onRespond(true)}>Nailed it</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

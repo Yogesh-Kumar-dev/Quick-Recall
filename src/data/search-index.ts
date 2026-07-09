@@ -10,13 +10,16 @@ import { reactCustomHooks } from './react/react-custom-hooks';
 // since search needs to link to a specific topic page, not just resolve a bare note by id).
 import { NOTE_SOURCES } from './note-sources';
 
+// flashcards
+import { FLASHCARD_SETS } from './flashcard-sets';
+
 // nav config
 import { primaryNav, navSections } from '@/config/nav';
 
 // ─── Unified search item ──────────────────────────────────────────────────────
 
-export type SearchSection = 'JavaScript' | 'React' | 'Notes' | 'Navigation';
-export type SearchKind = 'JS Problem' | 'React Problem' | 'Custom Hook' | 'Note' | 'Page';
+export type SearchSection = 'JavaScript' | 'React' | 'Notes' | 'Flashcards' | 'Navigation';
+export type SearchKind = 'JS Problem' | 'React Problem' | 'Custom Hook' | 'Note' | 'Flashcard' | 'Page';
 
 export interface SearchItem {
   id: string;
@@ -70,18 +73,40 @@ const hookItems: SearchItem[] = reactCustomHooks.map((h) => ({
 // Every topic's notes, paired with the page that hosts them (NOTE_SOURCES, shared with the
 // prerequisites resolver in note-sources.ts). Selecting a result deep-links via ?open=<note.id> —
 // NotesView/NoteCard already opens and scrolls to the matching card on load.
-const noteItems: SearchItem[] = NOTE_SOURCES.flatMap(({ notes, url, topic }) =>
-  notes.map((n) => ({
-    id: `note-${n.id}`,
-    label: n.title,
-    description: `${topic} — ${n.summary}`,
-    difficulty: n.difficulty,
-    category: n.category,
-    section: 'Notes' as const,
-    kind: 'Note' as const,
-    url: `${url}?open=${n.id}`
-  }))
-);
+const noteItems: SearchItem[] = [];
+for (const { notes, url, topic } of NOTE_SOURCES) {
+  for (const n of notes) {
+    if (noteItems.some((item) => item.id === `note-${n.id}`)) continue;
+    noteItems.push({
+      id: `note-${n.id}`,
+      label: n.title,
+      description: `${topic}: ${n.summary}`,
+      difficulty: n.difficulty,
+      category: n.category,
+      section: 'Notes',
+      kind: 'Note',
+      url: `${url}?open=${n.id}`
+    });
+  }
+}
+
+// Every flashcard across all sets, indexed by front text. Selecting a result deep-links
+// via ?card=<card.id> — the carousel reads it from the URL and scrolls to that card.
+const flashcardItems: SearchItem[] = [];
+for (const [slug, set] of Object.entries(FLASHCARD_SETS)) {
+  for (const card of set.cards) {
+    flashcardItems.push({
+      id: `flashcard-${set.source}:${card.id}`,
+      label: card.front,
+      description: card.back,
+      keywords: [card.front],
+      category: set.title,
+      section: 'Flashcards',
+      kind: 'Flashcard',
+      url: `/flashcards/${slug}?card=${card.id}`
+    });
+  }
+}
 
 // Flat nav config (src/config/nav.ts) — no tree to walk, unlike legacy's NavItemType recursion.
 const navItems: SearchItem[] = [
@@ -108,10 +133,10 @@ const navItems: SearchItem[] = [
 // Prefer the richer problem/hook/note entries: drop nav pages whose url is already
 // represented by one of those (note urls carry a ?open= query, so a topic's own bare "/x/notes"
 // nav link is untouched — only exact-url collisions, e.g. a hook's own page, are dropped).
-const richUrls = new Set([...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems].map((i) => i.url));
+const richUrls = new Set([...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems].map((i) => i.url));
 const dedupedNavItems = navItems.filter((i) => !richUrls.has(i.url));
 
-export const searchIndex: SearchItem[] = [...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...dedupedNavItems];
+export const searchIndex: SearchItem[] = [...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems, ...dedupedNavItems];
 
 // ─── Fuse factory ─────────────────────────────────────────────────────────────
 

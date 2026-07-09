@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 Sortable Employee Table',
+  title: 'Sortable Employee Table',
   description:
     'Render 10 static employee records in a table. Expose a few sortable fields as clickable chips (Name, Age, Salary); clicking a chip sorts the dataset by that field, and clicking the active chip again flips the direction between ascending and descending. No API call — the data is hard-coded.',
   requirements: [

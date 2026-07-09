@@ -12,7 +12,7 @@ export const htmlFlashcards: Flashcard[] = [
   {
     id: 'html-semantic',
     front: 'Why use semantic HTML?',
-    back: 'Elements like <nav>, <main>, <article> convey meaning — giving you accessibility (screen-reader landmarks), SEO, and readable markup that plain <div>s don’t.',
+    back: 'Elements like <nav>, <main>, <article> convey meaning , giving you accessibility (screen-reader landmarks), SEO, and readable markup that plain <div>s don’t.',
     category: 'Q&A'
   },
   {
@@ -24,7 +24,7 @@ export const htmlFlashcards: Flashcard[] = [
   {
     id: 'html-viewport',
     front: 'What does the viewport meta tag do?',
-    back: 'width=device-width, initial-scale=1 makes the page use the device’s real width at 100% zoom — the prerequisite for CSS media queries to work on mobile.',
+    back: 'width=device-width, initial-scale=1 makes the page use the device’s real width at 100% zoom , the prerequisite for CSS media queries to work on mobile.',
     category: 'Q&A'
   },
   {
@@ -54,7 +54,7 @@ export const htmlFlashcards: Flashcard[] = [
   {
     id: 'html-aria-first-rule',
     front: 'First rule of ARIA',
-    back: 'Don’t use ARIA if a native element does the job — a real <button> beats role="button", which needs tabindex and key handlers to actually work.',
+    back: 'Don’t use ARIA if a native element does the job , a real <button> beats role="button", which needs tabindex and key handlers to actually work.',
     category: 'Q&A'
   },
   {
@@ -71,7 +71,7 @@ export const cssFlashcards: Flashcard[] = [
   {
     id: 'css-box-sizing',
     front: 'content-box vs border-box',
-    back: 'content-box (default): width = content only, padding/border added on top. border-box: width includes padding+border — far more predictable. Reset to border-box globally.',
+    back: 'content-box (default): width = content only, padding/border added on top. border-box: width includes padding+border , far more predictable. Reset to border-box globally.',
     category: 'Q&A'
   },
   {
@@ -95,7 +95,7 @@ export const cssFlashcards: Flashcard[] = [
   {
     id: 'css-em-rem',
     front: 'em vs rem',
-    back: 'em is relative to the element’s own font-size and compounds when nested. rem is relative to the root font-size — predictable and the usual choice for scalable sizing.',
+    back: 'em is relative to the element’s own font-size and compounds when nested. rem is relative to the root font-size , predictable and the usual choice for scalable sizing.',
     category: 'Q&A'
   },
   {
@@ -119,13 +119,13 @@ export const cssFlashcards: Flashcard[] = [
   {
     id: 'css-variables',
     front: 'CSS custom properties (variables)',
-    back: '--name defined on a selector (often :root), read via var(--name). Unlike Sass vars they’re live at runtime — cascade, inherit, and can change in JS or media queries.',
+    back: '--name defined on a selector (often :root), read via var(--name). Unlike Sass vars they’re live at runtime , cascade, inherit, and can change in JS or media queries.',
     category: 'Keyword'
   },
   {
     id: 'css-animate-perf',
     front: 'Which properties are cheap to animate?',
-    back: 'transform and opacity — they run on the GPU compositor with no layout/paint. Avoid animating width/height/top/left, which force reflow every frame.',
+    back: 'transform and opacity , they run on the GPU compositor with no layout/paint. Avoid animating width/height/top/left, which force reflow every frame.',
     category: 'Q&A'
   },
   {

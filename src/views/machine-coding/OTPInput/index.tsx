@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 OTP Input Component',
+  title: 'OTP Input Component',
   description:
     'Build a 6-digit OTP (One-Time Password) input where each digit has its own box. The input should feel native — like SMS verification forms.',
   requirements: [

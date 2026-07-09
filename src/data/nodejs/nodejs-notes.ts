@@ -13,13 +13,13 @@ export const nodejsNotes: Note[] = [
     difficulty: 'basic',
     category: 'runtime',
     keyPoints: [
-      'Non-blocking I/O model — handles high concurrency without spawning a thread per request.',
-      'Event-driven architecture — I/O completions are delivered as callbacks/events rather than blocking the caller.',
+      'Non-blocking I/O model , handles high concurrency without spawning a thread per request.',
+      'Event-driven architecture , I/O completions are delivered as callbacks/events rather than blocking the caller.',
       'Lightweight and fast to start, which suits containerized, horizontally-scaled deployments.',
-      'Same language (JS/TS) across frontend and backend — shared types, shared tooling.'
+      'Same language (JS/TS) across frontend and backend , shared types, shared tooling.'
     ],
     gotcha:
-      "Non-blocking I/O doesn't mean multi-threaded computation — CPU-bound work still runs on the single main thread and blocks everything else. Offload it (worker threads, a queue) instead of doing it inline.",
+      "Non-blocking I/O doesn't mean multi-threaded computation , CPU-bound work still runs on the single main thread and blocks everything else. Offload it (worker threads, a queue) instead of doing it inline.",
     codeSnippet: `// Netflix-style example: Node.js as an edge/BFF service handling
 // millions of lightweight I/O-bound requests with minimal latency —
 // not a place for heavy synchronous computation.`
@@ -27,18 +27,18 @@ export const nodejsNotes: Note[] = [
   {
     id: 'nodejs-event-loop',
     title: 'The Event Loop, in depth',
-    summary: "A single-threaded loop with phases that dequeue and run callbacks — the mechanism behind all of Node's async behavior.",
+    summary: "A single-threaded loop with phases that dequeue and run callbacks , the mechanism behind all of Node's async behavior.",
     difficulty: 'intermediate',
     category: 'runtime',
     keyPoints: [
       'Phases, in order: Timers (setTimeout/setInterval) → Pending/I-O callbacks → Idle/prepare → Poll (I/O execution) → Check (setImmediate) → Close callbacks.',
       'Each phase has its own FIFO queue; the loop only moves to the next phase once the current one drains (or hits a limit).',
-      'Heavy synchronous computation inside any callback blocks the entire loop — no other request, timer, or I/O event is serviced until it returns.',
+      'Heavy synchronous computation inside any callback blocks the entire loop , no other request, timer, or I/O event is serviced until it returns.',
       'Production fix for CPU-heavy work (e.g. synchronous image compression) blocking every request: move it to worker threads or an external queue (BullMQ).'
     ],
     gotcha:
-      'A single slow, synchronous handler degrades every concurrent request, not just its own — this is the most common Node.js scalability bug in interviews and in production.',
-    codeSnippet: `// Blocks the loop — every other request waits
+      'A single slow, synchronous handler degrades every concurrent request, not just its own , this is the most common Node.js scalability bug in interviews and in production.',
+    codeSnippet: `// Blocks the loop , every other request waits
 app.post('/compress', (req, res) => {
   const output = compressImageSync(req.body); // CPU-bound, synchronous
   res.send(output);
@@ -49,13 +49,13 @@ app.post('/compress', (req, res) => {
   {
     id: 'nexttick-setimmediate-settimeout',
     title: 'process.nextTick() vs setImmediate() vs setTimeout()',
-    summary: "Three ways to defer work — they run at different points relative to the event loop's phases.",
+    summary: "Three ways to defer work , they run at different points relative to the event loop's phases.",
     difficulty: 'intermediate',
     category: 'runtime',
     keyPoints: [
-      'process.nextTick(fn) — runs immediately after the current operation, before the event loop continues (a microtask, not a loop phase).',
-      'setImmediate(fn) — runs in the Check phase, after I/O events in the current loop iteration.',
-      'setTimeout(fn, ms) — runs after (at least) the specified delay, in the Timers phase.',
+      'process.nextTick(fn) , runs immediately after the current operation, before the event loop continues (a microtask, not a loop phase).',
+      'setImmediate(fn) , runs in the Check phase, after I/O events in the current loop iteration.',
+      'setTimeout(fn, ms) , runs after (at least) the specified delay, in the Timers phase.',
       'Real-world use: process.nextTick for critical microtasks like propagating an error before anything else runs.'
     ],
     codeSnippet: `console.log('start');
@@ -74,7 +74,7 @@ console.log('end');
     keyPoints: [
       'Stream types: Readable, Writable, Duplex (both), Transform (Duplex that modifies data as it passes through).',
       'Production case: uploading/processing a 1GB file via a stream avoids loading the whole file into memory and crashing the process.',
-      'Buffer: fixed-size chunk of raw memory used for binary data — file handling, TCP/socket data, image processing.',
+      'Buffer: fixed-size chunk of raw memory used for binary data , file handling, TCP/socket data, image processing.',
       'Streams and Buffers compose: a Readable stream emits Buffer chunks that a Transform/Writable stream consumes.'
     ],
     codeSnippet: `const fs = require('fs');
@@ -86,12 +86,12 @@ fs.createReadStream('large-file.zip')
     id: 'nodejs-concurrency-model',
     title: 'Scaling on one machine: Cluster, Worker Threads, and Child Processes',
     summary:
-      'Three different tools for using more than one CPU core — pick based on whether the work is "more servers", "CPU-heavy JS", or "another process/program".',
+      'Three different tools for using more than one CPU core , pick based on whether the work is "more servers", "CPU-heavy JS", or "another process/program".',
     difficulty: 'advanced',
     category: 'runtime',
     keyPoints: [
-      'cluster module — forks multiple Node.js instances (one per CPU core) that share the same server port, improving horizontal scaling on a single machine.',
-      'Worker Threads — run CPU-heavy JS (image resizing, PDF generation, ML inference) on separate threads without blocking the main event loop.',
+      'cluster module , forks multiple Node.js instances (one per CPU core) that share the same server port, improving horizontal scaling on a single machine.',
+      'Worker Threads , run CPU-heavy JS (image resizing, PDF generation, ML inference) on separate threads without blocking the main event loop.',
       "Child processes (spawn/exec/fork): spawn streams large data through a child command; exec buffers a shell command's output; fork creates another Node.js process (e.g. for parallel background jobs) with a built-in IPC channel.",
       'Rule of thumb: cluster for "more request-handling capacity"; worker threads for "CPU-bound JS work"; child_process for "run another program or Node script".'
     ],
@@ -108,18 +108,18 @@ if (cluster.isPrimary) {
     id: 'nodejs-error-handling',
     title: 'Error Handling in Node.js',
     summary:
-      'Three categories of errors need three different handling strategies — plus a last-resort global catch and a centralized Express middleware.',
+      'Three categories of errors need three different handling strategies , plus a last-resort global catch and a centralized Express middleware.',
     difficulty: 'intermediate',
     category: 'runtime',
     keyPoints: [
       'Synchronous errors: try/catch around the call site.',
       'Asynchronous errors: callback error-first convention, or .catch()/try-catch around await.',
-      'Global/uncaught errors: process.on("uncaughtException", ...) — a last-resort safety net, not a substitute for handling errors properly.',
+      'Global/uncaught errors: process.on("uncaughtException", ...) , a last-resort safety net, not a substitute for handling errors properly.',
       'Best practice in an API: a single centralized error-handling middleware at the end of the middleware chain, so every route reports errors consistently.'
     ],
     gotcha:
-      'Relying on uncaughtException to keep the process alive after a real error is dangerous — the process is in an unknown state; the standard advice is to log and exit, then let your process manager (PM2, Kubernetes) restart it.',
-    codeSnippet: `// Centralized Express error handler — must be registered LAST
+      'Relying on uncaughtException to keep the process alive after a real error is dangerous , the process is in an unknown state; the standard advice is to log and exit, then let your process manager (PM2, Kubernetes) restart it.',
+    codeSnippet: `// Centralized Express error handler , must be registered LAST
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message });
 });`
@@ -129,15 +129,15 @@ app.use((err, req, res, next) => {
     id: 'nodejs-core-modules',
     title: 'Node.js Core Modules Overview',
     summary:
-      'Built-in modules that ship with Node itself — no install needed — covering system info, files, networking, and binary/text utilities.',
+      'Built-in modules that ship with Node itself , no install needed , covering system info, files, networking, and binary/text utilities.',
     difficulty: 'basic',
     category: 'runtime',
     keyPoints: [
       'System/diagnostics: os (os.freemem(), os.cpus()), util (util.inspect() for debugging).',
-      'File system: fs — fs.readFile()/fs.writeFile() (async) vs fs.readFileSync() (sync, blocks the event loop).',
+      'File system: fs , fs.readFile()/fs.writeFile() (async) vs fs.readFileSync() (sync, blocks the event loop).',
       'Networking: http/https (createServer()), net (raw TCP sockets), dgram (UDP datagrams).',
       'Binary/data utilities: crypto (hashing, HMAC), zlib (gzip/deflate compression), path (cross-platform path joins), url (parse/format URLs).',
-      "Interview framing: knowing these exist — and that they need zero npm installs — signals you understand what Node.js gives you 'for free' before reaching for a library."
+      "Interview framing: knowing these exist , and that they need zero npm installs , signals you understand what Node.js gives you 'for free' before reaching for a library."
     ],
     codeSnippet: `const os = require('os');
 const path = require('path');
@@ -150,14 +150,14 @@ console.log(crypto.createHash('sha256').update('hi').digest('hex'));`
   {
     id: 'nodejs-raw-http-server',
     title: 'Building a Server with the raw http module',
-    summary: 'Express is built on top of this — http.createServer() takes a (req, res) listener and res.end() sends the response.',
+    summary: 'Express is built on top of this , http.createServer() takes a (req, res) listener and res.end() sends the response.',
     difficulty: 'basic',
     category: 'runtime',
     keyPoints: [
       'http.createServer(listener) wires a callback that runs for every incoming request; .listen(port) starts accepting connections.',
       'req (IncomingMessage) exposes req.url, req.method, req.headers for reading the request.',
       'res (ServerResponse) is written to with res.writeHead(status) and res.end(body) to send the response.',
-      "Without a framework, you manually branch on req.url/req.method for routing — this manual boilerplate is exactly what Express's app.get()/app.post() replace."
+      "Without a framework, you manually branch on req.url/req.method for routing , this manual boilerplate is exactly what Express's app.get()/app.post() replace."
     ],
     codeSnippet: `const http = require('http');
 
@@ -182,14 +182,14 @@ server.listen(8080);`
     difficulty: 'basic',
     category: 'express',
     keyPoints: [
-      'Middleware: a function (req, res, next) that runs during the request lifecycle — logging, auth, parsing — and calls next() to pass control along.',
+      'Middleware: a function (req, res, next) that runs during the request lifecycle , logging, auth, parsing , and calls next() to pass control along.',
       'Request lifecycle: Incoming Request → Middleware chain → Route Handler → Response, with Error Middleware able to intercept at any point.',
-      'Routing maps an HTTP method + path to a handler: app.get("/users/:id", getUser); RESTful convention — GET read, POST create, PUT/PATCH update, DELETE remove.',
-      'Middleware chaining: multiple middleware run in sequence for one route (e.g. auth → role check → controller) — each must call next() or the chain stalls.',
+      'Routing maps an HTTP method + path to a handler: app.get("/users/:id", getUser); RESTful convention , GET read, POST create, PUT/PATCH update, DELETE remove.',
+      'Middleware chaining: multiple middleware run in sequence for one route (e.g. auth → role check → controller) , each must call next() or the chain stalls.',
       'Route params (/users/10 → req.params.id) identify a specific resource; query params (/users?page=2 → req.query.page) modify how a collection is fetched (filtering, paging).'
     ],
     gotcha:
-      "A middleware that forgets to call next() (and doesn't send a response) hangs the request forever — the client just times out with no error logged.",
+      "A middleware that forgets to call next() (and doesn't send a response) hangs the request forever , the client just times out with no error logged.",
     codeSnippet: `app.use(authMiddleware);
 app.get('/orders', orderController);
 app.use(errorHandler); // must be registered after all routes
@@ -204,10 +204,10 @@ app.get('/secure', authMiddleware, roleMiddleware, controller);`
     difficulty: 'intermediate',
     category: 'express',
     keyPoints: [
-      'controllers/ — parse the request, call a service, shape the response (no business logic).',
-      'services/ — business logic, orchestrates repositories.',
-      'repositories/ — the only layer that talks to the database/ORM.',
-      'middlewares/, routes/, utils/, config/ — cross-cutting and wiring concerns kept separate from the above.',
+      'controllers/ , parse the request, call a service, shape the response (no business logic).',
+      'services/ , business logic, orchestrates repositories.',
+      'repositories/ , the only layer that talks to the database/ORM.',
+      'middlewares/, routes/, utils/, config/ , cross-cutting and wiring concerns kept separate from the above.',
       'Why: separation of concerns, a clean/testable architecture, and the ability to swap a layer (e.g. the DB) without touching controllers.'
     ],
     codeSnippet: `src/
@@ -222,13 +222,13 @@ app.get('/secure', authMiddleware, roleMiddleware, controller);`
   {
     id: 'api-security-validation',
     title: 'API Security: Validation, Sanitization, CORS & Helmet',
-    summary: 'Validate shape, sanitize content, and lock down cross-origin/HTTP-header behavior — three distinct layers of API hardening.',
+    summary: 'Validate shape, sanitize content, and lock down cross-origin/HTTP-header behavior , three distinct layers of API hardening.',
     difficulty: 'intermediate',
     category: 'security',
     keyPoints: [
-      'Validation (is the shape right?): Joi, Yup, Zod, or express-validator — reject malformed payloads before they reach business logic.',
-      'Sanitization (is the content safe?): strip/escape malicious input to prevent XSS and SQL injection — validator.js, DOMPurify.',
-      'CORS: app.use(cors({ origin: "https://yourdomain.com" })) — restricts which origins may call the API from a browser.',
+      'Validation (is the shape right?): Joi, Yup, Zod, or express-validator , reject malformed payloads before they reach business logic.',
+      'Sanitization (is the content safe?): strip/escape malicious input to prevent XSS and SQL injection , validator.js, DOMPurify.',
+      'CORS: app.use(cors({ origin: "https://yourdomain.com" })) , restricts which origins may call the API from a browser.',
       'Helmet.js: app.use(helmet()) sets protective HTTP headers in one call, preventing XSS, clickjacking, and MIME-sniffing.',
       'REST API security checklist: HTTPS, JWT auth, input validation, rate limiting, Helmet, logging & monitoring.'
     ],
@@ -248,8 +248,8 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     category: 'security',
     keyPoints: [
       'JWT flow: user logs in → server generates a token → client sends it in request headers on subsequent calls (no server-side session needed).',
-      'Refresh tokens: the (short-lived) access token expires quickly for security; a longer-lived refresh token is used to silently obtain a new access token — improves both security and UX.',
-      'OAuth: delegate authentication to Google/Facebook/GitHub — the backbone of SSO (single sign-on) systems.',
+      'Refresh tokens: the (short-lived) access token expires quickly for security; a longer-lived refresh token is used to silently obtain a new access token , improves both security and UX.',
+      'OAuth: delegate authentication to Google/Facebook/GitHub , the backbone of SSO (single sign-on) systems.',
       'Security best practice for REST APIs generally: HTTPS everywhere, JWT for stateless auth, plus rate limiting on auth endpoints specifically (e.g. 5 login attempts/minute).'
     ]
   },
@@ -262,8 +262,8 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     keyPoints: [
       'Versioning prevents breaking existing clients: URL versioning (/v1/users), header versioning, or query versioning.',
       'Pagination fetches large datasets in chunks: GET /products?page=1&limit=20.',
-      'API-level caching: in-memory (node-cache), Redis, or CDN caching — e.g. cache a product list for 60 seconds.',
-      'Rate limiting prevents abuse by capping requests per client (express-rate-limit) — e.g. limit a login endpoint to 5 attempts/minute.',
+      'API-level caching: in-memory (node-cache), Redis, or CDN caching , e.g. cache a product list for 60 seconds.',
+      'Rate limiting prevents abuse by capping requests per client (express-rate-limit) , e.g. limit a login endpoint to 5 attempts/minute.',
       'HTTP status codes: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Server Error.'
     ]
   },
@@ -273,14 +273,14 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     id: 'nodejs-database-access',
     title: 'How Node.js Talks to Databases: Drivers, ORMs & Query Builders',
     summary:
-      'Node.js reaches SQL and NoSQL databases through drivers, ORMs, or query builders — each trading off productivity against control.',
+      'Node.js reaches SQL and NoSQL databases through drivers, ORMs, or query builders , each trading off productivity against control.',
     difficulty: 'intermediate',
     category: 'database',
     keyPoints: [
       'SQL stacks: PostgreSQL/MySQL via pg, mysql2, Sequelize, or TypeORM.',
       'NoSQL stacks: MongoDB via Mongoose.',
-      'ORM (TypeORM, Sequelize): abstracts the database into objects — higher productivity, less control over the exact query.',
-      'Query Builder (Knex.js): write SQL-like queries programmatically — more control, less abstraction.',
+      'ORM (TypeORM, Sequelize): abstracts the database into objects , higher productivity, less control over the exact query.',
+      'Query Builder (Knex.js): write SQL-like queries programmatically , more control, less abstraction.',
       'Production pattern: an order service on PostgreSQL with TypeORM and connection pooling.'
     ]
   },
@@ -292,7 +292,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     difficulty: 'intermediate',
     category: 'database',
     keyPoints: [
-      'Connection pooling maintains a set of reusable DB connections — reduces connection overhead, improves performance, and prevents overloading the database.',
+      'Connection pooling maintains a set of reusable DB connections , reduces connection overhead, improves performance, and prevents overloading the database.',
       "Critical at scale: without pooling, a high-traffic API (1000+ concurrent users) can exhaust the database's max connections.",
       'Indexing improves query performance by avoiding a full table scan for lookups on the indexed column.',
       'Trade-off: every index speeds up reads on that column but adds overhead to writes (the index must be updated too).'
@@ -307,7 +307,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     difficulty: 'intermediate',
     category: 'database',
     keyPoints: [
-      "ACID: Atomicity (all-or-nothing), Consistency (valid state to valid state), Isolation (concurrent transactions don't interfere), Durability (committed data survives a crash) — expected in transactional systems like payments/banking.",
+      "ACID: Atomicity (all-or-nothing), Consistency (valid state to valid state), Isolation (concurrent transactions don't interfere), Durability (committed data survives a crash) , expected in transactional systems like payments/banking.",
       'Eventual consistency: used in distributed systems where data is not immediately consistent everywhere but converges over time.',
       'Example: an order is created, and inventory is updated asynchronously afterward rather than in the same transaction.',
       'Trade-off framing: ACID for correctness-critical single-system transactions; eventual consistency for scale across distributed services (social feeds, high-throughput systems).'
@@ -323,7 +323,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     keyPoints: [
       'Use SQL for: transactions, structured/relational data (e.g. banking systems).',
       'Use NoSQL for: high scalability, flexible schema (e.g. social media feeds).',
-      'Sharding: split a database into smaller pieces (shards) — e.g. users split by region (India shard, US shard) — scales writes/storage horizontally.',
+      'Sharding: split a database into smaller pieces (shards) , e.g. users split by region (India shard, US shard) , scales writes/storage horizontally.',
       'Replication: copy data across multiple servers (master-slave or multi-master) for high availability and fault tolerance.'
     ]
   },
@@ -331,7 +331,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     id: 'redis-caching-strategies',
     title: 'Caching with Redis: Strategies & Invalidation',
     summary:
-      'Redis is an in-memory data store used for caching, sessions, pub/sub, and rate limiting — with a few standard patterns for keeping the cache correct.',
+      'Redis is an in-memory data store used for caching, sessions, pub/sub, and rate limiting , with a few standard patterns for keeping the cache correct.',
     difficulty: 'intermediate',
     category: 'database',
     keyPoints: [
@@ -341,7 +341,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
       'Cache invalidation strategies: TTL expiration (e.g. cache a product catalog for 30 seconds), manual invalidation, or event-driven invalidation when the underlying data changes.'
     ],
     gotcha:
-      '"Cache invalidation" is famously one of the two hard problems in computer science — pick a strategy deliberately (TTL is simplest, event-driven is freshest but more code) rather than caching everything indefinitely.',
+      '"Cache invalidation" is famously one of the two hard problems in computer science , pick a strategy deliberately (TTL is simplest, event-driven is freshest but more code) rather than caching everything indefinitely.',
     codeSnippet: `const redis = require('redis');
 const client = redis.createClient();
 
@@ -363,9 +363,9 @@ if (!data) {
     category: 'scaling',
     keyPoints: [
       'Message queue tools: RabbitMQ, Kafka, BullMQ (Redis-based job queue for Node.js).',
-      "Use message queues for: background jobs, email sending, payment processing, order fulfillment — anything that shouldn't block the request/response cycle.",
-      'Pub/Sub pattern: a publisher sends a message and multiple subscribers independently receive it — e.g. "order placed" notifies both the inventory service and the notification service.',
-      'Kafka specifically: event streaming, log aggregation, real-time analytics (e.g. tracking user activity events) — built for high-throughput, ordered event logs, not just simple job queues.',
+      "Use message queues for: background jobs, email sending, payment processing, order fulfillment , anything that shouldn't block the request/response cycle.",
+      'Pub/Sub pattern: a publisher sends a message and multiple subscribers independently receive it , e.g. "order placed" notifies both the inventory service and the notification service.',
+      'Kafka specifically: event streaming, log aggregation, real-time analytics (e.g. tracking user activity events) , built for high-throughput, ordered event logs, not just simple job queues.',
       'BullMQ specifically: a Redis-based job queue used for email jobs, image processing, and report generation in Node.js apps.'
     ]
   },
@@ -377,7 +377,7 @@ if (!data) {
     difficulty: 'advanced',
     category: 'scaling',
     keyPoints: [
-      'Idempotency: the same request sent multiple times produces the same result — critical for payment APIs, which must never charge a customer twice on a retried request.',
+      'Idempotency: the same request sent multiple times produces the same result , critical for payment APIs, which must never charge a customer twice on a retried request.',
       'Distributed locking prevents multiple processes/instances from modifying the same data concurrently.',
       'Common tool: Redis-based locks (and coordination services like Zookeeper) to implement a distributed lock across multiple Node.js instances.'
     ]
@@ -389,7 +389,7 @@ if (!data) {
     difficulty: 'advanced',
     category: 'scaling',
     keyPoints: [
-      'Vertical scaling: increase CPU/RAM on one machine. Horizontal scaling: add more servers — Node.js apps typically scale horizontally.',
+      'Vertical scaling: increase CPU/RAM on one machine. Horizontal scaling: add more servers , Node.js apps typically scale horizontally.',
       'Load balancing distributes traffic across multiple servers (Nginx, AWS ELB).',
       'Circuit breaker: stop retrying and return a fallback response when a downstream service is failing, instead of cascading the failure (e.g. payment service down → stop retrying → fallback response).',
       'API Gateway: single entry point for microservices, responsible for auth verification, rate limiting, routing, and response aggregation (Kong, NGINX, AWS API Gateway).',
@@ -405,7 +405,7 @@ if (!data) {
     category: 'scaling',
     keyPoints: [
       'Production request path: Client → CDN → Load Balancer → API Gateway → Node Services → DB/Cache/Queue.',
-      'Key design principles: stateless services (so any instance can serve any request), horizontal scaling, externalized state (Redis/DB — not in-process memory), an API gateway for routing.',
+      'Key design principles: stateless services (so any instance can serve any request), horizontal scaling, externalized state (Redis/DB , not in-process memory), an API gateway for routing.',
       'Microservices architecture: split the app into independent, deployable services (e.g. Auth, Order, Payment, Notification services), each independently scalable and team-owned.',
       'Monolith vs Microservices trade-off: monolith = single codebase, simple to start, tightly coupled; microservices = multiple services, more complex but scalable, loosely coupled.',
       'Service discovery (Consul, Eureka, Kubernetes DNS) lets services dynamically find each other as instances scale up/down.'
@@ -417,7 +417,7 @@ if (!data) {
     id: 'docker-for-nodejs',
     title: 'Docker for Node.js',
     summary:
-      'Docker packages a Node.js app with its dependencies into a portable container — same environment from a laptop to production.',
+      'Docker packages a Node.js app with its dependencies into a portable container , same environment from a laptop to production.',
     difficulty: 'intermediate',
     category: 'devops',
     keyPoints: [
@@ -434,7 +434,7 @@ CMD ["node", "server.js"]`
   {
     id: 'kubernetes-orchestration',
     title: 'Kubernetes (K8s) Orchestration',
-    summary: 'Kubernetes orchestrates containers across a cluster — auto-scaling, self-healing, and rolling deployments.',
+    summary: 'Kubernetes orchestrates containers across a cluster , auto-scaling, self-healing, and rolling deployments.',
     difficulty: 'advanced',
     category: 'devops',
     keyPoints: [
@@ -468,7 +468,7 @@ CMD ["node", "server.js"]`
     difficulty: 'intermediate',
     category: 'devops',
     keyPoints: [
-      'Logging tools: Winston, Pino. Best practice: log request id, user id, and the error stack — not just a message string — so logs are traceable per-request.',
+      'Logging tools: Winston, Pino. Best practice: log request id, user id, and the error stack , not just a message string , so logs are traceable per-request.',
       'Monitoring tools (system health): Prometheus, Grafana, Datadog.',
       'Distributed tracing (tracks one request across many microservices): Jaeger, Zipkin.',
       'Health check endpoint: a simple route (GET /health → "OK") that load balancers poll to verify an instance is alive before routing traffic to it.'
@@ -479,11 +479,11 @@ CMD ["node", "server.js"]`
     id: 'secrets-graceful-shutdown',
     title: 'Secrets Management & Graceful Shutdown',
     summary:
-      'Never store secrets in code, and never let a process die mid-request — both are basic production hygiene that interviewers probe for.',
+      'Never store secrets in code, and never let a process die mid-request , both are basic production hygiene that interviewers probe for.',
     difficulty: 'intermediate',
     category: 'devops',
     keyPoints: [
-      'Secrets: use environment variables or a secret manager (Azure Key Vault, AWS Secrets Manager) — never commit credentials to source.',
+      'Secrets: use environment variables or a secret manager (Azure Key Vault, AWS Secrets Manager) , never commit credentials to source.',
       'Infrastructure-level rate limiting is often implemented outside the app itself: API gateway, NGINX, or Cloudflare.',
       'Graceful shutdown ensures: no data loss, DB connections closed cleanly, and in-flight requests finish before the process exits.',
       'Typical trigger: listen for SIGTERM (sent by orchestrators like Kubernetes before killing a pod) and close the server before exiting.'
@@ -501,9 +501,9 @@ CMD ["node", "server.js"]`
     difficulty: 'intermediate',
     category: 'scaling',
     keyPoints: [
-      'SSR (server renders HTML, SEO-friendly) vs CSR (browser renders, faster client interactions after initial load) — a rendering-strategy trade-off, not exclusive to Node but commonly implemented in it.',
-      "BFF (Backend for Frontend): a separate backend tailored to each frontend's needs — e.g. a Mobile BFF and a Web BFF in front of the same core services.",
-      'Feature flagging: enable/disable features without a redeployment (LaunchDarkly, Firebase Remote Config) — decouples deploy from release.'
+      'SSR (server renders HTML, SEO-friendly) vs CSR (browser renders, faster client interactions after initial load) , a rendering-strategy trade-off, not exclusive to Node but commonly implemented in it.',
+      "BFF (Backend for Frontend): a separate backend tailored to each frontend's needs , e.g. a Mobile BFF and a Web BFF in front of the same core services.",
+      'Feature flagging: enable/disable features without a redeployment (LaunchDarkly, Firebase Remote Config) , decouples deploy from release.'
     ]
   }
 ];

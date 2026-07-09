@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 Movie Seat Selection',
+  title: 'Movie Seat Selection',
   description:
     'Build a minimal cinema seat-booking UI. Render a seat grid where each seat is available, selected, or already booked. Clicking an available seat selects it (click again to deselect); a live footer shows how many seats are picked and the total price. Pressing Book confirms the selection — those seats become booked and the selection resets.',
   requirements: [

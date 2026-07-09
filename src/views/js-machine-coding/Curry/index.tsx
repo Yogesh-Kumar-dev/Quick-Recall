@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟡 Curry a Function',
+  title: 'Curry a Function',
   description:
     'Implement curry(fn) that transforms a function taking multiple arguments into a sequence of functions each taking a single argument (or some of them). curriedSum(1)(2)(3) and curriedSum(1, 2)(3) should both return the same result. This is a classic closures + higher-order-function interview question.',
   examples: [

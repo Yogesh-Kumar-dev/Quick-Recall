@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Todo List with Filters',
+  title: 'Todo List with Filters',
   description:
     'Build a fully functional todo list where users can add tasks, mark them complete, delete them, and filter the list by status.',
   requirements: [

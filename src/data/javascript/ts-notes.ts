@@ -31,20 +31,20 @@ type Result<T> = { data: T } | { error: string }; // union`
     difficulty: 'intermediate',
     category: 'generics',
     keyPoints: [
-      '<T> introduces a type parameter — T is resolved when the function/class is used.',
+      '<T> introduces a type parameter , T is resolved when the function/class is used.',
       'Constraints: <T extends SomeType> limits what T can be.',
       'Default types: <T = string> uses string when T is not provided.',
       'Multiple type params: <T, K extends keyof T>.',
       'Generic interfaces and classes work the same way.',
-      'Avoid unnecessary generics — only use when the type needs to vary.'
+      'Avoid unnecessary generics , only use when the type needs to vary.'
     ],
     textbookDef: `Generics are parameterised type variables, introduced by angle-bracket syntax (<T>), that allow a function, interface, or class to operate over a type that is supplied by the caller rather than hardcoded. TypeScript resolves generic type parameters through contextual type inference or explicit annotation at the call site.`,
     eli5: `Generics are like a vending machine that works with any product.
 
 Without generics: you build a "Chips Machine" that only accepts chips and only dispenses chips. Want a "Soda Machine"? Write a whole new machine.
-With generics: you build ONE machine — "put in T, get out T" — where T is just a label/placeholder.
+With generics: you build ONE machine, "put in T, get out T", where T is just a label/placeholder.
 When you use the machine, T gets filled in: put in chips → T = Chips. Put in soda → T = Soda.
-The machine still knows exactly what's inside — type safety is fully preserved.
+The machine still knows exactly what's inside , type safety is fully preserved.
 
 identity<string>('hello') → TypeScript resolves T as string, return type is string.
 identity<number>(42) → T is number, return type is number. One function, infinite types.`,
@@ -66,28 +66,28 @@ interface ApiResponse<T> {
     difficulty: 'intermediate',
     category: 'utility-types',
     keyPoints: [
-      'Partial<T> — makes all properties optional.',
-      'Required<T> — makes all properties required.',
-      'Readonly<T> — all properties become readonly.',
-      'Pick<T, K> — selects subset of keys K from T.',
-      'Omit<T, K> — removes keys K from T.',
-      'Record<K, V> — object type with keys K and values V.',
-      'Exclude<T, U> — removes U from union T.',
-      'Extract<T, U> — keeps only U from union T.',
-      'NonNullable<T> — removes null and undefined.',
-      'ReturnType<T> — extracts return type of function type T.',
-      'Parameters<T> — extracts parameter types as a tuple.'
+      'Partial<T> , makes all properties optional.',
+      'Required<T> , makes all properties required.',
+      'Readonly<T> , all properties become readonly.',
+      'Pick<T, K> , selects subset of keys K from T.',
+      'Omit<T, K> , removes keys K from T.',
+      'Record<K, V> , object type with keys K and values V.',
+      'Exclude<T, U> , removes U from union T.',
+      'Extract<T, U> , keeps only U from union T.',
+      'NonNullable<T> , removes null and undefined.',
+      'ReturnType<T> , extracts return type of function type T.',
+      'Parameters<T> , extracts parameter types as a tuple.'
     ],
-    textbookDef: `TypeScript's utility types are generic type aliases in the standard library that apply common structural transformations — such as making properties optional, readonly, or projecting/omitting specific keys — to an existing type parameter T. Internally they are implemented using mapped types, conditional types, and the infer keyword.`,
+    textbookDef: `TypeScript's utility types are generic type aliases in the standard library that apply common structural transformations , such as making properties optional, readonly, or projecting/omitting specific keys , to an existing type parameter T. Internally they are implemented using mapped types, conditional types, and the infer keyword.`,
     eli5: `Utility types are adjustable stamps you apply to reshape an existing type without rewriting it.
 
-Imagine your User type has: id, name, email, password — all required.
+Imagine your User type has: id, name, email, password, all required.
 
-Partial<User>: stamps "all optional" — great for an update form where you only send the changed fields.
-Pick<User, 'id' | 'name'>: cuts out only the listed fields — "give me just id and name."
-Omit<User, 'password'>: cuts away the listed fields — "give me User but hide the password."
+Partial<User>: stamps "all optional", great for an update form where you only send the changed fields.
+Pick<User, 'id' | 'name'>: cuts out only the listed fields, "give me just id and name."
+Omit<User, 'password'>: cuts away the listed fields, "give me User but hide the password."
 Record<string, User>: "I want an object whose keys are strings and values are Users."
-ReturnType<typeof fetchUser>: "I don't want to repeat the return type — just infer it from the function."
+ReturnType<typeof fetchUser>: "I don't want to repeat the return type , just infer it from the function."
 
 You're reshaping and reusing existing types rather than writing redundant new ones.`,
     codeSnippet: `type UserUpdate = Partial<User>;           // all optional
@@ -104,8 +104,8 @@ type FnReturn = ReturnType<typeof fetchUser>; // inferred return type`
     difficulty: 'basic',
     category: 'types',
     keyPoints: [
-      'Union: A | B — value can be type A or type B.',
-      'Intersection: A & B — value must satisfy both A and B (combined properties).',
+      'Union: A | B , value can be type A or type B.',
+      'Intersection: A & B , value must satisfy both A and B (combined properties).',
       'Unions require narrowing before accessing type-specific properties.',
       'Intersections are useful for mixins and extending types.',
       'Discriminated unions: add a literal "kind" or "type" field to narrow safely.'
@@ -143,10 +143,10 @@ function area(s: Shape) {
     textbookDef: `Type narrowing is the process by which TypeScript's control flow analysis refines the static type of a variable within a conditional branch. A type guard is an expression that, when evaluated as true, permits TypeScript to infer a more specific type in its scope; user-defined type guards use the \`x is T\` predicate return type to communicate that narrowing to the compiler.`,
     eli5: `TypeScript is like a bouncer who needs to be sure who's at the door before letting them in.
 
-Step 1: You have id which could be a string OR a number — the bouncer can't let it do string-only things until they're 100% sure.
-Step 2: typeof id === 'string' is like showing an ID card — now TypeScript knows it's a string inside that block and unlocks string methods.
-Step 3: A custom type guard (isUser(x): x is User) is a more detailed background check — you write the logic, and TypeScript trusts your word: "if this returns true, x is definitely a User."
-Step 4: Inside the narrowed branch TypeScript "forgets" the other possibilities and gives you the exact type — no casting needed.`,
+Step 1: You have id which could be a string OR a number, the bouncer can't let it do string-only things until they're 100% sure.
+Step 2: typeof id === 'string' is like showing an ID card, now TypeScript knows it's a string inside that block and unlocks string methods.
+Step 3: A custom type guard (isUser(x): x is User) is a more detailed background check, you write the logic, and TypeScript trusts your word: "if this returns true, x is definitely a User."
+Step 4: Inside the narrowed branch TypeScript "forgets" the other possibilities and gives you the exact type, no casting needed.`,
     codeSnippet: `function processId(id: string | number) {
   if (typeof id === 'string') {
     return id.toUpperCase(); // id is string here
@@ -165,14 +165,14 @@ function isUser(x: unknown): x is User {
     difficulty: 'advanced',
     category: 'advanced',
     keyPoints: [
-      'Mapped type: { [K in keyof T]: NewType } — transform each property.',
+      'Mapped type: { [K in keyof T]: NewType } , transform each property.',
       'Add/remove modifiers: +readonly, -readonly, +?, -?.',
       'Conditional type: T extends U ? X : Y.',
       'infer keyword: extract a type inside a conditional (infer R in ReturnType).',
       'Distributive conditionals: automatically distribute over union types.'
     ],
     textbookDef: `A mapped type iterates over the properties of a type parameter using \`[K in keyof T]\` syntax, optionally transforming each property's type and modifiers (+/- readonly, +/- ?) at compile time. A conditional type \`T extends U ? X : Y\` distributes over union members of T and, combined with the \`infer\` keyword, enables extraction of sub-types from generic positions.`,
-    eli5: `Mapped types are a "for-loop for types" — visit every property and transform it.
+    eli5: `Mapped types are a "for-loop for types" , visit every property and transform it.
 
 Imagine your User type has 5 required properties. A mapped type says: "for each property in User, make it optional." That is literally how Partial<T> is built inside TypeScript itself.
 
@@ -180,7 +180,7 @@ Conditional types are the if/else of the type world:
 "Is T a function? Yes → give me its return type. No → give me never."
 That's how ReturnType<T> works under the hood.
 
-The infer keyword is the magic trick: inside the "yes" branch, pull out a hidden piece of the type and give it a name. Like pattern matching — you're deconstructing a type the same way you'd destructure an object at runtime.`,
+The infer keyword is the magic trick: inside the "yes" branch, pull out a hidden piece of the type and give it a name. Like pattern matching, you're deconstructing a type the same way you'd destructure an object at runtime.`,
     codeSnippet: `type Nullable<T> = { [K in keyof T]: T[K] | null };
 type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 
@@ -192,7 +192,7 @@ type MyReturn<T> = T extends (...args: any[]) => infer R ? R : never;`
   {
     id: 'enums',
     title: 'Enums',
-    summary: 'Named constant sets — numeric (default) or string enums.',
+    summary: 'Named constant sets , numeric (default) or string enums.',
     difficulty: 'basic',
     category: 'types',
     keyPoints: [
@@ -201,7 +201,7 @@ type MyReturn<T> = T extends (...args: any[]) => infer R ? R : never;`
       'const enum: inlined at compile time, no runtime object generated.',
       'Prefer string enums for readability (logged values are meaningful).',
       'Enums are real objects at runtime (except const enum).',
-      'Alternative: union of string literals (type Direction = "up" | "down") — no runtime cost.'
+      'Alternative: union of string literals (type Direction = "up" | "down") , no runtime cost.'
     ],
     codeSnippet: `enum Direction { Up = 'UP', Down = 'DOWN', Left = 'LEFT', Right = 'RIGHT' }
 
@@ -215,22 +215,22 @@ type Dir = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';`
     difficulty: 'intermediate',
     category: 'advanced',
     keyPoints: [
-      'keyof T — union of all keys of T as literal string/number types.',
-      'T[K] — index access type, the type of property K in T.',
-      'typeof value — infers the type from a runtime value.',
+      'keyof T , union of all keys of T as literal string/number types.',
+      'T[K] , index access type, the type of property K in T.',
+      'typeof value , infers the type from a runtime value.',
       'Common combo: Record<keyof Config, string> or typeof defaultConfig.',
-      'Template literal types: `${keyof T}Changed` — generates string unions.'
+      'Template literal types: `${keyof T}Changed` , generates string unions.'
     ],
     textbookDef: `The \`keyof\` operator in a type position produces a union of all known public property keys of an object type T as string or number literal types. The \`typeof\` operator in a type position infers the TypeScript type of a runtime value, enabling the type system to derive structural information from existing JavaScript objects without redundant manual annotation.`,
-    eli5: `These two operators let TypeScript ask questions ABOUT your types — they're introspection tools.
+    eli5: `These two operators let TypeScript ask questions ABOUT your types , they're introspection tools.
 
 keyof: "What are all the legal keys of this object type?"
-If type User = { id: number; name: string }, then keyof User is literally 'id' | 'name'. Now you can write functions that only accept real, existing key names — no typos allowed.
+If type User = { id: number; name: string }, then keyof User is literally 'id' | 'name'. Now you can write functions that only accept real, existing key names, no typos allowed.
 
 typeof (in type position): "What's the shape of this runtime variable?"
 Instead of writing the type again by hand, just say typeof myConfig and TypeScript figures it out. Update the object, the type updates automatically.
 
-Powerful combo — keyof typeof myObj — gets all keys of a real runtime object as a type union. Favourite use: config objects and lookup tables.`,
+Powerful combo, keyof typeof myObj, gets all keys of a real runtime object as a type union. Favourite use: config objects and lookup tables.`,
     codeSnippet: `const config = { host: 'localhost', port: 3000 };
 type Config = typeof config;          // { host: string; port: number }
 type ConfigKey = keyof Config;         // 'host' | 'port'
@@ -246,13 +246,13 @@ type ConfigValue = Config[ConfigKey];  // string | number`
     category: 'fundamentals',
     keyPoints: [
       'Statically typed: annotate variables, params, and return values; errors caught during development.',
-      'Superset of JS: all valid JavaScript is valid TypeScript — types are optional and additive.',
+      'Superset of JS: all valid JavaScript is valid TypeScript , types are optional and additive.',
       'Compiled (transpiled) by tsc to standard, browser-compatible JavaScript.',
       'Adds language features: interfaces, enums, generics, access modifiers, often ahead of JS.',
-      'Types are erased at runtime — they exist only at compile time for tooling and safety.'
+      'Types are erased at runtime , they exist only at compile time for tooling and safety.'
     ],
     textbookDef: `TypeScript is an open-source, statically-typed superset of JavaScript developed by Microsoft. It augments JavaScript with optional static type annotations and additional language constructs, which a compiler verifies and then erases, emitting standard ECMAScript targeted at a configurable version.`,
-    eli5: `JavaScript lets you put anything anywhere and only complains when the code actually runs and breaks. TypeScript is JavaScript with a spell-checker that reads your code before it runs and underlines the mistakes — wrong types, typos, missing properties — so you fix them at your desk instead of in production. When it's happy, it strips out all the type notes and hands the browser plain JavaScript.`,
+    eli5: `JavaScript lets you put anything anywhere and only complains when the code actually runs and breaks. TypeScript is JavaScript with a spell-checker that reads your code before it runs and underlines the mistakes , wrong types, typos, missing properties , so you fix them at your desk instead of in production. When it's happy, it strips out all the type notes and hands the browser plain JavaScript.`,
     codeSnippet: `let num: number = 5;
 num = 'oops'; // ❌ Type 'string' is not assignable to type 'number'
 
@@ -269,10 +269,10 @@ num = 'oops'; // ❌ Type 'string' is not assignable to type 'number'
       'Primitives: boolean, number, string, plus null and undefined.',
       'Array: number[] or Array<number>. Tuple: fixed-length, mixed types [string, number].',
       'enum: a named set of constants. object: any non-primitive.',
-      'any: opts out of type checking — avoid; prefer unknown and narrow.',
+      'any: opts out of type checking , avoid; prefer unknown and narrow.',
       'void: a function returns nothing. never: a function never returns (always throws/loops).'
     ],
-    gotcha: 'any silently disables checking and spreads through your code. unknown forces you to narrow before use — prefer it.',
+    gotcha: 'any silently disables checking and spreads through your code. unknown forces you to narrow before use , prefer it.',
     codeSnippet: `let isActive: boolean = true;
 let scores: number[] = [85, 90];
 let employee: [string, number] = ['John', 35]; // tuple
@@ -289,7 +289,7 @@ function log(): void { console.log('hi'); }`
       'Prefer const by default; use let when reassignment is needed; avoid var.',
       'Type annotation is optional when the initializer makes the type obvious (inference).',
       'A variable must be declared before use; types are enforced on assignment.',
-      'const makes the REFERENCE immutable — object/array contents can still mutate.',
+      'const makes the REFERENCE immutable , object/array contents can still mutate.',
       'let and const are block-scoped; var is function-scoped and hoisted.'
     ],
     codeSnippet: `const apiKey: string = 'secret';   // constant binding
@@ -353,13 +353,13 @@ function sum(...nums: number[]): number {
     category: 'functions',
     keyPoints: [
       'Write several overload signatures, then ONE implementation that satisfies them all.',
-      'Callers see only the overloads — the implementation signature is hidden.',
+      'Callers see only the overloads , the implementation signature is hidden.',
       'Useful when return/param types depend on the input combination.',
       'Order matters: put more specific overloads before broader ones.',
-      'Often a union type or generics is simpler than overloads — reach for them first.'
+      'Often a union type or generics is simpler than overloads , reach for them first.'
     ],
     gotcha:
-      'The implementation signature must be compatible with every overload, but it is NOT itself callable — only the declared overloads are.',
+      'The implementation signature must be compatible with every overload, but it is NOT itself callable , only the declared overloads are.',
     codeSnippet: `function greet(name: string): void;
 function greet(title: string, name: string): void;
 function greet(a: string, b?: string): void {
@@ -401,7 +401,7 @@ greet('Dr', 'Ada');     // ok`
     difficulty: 'intermediate',
     category: 'oop',
     keyPoints: [
-      'class Child extends Parent — inherits properties and methods.',
+      'class Child extends Parent , inherits properties and methods.',
       'A subclass constructor must call super(...) before using this.',
       'Override a method by redeclaring it; call super.method() to reuse parent logic.',
       'Under the hood this is JavaScript’s prototypal inheritance.',
@@ -427,7 +427,7 @@ new Snake('Cobra').move(); // Slithering… Cobra moved 5m`
       'private: accessible only within the declaring class.',
       'protected: accessible within the class and its subclasses (the "is-a" relationship).',
       'readonly can combine with a modifier to allow assignment only in the constructor.',
-      'Enforced at COMPILE time — JS has its own runtime #private fields.'
+      'Enforced at COMPILE time , JS has its own runtime #private fields.'
     ],
     gotcha: 'TS private is a compile-time check and is still visible at runtime. For true runtime privacy use JS #private fields.',
     codeSnippet: `class Person {
@@ -450,7 +450,7 @@ p.name;  // ✅
     category: 'oop',
     keyPoints: [
       'Declared with abstract; cannot be instantiated directly (new Shape() is an error).',
-      'abstract methods have no body — subclasses must implement them.',
+      'abstract methods have no body , subclasses must implement them.',
       'Can also contain fully implemented shared methods and static members.',
       'Use for contract enforcement + shared partial implementation across subclasses.',
       'Differs from an interface: an abstract class can carry implementation and state.'
@@ -473,7 +473,7 @@ class Circle extends Shape {
     category: 'oop',
     keyPoints: [
       'The constructor runs automatically on new and sets up initial state.',
-      'A class has exactly one constructor (no true overloading — use optional params).',
+      'A class has exactly one constructor (no true overloading , use optional params).',
       'Parameter properties: an access modifier on a param declares AND assigns the field.',
       'Combine readonly with a modifier for a write-once field set in the constructor.',
       'Use super(...) first in a subclass constructor.'
@@ -517,7 +517,7 @@ class B {
   {
     id: 'ts-strict-mode',
     title: 'Strict Mode Flags',
-    summary: '"strict": true turns on a family of stricter type checks — the recommended baseline.',
+    summary: '"strict": true turns on a family of stricter type checks , the recommended baseline.',
     difficulty: 'intermediate',
     category: 'config',
     keyPoints: [
@@ -527,7 +527,7 @@ class B {
       'strictFunctionTypes: stricter (contravariant) function-parameter checking.',
       'noImplicitThis: error when this has an implicit any type.'
     ],
-    gotcha: 'Turning on strictNullChecks in an existing codebase surfaces many latent null/undefined bugs — migrate incrementally.',
+    gotcha: 'Turning on strictNullChecks in an existing codebase surfaces many latent null/undefined bugs , migrate incrementally.',
     codeSnippet: `// With strictNullChecks on:
 function len(s: string) { return s.length; }
 // len(null); // ❌ 'null' is not assignable to 'string'
@@ -541,12 +541,12 @@ function len2(s: string | null) {
   {
     id: 'ts-type-assertions',
     title: 'Type Assertions (as) & Casting',
-    summary: 'Tell the compiler to treat a value as a specific type — a compile-time-only override, not a runtime conversion.',
+    summary: 'Tell the compiler to treat a value as a specific type , a compile-time-only override, not a runtime conversion.',
     difficulty: 'intermediate',
     category: 'types',
     keyPoints: [
       'value as Type (or the older <Type>value) reinterprets the static type.',
-      'No runtime effect — assertions are erased; they do NOT convert the value.',
+      'No runtime effect , assertions are erased; they do NOT convert the value.',
       'as const: a const assertion that makes a literal deeply readonly and narrows it.',
       'Non-null assertion value! removes null/undefined from the type (use cautiously).',
       'Differs from runtime casting like Number(x)/String(x), which actually convert data.'
@@ -613,13 +613,13 @@ function getProp<T, K extends keyof T>(obj: T, key: K): T[K] {
     category: 'advanced',
     keyPoints: [
       'Targets: class, method, accessor, property, and parameter.',
-      'A decorator runs when the class is defined — it can observe, wrap, or replace its target.',
+      'A decorator runs when the class is defined , it can observe, wrap, or replace its target.',
       'Common uses: logging, dependency injection, validation, metadata (Angular, NestJS).',
       'Legacy decorators need "experimentalDecorators"; TS 5+ supports the stage-3 standard form.',
       'Multiple decorators compose bottom-up (the closest to the target runs first).'
     ],
     gotcha:
-      'The legacy (experimentalDecorators) and TS 5 stage-3 decorator signatures differ — don’t mix patterns; pick one based on your tsconfig.',
+      'The legacy (experimentalDecorators) and TS 5 stage-3 decorator signatures differ , don’t mix patterns; pick one based on your tsconfig.',
     codeSnippet: `// Legacy method decorator (experimentalDecorators)
 function log(target: any, key: string, desc: PropertyDescriptor) {
   const orig = desc.value;
@@ -637,8 +637,8 @@ class Api { @log fetch() { /* ... */ } }`
     difficulty: 'intermediate',
     category: 'modules',
     keyPoints: [
-      'ES modules: one module per file, explicit import/export — the recommended approach.',
-      'Namespaces (namespace X {}) group code under a single global name — legacy.',
+      'ES modules: one module per file, explicit import/export , the recommended approach.',
+      'Namespaces (namespace X {}) group code under a single global name , legacy.',
       'Module resolution: "node" (node_modules lookup) is the common strategy.',
       'baseUrl + paths configure import aliases (e.g. "components/*").',
       'Prefer modules; reach for namespaces only for ambient/global type declarations.'
@@ -660,7 +660,7 @@ MathUtil.add(1, 2);`
     difficulty: 'intermediate',
     category: 'modules',
     keyPoints: [
-      '.d.ts files declare types with NO implementation — they only describe shapes.',
+      '.d.ts files declare types with NO implementation , they only describe shapes.',
       'They let TypeScript type-check otherwise-untyped JavaScript libraries.',
       'DefinitelyTyped is the community repo of these files, published as @types/* on npm.',
       'Install with npm i -D @types/lodash; tsc auto-discovers them via typeRoots.',

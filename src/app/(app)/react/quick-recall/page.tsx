@@ -8,7 +8,7 @@ export const metadata = { title: 'React Quick Recall | QuickRecall' };
 export default function Page() {
   return (
     <QuickRecallView
-      title="⚡ React Quick Recall"
+      title="React Quick Recall"
       intro="Last-minute cheatsheet — scan in 5–10 minutes before your interview. Key concepts, gotchas, and code snippets."
       sections={reactQuickRecall}
       headerAction={<PdfLauncher guides={REACT_QUICK_RECALL_PDFS} title="React Interview PDFs" buttonLabel="React interview PDFs" />}

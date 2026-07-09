@@ -133,7 +133,7 @@ export default function InfiniteScroll() {
         )}
 
         {!hasMore && (
-          <p style={{ textAlign: 'center', fontSize: 14, color: '#999', padding: '12px 0' }}>✅ All {TOTAL_ITEMS} items loaded.</p>
+          <p style={{ textAlign: 'center', fontSize: 14, color: '#999', padding: '12px 0' }}>All {TOTAL_ITEMS} items loaded.</p>
         )}
 
         {/* Sentinel */}

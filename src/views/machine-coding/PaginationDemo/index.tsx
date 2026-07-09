@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 Pagination Component',
+  title: 'Pagination Component',
   description: 'Build a pagination control that splits a large dataset into pages and lets the user navigate between them.',
   requirements: [
     'Display a configurable number of items per page (5, 10, 20)',

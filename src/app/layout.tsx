@@ -8,7 +8,7 @@ const lora = Lora({ subsets: ['latin'], variable: '--font-lora', display: 'swap'
 const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'QuickRecall — Developer Interview Prep',
+  title: 'QuickRecall - Developer Interview Prep',
   description:
     'A personal knowledge base for developer interview prep. Notes, machine-coding problems with a side-by-side code viewer, and quick-recall sheets — any source distilled into one searchable format.',
   appleWebApp: { capable: true, title: 'QuickRecall', statusBarStyle: 'default' }

@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟢 Group Array Items by Key',
+  title: 'Group Array Items by Key',
   description:
     'Implement groupBy(array, keyFn) that buckets array items into an object keyed by keyFn(item), with each value an array of the items sharing that key. A common warm-up that tests comfort with reduce, object accumulation, and the new ES2024 grouping helpers.',
   examples: [

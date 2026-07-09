@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🔴 Drag & Drop Kanban Board',
+  title: 'Drag & Drop Kanban Board',
   description:
     'Build a 3-column Kanban board (Todo → In Progress → Done) where task cards can be dragged from one column and dropped into another. No external drag-and-drop library.',
   requirements: [

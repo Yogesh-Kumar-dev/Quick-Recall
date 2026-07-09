@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🔴 Implement Promise.all',
+  title: 'Implement Promise.all',
   description:
     'Write a polyfill for Promise.all(promises) that resolves with an array of results — in input order — once every promise resolves, and rejects as soon as any one of them rejects (fail-fast). This tests your understanding of promises, closures, and asynchronous control flow.',
   examples: [

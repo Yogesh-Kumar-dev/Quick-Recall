@@ -82,7 +82,7 @@ export default function Accordion() {
           onChange={(e) => setIsMultiOpen(e.target.checked)}
           style={{ width: 16, height: 16, cursor: 'pointer' }}
         />
-        {isMultiOpen ? '🔓 Multi-open — multiple sections can be open' : '🔒 Single-open — only one section at a time'}
+        {isMultiOpen ? 'Multi-open — multiple sections can be open' : 'Single-open — only one section at a time'}
       </label>
 
       {/* Accordion items */}

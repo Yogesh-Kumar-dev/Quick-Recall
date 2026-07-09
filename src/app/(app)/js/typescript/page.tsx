@@ -4,12 +4,12 @@ import PlaylistLauncher from '@/components/playlist-player/playlist-launcher';
 import { tsNotes } from '@/data/javascript/ts-notes';
 import { TS_NOTES_INSTAGRAM, TS_NOTES_PLAYLISTS } from '@/data/video-playlists';
 
-export const metadata = { title: '🟦 TS Notes | QuickRecall' };
+export const metadata = { title: 'TS Notes | QuickRecall' };
 
 export default async function Page({ searchParams }: { searchParams: Promise<NotesSearchParams> }) {
   return (
     <NotesView
-      title="🟦 TS Notes"
+      title="TS Notes"
       notes={tsNotes}
       params={await searchParams}
       headerAction={

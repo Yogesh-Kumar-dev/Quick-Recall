@@ -11,13 +11,13 @@ export const nextjsRenderingNotes: Note[] = [
     keyPoints: [
       'Static (default): route rendered at build time when no runtime APIs are accessed. Served instantly from CDN.',
       'Dynamic: automatically opted in when accessing cookies(), headers(), searchParams, or uncached data.',
-      'In Next.js 15, fetch() is NOT cached by default — but a route can still be static if no runtime APIs are used.',
-      'export const dynamic = "force-dynamic" — always renders dynamically, every request hits the server.',
-      'export const dynamic = "force-static" — forces static even if runtime APIs are accessed (they return empty).',
+      'In Next.js 15, fetch() is NOT cached by default , but a route can still be static if no runtime APIs are used.',
+      'export const dynamic = "force-dynamic" , always renders dynamically, every request hits the server.',
+      'export const dynamic = "force-static" , forces static even if runtime APIs are accessed (they return empty).',
       'generateStaticParams: pre-generate known dynamic paths statically; unknown paths fall back to dynamic.'
     ],
     gotcha:
-      "Calling cookies() or headers() anywhere in a Server Component automatically opts the entire page into dynamic rendering — even if the result isn't used. Extract them as close to the consuming component as possible.",
+      "Calling cookies() or headers() anywhere in a Server Component automatically opts the entire page into dynamic rendering , even if the result isn't used. Extract them as close to the consuming component as possible.",
     codeSnippet: `// Force static
 export const dynamic = 'force-static';
 
@@ -33,13 +33,13 @@ const { q } = await searchParams;     // ← makes route dynamic`
   {
     id: 'ssg',
     title: 'Static Site Generation (SSG)',
-    summary: 'Pages rendered at build time into static HTML — served instantly from a CDN with zero server cost per request.',
+    summary: 'Pages rendered at build time into static HTML , served instantly from a CDN with zero server cost per request.',
     difficulty: 'basic',
     category: 'rendering',
     textbookDef:
       'SSG pre-renders pages at build time. The resulting HTML is stored and served on every request without server processing. Next.js 15 uses the "use cache" directive and generateStaticParams to control what is statically generated.',
     keyPoints: [
-      'Add "use cache" to a function or component — its output is baked into the static shell at build time.',
+      'Add "use cache" to a function or component , its output is baked into the static shell at build time.',
       'generateStaticParams() declares which dynamic paths (e.g., blog slugs) are pre-generated at build time.',
       'Paths NOT in generateStaticParams render dynamically on first request, then cached.',
       'cacheLife("days") or cacheLife("weeks") controls how long the cached output is valid.',
@@ -63,19 +63,19 @@ export async function generateStaticParams() {
   {
     id: 'ssr',
     title: 'Server-Side Rendering (SSR)',
-    summary: 'Pages rendered on the server per request — always fresh data, personalized per user.',
+    summary: 'Pages rendered on the server per request , always fresh data, personalized per user.',
     difficulty: 'basic',
     category: 'rendering',
     textbookDef:
       'SSR generates full HTML for each incoming request on the server. In the App Router, a route becomes dynamically rendered when it accesses request-time APIs (cookies, headers, searchParams) or uses uncached data fetches.',
     keyPoints: [
       'A route is dynamically rendered when it uses: cookies(), headers(), or searchParams.',
-      'fetch() without "use cache" runs fresh on every request — implicitly dynamic.',
+      'fetch() without "use cache" runs fresh on every request , implicitly dynamic.',
       'Dynamic rendering guarantees up-to-date data but adds server latency per request.',
-      'Even fully dynamic pages benefit from streaming — the static shell (layout) is sent to the browser immediately.',
+      'Even fully dynamic pages benefit from streaming , the static shell (layout) is sent to the browser immediately.',
       'Combine static and dynamic on the same page using Suspense: static shell instant, dynamic parts stream in.'
     ],
-    codeSnippet: `// Dynamically rendered — per-request, personalized
+    codeSnippet: `// Dynamically rendered , per-request, personalized
 export default async function ProfilePage() {
   // cookies() opts the whole page into dynamic rendering
   const userId = (await cookies()).get('userId')?.value;
@@ -88,13 +88,13 @@ export default async function ProfilePage() {
   {
     id: 'isr',
     title: 'Incremental Static Regeneration (ISR)',
-    summary: 'Revalidate static pages after a time interval or on demand — stale-while-revalidate without a full rebuild.',
+    summary: 'Revalidate static pages after a time interval or on demand , stale-while-revalidate without a full rebuild.',
     difficulty: 'intermediate',
     category: 'rendering',
     textbookDef:
       'ISR lets you update statically generated pages after the initial build. Next.js 15 uses "use cache" with cacheLife() for time-based ISR and cacheTag() + updateTag() for on-demand invalidation.',
     keyPoints: [
-      'Time-based: cacheLife("hours") — cached for that duration, then revalidated in the background.',
+      'Time-based: cacheLife("hours") , cached for that duration, then revalidated in the background.',
       'On-demand: cacheTag("posts") marks cached content; updateTag("posts") in a Server Action instantly expires it.',
       'Stale-while-revalidate: serve the cached page immediately while revalidating in the background.',
       'Legacy API: export const revalidate = 60 (seconds) or fetch(url, { next: { revalidate: 60 } }) still work.',
@@ -121,15 +121,15 @@ async function publishProduct(data) {
   // ─── STREAMING ──────────────────────────────────────────────────────────────
   {
     id: 'loading-file',
-    title: 'loading.tsx — Route-Level Streaming',
-    summary: 'Place loading.tsx beside page.tsx to show instant loading UI for the entire route — no manual Suspense boilerplate needed.',
+    title: 'loading.tsx , Route-Level Streaming',
+    summary: 'Place loading.tsx beside page.tsx to show instant loading UI for the entire route , no manual Suspense boilerplate needed.',
     difficulty: 'basic',
     category: 'streaming',
     keyPoints: [
-      'Add loading.tsx in any route folder — Next.js automatically wraps page.tsx in <Suspense fallback={<Loading />}>.',
+      'Add loading.tsx in any route folder , Next.js automatically wraps page.tsx in <Suspense fallback={<Loading />}>.',
       'The layout renders and is sent immediately; loading.tsx shows while the page awaits data.',
-      'User sees layout + loading state instantly on navigation — content swaps in when ready.',
-      'loading.tsx is a Server Component — render skeletons, spinners, or meaningful partial UI.',
+      'User sees layout + loading state instantly on navigation , content swaps in when ready.',
+      'loading.tsx is a Server Component , render skeletons, spinners, or meaningful partial UI.',
       'Scoped per segment: blog/loading.tsx only applies to /blog, not to /blog/[slug].'
     ],
     codeSnippet: `// app/dashboard/loading.tsx
@@ -152,16 +152,16 @@ export default function Loading() {
     difficulty: 'intermediate',
     category: 'streaming',
     textbookDef:
-      "Streaming uses HTTP chunked transfer to progressively deliver HTML from server to client. React's Suspense boundaries define what can be deferred — the static shell arrives instantly while data-dependent chunks stream in as they resolve.",
+      "Streaming uses HTTP chunked transfer to progressively deliver HTML from server to client. React's Suspense boundaries define what can be deferred , the static shell arrives instantly while data-dependent chunks stream in as they resolve.",
     keyPoints: [
       '<Suspense fallback={<Skeleton />}> shows the fallback until the async child resolves.',
-      'Everything outside Suspense boundaries is part of the static shell — sent immediately.',
-      'Multiple independent Suspense boundaries stream in parallel — one slow request never blocks others.',
+      'Everything outside Suspense boundaries is part of the static shell , sent immediately.',
+      'Multiple independent Suspense boundaries stream in parallel , one slow request never blocks others.',
       "React's use() hook: pass a server-initiated Promise to a Client Component and let Suspense handle the wait.",
-      "loading.tsx is a shortcut — it's equivalent to wrapping page.tsx in a <Suspense> boundary."
+      "loading.tsx is a shortcut , it's equivalent to wrapping page.tsx in a <Suspense> boundary."
     ],
     gotcha:
-      "Nesting async components without Suspense creates a waterfall — if the parent awaits before rendering the child, the child's fetch can't start until the parent finishes. Wrap each independently-fetching component in its own Suspense.",
+      "Nesting async components without Suspense creates a waterfall , if the parent awaits before rendering the child, the child's fetch can't start until the parent finishes. Wrap each independently-fetching component in its own Suspense.",
     codeSnippet: `export default function Page() {
   return (
     <>
@@ -183,20 +183,20 @@ export default function Loading() {
   {
     id: 'use-cache',
     title: '"use cache" Directive',
-    summary: 'Add "use cache" to an async function or component to cache its output — composable SSG at any level of the tree.',
+    summary: 'Add "use cache" to an async function or component to cache its output , composable SSG at any level of the tree.',
     difficulty: 'intermediate',
     category: 'caching',
     textbookDef:
       '"use cache" is a Next.js directive (requires cacheComponents: true in next.config.ts) that stores the return value of an async function or component. Function arguments automatically become part of the cache key, enabling parameterized caching.',
     keyPoints: [
       '"use cache" inside a function/component body caches its async output at data-level or UI-level.',
-      'cacheLife("seconds" | "minutes" | "hours" | "days" | "weeks") — sets expiry duration.',
+      'cacheLife("seconds" | "minutes" | "hours" | "days" | "weeks") , sets expiry duration.',
       'cacheTag("key") marks a cache entry; updateTag("key") from a Server Action invalidates it on demand.',
-      'Arguments become cache keys automatically — different inputs → separate cache entries.',
+      'Arguments become cache keys automatically , different inputs → separate cache entries.',
       'Replaces the old { next: { revalidate } } fetch option with a composable, component-level model.'
     ],
     gotcha:
-      '"use cache" requires cacheComponents: true in next.config.ts — without it, the directive is silently ignored. This is the most common reason caching appears not to work.',
+      '"use cache" requires cacheComponents: true in next.config.ts , without it, the directive is silently ignored. This is the most common reason caching appears not to work.',
     codeSnippet: `import { cacheLife, cacheTag } from 'next/cache';
 
 // Cache an individual data fetch
@@ -220,19 +220,19 @@ async function updateProduct(id: string, data) {
     id: 'ppr',
     title: 'Partial Pre-Rendering (PPR)',
     summary:
-      'PPR is the default model with Cache Components — static shell served instantly from CDN, dynamic Suspense slots stream in per-request.',
+      'PPR is the default model with Cache Components , static shell served instantly from CDN, dynamic Suspense slots stream in per-request.',
     difficulty: 'advanced',
     category: 'ppr',
     textbookDef:
       'PPR combines static and dynamic rendering on a single page without compromise. At build time, Next.js pre-renders everything that can be static (cached + deterministic) into an HTML shell. At request time, dynamic Suspense boundaries stream in personalized content.',
     keyPoints: [
-      'No extra configuration with Cache Components — PPR is the default rendering model.',
+      'No extra configuration with Cache Components , PPR is the default rendering model.',
       'Static shell: everything outside dynamic Suspense boundaries pre-rendered at build time.',
       'Dynamic slots: Suspense fallback HTML is included in the static shell; real content streams at request time.',
       'Same URL can serve static nav, cached blog posts, AND per-user recommendations.',
       'Achieves TTFB as fast as pure static hosting while supporting fully dynamic personalized sections.'
     ],
-    codeSnippet: `// One page — three rendering modes simultaneously
+    codeSnippet: `// One page , three rendering modes simultaneously
 export default function ProductPage() {
   return (
     <>
@@ -259,13 +259,13 @@ export default function ProductPage() {
     difficulty: 'basic',
     category: 'rendering',
     keyPoints: [
-      'CSR: the browser downloads JS, then renders — first paint is an empty shell (poor SEO).',
+      'CSR: the browser downloads JS, then renders , first paint is an empty shell (poor SEO).',
       'Pre-rendering: Next.js generates HTML ahead of time so content is visible immediately.',
       'Two pre-render modes: SSG (at build time) and SSR (per request).',
-      'After HTML arrives, React HYDRATES it — attaching event listeners to make it interactive.',
+      'After HTML arrives, React HYDRATES it , attaching event listeners to make it interactive.',
       'Pre-rendering improves first contentful paint, SEO, and perceived performance.'
     ],
-    eli5: 'CSR is handing someone a flat-pack box and the instructions — they build the furniture at home (slow, blank at first). SSR/SSG ships the furniture already assembled — they see it instantly, then just tighten the screws (hydration).',
+    eli5: 'CSR is handing someone a flat-pack box and the instructions , they build the furniture at home (slow, blank at first). SSR/SSG ships the furniture already assembled , they see it instantly, then just tighten the screws (hydration).',
     codeSnippet: `// CSR: <div id="root"></div> → JS fills it in the browser
 // SSR/SSG: server sends full HTML → React hydrates it
 
@@ -286,7 +286,7 @@ export default function ProductPage() {
     ],
     gotcha:
       'Adding getServerSideProps (even returning nothing useful) opts a page OUT of static optimization, forcing SSR on every request. Only add it when you truly need per-request data.',
-    codeSnippet: `// Auto-statically-optimized — no data functions
+    codeSnippet: `// Auto-statically-optimized , no data functions
 export default function About() {
   return <h1>About us</h1>; // prerendered to static HTML at build
 }
@@ -305,14 +305,14 @@ export async function getServerSideProps() {
     difficulty: 'intermediate',
     category: 'pages-router',
     keyPoints: [
-      'Runs ONCE at build time (or during ISR revalidation) — never on the client.',
+      'Runs ONCE at build time (or during ISR revalidation) , never on the client.',
       'Returns { props } that are passed to the page component.',
-      'Add revalidate: n to enable ISR — the page regenerates at most every n seconds.',
+      'Add revalidate: n to enable ISR , the page regenerates at most every n seconds.',
       'Ideal for content that is the same for all users (blogs, docs, marketing).',
       'Pair with getStaticPaths for dynamic routes ([id]).'
     ],
     gotcha:
-      'getStaticProps runs only on the server at build — it is stripped from the client bundle, so you can safely use secrets and direct DB calls inside it.',
+      'getStaticProps runs only on the server at build , it is stripped from the client bundle, so you can safely use secrets and direct DB calls inside it.',
     codeSnippet: `export async function getStaticProps() {
   const data = await fetchData();
   return {
@@ -332,7 +332,7 @@ export default function Page({ data }) {
     difficulty: 'intermediate',
     category: 'pages-router',
     keyPoints: [
-      'Runs on EVERY request — always fresh, can read req/res, cookies, headers.',
+      'Runs on EVERY request , always fresh, can read req/res, cookies, headers.',
       'Returns { props } computed server-side and passed to the page.',
       'Use for personalized or frequently-changing data (dashboards, authed pages).',
       'Slower than SSG: adds server latency per request (no CDN caching of HTML).',
@@ -355,14 +355,14 @@ export default function Page({ data }) {
     category: 'pages-router',
     keyPoints: [
       'Used with getStaticProps for dynamic routes (pages/blog/[id].js).',
-      'Returns { paths, fallback } — paths is the list to pre-render at build time.',
-      'fallback: false — any path not listed returns a 404.',
-      'fallback: true — serve a fallback page, then generate in the background and cache.',
-      "fallback: 'blocking' — SSR the page on first request, then cache it (no fallback UI).",
-      'App Router equivalent: generateStaticParams (no fallback option — uses dynamicParams).'
+      'Returns { paths, fallback } , paths is the list to pre-render at build time.',
+      'fallback: false , any path not listed returns a 404.',
+      'fallback: true , serve a fallback page, then generate in the background and cache.',
+      "fallback: 'blocking' , SSR the page on first request, then cache it (no fallback UI).",
+      'App Router equivalent: generateStaticParams (no fallback option , uses dynamicParams).'
     ],
     gotcha:
-      'With fallback: true the page first renders with no data — you must handle router.isFallback and show a loading state, or it crashes accessing undefined props.',
+      'With fallback: true the page first renders with no data , you must handle router.isFallback and show a loading state, or it crashes accessing undefined props.',
     codeSnippet: `export async function getStaticPaths() {
   const posts = await getPosts();
   return {

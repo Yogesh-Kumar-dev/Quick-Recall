@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🔴 Implement Function.prototype.bind',
+  title: 'Implement Function.prototype.bind',
   description:
     'Write a polyfill myBind that returns a new function with `this` permanently bound to a given context and support for partial application. This is a deep test of `this`, closures, and the prototype chain — the new-operator edge case is the classic follow-up.',
   examples: [

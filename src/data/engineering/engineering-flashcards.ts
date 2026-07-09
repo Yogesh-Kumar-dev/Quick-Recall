@@ -6,7 +6,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'eng-compiler-interpreter',
     front: 'Compiler vs interpreter',
-    back: 'Compiler translates the whole program to machine code before running (errors at compile time). Interpreter runs line by line at runtime. Modern JS engines JIT-compile hot paths — a hybrid.',
+    back: 'Compiler translates the whole program to machine code before running (errors at compile time). Interpreter runs line by line at runtime. Modern JS engines JIT-compile hot paths , a hybrid.',
     category: 'Q&A'
   },
   {
@@ -24,7 +24,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'eng-solid',
     front: 'SOLID principles',
-    back: 'Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion — guidelines for maintainable, testable OO code.',
+    back: 'Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion , guidelines for maintainable, testable OO code.',
     category: 'Keyword'
   },
   {
@@ -42,7 +42,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'eng-idempotency',
     front: 'Idempotent HTTP methods',
-    back: 'GET, PUT, DELETE — running them repeatedly leaves the same state, so retries are safe. POST is not idempotent (usually creates each time); use an idempotency key to make it safe.',
+    back: 'GET, PUT, DELETE , running them repeatedly leaves the same state, so retries are safe. POST is not idempotent (usually creates each time); use an idempotency key to make it safe.',
     category: 'Q&A'
   },
   {
@@ -54,7 +54,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'eng-index',
     front: 'What does a database index do?',
-    back: 'A lookup structure (usually a B-tree) that turns a full-table scan (O(n)) into a fast seek (O(log n)) for the indexed column. Speeds reads, slows writes — index your query patterns.',
+    back: 'A lookup structure (usually a B-tree) that turns a full-table scan (O(n)) into a fast seek (O(log n)) for the indexed column. Speeds reads, slows writes , index your query patterns.',
     category: 'Q&A'
   },
   {
@@ -66,7 +66,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'eng-caching',
     front: 'Cache-aside pattern',
-    back: 'App checks the cache first; on a miss it reads the DB, then stores the result. The hard part is invalidation — stale data after a write is the classic caching bug.',
+    back: 'App checks the cache first; on a miss it reads the DB, then stores the result. The hard part is invalidation , stale data after a write is the classic caching bug.',
     category: 'Q&A'
   },
   {
@@ -109,7 +109,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'test-functional-nonfunctional',
     front: 'Functional vs non-functional testing',
-    back: 'Functional: does it do WHAT it should (feature meets requirement)? Non-functional: how WELL — performance, load, security, accessibility, usability.',
+    back: 'Functional: does it do WHAT it should (feature meets requirement)? Non-functional: how WELL , performance, load, security, accessibility, usability.',
     category: 'Q&A'
   },
   {
@@ -145,13 +145,13 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'test-flaky',
     front: 'Flaky test',
-    back: 'A test that passes/fails without code changes — usually timing or shared state. Worse than no test because people start ignoring red builds. Fix or quarantine immediately.',
+    back: 'A test that passes/fails without code changes , usually timing or shared state. Worse than no test because people start ignoring red builds. Fix or quarantine immediately.',
     category: 'Keyword'
   },
   {
     id: 'test-stlc',
     front: 'STLC + code coverage',
-    back: 'STLC phases: requirements → planning → case design → setup → execution → closure. Coverage = % of code run by tests — a guide, not proof of correctness (100% can still miss bugs).',
+    back: 'STLC phases: requirements → planning → case design → setup → execution → closure. Coverage = % of code run by tests , a guide, not proof of correctness (100% can still miss bugs).',
     category: 'Q&A'
   },
   // ── Architecture ──
@@ -163,8 +163,8 @@ export const engineeringFlashcards: Flashcard[] = [
   },
   {
     id: 'arch-singleton',
-    front: 'Singleton — and the catch',
-    back: 'Guarantees one shared instance (config, connection pool). The catch: it’s global state, which hides dependencies and makes testing hard — prefer dependency injection.',
+    front: 'Singleton , and the catch',
+    back: 'Guarantees one shared instance (config, connection pool). The catch: it’s global state, which hides dependencies and makes testing hard , prefer dependency injection.',
     category: 'Q&A'
   },
   {
@@ -176,7 +176,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'arch-di',
     front: 'Dependency Injection',
-    back: 'Pass a class its dependencies from outside instead of creating them inside. Decouples from concretes, makes testing easy (inject mocks). The "D" in SOLID. Passing an arg IS DI — no framework needed.',
+    back: 'Pass a class its dependencies from outside instead of creating them inside. Decouples from concretes, makes testing easy (inject mocks). The "D" in SOLID. Passing an arg IS DI , no framework needed.',
     category: 'Q&A'
   },
   {
@@ -193,7 +193,7 @@ export const engineeringFlashcards: Flashcard[] = [
   },
   {
     id: 'arch-high-availability',
-    front: 'High availability — how?',
+    front: 'High availability , how?',
     back: 'No single point of failure: redundancy + automatic failover across zones, graceful degradation under stress, circuit breakers to fail fast, and chaos engineering to find weaknesses early.',
     category: 'Q&A'
   },
@@ -212,13 +212,13 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'arch-replication-sharding',
     front: 'Replication vs sharding',
-    back: 'Replication: copy data to replicas — scales reads + redundancy (but replication lag → stale reads). Sharding: split data by a key across nodes — scales writes (but cross-shard queries are costly).',
+    back: 'Replication: copy data to replicas , scales reads + redundancy (but replication lag → stale reads). Sharding: split data by a key across nodes , scales writes (but cross-shard queries are costly).',
     category: 'Q&A'
   },
   {
     id: 'arch-cqrs',
     front: 'CQRS & event sourcing',
-    back: 'CQRS: separate read and write models, each optimised/scaled independently. Event sourcing: store every change as an append-only event log; current state = replay. Powerful but complex — overkill for simple CRUD.',
+    back: 'CQRS: separate read and write models, each optimised/scaled independently. Event sourcing: store every change as an append-only event log; current state = replay. Powerful but complex , overkill for simple CRUD.',
     category: 'Q&A'
   },
   {
@@ -230,7 +230,7 @@ export const engineeringFlashcards: Flashcard[] = [
   {
     id: 'arch-serverless',
     front: 'Containers vs serverless',
-    back: 'Containers (Docker/K8s): portable image you run/scale yourself. Serverless (Lambda): run code per request, auto-scales to zero, pay per execution — trades control + cold-start latency for zero ops.',
+    back: 'Containers (Docker/K8s): portable image you run/scale yourself. Serverless (Lambda): run code per request, auto-scales to zero, pay per execution , trades control + cold-start latency for zero ops.',
     category: 'Q&A'
   }
 ];

@@ -8,7 +8,7 @@ export const metadata = { title: 'JS Machine Coding | QuickRecall' };
 export default async function Page({ searchParams }: { searchParams: Promise<ProblemSearchParams> }) {
   return (
     <ProblemList
-      title="⚙️ JS Machine Coding"
+      title="JS Machine Coding"
       problems={jsProblems}
       basePath="/js/machine-coding"
       params={await searchParams}

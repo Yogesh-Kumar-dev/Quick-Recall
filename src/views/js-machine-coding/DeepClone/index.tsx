@@ -12,7 +12,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟡 Deep Clone an Object',
+  title: 'Deep Clone an Object',
   description:
     "Write a function deepClone(obj) that returns a completely independent deep copy of an object — modifying the clone must not affect the original. This tests your understanding of reference types, recursion, and knowledge of JavaScript's special object types (Date, RegExp, Map, Set, circular references).",
   examples: [

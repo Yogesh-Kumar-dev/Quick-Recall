@@ -11,15 +11,15 @@ export const nextjsNotes: Note[] = [
     category: 'routing',
     keyPoints: [
       'Folders define URL segments. A route is only publicly accessible when a page.tsx or route.ts exists in that segment.',
-      'page.tsx — the unique UI for a route; only its exported content is sent to the client.',
-      'layout.tsx — shared UI that wraps pages and persists across navigations without re-rendering.',
-      'loading.tsx — instant loading UI; automatically wraps page.tsx in a <Suspense> boundary.',
-      'error.tsx — React error boundary for a segment; must be a Client Component.',
-      'not-found.tsx — renders when notFound() is called or no route matches.',
-      'route.ts — API endpoint; exports HTTP handler functions (GET, POST, PUT, DELETE, PATCH).'
+      'page.tsx , the unique UI for a route; only its exported content is sent to the client.',
+      'layout.tsx , shared UI that wraps pages and persists across navigations without re-rendering.',
+      'loading.tsx , instant loading UI; automatically wraps page.tsx in a <Suspense> boundary.',
+      'error.tsx , React error boundary for a segment; must be a Client Component.',
+      'not-found.tsx , renders when notFound() is called or no route matches.',
+      'route.ts , API endpoint; exports HTTP handler functions (GET, POST, PUT, DELETE, PATCH).'
     ],
     gotcha:
-      'A folder without page.tsx or route.ts is NOT publicly accessible — you can safely colocate component files, tests, and utilities inside route folders without accidentally exposing them as routes.',
+      'A folder without page.tsx or route.ts is NOT publicly accessible , you can safely colocate component files, tests, and utilities inside route folders without accidentally exposing them as routes.',
     codeSnippet: `app/
 ├── layout.tsx          → wraps every route
 ├── page.tsx            → /
@@ -37,19 +37,19 @@ export const nextjsNotes: Note[] = [
   {
     id: 'layouts',
     title: 'Layouts & Nested Layouts',
-    summary: 'Layouts wrap child pages and stay mounted across navigations — state is preserved, the component does not re-render.',
+    summary: 'Layouts wrap child pages and stay mounted across navigations , state is preserved, the component does not re-render.',
     difficulty: 'basic',
     category: 'routing',
     keyPoints: [
       'Root layout (app/layout.tsx) is required and must include <html> and <body> tags.',
-      'Layouts accept a children prop — page content is injected there.',
+      'Layouts accept a children prop , page content is injected there.',
       'Nested layouts wrap only their segment: app/dashboard/layout.tsx wraps only /dashboard/* routes.',
-      'Layouts do NOT re-render on same-segment navigation — scroll position and state are preserved.',
+      'Layouts do NOT re-render on same-segment navigation , scroll position and state are preserved.',
       'Route groups (folderName) allow multiple layouts at the same URL level without changing the URL.',
-      'template.tsx re-renders on every navigation (unlike layout.tsx) — useful for per-route animations.'
+      'template.tsx re-renders on every navigation (unlike layout.tsx) , useful for per-route animations.'
     ],
     gotcha:
-      "Layout components cannot access searchParams — they don't re-render per navigation. Read searchParams only in page.tsx or Client Components via useSearchParams.",
+      "Layout components cannot access searchParams , they don't re-render per navigation. Read searchParams only in page.tsx or Client Components via useSearchParams.",
     codeSnippet: `// app/dashboard/layout.tsx
 export default function DashboardLayout({
   children,
@@ -72,15 +72,15 @@ export default function DashboardLayout({
     difficulty: 'basic',
     category: 'routing',
     keyPoints: [
-      '[slug] — single segment: /blog/my-post → params.slug = "my-post".',
-      '[...slug] — catch-all: /shop/a/b/c → params.slug = ["a","b","c"].',
-      '[[...slug]] — optional catch-all: also matches /shop with no segments.',
-      'params is a Promise in Next.js 15 — must be awaited: const { slug } = await params.',
-      'generateStaticParams() pre-generates specific paths at build time — those are statically rendered.',
+      '[slug] , single segment: /blog/my-post → params.slug = "my-post".',
+      '[...slug] , catch-all: /shop/a/b/c → params.slug = ["a","b","c"].',
+      '[[...slug]] , optional catch-all: also matches /shop with no segments.',
+      'params is a Promise in Next.js 15 , must be awaited: const { slug } = await params.',
+      'generateStaticParams() pre-generates specific paths at build time , those are statically rendered.',
       'Paths not in generateStaticParams are dynamically rendered on first request, then optionally cached.'
     ],
     gotcha:
-      'In Next.js 15, params and searchParams are Promises. The most common upgrade mistake: accessing params.id directly instead of (await params).id — causes a runtime error.',
+      'In Next.js 15, params and searchParams are Promises. The most common upgrade mistake: accessing params.id directly instead of (await params).id , causes a runtime error.',
     codeSnippet: `// app/blog/[slug]/page.tsx
 export default async function BlogPost({
   params,
@@ -105,10 +105,10 @@ export async function generateStaticParams() {
     difficulty: 'intermediate',
     category: 'routing',
     keyPoints: [
-      'Route group: wrap folder name in parentheses — (marketing) is omitted from the URL.',
+      'Route group: wrap folder name in parentheses , (marketing) is omitted from the URL.',
       'Use groups to share a layout among a subset of routes without nesting their URLs.',
-      'Multiple root layouts: one layout.tsx per group — each group can have its own <html>/<body> for totally different UIs.',
-      'Private folder: prefix with _ — _components/, _lib/ are never treated as routes.',
+      'Multiple root layouts: one layout.tsx per group , each group can have its own <html>/<body> for totally different UIs.',
+      'Private folder: prefix with _ , _components/, _lib/ are never treated as routes.',
       'loading.tsx scoped to a route group applies only within that group, not the whole segment.'
     ],
     codeSnippet: `app/
@@ -132,16 +132,16 @@ export async function generateStaticParams() {
     difficulty: 'basic',
     category: 'components',
     keyPoints: [
-      'All App Router components are Server Components by default — no directive needed.',
-      "'use client' at the top of a file creates a client boundary — all imports in that file become client-side too.",
+      'All App Router components are Server Components by default , no directive needed.',
+      "'use client' at the top of a file creates a client boundary , all imports in that file become client-side too.",
       'Server Components: can await DB queries, use secrets, reduce bundle size. Cannot use hooks or browser APIs.',
       'Client Components: can use useState, useEffect, event handlers, localStorage, window.',
       'RSC Payload: a compact binary representation of the server tree, used by React to reconcile on the client.',
-      'Only NEXT_PUBLIC_ env vars are available in Client Components — others are replaced with empty string.'
+      'Only NEXT_PUBLIC_ env vars are available in Client Components , others are replaced with empty string.'
     ],
     gotcha:
-      "'use client' does NOT mean client-only — Client Components still run on the server during SSR (for initial HTML). It means the component is hydrated on the client and can use browser APIs after mount.",
-    codeSnippet: `// Server Component — fetches data, zero bundle impact
+      "'use client' does NOT mean client-only , Client Components still run on the server during SSR (for initial HTML). It means the component is hydrated on the client and can use browser APIs after mount.",
+    codeSnippet: `// Server Component , fetches data, zero bundle impact
 export default async function ProductPage({ params }) {
   const { id } = await params;
   const product = await db.products.findById(id);  // server-only
@@ -164,16 +164,16 @@ export default function AddToCart({ productId }: { productId: string }) {
     id: 'composition-pattern',
     title: 'Server Component Composition Pattern',
     summary:
-      'Pass Server Components as children/props to Client Components — server logic stays out of the bundle, interactivity stays in the client.',
+      'Pass Server Components as children/props to Client Components , server logic stays out of the bundle, interactivity stays in the client.',
     difficulty: 'intermediate',
     category: 'components',
     textbookDef:
       "When a Server Component is passed as a prop (e.g., children) to a Client Component, it is rendered on the server first and its output (RSC Payload) is injected into the Client Component's slot. The Server Component's source never enters the client bundle.",
     keyPoints: [
-      'Client Components CANNOT import Server Components — that would pull server code into the client bundle.',
-      'Server Components CAN be passed as children/props to Client Components — rendered server-side first.',
+      'Client Components CANNOT import Server Components , that would pull server code into the client bundle.',
+      'Server Components CAN be passed as children/props to Client Components , rendered server-side first.',
       'Pattern: <Modal> (client state) wraps <Cart> (server data fetch) as children.',
-      'Context providers must be Client Components — keep them as deep in the tree as possible.',
+      'Context providers must be Client Components , keep them as deep in the tree as possible.',
       "Third-party components without 'use client': wrap in your own 'use client' wrapper before using in Server Components."
     ],
     gotcha:
@@ -200,20 +200,20 @@ export default function Page() {
   {
     id: 'data-fetching',
     title: 'Data Fetching in Server Components',
-    summary: 'Server Components can be async — await fetch() or DB queries directly without useEffect or loading state management.',
+    summary: 'Server Components can be async , await fetch() or DB queries directly without useEffect or loading state management.',
     difficulty: 'basic',
     category: 'data',
     keyPoints: [
-      'Make the component async and await data inline — no useEffect, no useState for loading/data.',
+      'Make the component async and await data inline , no useEffect, no useState for loading/data.',
       'Identical fetch() calls in the same render pass are memoized (deduplicated) by React automatically.',
-      'fetch() is NOT cached by default in Next.js 15 — add "use cache" or next.revalidate for caching.',
-      'DB/ORM calls work directly — credentials never leave the server, never reach the client bundle.',
-      'Parallel: initiate fetches before awaiting — const [a, b] = await Promise.all([fetchA(), fetchB()]).',
+      'fetch() is NOT cached by default in Next.js 15 , add "use cache" or next.revalidate for caching.',
+      'DB/ORM calls work directly , credentials never leave the server, never reach the client bundle.',
+      'Parallel: initiate fetches before awaiting , const [a, b] = await Promise.all([fetchA(), fetchB()]).',
       'Sequential: sometimes necessary when one request depends on the result of another.'
     ],
     gotcha:
       'Awaiting fetches sequentially (const a = await fetchA(); const b = await fetchB()) creates a waterfall even if the requests are independent. Always use Promise.all for independent data needs.',
-    codeSnippet: `// Server Component — no hooks, no useEffect
+    codeSnippet: `// Server Component , no hooks, no useEffect
 export default async function DashboardPage() {
   // ✅ Parallel — both start at the same time
   const [user, posts] = await Promise.all([
@@ -239,14 +239,14 @@ export default async function DashboardPage() {
     category: 'metadata',
     keyPoints: [
       'Static: export const metadata = { title, description, openGraph, twitter, ... }.',
-      'Dynamic: export async function generateMetadata({ params }) { ... } — can fetch data.',
-      'Metadata is merged from parent to child — child values override parent, arrays are additive.',
-      'title.template in a layout: "%s | Site Name" — child pages fill %s with their own title.',
+      'Dynamic: export async function generateMetadata({ params }) { ... } , can fetch data.',
+      'Metadata is merged from parent to child , child values override parent, arrays are additive.',
+      'title.template in a layout: "%s | Site Name" , child pages fill %s with their own title.',
       'generateMetadata runs in parallel with the page render, sharing the same fetch cache.',
       'robots, sitemap, opengraph-image: dedicated file conventions in addition to the object API.'
     ],
     gotcha:
-      'Never put <title> or <meta> tags in layouts manually — the Metadata API handles deduplication and correct cascade merging. Manual tags break the merge logic.',
+      'Never put <title> or <meta> tags in layouts manually , the Metadata API handles deduplication and correct cascade merging. Manual tags break the merge logic.',
     codeSnippet: `// Static metadata
 export const metadata = {
   title: { template: '%s | QuickRecall', default: 'QuickRecall' },
@@ -277,15 +277,15 @@ export async function generateMetadata({
     difficulty: 'basic',
     category: 'routing',
     keyPoints: [
-      '<Link href="/path"> — primary navigation; prefetches linked routes when visible in the viewport.',
-      'Prefetching: in production, routes linked with <Link> are prefetched in the background — near-instant navigation.',
+      '<Link href="/path"> , primary navigation; prefetches linked routes when visible in the viewport.',
+      'Prefetching: in production, routes linked with <Link> are prefetched in the background , near-instant navigation.',
       'Client-side transitions: only the changed segment re-renders, layout persists.',
       'useRouter() (Client Component only): router.push(), router.replace(), router.back(), router.prefetch().',
       'redirect() (Server Component / Route Handler): server-side redirect, throws internally so no return needed.',
-      'usePathname(), useSearchParams(), useParams() — Client Component hooks for reading current URL info.'
+      'usePathname(), useSearchParams(), useParams() , Client Component hooks for reading current URL info.'
     ],
     gotcha:
-      "useRouter from 'next/navigation' is different from the old 'next/router' (Pages Router). Mixing them is a common App Router migration mistake — always import from 'next/navigation' in App Router.",
+      "useRouter from 'next/navigation' is different from the old 'next/router' (Pages Router). Mixing them is a common App Router migration mistake , always import from 'next/navigation' in App Router.",
     codeSnippet: `import Link from 'next/link';
 
 // Preferred — prefetching, client-side nav
@@ -307,13 +307,13 @@ if (!user) redirect('/login');      // no return needed`
   {
     id: 'what-is-nextjs',
     title: 'What is Next.js?',
-    summary: 'A React framework for production — file-based routing, SSR/SSG/ISR, API routes, and optimization built in.',
+    summary: 'A React framework for production , file-based routing, SSR/SSG/ISR, API routes, and optimization built in.',
     difficulty: 'basic',
     category: 'fundamentals',
     keyPoints: [
       'A full-stack React framework: UI + routing + a backend (API routes) in one project.',
-      'Rendering options: SSR, SSG, ISR, and CSR — chosen per route.',
-      'File-based routing — the folder structure defines URLs, no manual route config.',
+      'Rendering options: SSR, SSG, ISR, and CSR , chosen per route.',
+      'File-based routing , the folder structure defines URLs, no manual route config.',
       'Built-in optimization: automatic code splitting, next/image, next/font.',
       'First-class deployment on Vercel (its creators); also runs anywhere Node does.'
     ],
@@ -339,7 +339,7 @@ export default function Home() {
       'Optimization: automatic code splitting + image/font optimization out of the box.'
     ],
     gotcha:
-      'Create React App is effectively deprecated — the React team now points new apps at frameworks like Next.js. "React vs Next" is really "library vs framework".',
+      'Create React App is effectively deprecated , the React team now points new apps at frameworks like Next.js. "React vs Next" is really "library vs framework".',
     codeSnippet: `// React (CSR): browser renders an empty <div id="root"> then fills it
 // Next.js: server sends ready HTML, then hydrates
 
@@ -355,14 +355,14 @@ export default function Home() {
     difficulty: 'intermediate',
     category: 'optimization',
     keyPoints: [
-      'dynamic(() => import("./Heavy")) — loads the component as a separate chunk on demand.',
+      'dynamic(() => import("./Heavy")) , loads the component as a separate chunk on demand.',
       'Reduces the initial JS bundle; the component is fetched when first rendered.',
-      'ssr: false — render only on the client (for components using window/document).',
-      'loading: () => <Spinner /> — show a fallback while the chunk loads.',
+      'ssr: false , render only on the client (for components using window/document).',
+      'loading: () => <Spinner /> , show a fallback while the chunk loads.',
       'Built on React.lazy + Suspense, but SSR-aware.'
     ],
     gotcha:
-      'In the App Router, ssr: false is only allowed in Client Components — using it in a Server Component throws. Move the dynamic import into a "use client" file.',
+      'In the App Router, ssr: false is only allowed in Client Components , using it in a Server Component throws. Move the dynamic import into a "use client" file.',
     codeSnippet: `import dynamic from 'next/dynamic';
 
 // Code-split + client-only (e.g. a chart using window)
@@ -374,7 +374,7 @@ const Chart = dynamic(() => import('./Chart'), {
   {
     id: 'env-variables',
     title: 'Environment Variables',
-    summary: 'Defined in .env files, read via process.env — only NEXT_PUBLIC_ vars reach the browser.',
+    summary: 'Defined in .env files, read via process.env , only NEXT_PUBLIC_ vars reach the browser.',
     difficulty: 'basic',
     category: 'fundamentals',
     keyPoints: [
@@ -385,7 +385,7 @@ const Chart = dynamic(() => import('./Chart'), {
       'Files load in order: .env.local > .env.[environment] > .env.'
     ],
     gotcha:
-      'A non-prefixed secret used in a Client Component is replaced with an empty string at build — it is NOT exposed, but your code silently breaks. Prefix with NEXT_PUBLIC_ only for genuinely public values.',
+      'A non-prefixed secret used in a Client Component is replaced with an empty string at build , it is NOT exposed, but your code silently breaks. Prefix with NEXT_PUBLIC_ only for genuinely public values.',
     codeSnippet: `// .env.local
 DATABASE_URL=postgres://...        // server-only
 NEXT_PUBLIC_API_URL=https://api.example.com  // browser-visible
@@ -399,19 +399,19 @@ const api = process.env.NEXT_PUBLIC_API_URL;    // client + server`
   {
     id: 'api-routes',
     title: 'API Routes & Route Handlers',
-    summary: 'Build backend endpoints inside the project — pages/api/* (Pages Router) or app/api/*/route.ts (App Router).',
+    summary: 'Build backend endpoints inside the project , pages/api/* (Pages Router) or app/api/*/route.ts (App Router).',
     difficulty: 'basic',
     category: 'api',
     keyPoints: [
       'Pages Router: pages/api/hello.js exports default handler(req, res).',
       'App Router: app/api/hello/route.ts exports named functions GET, POST, PUT, DELETE, PATCH.',
       'Route Handlers use the Web Request/Response APIs (Request, NextResponse).',
-      'Run server-side only — safe place for secrets, DB access, and third-party keys.',
-      'This is what makes Next.js a full-stack framework — no separate backend needed.'
+      'Run server-side only , safe place for secrets, DB access, and third-party keys.',
+      'This is what makes Next.js a full-stack framework , no separate backend needed.'
     ],
     gotcha:
-      'Route Handlers (route.ts) and a page.tsx cannot live in the same segment — a folder is either a page or an endpoint, not both.',
-    codeSnippet: `// App Router — app/api/users/route.ts
+      'Route Handlers (route.ts) and a page.tsx cannot live in the same segment , a folder is either a page or an endpoint, not both.',
+    codeSnippet: `// App Router , app/api/users/route.ts
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -427,18 +427,18 @@ export async function POST(request: Request) {
   {
     id: 'middleware',
     title: 'Middleware',
-    summary: 'Code that runs on the Edge before a request completes — for auth, redirects, rewrites, and headers.',
+    summary: 'Code that runs on the Edge before a request completes , for auth, redirects, rewrites, and headers.',
     difficulty: 'intermediate',
     category: 'api',
     keyPoints: [
       'A single middleware.ts at the project root runs before matching requests.',
       'Common uses: auth gating, redirects, rewrites, A/B testing, setting headers.',
-      'Runs on the Edge runtime — fast, but no Node.js APIs (no fs, limited libs).',
+      'Runs on the Edge runtime , fast, but no Node.js APIs (no fs, limited libs).',
       'Use the matcher config to scope it to specific paths (skip static assets).',
       'Return NextResponse.next(), .redirect(), .rewrite(), or set cookies/headers.'
     ],
     gotcha:
-      'Middleware runs on EVERY matched request, including prefetches — keep it lightweight and always add a matcher so it does not run on static files and images.',
+      'Middleware runs on EVERY matched request, including prefetches , keep it lightweight and always add a matcher so it does not run on static files and images.',
     codeSnippet: `// middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
@@ -461,7 +461,7 @@ export const config = { matcher: ['/dashboard/:path*'] };`
     category: 'pages-router',
     keyPoints: [
       'pages/index.js → /, pages/about.js → /about, pages/blog/[id].js → /blog/:id.',
-      '_app.js wraps every page — the place for global CSS, providers, and persistent layout.',
+      '_app.js wraps every page , the place for global CSS, providers, and persistent layout.',
       '_document.js customizes the <html>/<body> shell (rendered once on the server).',
       '_error.js / 404.js / 500.js define custom error and not-found pages.',
       'Data fetching uses getStaticProps / getServerSideProps / getStaticPaths (not async components).'
@@ -481,19 +481,19 @@ export const config = { matcher: ['/dashboard/:path*'] };`
   {
     id: 'server-actions',
     title: 'Server Actions ("use server")',
-    summary: 'Async server functions callable from components and forms — handle mutations without writing an API route.',
+    summary: 'Async server functions callable from components and forms , handle mutations without writing an API route.',
     difficulty: 'intermediate',
     category: 'app-router',
     keyPoints: [
-      '"use server" marks a function (or whole file) as a Server Action — runs only on the server.',
-      'Invoke via a form’s action prop: <form action={submit}> — Next.js wires the request automatically.',
+      '"use server" marks a function (or whole file) as a Server Action , runs only on the server.',
+      'Invoke via a form’s action prop: <form action={submit}> , Next.js wires the request automatically.',
       'Receives FormData; can read fields, hit the DB, then revalidate/redirect.',
       'Benefits: less boilerplate (no API route), secrets stay server-side, smaller client bundle.',
       'Trade-offs: a server round-trip adds latency; harder to debug than client code; less instant interactivity.',
       'Alternatives when unsuitable: API routes, client fetching (SWR/React Query), SSG/SSR.'
     ],
     gotcha:
-      'Server Actions are real HTTP endpoints under the hood — always validate and authorize their input. Never trust FormData just because the action "feels" internal.',
+      'Server Actions are real HTTP endpoints under the hood , always validate and authorize their input. Never trust FormData just because the action "feels" internal.',
     codeSnippet: `// app/actions.ts
 'use server';
 export async function createTodo(formData: FormData) {
@@ -522,7 +522,7 @@ export default function Page() {
     keyPoints: [
       'Replace Pages Router pages/api with app/api/*/route.ts.',
       'Export named functions per method: GET, POST, PUT, PATCH, DELETE.',
-      'Use the Web Request and Response (or NextResponse) APIs — Response.json(data).',
+      'Use the Web Request and Response (or NextResponse) APIs , Response.json(data).',
       'Read query params via request.nextUrl.searchParams; body via await request.json()/formData().',
       'Best practices: correct HTTP methods + status codes, validate/sanitize input, handle errors, keep modular.'
     ],
@@ -559,7 +559,7 @@ export async function DELETE(request: Request) {
       'Useful for dashboards, split views, and conditional sections.',
       'Pair with default.tsx to define fallback content for unmatched slots.'
     ],
-    codeSnippet: `// app/layout.tsx — slots arrive as props
+    codeSnippet: `// app/layout.tsx , slots arrive as props
 export default function Layout({
   children, analytics, team
 }: {
@@ -577,7 +577,7 @@ export default function Layout({
   {
     id: 'intercepting-routes',
     title: 'Intercepting Routes',
-    summary: 'Load a route from elsewhere in the app while keeping the current page’s context — the classic modal pattern.',
+    summary: 'Load a route from elsewhere in the app while keeping the current page’s context , the classic modal pattern.',
     difficulty: 'advanced',
     category: 'app-router',
     keyPoints: [
@@ -596,18 +596,18 @@ export default function Layout({
   {
     id: 'error-notfound-boundaries',
     title: 'error.tsx & not-found.tsx',
-    summary: 'Segment-level error boundaries and 404 UI — error.tsx catches thrown errors, not-found.tsx handles notFound().',
+    summary: 'Segment-level error boundaries and 404 UI , error.tsx catches thrown errors, not-found.tsx handles notFound().',
     difficulty: 'intermediate',
     category: 'app-router',
     keyPoints: [
       'error.tsx is a Client Component that catches errors thrown in its segment’s rendering.',
-      'It receives { error, reset } — reset() retries rendering the segment.',
+      'It receives { error, reset } , reset() retries rendering the segment.',
       'not-found.tsx renders when notFound() is called or no route matches.',
       'global-error.tsx catches errors in the root layout (must include its own <html>/<body>).',
       'Error boundaries do NOT catch errors in event handlers or async code outside render.'
     ],
     gotcha:
-      'error.tsx must start with "use client" — it relies on React error-boundary behavior. A server-only error.tsx will not compile.',
+      'error.tsx must start with "use client" , it relies on React error-boundary behavior. A server-only error.tsx will not compile.',
     codeSnippet: `// app/dashboard/error.tsx
 'use client';
 export default function Error({ error, reset }: {
@@ -632,13 +632,13 @@ if (!post) notFound();`
     difficulty: 'intermediate',
     category: 'app-router',
     keyPoints: [
-      'layout.tsx: persists across navigation — state preserved, DOM not re-created, no re-render.',
-      'template.tsx: a NEW instance per navigation — state reset, effects re-run, DOM re-created.',
+      'layout.tsx: persists across navigation , state preserved, DOM not re-created, no re-render.',
+      'template.tsx: a NEW instance per navigation , state reset, effects re-run, DOM re-created.',
       'Use template for enter/exit animations, per-route useEffect, or resetting state on navigation.',
       'If both exist, the template renders inside the layout.',
       'Default to layout; reach for template only when you need the remount behavior.'
     ],
-    codeSnippet: `// app/template.tsx — re-instantiated on every navigation
+    codeSnippet: `// app/template.tsx , re-instantiated on every navigation
 export default function Template({ children }: { children: React.ReactNode }) {
   // useEffect here re-runs on each route change (unlike layout)
   return <div className="fade-in">{children}</div>;
@@ -647,7 +647,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   {
     id: 'app-router-global-state',
     title: 'Global State in the App Router',
-    summary: 'Server Components can’t hold client state — provide global state through a Client Component provider.',
+    summary: 'Server Components can’t hold client state , provide global state through a Client Component provider.',
     difficulty: 'intermediate',
     category: 'app-router',
     keyPoints: [
@@ -681,14 +681,14 @@ import { Providers } from './providers';
     difficulty: 'intermediate',
     category: 'api',
     keyPoints: [
-      'CORS only matters when a browser on a DIFFERENT origin calls your API — same-origin calls never need it.',
+      'CORS only matters when a browser on a DIFFERENT origin calls your API , same-origin calls never need it.',
       'Add Access-Control-Allow-Origin (+ -Methods / -Headers) to the Response in a Route Handler.',
-      'Non-simple requests (custom headers, PUT/DELETE, JSON) trigger a preflight — handle the OPTIONS method and return 204.',
+      'Non-simple requests (custom headers, PUT/DELETE, JSON) trigger a preflight , handle the OPTIONS method and return 204.',
       'For app-wide rules, set the same headers in middleware.ts or the headers() config in next.config.js.',
-      'Server-to-server fetches (RSC, Route Handlers calling other APIs) are not subject to CORS — it is a browser policy.'
+      'Server-to-server fetches (RSC, Route Handlers calling other APIs) are not subject to CORS , it is a browser policy.'
     ],
     gotcha:
-      'Forgetting the OPTIONS preflight handler is the usual cause of a "blocked by CORS" error even when GET/POST already set the headers — the browser fails the preflight before your main handler ever runs.',
+      'Forgetting the OPTIONS preflight handler is the usual cause of a "blocked by CORS" error even when GET/POST already set the headers , the browser fails the preflight before your main handler ever runs.',
     codeSnippet: `// app/api/data/route.ts
 const cors = {
   'Access-Control-Allow-Origin': 'https://other.com',
@@ -708,19 +708,19 @@ export async function GET() {
   // ─── ADDED: from the Next.js Interview Mastery (80 Q) deck ───────────────────
   {
     id: 'image-optimization',
-    title: 'next/image — Image Optimization',
+    title: 'next/image , Image Optimization',
     summary: '<Image> auto-generates responsive srcsets, lazy loads, converts to WebP/AVIF, and reserves space to prevent layout shift.',
     difficulty: 'basic',
     category: 'optimization',
     keyPoints: [
       'Required: src, alt, and either width+height or fill (fill needs a position:relative parent).',
-      'priority — loads eagerly, skips lazy loading; use only for the LCP (above-the-fold) image.',
-      'placeholder="blur" — shows a blurred preview while the full image loads.',
-      'sizes — hints the browser which srcset entry to pick for fill/responsive images.',
+      'priority , loads eagerly, skips lazy loading; use only for the LCP (above-the-fold) image.',
+      'placeholder="blur" , shows a blurred preview while the full image loads.',
+      'sizes , hints the browser which srcset entry to pick for fill/responsive images.',
       'External images must be allowlisted via images.remotePatterns in next.config.js.'
     ],
     gotcha:
-      'Forgetting priority on the hero/LCP image hurts Core Web Vitals — it gets lazy-loaded like everything else, delaying Largest Contentful Paint.',
+      'Forgetting priority on the hero/LCP image hurts Core Web Vitals , it gets lazy-loaded like everything else, delaying Largest Contentful Paint.',
     codeSnippet: `import Image from 'next/image';
 
 <Image src={hero} alt="Hero" priority placeholder="blur" />
@@ -736,13 +736,13 @@ module.exports = {
   },
   {
     id: 'font-optimization',
-    title: 'next/font — Font Optimization',
-    summary: 'Self-hosts Google/local fonts at build time — no external network request, and display:"swap" avoids layout shift.',
+    title: 'next/font , Font Optimization',
+    summary: 'Self-hosts Google/local fonts at build time , no external network request, and display:"swap" avoids layout shift.',
     difficulty: 'basic',
     category: 'optimization',
     keyPoints: [
-      'import { Inter } from "next/font/google" — downloaded and self-hosted at build time, no runtime request.',
-      'display: "swap" shows a fallback font immediately, then swaps in the web font — avoids invisible text.',
+      'import { Inter } from "next/font/google" , downloaded and self-hosted at build time, no runtime request.',
+      'display: "swap" shows a fallback font immediately, then swaps in the web font , avoids invisible text.',
       'variable: "--font-inter" exposes the font as a CSS variable for use with Tailwind/CSS.',
       'Apply className/variable on <html> or <body> in the root layout so it cascades everywhere.'
     ],
@@ -755,19 +755,19 @@ export default function RootLayout({ children }) {
   },
   {
     id: 'isr-deep-dive',
-    title: 'ISR — Time-based vs On-demand Revalidation',
-    summary: 'Static pages can be refreshed after build without a full rebuild — either on a timer or immediately via a webhook.',
+    title: 'ISR , Time-based vs On-demand Revalidation',
+    summary: 'Static pages can be refreshed after build without a full rebuild , either on a timer or immediately via a webhook.',
     difficulty: 'intermediate',
     category: 'data',
     keyPoints: [
-      'Time-based: fetch(url, { next: { revalidate: 3600 } }) — stale-while-revalidate, regenerates in the background after 1 hour.',
-      'On-demand: revalidatePath("/blog") or revalidateTag("posts") from a Server Action or Route Handler — instant freshness.',
+      'Time-based: fetch(url, { next: { revalidate: 3600 } }) , stale-while-revalidate, regenerates in the background after 1 hour.',
+      'On-demand: revalidatePath("/blog") or revalidateTag("posts") from a Server Action or Route Handler , instant freshness.',
       'Tag-based caching (next: { tags: ["posts"] }) lets you revalidate precisely without guessing which paths are affected.',
-      'The visitor who triggers a stale request still gets the OLD page instantly — the NEXT visitor gets the regenerated one.',
+      'The visitor who triggers a stale request still gets the OLD page instantly , the NEXT visitor gets the regenerated one.',
       'CMS webhook pattern: editor publishes → webhook hits /api/revalidate → revalidateTag(...) → pages update without a deploy.'
     ],
     gotcha:
-      'revalidate: 0 (or reading cookies()/headers()) forces the route to render dynamically on every request — that is SSR, not ISR.',
+      'revalidate: 0 (or reading cookies()/headers()) forces the route to render dynamically on every request , that is SSR, not ISR.',
     codeSnippet: `// Time-based
 const data = await fetch(url, { next: { revalidate: 3600, tags: ['products'] } });
 
@@ -782,17 +782,17 @@ export async function POST(req: Request) {
   {
     id: 'streaming-suspense',
     title: 'Streaming & Suspense',
-    summary: 'Send the HTML shell immediately, then stream in each async section as its data resolves — instead of blocking on everything.',
+    summary: 'Send the HTML shell immediately, then stream in each async section as its data resolves , instead of blocking on everything.',
     difficulty: 'intermediate',
     category: 'components',
     keyPoints: [
-      'Wrap a slow async Server Component in <Suspense fallback={...}> — the rest of the page renders immediately.',
+      'Wrap a slow async Server Component in <Suspense fallback={...}> , the rest of the page renders immediately.',
       'loading.tsx is an automatic, route-level Suspense boundary around page.tsx.',
       'Granular Suspense (one boundary per independent section) beats one big loading spinner for perceived performance.',
-      'use() (React) unwraps a Promise inside a Client Component and suspends until it resolves — pair with a Server Component that starts the fetch without awaiting it.'
+      'use() (React) unwraps a Promise inside a Client Component and suspends until it resolves , pair with a Server Component that starts the fetch without awaiting it.'
     ],
     gotcha:
-      'Suspense only helps if the slow work is isolated in its own component — awaiting everything in one parent component still blocks the whole subtree.',
+      'Suspense only helps if the slow work is isolated in its own component , awaiting everything in one parent component still blocks the whole subtree.',
     codeSnippet: `<div>
   <Header />                                    {/* renders instantly */}
   <Suspense fallback={<StatsSkeleton />}>
@@ -811,12 +811,12 @@ export async function POST(req: Request) {
     category: 'app-router',
     keyPoints: [
       'export const runtime = "edge" opts a route/layout into the Edge runtime (default is "nodejs").',
-      'Edge: only Web APIs (fetch, Request/Response, Web Crypto) — no fs, no native addons, ~128MB memory limit.',
-      'Node.js: full Node APIs (fs, native modules, Prisma, bcrypt) — larger cold starts, single-region by default.',
-      'middleware.ts always runs at the Edge — ideal for cheap, latency-sensitive checks (auth redirects, A/B bucketing).',
-      'Use jose (pure-JS JWT) instead of jsonwebtoken at the Edge — the latter relies on Node crypto internals.'
+      'Edge: only Web APIs (fetch, Request/Response, Web Crypto) , no fs, no native addons, ~128MB memory limit.',
+      'Node.js: full Node APIs (fs, native modules, Prisma, bcrypt) , larger cold starts, single-region by default.',
+      'middleware.ts always runs at the Edge , ideal for cheap, latency-sensitive checks (auth redirects, A/B bucketing).',
+      'Use jose (pure-JS JWT) instead of jsonwebtoken at the Edge , the latter relies on Node crypto internals.'
     ],
-    codeSnippet: `// app/api/geo/route.ts — Edge
+    codeSnippet: `// app/api/geo/route.ts , Edge
 export const runtime = 'edge';
 export async function GET(req: Request) {
   return Response.json({ country: req.headers.get('x-vercel-ip-country') });
@@ -829,17 +829,17 @@ export const runtime = 'nodejs';`
     id: 'cookies-headers-api',
     title: 'cookies() & headers() (next/headers)',
     summary:
-      'Server-only, request-scoped APIs for reading/writing cookies and inspecting request headers — reading either opts a route into dynamic rendering.',
+      'Server-only, request-scoped APIs for reading/writing cookies and inspecting request headers , reading either opts a route into dynamic rendering.',
     difficulty: 'intermediate',
     category: 'api',
     keyPoints: [
-      'cookies() and headers() work in Server Components, Server Actions, and Route Handlers — never in Client Components.',
+      'cookies() and headers() work in Server Components, Server Actions, and Route Handlers , never in Client Components.',
       'Setting cookies (cookies().set(name, value, opts)) is only allowed in Server Actions and Route Handlers, not in a Server Component render.',
-      'Always set httpOnly: true, secure: true (prod), and sameSite for auth cookies — prevents XSS/CSRF from reading or forging them.',
+      'Always set httpOnly: true, secure: true (prod), and sameSite for auth cookies , prevents XSS/CSRF from reading or forging them.',
       'Reading cookies() or headers() automatically makes the route dynamic (no static/ISR caching for that render).'
     ],
     gotcha:
-      'Calling cookies() inside a helper that is imported but never actually used for the current request still forces the whole route dynamic — check what your shared utils touch.',
+      'Calling cookies() inside a helper that is imported but never actually used for the current request still forces the whole route dynamic , check what your shared utils touch.',
     codeSnippet: `import { cookies, headers } from 'next/headers';
 
 // Read (Server Component)
@@ -857,7 +857,7 @@ export async function login(formData: FormData) {
   {
     id: 'nextauth-authjs',
     title: 'Authentication with NextAuth.js (Auth.js)',
-    summary: 'The standard Next.js auth library — OAuth providers, credentials, JWT or DB sessions, wired through a single auth.ts config.',
+    summary: 'The standard Next.js auth library , OAuth providers, credentials, JWT or DB sessions, wired through a single auth.ts config.',
     difficulty: 'intermediate',
     category: 'app-router',
     keyPoints: [
@@ -865,10 +865,10 @@ export async function login(formData: FormData) {
       'Providers: OAuth (Google/GitHub/...), Credentials (custom email+password via authorize()), Email (magic link).',
       'Sessions: JWT (default, no DB) or database (needs an adapter, e.g. Prisma) for server-tracked sessions.',
       'jwt() and session() callbacks customize what ends up in the token and what is exposed to session.user.',
-      'Server: const session = await auth() inside Server Components — no client JS needed. Client: useSession() from "next-auth/react" for reactive UI.'
+      'Server: const session = await auth() inside Server Components , no client JS needed. Client: useSession() from "next-auth/react" for reactive UI.'
     ],
     gotcha:
-      "Prefer server-side auth() in Server Components over useSession() — useSession requires wrapping the tree in a Client Component <SessionProvider>, adding JS just to read a session that's already known on the server.",
+      "Prefer server-side auth() in Server Components over useSession() , useSession requires wrapping the tree in a Client Component <SessionProvider>, adding JS just to read a session that's already known on the server.",
     codeSnippet: `// auth.ts
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google({ clientId, clientSecret })],
@@ -889,10 +889,10 @@ if (!session) redirect('/login');`
     difficulty: 'intermediate',
     category: 'optimization',
     keyPoints: [
-      'Minimize "use client" boundaries — a page where only the interactive widget is client-side ships far less JS than a page wrapped entirely in "use client".',
+      'Minimize "use client" boundaries , a page where only the interactive widget is client-side ships far less JS than a page wrapped entirely in "use client".',
       'Prefer SSG/ISR for public content (CDN delivery) over SSR/CSR wherever data freshness allows it.',
-      'Dynamic-import heavy libraries (charts, rich-text editors, maps) with next/dynamic and ssr: false — 200–500KB saved for users who never trigger them.',
-      'Fetch independent data in parallel (Promise.all) instead of sequential awaits — avoids request waterfalls.',
+      'Dynamic-import heavy libraries (charts, rich-text editors, maps) with next/dynamic and ssr: false , 200–500KB saved for users who never trigger them.',
+      'Fetch independent data in parallel (Promise.all) instead of sequential awaits , avoids request waterfalls.',
       'React cache() deduplicates the same server-side data function called from multiple components (e.g. layout + page both need the current user).',
       'Targets: LCP < 2.5s, INP < 200ms, CLS < 0.1.'
     ],
@@ -916,12 +916,12 @@ const getUser = cache(async (id: string) => db.users.findById(id));`
     keyPoints: [
       'Jest + React Testing Library for components and utilities; next/jest.js provides a preconfigured Next-aware Jest setup.',
       'Route Handlers can be unit-tested directly: import { GET } from "./route" and call it with a NextRequest.',
-      'Server Components are harder to unit test — usually better to test the underlying data functions (getProduct, getUser) in isolation instead of rendering the RSC tree.',
-      'Playwright/Cypress for E2E — test real flows (login, checkout) across browsers.',
+      'Server Components are harder to unit test , usually better to test the underlying data functions (getProduct, getUser) in isolation instead of rendering the RSC tree.',
+      'Playwright/Cypress for E2E , test real flows (login, checkout) across browsers.',
       'MSW (Mock Service Worker) to stub network calls in both unit and E2E layers.'
     ],
     gotcha:
-      "Don't try to exhaustively unit-test simple Server Components — invest that effort in E2E coverage of the critical paths and isolated tests of the data-fetching functions they call.",
+      "Don't try to exhaustively unit-test simple Server Components , invest that effort in E2E coverage of the critical paths and isolated tests of the data-fetching functions they call.",
     codeSnippet: `// __tests__/api/users.test.ts
 import { GET } from '@/app/api/users/route';
 import { NextRequest } from 'next/server';
@@ -946,9 +946,9 @@ test('user can log in', async ({ page }) => {
     difficulty: 'intermediate',
     category: 'metadata',
     keyPoints: [
-      'app/sitemap.ts exports a default function returning { url, lastModified, changeFrequency, priority }[] — served at /sitemap.xml.',
-      'app/robots.ts returns { rules, sitemap } — served at /robots.txt.',
-      'JSON-LD: embed a <script type="application/ld+json"> with schema.org markup (Article, Product) for rich snippets — takes minutes, high SEO ROI.',
+      'app/sitemap.ts exports a default function returning { url, lastModified, changeFrequency, priority }[] , served at /sitemap.xml.',
+      'app/robots.ts returns { rules, sitemap } , served at /robots.txt.',
+      'JSON-LD: embed a <script type="application/ld+json"> with schema.org markup (Article, Product) for rich snippets , takes minutes, high SEO ROI.',
       'metadataBase in the root layout must be set or relative Open Graph image URLs resolve incorrectly in production.'
     ],
     codeSnippet: `// app/sitemap.ts
@@ -970,9 +970,9 @@ export default async function sitemap() {
     category: 'fundamentals',
     keyPoints: [
       'Vercel: git push → auto-deploy, preview URLs per PR, global CDN, serverless functions, ISR supported out of the box.',
-      'Docker: set output: "standalone" in next.config.js so the build produces a minimal self-contained server.js — pair with a multi-stage Dockerfile.',
-      'Self-hosted Node: next build && next start — works anywhere Node runs, but ISR needs your own cache invalidation story.',
-      'Static export: output: "export" — pure HTML/CSS/JS, hostable anywhere (S3, GitHub Pages) but drops SSR, Route Handlers, and ISR; images.unoptimized: true is required.'
+      'Docker: set output: "standalone" in next.config.js so the build produces a minimal self-contained server.js , pair with a multi-stage Dockerfile.',
+      'Self-hosted Node: next build && next start , works anywhere Node runs, but ISR needs your own cache invalidation story.',
+      'Static export: output: "export" , pure HTML/CSS/JS, hostable anywhere (S3, GitHub Pages) but drops SSR, Route Handlers, and ISR; images.unoptimized: true is required.'
     ],
     codeSnippet: `// Docker
 // next.config.js
@@ -992,8 +992,8 @@ module.exports = { output: 'export', images: { unoptimized: true } };
       'Typical layout: apps/web, apps/docs (Next.js apps) + packages/ui, packages/db, packages/config (shared code).',
       'turbo.json defines the task pipeline (build depends on ^build of dependencies) and what to cache (.next/**).',
       'transpilePackages: ["@repo/ui"] in next.config.js is needed so a Next.js app can consume un-built workspace packages.',
-      'turbo build --filter=web only rebuilds the affected app and its dependencies — not the whole repo.',
-      'Remote caching shares build artifacts across team members and CI — if the inputs match, you download the output instead of rebuilding.'
+      'turbo build --filter=web only rebuilds the affected app and its dependencies , not the whole repo.',
+      'Remote caching shares build artifacts across team members and CI , if the inputs match, you download the output instead of rebuilding.'
     ],
     codeSnippet: `// apps/web/next.config.js
 module.exports = { transpilePackages: ['@repo/ui', '@repo/db'] };

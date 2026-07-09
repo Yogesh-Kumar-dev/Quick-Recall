@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Modal Popup',
+  title: 'Modal Popup',
   description:
     'Build a reusable modal dialog component. A button triggers it to open; it can be closed via the backdrop, a close button, or the Escape key.',
   requirements: [

@@ -93,7 +93,7 @@ export default function OfflineDownloadPanel({ open, onOpenChange, download }: P
             {showUpToDate && (
               <p className="flex items-center gap-1.5 text-sm font-semibold text-primary">
                 <IconCircleCheck size={18} />
-                You’re all set and up to date — go prepare for your interview. All the best! 🎯
+                You're all set and up to date. Go prepare for your interview. All the best!
               </p>
             )}
 

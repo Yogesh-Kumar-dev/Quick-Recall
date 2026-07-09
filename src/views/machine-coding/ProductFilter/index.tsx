@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 Product Filter',
+  title: 'Product Filter',
   description:
     'Fetch a product catalog from a REST API, then let the user narrow it down with a category dropdown and a debounced search box. Both filters combine, and the visible list is derived from the source data — never stored separately. Uses the Fake Store API.',
   requirements: [

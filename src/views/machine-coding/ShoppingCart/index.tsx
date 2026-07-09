@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🔴 Shopping Cart',
+  title: 'Shopping Cart',
   description:
     'Build a product listing page with a shopping cart. Products can be added to the cart, their quantities adjusted, and removed. The cart persists across page refreshes using localStorage.',
   requirements: [

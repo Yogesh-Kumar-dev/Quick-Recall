@@ -12,7 +12,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟢 Flatten Nested Array',
+  title: 'Flatten Nested Array',
   description:
     'Write a function that takes a deeply nested array and returns a flat (one-dimensional) array containing all the values. The function should optionally accept a depth parameter — if given, flatten only up to that many levels. This tests recursion, array manipulation, and knowledge of modern JS APIs.',
   examples: [

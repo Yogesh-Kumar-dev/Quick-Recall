@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟡 Memoize a Function',
+  title: 'Memoize a Function',
   description:
     'Implement memoize(fn) that caches results by arguments, so repeated calls with the same inputs return the cached value instead of recomputing. This is a closures + caching classic — interviewers often follow up with custom key resolvers and cache invalidation.',
   examples: [

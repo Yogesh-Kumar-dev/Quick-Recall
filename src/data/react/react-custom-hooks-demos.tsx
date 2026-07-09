@@ -38,7 +38,7 @@ export function ClipboardDemo() {
     <div className="flex items-center gap-3">
       <code className="rounded bg-muted px-2 py-1 font-mono text-[13px]">{text}</code>
       <Button variant="outline" size="sm" onClick={() => copy(text)}>
-        {copied ? '✓ Copied' : 'Copy'}
+        {copied ? 'Copied' : 'Copy'}
       </Button>
     </div>
   );
@@ -50,7 +50,7 @@ export function LocalStorageDemo() {
     <div className="space-y-1">
       <Input placeholder="Your name (persisted)" value={name} onChange={(e) => setName(e.target.value)} className="max-w-[280px]" />
       <p className="text-xs text-muted-foreground">
-        Reload the page or open another tab — the value sticks. Stored under <code className="font-mono">custom-hooks-demo-name</code>.
+        Reload the page or open another tab, the value sticks. Stored under <code className="font-mono">custom-hooks-demo-name</code>.
       </p>
     </div>
   );
@@ -63,10 +63,10 @@ export function DebounceDemo() {
     <div className="space-y-1">
       <Input placeholder="Type fast…" value={text} onChange={(e) => setText(e.target.value)} className="max-w-[280px]" />
       <p className="text-sm">
-        Live: <strong className="font-mono">{text || '—'}</strong>
+        Live: <strong className="font-mono">{text || ','}</strong>
       </p>
       <p className="text-sm text-primary">
-        Debounced (500ms): <strong className="font-mono">{debounced || '—'}</strong>
+        Debounced (500ms): <strong className="font-mono">{debounced || ','}</strong>
       </p>
     </div>
   );
@@ -99,7 +99,7 @@ export function PreviousDemo() {
         Increment
       </Button>
       <span className="font-mono text-sm">
-        now: {count} · prev: {prev ?? '—'}
+        now: {count} · prev: {prev ?? ','}
       </span>
     </div>
   );
@@ -113,7 +113,7 @@ export function WindowSizeDemo() {
       <p className="font-mono text-sm">
         {width} × {height}px
       </p>
-      <Badge variant={isMobile ? 'secondary' : 'default'}>{isMobile ? '📱 mobile (<768)' : '🖥️ desktop (≥768)'}</Badge>
+      <Badge variant={isMobile ? 'secondary' : 'default'}>{isMobile ? 'mobile (<768)' : 'desktop (≥768)'}</Badge>
       <p className="text-xs text-muted-foreground">Resize the browser window to watch it update.</p>
     </div>
   );
@@ -140,7 +140,7 @@ export function OnlineStatusDemo() {
   const isOnline = useOnlineStatus();
   return (
     <div className="space-y-1">
-      <Badge variant={isOnline ? 'default' : 'destructive'}>{isOnline ? '🟢 Online' : '🔴 Offline'}</Badge>
+      <Badge variant={isOnline ? 'default' : 'destructive'}>{isOnline ? 'Online' : 'Offline'}</Badge>
       <p className="text-xs text-muted-foreground">Toggle “Offline” in DevTools → Network (or turn off Wi-Fi) to see it flip.</p>
     </div>
   );
@@ -151,12 +151,12 @@ export function IntersectionDemo() {
   return (
     <div>
       <div className="mb-1 flex items-center gap-2 text-sm">
-        Status: <Badge variant={isIntersecting ? 'default' : 'secondary'}>{isIntersecting ? '👁️ visible' : 'scrolled away'}</Badge>
+        Status: <Badge variant={isIntersecting ? 'default' : 'secondary'}>{isIntersecting ? 'visible' : 'scrolled away'}</Badge>
       </div>
       <div className="h-[120px] overflow-y-auto rounded-md border border-border p-1">
         <div className="h-[160px]" />
         <div ref={ref} className={`rounded-md p-4 text-center transition-colors ${isIntersecting ? 'bg-primary/20' : 'bg-muted'}`}>
-          <p className="text-sm">🎯 Scroll me into / out of view</p>
+          <p className="text-sm">Scroll me into / out of view</p>
         </div>
         <div className="h-[160px]" />
       </div>

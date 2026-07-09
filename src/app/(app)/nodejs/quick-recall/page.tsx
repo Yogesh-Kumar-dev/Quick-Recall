@@ -6,7 +6,7 @@ export const metadata = { title: 'Node.js Quick Recall | QuickRecall' };
 export default function Page() {
   return (
     <QuickRecallView
-      title="⚡ Node.js Quick Recall"
+      title="Node.js Quick Recall"
       intro="Last-minute cheatsheet — scan in 5–10 minutes before your interview. Key concepts, gotchas, and code snippets."
       sections={nodejsQuickRecall}
     />

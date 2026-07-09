@@ -94,7 +94,7 @@ export default function APIDataFetching() {
             marginBottom: 12
           }}
         >
-          ⚠️ {request.message}
+          {request.message}
         </div>
       )}
 
@@ -139,7 +139,6 @@ export default function APIDataFetching() {
 
       {request.status === 'idle' && (
         <div style={{ textAlign: 'center', color: '#9ca3af', padding: 40 }}>
-          <div style={{ fontSize: 32, marginBottom: 8 }}>🌐</div>
           <p style={{ margin: 0, fontSize: 14 }}>Click &ldquo;Fetch Posts&rdquo; to load data from the API</p>
         </div>
       )}

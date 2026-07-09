@@ -9,7 +9,7 @@ export const metadata = { title: 'JS Notes | QuickRecall' };
 export default async function Page({ searchParams }: { searchParams: Promise<NotesSearchParams> }) {
   return (
     <NotesView
-      title="📗 JS Notes"
+      title="JS Notes"
       notes={jsNotes}
       params={await searchParams}
       headerAction={

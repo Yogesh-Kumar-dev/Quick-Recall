@@ -39,6 +39,7 @@ export interface Flashcard {
   id: string;
   front: string; // keyword / abbreviation / short question
   back: string; // definition / answer (kept short, 1–3 sentences)
+  code?: string; // optional code snippet to show below the explanation
   category?: string; // optional grouping label (e.g. 'Keyword', 'Q&A')
 }
 

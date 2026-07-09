@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🔴 Infinite Scroll',
+  title: 'Infinite Scroll',
   description:
     'Build a scrollable list that automatically fetches and appends more items when the user reaches the bottom — without a "Load More" button.',
   requirements: [

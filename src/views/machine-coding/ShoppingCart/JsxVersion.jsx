@@ -8,12 +8,12 @@
 import { useState } from 'react';
 
 const PRODUCTS = [
-  { id: 1, name: 'React Masterclass', price: 49, category: 'Course', emoji: '⚛️' },
-  { id: 2, name: 'TypeScript Pro', price: 39, category: 'Course', emoji: '🔷' },
-  { id: 3, name: 'Node.js Handbook', price: 29, category: 'Book', emoji: '📗' },
-  { id: 4, name: 'CSS Art Kit', price: 19, category: 'Design', emoji: '🎨' },
-  { id: 5, name: 'Docker Deep Dive', price: 34, category: 'Course', emoji: '🐳' },
-  { id: 6, name: 'System Design Guide', price: 59, category: 'Book', emoji: '🏗️' }
+  { id: 1, name: 'React Masterclass', price: 49, category: 'Course' },
+  { id: 2, name: 'TypeScript Pro', price: 39, category: 'Course' },
+  { id: 3, name: 'Node.js Handbook', price: 29, category: 'Book' },
+  { id: 4, name: 'CSS Art Kit', price: 19, category: 'Design' },
+  { id: 5, name: 'Docker Deep Dive', price: 34, category: 'Course' },
+  { id: 6, name: 'System Design Guide', price: 59, category: 'Book' }
 ];
 
 // ── useLocalStorage hook ────────────────────────────────────────────────────────
@@ -68,7 +68,7 @@ export default function ShoppingCart() {
   return (
     <div style={{ position: 'relative' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <span style={{ fontWeight: 700, fontSize: 16 }}>🛍️ Store</span>
+        <span style={{ fontWeight: 700, fontSize: 16 }}>Store</span>
         <button
           onClick={() => setCartOpen(!cartOpen)}
           style={{
@@ -82,7 +82,7 @@ export default function ShoppingCart() {
             fontSize: 14
           }}
         >
-          🛒 Cart {totalItems > 0 && `(₹${grandTotal})`}
+          Cart {totalItems > 0 && `(₹${grandTotal})`}
           {totalItems > 0 && (
             <span
               style={{
@@ -113,7 +113,6 @@ export default function ShoppingCart() {
             const qty = cartQty(product.id);
             return (
               <div key={product.id} style={{ border: '1px solid #e0e0e0', borderRadius: 10, padding: 14, background: '#fff' }}>
-                <div style={{ fontSize: 30, marginBottom: 8 }}>{product.emoji}</div>
                 <p style={{ fontWeight: 700, fontSize: 14, margin: '0 0 4px' }}>{product.name}</p>
                 <span style={{ fontSize: 11, background: '#f0f0f0', padding: '2px 8px', borderRadius: 8, color: '#666' }}>
                   {product.category}
@@ -156,7 +155,7 @@ export default function ShoppingCart() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <strong style={{ fontSize: 15 }}>🛒 Cart ({totalItems})</strong>
+              <strong style={{ fontSize: 15 }}>Cart ({totalItems})</strong>
               <button
                 onClick={() => setCartOpen(false)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#888' }}
@@ -174,7 +173,6 @@ export default function ShoppingCart() {
                 return (
                   <div key={item.productId} style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: 10, marginBottom: 8 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                      <span style={{ fontSize: 22 }}>{p.emoji}</span>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p
                           style={{

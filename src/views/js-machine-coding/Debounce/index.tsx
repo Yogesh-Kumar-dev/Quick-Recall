@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟡 Implement Debounce',
+  title: 'Implement Debounce',
   description:
     'Implement a debounce function that delays the execution of a callback until after a specified wait time has elapsed since the last time it was invoked. This is one of the most commonly asked JS interview questions — interviewers often follow up by asking for a leading-edge variant or cancel/flush methods.',
   examples: [

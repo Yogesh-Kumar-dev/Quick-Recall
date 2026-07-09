@@ -7,18 +7,18 @@ export const cssNotes: Note[] = [
   {
     id: 'css-box-model',
     title: 'The Box Model',
-    summary: 'Every element is a box of content + padding + border + margin — and box-sizing changes the maths.',
+    summary: 'Every element is a box of content + padding + border + margin , and box-sizing changes the maths.',
     difficulty: 'basic',
     category: 'box-model',
     keyPoints: [
       'From inside out: content → padding → border → margin.',
-      'Default box-sizing: content-box — width/height apply to the content only, so padding & border are added on top.',
-      'box-sizing: border-box makes width/height include padding & border — far more predictable.',
+      'Default box-sizing: content-box , width/height apply to the content only, so padding & border are added on top.',
+      'box-sizing: border-box makes width/height include padding & border , far more predictable.',
       'Most resets apply * { box-sizing: border-box } globally.',
       'Margins are outside the border and are transparent; padding is inside and shows the background.'
     ],
     gotcha:
-      'With the default content-box, adding padding to a width:100% element makes it overflow its parent — switch to border-box to avoid the surprise.',
+      'With the default content-box, adding padding to a width:100% element makes it overflow its parent , switch to border-box to avoid the surprise.',
     codeSnippet: `*, *::before, *::after { box-sizing: border-box; }
 
 .card {
@@ -30,17 +30,17 @@ export const cssNotes: Note[] = [
   {
     id: 'css-margin-collapse',
     title: 'Margin Collapsing',
-    summary: 'Adjacent vertical margins merge into one — a classic source of unexpected spacing.',
+    summary: 'Adjacent vertical margins merge into one , a classic source of unexpected spacing.',
     difficulty: 'intermediate',
     category: 'box-model',
     keyPoints: [
-      'Vertical (top/bottom) margins of adjacent block elements collapse to the larger of the two — they don’t add.',
+      'Vertical (top/bottom) margins of adjacent block elements collapse to the larger of the two , they don’t add.',
       'A parent and its first/last child can collapse together if no border/padding/overflow separates them.',
-      'Only vertical margins collapse — horizontal margins never do.',
+      'Only vertical margins collapse , horizontal margins never do.',
       'Flex and grid items do NOT collapse margins.',
       'Prevent it with padding, a border, or by establishing a BFC (overflow: auto).'
     ],
-    gotcha: 'Two stacked elements with margin: 20px end up 20px apart, not 40px — people expect them to sum.',
+    gotcha: 'Two stacked elements with margin: 20px end up 20px apart, not 40px , people expect them to sum.',
     codeSnippet: `/* gap of 30px (the larger), not 50px */
 .a { margin-bottom: 30px; }
 .b { margin-top: 20px; }`
@@ -54,14 +54,14 @@ export const cssNotes: Note[] = [
     difficulty: 'intermediate',
     category: 'selectors',
     keyPoints: [
-      'Specificity is scored (inline, IDs, classes/attrs/pseudo-classes, elements) — higher wins.',
+      'Specificity is scored (inline, IDs, classes/attrs/pseudo-classes, elements) , higher wins.',
       'Inline style > #id > .class / [attr] / :hover > element / ::before.',
       'When specificity ties, the later rule in source order wins.',
-      '!important overrides normal rules (use sparingly — it’s hard to undo).',
+      '!important overrides normal rules (use sparingly , it’s hard to undo).',
       'The universal selector * and :where() add zero specificity.'
     ],
     gotcha:
-      'Fighting specificity with more !important leads to an unmaintainable arms race — prefer a flat, low-specificity, class-based architecture.',
+      'Fighting specificity with more !important leads to an unmaintainable arms race , prefer a flat, low-specificity, class-based architecture.',
     codeSnippet: `#nav .link { color: red; }   /* (1,1,0) wins */
 .link        { color: blue; } /* (0,1,0) loses */
 
@@ -75,8 +75,8 @@ export const cssNotes: Note[] = [
     difficulty: 'basic',
     category: 'selectors',
     keyPoints: [
-      'Pseudo-classes (single colon): :hover, :focus, :nth-child(), :checked, :first-child — based on state or position.',
-      'Pseudo-elements (double colon): ::before, ::after, ::placeholder, ::selection — style a virtual part.',
+      'Pseudo-classes (single colon): :hover, :focus, :nth-child(), :checked, :first-child , based on state or position.',
+      'Pseudo-elements (double colon): ::before, ::after, ::placeholder, ::selection , style a virtual part.',
       '::before / ::after need a content property to appear (even content: "").',
       ':focus-visible shows focus rings only for keyboard users; :focus-within matches when a descendant is focused.',
       'Combinators: descendant (space), child (>), adjacent (+), general sibling (~).'
@@ -102,7 +102,7 @@ input:focus-visible { outline: 2px solid blue; }`
       'Best for components: navbars, toolbars, centering, evenly spaced button rows.'
     ],
     gotcha:
-      'justify-content and align-items swap which visual direction they affect when you change flex-direction to column — a frequent point of confusion.',
+      'justify-content and align-items swap which visual direction they affect when you change flex-direction to column , a frequent point of confusion.',
     codeSnippet: `.row {
   display: flex;
   justify-content: space-between; /* main axis */
@@ -149,7 +149,7 @@ input:focus-visible { outline: 2px solid blue; }`
       'sticky: relative until a scroll threshold, then sticks (great for headers).'
     ],
     gotcha:
-      'position: absolute anchors to the nearest ancestor with a non-static position — forget to set position: relative on the intended parent and it jumps to the wrong container.',
+      'position: absolute anchors to the nearest ancestor with a non-static position , forget to set position: relative on the intended parent and it jumps to the wrong container.',
     codeSnippet: `.parent { position: relative; }
 .badge {
   position: absolute;
@@ -160,7 +160,7 @@ input:focus-visible { outline: 2px solid blue; }`
   {
     id: 'css-zindex-stacking',
     title: 'z-index & Stacking Contexts',
-    summary: 'z-index controls overlap order — but only within the same stacking context.',
+    summary: 'z-index controls overlap order , but only within the same stacking context.',
     difficulty: 'advanced',
     category: 'positioning',
     keyPoints: [
@@ -170,7 +170,7 @@ input:focus-visible { outline: 2px solid blue; }`
       'A child can never escape its parent’s stacking context, no matter how high its z-index.'
     ],
     gotcha:
-      'A z-index: 9999 element can still sit behind another if its parent forms a lower stacking context — the huge number does nothing across contexts.',
+      'A z-index: 9999 element can still sit behind another if its parent forms a lower stacking context , the huge number does nothing across contexts.',
     codeSnippet: `/* .a's z-index:1 beats .b's z-index:9999
    because .b is trapped in .wrap's context */
 .wrap { position: relative; z-index: 1; opacity: .99; }
@@ -181,7 +181,7 @@ input:focus-visible { outline: 2px solid blue; }`
   {
     id: 'css-responsive',
     title: 'Responsive Design & Media Queries',
-    summary: 'Adapt layout to screen size with fluid units and breakpoints — mobile-first.',
+    summary: 'Adapt layout to screen size with fluid units and breakpoints , mobile-first.',
     difficulty: 'intermediate',
     category: 'responsive',
     keyPoints: [
@@ -192,7 +192,7 @@ input:focus-visible { outline: 2px solid blue; }`
       'Container queries (@container) style based on a parent’s width, not the viewport.'
     ],
     gotcha:
-      'Responsive CSS does nothing on mobile without the viewport meta tag in the HTML <head> — the page renders at a zoomed-out desktop width otherwise.',
+      'Responsive CSS does nothing on mobile without the viewport meta tag in the HTML <head> , the page renders at a zoomed-out desktop width otherwise.',
     codeSnippet: `.box { font-size: clamp(1rem, 2.5vw, 1.5rem); }
 
 /* mobile-first enhancement */
@@ -203,18 +203,18 @@ input:focus-visible { outline: 2px solid blue; }`
   {
     id: 'css-units',
     title: 'CSS Units: px, em, rem, %, vw/vh',
-    summary: 'Absolute vs relative units — picking the right one keeps layouts scalable and accessible.',
+    summary: 'Absolute vs relative units , picking the right one keeps layouts scalable and accessible.',
     difficulty: 'basic',
     category: 'responsive',
     keyPoints: [
-      'px: absolute, fixed size — predictable but doesn’t scale with user font settings.',
-      'em: relative to the element’s own font-size — compounds when nested.',
-      'rem: relative to the root font-size — the go-to for scalable, predictable sizing.',
+      'px: absolute, fixed size , predictable but doesn’t scale with user font settings.',
+      'em: relative to the element’s own font-size , compounds when nested.',
+      'rem: relative to the root font-size , the go-to for scalable, predictable sizing.',
       '%: relative to the parent’s corresponding dimension.',
-      'vw/vh: 1% of the viewport width/height — great for full-screen and fluid sizing.'
+      'vw/vh: 1% of the viewport width/height , great for full-screen and fluid sizing.'
     ],
     gotcha:
-      'em compounds: nested elements each multiply their parent’s font-size, so font sizes can snowball unexpectedly — rem avoids this by always referencing the root.',
+      'em compounds: nested elements each multiply their parent’s font-size, so font sizes can snowball unexpectedly , rem avoids this by always referencing the root.',
     codeSnippet: `html { font-size: 16px; }
 h1   { font-size: 2rem; }   /* 32px, root-relative */
 .tip { padding: 1em; }      /* relative to .tip's font-size */
@@ -230,7 +230,7 @@ h1   { font-size: 2rem; }   /* 32px, root-relative */
     category: 'visual',
     keyPoints: [
       'Define on a selector (often :root for global) and read with var(--name, fallback).',
-      'Unlike Sass variables, they’re live at runtime — change them in JS or via media queries.',
+      'Unlike Sass variables, they’re live at runtime , change them in JS or via media queries.',
       'They cascade and inherit, so a component can override a token locally.',
       'The cornerstone of dark mode and design-token systems.',
       'Read/write in JS: getComputedStyle(el).getPropertyValue() / el.style.setProperty().'
@@ -248,14 +248,14 @@ h1   { font-size: 2rem; }   /* 32px, root-relative */
     difficulty: 'intermediate',
     category: 'visual',
     keyPoints: [
-      'transition: property duration timing-function delay — animates a change between two values.',
+      'transition: property duration timing-function delay , animates a change between two values.',
       '@keyframes + animation run multi-step, looping, or autonomous motion.',
-      'Animate transform and opacity — they run on the compositor (GPU) and avoid layout/paint.',
-      'Avoid animating width/height/top/left — they trigger reflow and stutter.',
+      'Animate transform and opacity , they run on the compositor (GPU) and avoid layout/paint.',
+      'Avoid animating width/height/top/left , they trigger reflow and stutter.',
       'Respect prefers-reduced-motion for users who get motion sickness.'
     ],
     gotcha:
-      'Animating layout properties (width, height, margin) forces the browser to reflow every frame and drops frames — animate transform: scale/translate instead.',
+      'Animating layout properties (width, height, margin) forces the browser to reflow every frame and drops frames , animate transform: scale/translate instead.',
     codeSnippet: `.btn { transition: transform .2s ease; }
 .btn:hover { transform: scale(1.05); }
 
@@ -282,7 +282,7 @@ h1   { font-size: 2rem; }   /* 32px, root-relative */
       'All aim to solve the same problem: the global, cascading namespace causing clashes at scale.'
     ],
     gotcha:
-      'The core problem they all address is that vanilla CSS class names are global — one generic .button can be silently overridden anywhere.',
+      'The core problem they all address is that vanilla CSS class names are global , one generic .button can be silently overridden anywhere.',
     codeSnippet: `/* BEM */
 .card {}
 .card__title {}

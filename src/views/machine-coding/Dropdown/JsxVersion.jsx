@@ -128,7 +128,7 @@ export default function Dropdown() {
                 }}
               >
                 {opt}
-                {selected === opt && <span style={{ fontSize: 12 }}>✓</span>}
+                {selected === opt && <span style={{ fontSize: 12 }}>(selected)</span>}
               </li>
             ))}
           </ul>

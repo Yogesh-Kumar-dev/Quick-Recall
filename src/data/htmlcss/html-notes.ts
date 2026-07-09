@@ -11,13 +11,13 @@ export const htmlNotes: Note[] = [
     difficulty: 'basic',
     category: 'document',
     keyPoints: [
-      '<!DOCTYPE html> is the HTML5 doctype — it must be the very first line of the document.',
+      '<!DOCTYPE html> is the HTML5 doctype , it must be the very first line of the document.',
       'Without it, browsers fall into "quirks mode" and emulate old, buggy box-model behaviour.',
-      'It is not an HTML tag — it is an instruction to the browser, with no closing tag.',
+      'It is not an HTML tag , it is an instruction to the browser, with no closing tag.',
       'The same short doctype works for all modern HTML; the long SGML doctypes are an HTML4 relic.'
     ],
     gotcha:
-      'Missing or misspelling the doctype silently triggers quirks mode, where the CSS box model and other behaviours differ — layouts then break in subtle ways.',
+      'Missing or misspelling the doctype silently triggers quirks mode, where the CSS box model and other behaviours differ , layouts then break in subtle ways.',
     codeSnippet: `<!DOCTYPE html>
 <html lang="en">
   <head><meta charset="utf-8" /></head>
@@ -27,7 +27,7 @@ export const htmlNotes: Note[] = [
   {
     id: 'html-meta-viewport',
     title: 'The Viewport Meta Tag',
-    summary: 'Controls how a page is scaled on mobile — essential for responsive design.',
+    summary: 'Controls how a page is scaled on mobile , essential for responsive design.',
     difficulty: 'basic',
     category: 'document',
     keyPoints: [
@@ -37,7 +37,7 @@ export const htmlNotes: Note[] = [
       'It is the prerequisite that makes CSS media queries behave as intended on phones.'
     ],
     gotcha:
-      'Setting user-scalable=no or a fixed maximum-scale blocks pinch-zoom, which is an accessibility failure — avoid disabling zoom.',
+      'Setting user-scalable=no or a fixed maximum-scale blocks pinch-zoom, which is an accessibility failure , avoid disabling zoom.',
     codeSnippet: `<meta name="viewport" content="width=device-width, initial-scale=1" />`
   },
   {
@@ -74,7 +74,7 @@ export const htmlNotes: Note[] = [
       'Benefits: accessibility (screen readers announce landmarks), SEO, and readable markup.',
       'Use <main> once per page for the primary content; <article> for self-contained units.',
       '<section> groups related content and usually has a heading; <div> is a last-resort generic box.',
-      'Headings <h1>–<h6> create the document outline — don’t skip levels for styling reasons.'
+      'Headings <h1>–<h6> create the document outline , don’t skip levels for styling reasons.'
     ],
     gotcha:
       'Reaching for <div>/<span> when a semantic element exists (“div soup”) removes the free accessibility and meaning the platform gives you.',
@@ -98,10 +98,10 @@ export const htmlNotes: Note[] = [
       'Block (e.g. <div>, <p>, <h1>, <section>): start on a new line, take available width, respect width/height.',
       'Inline (e.g. <span>, <a>, <strong>, <em>): flow within text, only as wide as content, ignore width/height.',
       'inline-block is a hybrid: flows inline but accepts width/height and vertical padding.',
-      'This is the element’s default display value — CSS display can override it.'
+      'This is the element’s default display value , CSS display can override it.'
     ],
     gotcha:
-      'It’s invalid to nest a block element inside an inline one (e.g. a <div> inside a <span>) — the browser may reparent it and break your layout.',
+      'It’s invalid to nest a block element inside an inline one (e.g. a <div> inside a <span>) , the browser may reparent it and break your layout.',
     codeSnippet: `<!-- block: stacks -->
 <p>Paragraph one</p>
 <p>Paragraph two</p>
@@ -117,11 +117,11 @@ export const htmlNotes: Note[] = [
     category: 'semantics',
     keyPoints: [
       'Any attribute prefixed with data- is valid HTML and stores custom data.',
-      'Read/write in JS via el.dataset — data-user-id becomes dataset.userId (camelCased).',
+      'Read/write in JS via el.dataset , data-user-id becomes dataset.userId (camelCased).',
       'Useful for hooks that shouldn’t be classes/ids, or passing config to a component.',
       'Also targetable in CSS with attribute selectors: [data-state="open"] { … }.'
     ],
-    gotcha: 'data-* is for app-internal data, not sensitive info — it sits in plain HTML, visible to anyone viewing source.',
+    gotcha: 'data-* is for app-internal data, not sensitive info , it sits in plain HTML, visible to anyone viewing source.',
     codeSnippet: `<button data-user-id="42" data-action="delete">×</button>
 
 <script>
@@ -153,7 +153,7 @@ export const htmlNotes: Note[] = [
   {
     id: 'html-form-validation',
     title: 'Native Form Validation',
-    summary: 'Built-in attributes validate input before submit — no JavaScript required for the basics.',
+    summary: 'Built-in attributes validate input before submit , no JavaScript required for the basics.',
     difficulty: 'intermediate',
     category: 'forms',
     keyPoints: [
@@ -163,7 +163,7 @@ export const htmlNotes: Note[] = [
       'The Constraint Validation API (el.validity, setCustomValidity) customises messages in JS.',
       'novalidate on the <form> disables native validation when you handle it yourself.'
     ],
-    gotcha: 'Client-side validation is for UX only — it’s trivially bypassed, so the server must always validate again.',
+    gotcha: 'Client-side validation is for UX only , it’s trivially bypassed, so the server must always validate again.',
     codeSnippet: `<input
   type="password"
   required
@@ -177,11 +177,11 @@ export const htmlNotes: Note[] = [
   {
     id: 'html-img-responsive',
     title: 'Responsive & Optimised Images',
-    summary: 'srcset/sizes and <picture> serve the right image for the device — saving bytes.',
+    summary: 'srcset/sizes and <picture> serve the right image for the device , saving bytes.',
     difficulty: 'intermediate',
     category: 'media',
     keyPoints: [
-      'Always set alt — describes the image for screen readers (empty alt="" for decorative images).',
+      'Always set alt , describes the image for screen readers (empty alt="" for decorative images).',
       'srcset + sizes let the browser pick the best resolution for the viewport/DPR.',
       '<picture> with <source media=…> swaps whole images (art direction) or formats (AVIF/WebP fallback).',
       'loading="lazy" defers offscreen images until they’re near the viewport.',
@@ -201,7 +201,7 @@ export const htmlNotes: Note[] = [
   {
     id: 'html-aria',
     title: 'ARIA & Accessibility',
-    summary: 'ARIA fills accessibility gaps that semantic HTML can’t cover — but native elements come first.',
+    summary: 'ARIA fills accessibility gaps that semantic HTML can’t cover , but native elements come first.',
     difficulty: 'intermediate',
     category: 'accessibility',
     keyPoints: [
@@ -209,10 +209,10 @@ export const htmlNotes: Note[] = [
       'role tells assistive tech what an element is; aria-* attributes describe state/relationships.',
       'aria-label / aria-labelledby give an accessible name when there’s no visible text.',
       'aria-live announces dynamic updates (e.g. toast messages) without moving focus.',
-      'Manage focus order and visible focus styles — keyboard users rely on them.'
+      'Manage focus order and visible focus styles , keyboard users rely on them.'
     ],
     gotcha:
-      'role="button" on a <div> still needs tabindex="0" and key handlers for Enter/Space — ARIA changes the announced role but adds zero behaviour.',
+      'role="button" on a <div> still needs tabindex="0" and key handlers for Enter/Space , ARIA changes the announced role but adds zero behaviour.',
     codeSnippet: `<!-- prefer native -->
 <button>Save</button>
 
@@ -232,8 +232,8 @@ export const htmlNotes: Note[] = [
     category: 'document',
     keyPoints: [
       'A plain <script> pauses HTML parsing while it downloads and runs (parser-blocking).',
-      'defer: downloads in parallel, runs after the HTML is parsed, in document order — ideal for app code.',
-      'async: downloads in parallel, runs as soon as it’s ready, order not guaranteed — good for independent scripts (analytics).',
+      'defer: downloads in parallel, runs after the HTML is parsed, in document order , ideal for app code.',
+      'async: downloads in parallel, runs as soon as it’s ready, order not guaranteed , good for independent scripts (analytics).',
       'type="module" scripts are deferred by default.',
       'Historically people put scripts at the end of <body> to achieve the same effect as defer.'
     ],

@@ -5,18 +5,18 @@ export const reduxNotes: Note[] = [
   {
     id: 'store',
     title: 'The Redux Store',
-    summary: 'Single global object holding all app state — accessed via getState(), changed only via dispatch().',
+    summary: 'Single global object holding all app state , accessed via getState(), changed only via dispatch().',
     difficulty: 'basic',
     category: 'core',
     keyPoints: [
-      'Created with configureStore() (RTK) — one store for the entire app.',
+      'Created with configureStore() (RTK) , one store for the entire app.',
       'getState() returns a snapshot of current state; never mutate it directly.',
       'dispatch(action) is the only way to trigger a state change.',
-      'subscribe(listener) fires after every dispatch — React-Redux handles this via Provider + useSelector.',
+      'subscribe(listener) fires after every dispatch , React-Redux handles this via Provider + useSelector.',
       'State tree is composed of slices: each slice owns a subtree (e.g., state.counter, state.users).'
     ],
     gotcha:
-      'Calling dispatch() inside a reducer is illegal — it causes infinite re-dispatch loops. Side effects (API calls, extra dispatches) belong in middleware or thunks.',
+      'Calling dispatch() inside a reducer is illegal , it causes infinite re-dispatch loops. Side effects (API calls, extra dispatches) belong in middleware or thunks.',
     codeSnippet: `import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from './counterSlice';
 
@@ -31,19 +31,19 @@ store.dispatch(increment());  // triggers reducer → new state`
   {
     id: 'reducers',
     title: 'Reducers',
-    summary: 'Pure functions — (state, action) => newState — the only place state transitions happen.',
+    summary: 'Pure functions , (state, action) => newState , the only place state transitions happen.',
     difficulty: 'basic',
     category: 'core',
     keyPoints: [
       'Must be pure: no side effects, no random values, no async code inside a reducer.',
-      'Must return a new state object (or the same reference if nothing changed) — never mutate in place.',
+      'Must return a new state object (or the same reference if nothing changed) , never mutate in place.',
       'RTK\'s createSlice wraps reducers with Immer, allowing direct "mutation" syntax that produces immutable output.',
       'combineReducers (auto-called by configureStore) splits the state tree so each reducer owns its slice.',
       'Default/unknown actions must return the existing state unchanged.'
     ],
     gotcha:
-      "Accidentally mutating state in a plain Redux reducer (without Immer) means the reference stays the same — useSelector won't detect the change and the UI goes stale.",
-    codeSnippet: `// RTK createSlice — Immer lets you "mutate" safely
+      "Accidentally mutating state in a plain Redux reducer (without Immer) means the reference stays the same , useSelector won't detect the change and the UI goes stale.",
+    codeSnippet: `// RTK createSlice , Immer lets you "mutate" safely
 const counterSlice = createSlice({
   name: 'counter',
   initialState: { value: 0 },
@@ -61,11 +61,11 @@ const counterSlice = createSlice({
     difficulty: 'basic',
     category: 'core',
     keyPoints: [
-      'Action shape: { type: string, payload?: any } — type is mandatory, payload is the RTK convention.',
-      "createSlice auto-generates action creators — counterSlice.actions.increment() → { type: 'counter/increment' }.",
+      'Action shape: { type: string, payload?: any } , type is mandatory, payload is the RTK convention.',
+      "createSlice auto-generates action creators , counterSlice.actions.increment() → { type: 'counter/increment' }.",
       'Action type strings follow the "domain/eventName" convention (slice name + reducer key).',
       'Action creators have a .type property for use in extraReducers: builder.addCase(increment.type, ...).',
-      'You can dispatch thunks (functions) instead of plain objects — middleware intercepts them for async work.'
+      'You can dispatch thunks (functions) instead of plain objects , middleware intercepts them for async work.'
     ],
     codeSnippet: `const { increment, addAmount } = counterSlice.actions;
 
@@ -84,7 +84,7 @@ console.log(increment.type); // 'counter/increment'`
     category: 'patterns',
     keyPoints: [
       'Event in UI → dispatch(action) → middleware chain → reducer(state, action) → new state → components re-render.',
-      'Components never write state directly — they only declare intent via actions.',
+      'Components never write state directly , they only declare intent via actions.',
       'Redux DevTools can replay this flow step by step, enabling time-travel debugging.',
       'Predictability: given the same state and action, the reducer always produces the same output.'
     ],
@@ -96,20 +96,20 @@ console.log(increment.type); // 'counter/increment'`
     id: 'middleware',
     title: 'Middleware',
     summary:
-      'Functions that intercept every dispatch call — sitting between dispatch() and the reducer to handle async work, logging, and more.',
+      'Functions that intercept every dispatch call , sitting between dispatch() and the reducer to handle async work, logging, and more.',
     difficulty: 'intermediate',
     category: 'middleware',
     textbookDef:
       'Middleware provides a third-party extension point between dispatching an action and the moment it reaches the reducer. It composes as a chain: each piece can pass the action along, transform it, delay it, or swallow it entirely.',
     keyPoints: [
       'Signature: store => next => action => { /* do work */ return next(action); }',
-      'RTK includes redux-thunk by default — allows dispatching functions instead of plain action objects.',
-      'Thunks receive (dispatch, getState) — enabling conditional dispatches and async sequences.',
+      'RTK includes redux-thunk by default , allows dispatching functions instead of plain action objects.',
+      'Thunks receive (dispatch, getState) , enabling conditional dispatches and async sequences.',
       'Middleware executes left-to-right; each calls next(action) to pass to the next middleware.',
       'Other popular middleware: redux-logger (dev logging), RTK Query middleware (cache management).'
     ],
     gotcha:
-      "Middleware order matters — error-reporting middleware should come before thunk so it catches thunk errors. RTK's getDefaultMiddleware() puts thunk first by design.",
+      "Middleware order matters , error-reporting middleware should come before thunk so it catches thunk errors. RTK's getDefaultMiddleware() puts thunk first by design.",
     codeSnippet: `// Custom logging middleware
 const logger = store => next => action => {
   console.log('dispatching', action.type);
@@ -135,14 +135,14 @@ configureStore({
     textbookDef:
       'A selector is a function that accepts Redux state and returns derived data. Memoized selectors (via createSelector) recompute only when their input selectors return different references, preventing unnecessary downstream work.',
     keyPoints: [
-      'Simple selector: const selectCount = (state) => state.counter.value — just a function, no magic.',
-      'createSelector(inputSelectors, resultFn) — resultFn re-runs only when inputs change (by reference).',
-      'Co-locate selectors with their slice file and export them — import wherever needed.',
+      'Simple selector: const selectCount = (state) => state.counter.value , just a function, no magic.',
+      'createSelector(inputSelectors, resultFn) , resultFn re-runs only when inputs change (by reference).',
+      'Co-locate selectors with their slice file and export them , import wherever needed.',
       'useSelector re-subscribes on every dispatch; memoized selectors prevent expensive re-computations.',
       "RTK ≥ 2.0: createSlice's selectors field auto-binds selectors to the slice's state path."
     ],
     gotcha:
-      'A selector returning a new array/object on every call (filter(), map() inline) will cause a re-render every dispatch even if the data is identical — always memoize transformations with createSelector.',
+      'A selector returning a new array/object on every call (filter(), map() inline) will cause a re-render every dispatch even if the data is identical , always memoize transformations with createSelector.',
     codeSnippet: `import { createSelector } from '@reduxjs/toolkit';
 
 const selectItems = (state) => state.cart.items;
@@ -160,17 +160,17 @@ const selectTotal = createSelector(
   {
     id: 'normalized-state',
     title: 'Normalized State Shape',
-    summary: 'Store entities as { ids: [], entities: {} } instead of nested arrays — enables O(1) lookups and avoids duplication.',
+    summary: 'Store entities as { ids: [], entities: {} } instead of nested arrays , enables O(1) lookups and avoids duplication.',
     difficulty: 'intermediate',
     category: 'patterns',
     textbookDef:
       "State normalization flattens nested data into a dictionary keyed by ID. Relationships are expressed as ID references (like a relational DB). RTK's createEntityAdapter automates this pattern.",
     keyPoints: [
       'Problem with arrays: searching is O(n); updating one item requires spreading the whole array.',
-      "Normalized shape: { ids: ['a','b'], entities: { a: {...}, b: {...} } } — update by key is O(1).",
+      "Normalized shape: { ids: ['a','b'], entities: { a: {...}, b: {...} } } , update by key is O(1).",
       'createEntityAdapter generates the normalized shape + CRUD helpers (addOne, updateOne, removeOne, upsertOne…).',
       'selectAll / selectById / selectTotal are pre-built selectors from the adapter.',
-      'Cross-slice relationships use ID references, never nested objects — keeps each slice independently updatable.'
+      'Cross-slice relationships use ID references, never nested objects , keeps each slice independently updatable.'
     ],
     codeSnippet: `// Flat array (hard to update by ID)
 state.users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
@@ -189,7 +189,7 @@ const user = state.users.entities[id];`
   {
     id: 'what-is-redux',
     title: 'What is Redux?',
-    summary: 'A predictable state container — a centralized global store updated only by dispatching actions to pure reducers.',
+    summary: 'A predictable state container , a centralized global store updated only by dispatching actions to pure reducers.',
     difficulty: 'basic',
     category: 'core',
     keyPoints: [
@@ -201,7 +201,7 @@ const user = state.users.entities[id];`
     ],
     textbookDef:
       'Redux is a predictable state container for JavaScript applications. It stores the whole application state in a single immutable tree and allows changes only through dispatched actions processed by pure reducer functions, yielding a deterministic, traceable state-management model.',
-    eli5: 'Redux is like a single shared whiteboard for your whole app. No one scribbles on it directly — you hand a written note (action) to a referee (reducer) who erases and rewrites the board following strict rules. Everyone watching the board updates automatically.',
+    eli5: 'Redux is like a single shared whiteboard for your whole app. No one scribbles on it directly , you hand a written note (action) to a referee (reducer) who erases and rewrites the board following strict rules. Everyone watching the board updates automatically.',
     codeSnippet: `// The four pieces in miniature
 const action = { type: 'INCREMENT' };               // 1. Action
 const reducer = (s = { n: 0 }, a) =>                 // 2. Reducer
@@ -224,7 +224,7 @@ store.dispatch(action);`
       'Recording actions enables replay and reverting to past states.'
     ],
     gotcha:
-      'Breaking principle 3 — doing async or mutating inside a reducer — destroys predictability and breaks DevTools time travel. Keep side effects in middleware.',
+      'Breaking principle 3 , doing async or mutating inside a reducer , destroys predictability and breaks DevTools time travel. Keep side effects in middleware.',
     codeSnippet: `// Principle 2 & 3: never mutate; return a new object
 const reducer = (state, action) => {
   switch (action.type) {
@@ -236,19 +236,19 @@ const reducer = (state, action) => {
   {
     id: 'immutable-state',
     title: 'Immutable State',
-    summary: 'State is never mutated in place — every change produces a new object, enabling fast change detection and time travel.',
+    summary: 'State is never mutated in place , every change produces a new object, enabling fast change detection and time travel.',
     difficulty: 'intermediate',
     category: 'core',
     keyPoints: [
       'Reducers return a NEW state object rather than editing the existing one.',
       'Enables reference-equality checks: unchanged slices skip re-renders.',
-      'Preserves state history — supports undo/redo and time-travel debugging.',
+      'Preserves state history , supports undo/redo and time-travel debugging.',
       'Achieve it with the spread operator (shallow) or a deep clone (costly).',
       'Libraries: Immer (mutate a draft, get immutable output) or Immutable.js.'
     ],
     gotcha:
-      'const only freezes the binding, not the object’s contents. state.items.push(x) still mutates — use [...state.items, x] or Immer instead.',
-    codeSnippet: `// ❌ mutation — same reference, UI won't update
+      'const only freezes the binding, not the object’s contents. state.items.push(x) still mutates , use [...state.items, x] or Immer instead.',
+    codeSnippet: `// ❌ mutation , same reference, UI won't update
 state.user.name = 'Bob';
 
 // ✅ new reference
@@ -287,14 +287,14 @@ const rootReducer = combineReducers({
     category: 'core',
     keyPoints: [
       'Pure function: output depends only on input; no external state, no I/O, no randomness.',
-      'Same (state, action) input must always yield the same output — idempotent.',
+      'Same (state, action) input must always yield the same output , idempotent.',
       'Reducers must NOT mutate arguments, call APIs, or read Date.now()/Math.random().',
       'Side effects are handled by middleware: redux-thunk, redux-saga.',
       'Keeping reducers pure is what makes Redux testable and time-travel-debuggable.'
     ],
     gotcha:
       'A reducer that reads or writes anything outside its arguments (a global, the network, the clock) is impure and makes state non-reproducible.',
-    codeSnippet: `// ❌ impure — depends on/changes outside state
+    codeSnippet: `// ❌ impure , depends on/changes outside state
 let count = 0;
 const bad = () => { count += 1; return count; };
 
@@ -311,7 +311,7 @@ const good = (state, action) =>
     difficulty: 'intermediate',
     category: 'async',
     keyPoints: [
-      'Reducers are synchronous — async logic cannot live there.',
+      'Reducers are synchronous , async logic cannot live there.',
       'redux-thunk lets an action creator return a function (dispatch, getState) instead of an object.',
       'Typical pattern: dispatch REQUEST → await API → dispatch SUCCESS or FAILURE.',
       'redux-saga uses generator functions and effects (call, put, takeLatest) for complex flows.',
@@ -320,7 +320,7 @@ const good = (state, action) =>
     textbookDef:
       'Asynchronous behavior in Redux is implemented through middleware that intercepts dispatched functions or generator-driven effects, allowing side-effectful operations (such as network requests) to dispatch plain actions at appropriate points in the async lifecycle while keeping reducers pure.',
     gotcha:
-      'Without thunk/saga middleware, dispatching a function throws "Actions must be plain objects" — async needs middleware installed.',
+      'Without thunk/saga middleware, dispatching a function throws "Actions must be plain objects" , async needs middleware installed.',
     codeSnippet: `// redux-thunk
 const fetchData = () => async (dispatch) => {
   dispatch({ type: 'FETCH_REQUEST' });
@@ -337,7 +337,7 @@ const fetchData = () => async (dispatch) => {
   {
     id: 'redux-vs-local-state',
     title: 'Redux vs Local Component State',
-    summary: 'Local state is simple and scoped; Redux centralizes shared state and avoids prop drilling — worth it at scale.',
+    summary: 'Local state is simple and scoped; Redux centralizes shared state and avoids prop drilling , worth it at scale.',
     difficulty: 'basic',
     category: 'patterns',
     keyPoints: [
@@ -349,7 +349,7 @@ const fetchData = () => async (dispatch) => {
     ],
     gotcha:
       'Reaching for Redux for every piece of state is over-engineering. Keep purely local, UI-only state in useState; lift to Redux only when it is genuinely shared.',
-    codeSnippet: `// Local — fine for an isolated toggle
+    codeSnippet: `// Local , fine for an isolated toggle
 const [open, setOpen] = useState(false);
 
 // Redux — when many distant components need the same data
@@ -389,9 +389,9 @@ root.render(
     keyPoints: [
       'useSelector(selectorFn) reads a value and re-renders when that value changes (=== comparison).',
       'useDispatch() returns the dispatch function to send actions.',
-      'Select the smallest slice you need — selecting the whole state re-renders on every change.',
+      'Select the smallest slice you need , selecting the whole state re-renders on every change.',
       'Returning a new object/array from a selector each call defeats the === check (use shallowEqual or a memoized selector).',
-      'Hooks replaced connect for most new code — less boilerplate, better TS inference.'
+      'Hooks replaced connect for most new code , less boilerplate, better TS inference.'
     ],
     gotcha:
       'useSelector(s => ({ a: s.a, b: s.b })) returns a NEW object every run → re-renders every dispatch. Use separate selectors or pass shallowEqual as the second arg.',
@@ -438,7 +438,7 @@ export default connect(mapState, mapDispatch)(Counter);`
       'Ducks reduces the file-hopping of the classic types/actions/reducers separation.',
       'RTK’s createSlice is the modern, formalized version of Ducks.'
     ],
-    codeSnippet: `// counterDuck.js — types, creators, reducer in one module
+    codeSnippet: `// counterDuck.js , types, creators, reducer in one module
 const INCREMENT = 'counter/increment';
 export const increment = () => ({ type: INCREMENT });
 export default function reducer(state = { n: 0 }, action) {
@@ -451,7 +451,7 @@ export default function reducer(state = { n: 0 }, action) {
   {
     id: 'reset-store',
     title: 'Resetting Store State & Higher-Order Reducers',
-    summary: 'Wrap the root reducer to reset state on a special action — a common Higher-Order Reducer use case.',
+    summary: 'Wrap the root reducer to reset state on a special action , a common Higher-Order Reducer use case.',
     difficulty: 'intermediate',
     category: 'patterns',
     keyPoints: [
@@ -462,7 +462,7 @@ export default function reducer(state = { n: 0 }, action) {
       'Keep the wrapper generic so it composes over any root reducer.'
     ],
     gotcha:
-      'Don’t mutate or hand-clear every slice on reset — delegating to each reducer with undefined state lets them define their own initial values in one place.',
+      'Don’t mutate or hand-clear every slice on reset , delegating to each reducer with undefined state lets them define their own initial values in one place.',
     codeSnippet: `const rootReducer = combineReducers({ user, cart });
 
 // HOR: reset everything on LOGOUT
@@ -480,13 +480,13 @@ const resettable = (state, action) =>
     difficulty: 'advanced',
     category: 'middleware',
     keyPoints: [
-      'Signature: store => next => action => { … } — three curried functions.',
+      'Signature: store => next => action => { … } , three curried functions.',
       'Call next(action) to pass the action to the next middleware/reducer.',
       'Access store.getState() and store.dispatch() inside for conditional logic.',
       'Skip next(action) to swallow an action; call dispatch() to add new ones.',
       'Registered via configureStore’s middleware option (concat onto the defaults).'
     ],
-    gotcha: 'Forgetting to call next(action) silently drops the action — the reducer never sees it and state never updates.',
+    gotcha: 'Forgetting to call next(action) silently drops the action , the reducer never sees it and state never updates.',
     codeSnippet: `const logger = (store) => (next) => (action) => {
   console.log('dispatching', action.type);
   const result = next(action);          // pass it on — don't forget!
@@ -509,7 +509,7 @@ configureStore({ reducer, middleware: (gdm) => gdm().concat(logger) });`
       'resultFn re-runs only when an input selector returns a new reference.',
       'Avoids recomputing expensive derivations (filter/sort/aggregate) every render.',
       'Prevents new-reference re-renders when the derived data is unchanged.',
-      'Selectors compose — feed one memoized selector into another.'
+      'Selectors compose , feed one memoized selector into another.'
     ],
     gotcha:
       'A default createSelector caches only the LAST call. For per-item or per-component args, create a selector instance per use (selector factory) to avoid cache thrashing.',

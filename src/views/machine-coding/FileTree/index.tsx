@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🔴 File Tree Explorer',
+  title: 'File Tree Explorer',
   description:
     "Build a collapsible file tree (like VS Code's sidebar). Folders expand/collapse on click. Users can add files or folders inside any folder, and delete any node.",
   requirements: [

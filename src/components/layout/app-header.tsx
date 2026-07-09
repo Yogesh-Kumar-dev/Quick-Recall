@@ -9,6 +9,7 @@ import OfflineStatusChip from '@/components/pwa/offline-status-chip';
 import HeaderSearch from '@/components/search/header-search';
 import TimerSection from '@/components/timer/timer-section';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -19,7 +20,10 @@ export function AppHeader() {
 
   return (
     <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4">
-      <SidebarTrigger />
+      <Tooltip>
+        <TooltipTrigger render={<SidebarTrigger />} />
+        <TooltipContent>Ctrl+B</TooltipContent>
+      </Tooltip>
       <HeaderSearch />
       {/* breadcrumbs land here in a later phase */}
       <TimerSection />

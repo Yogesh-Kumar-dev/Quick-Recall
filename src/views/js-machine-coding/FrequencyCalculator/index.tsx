@@ -11,7 +11,7 @@ const optimalCode = readFileSync(join(BASE, 'solution-optimal.js'), 'utf-8');
 const builtinCode = readFileSync(join(BASE, 'solution-builtin.js'), 'utf-8');
 
 const PROBLEM: JsProblemMeta = {
-  title: '🟢 Frequency Calculator',
+  title: 'Frequency Calculator',
   description:
     'Given an array of items, count how many times each one appears and return the frequency map along with the most repeated and least repeated item. When several items share the highest (or lowest) count, return the one seen first. This is the classic "count with a hash map" pattern that underpins anagram checks, mode-finding, and many other interview questions.',
   examples: [

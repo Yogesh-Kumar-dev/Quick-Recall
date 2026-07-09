@@ -117,9 +117,8 @@ interface StackTech {
   label: string;
   icon?: string;
   localSrc?: string;
+  emoji?: string; // fallback when no icon exists on thesvg.org (e.g. Zustand)
   width?: number;
-  // Fallback for tech without a simple-icons entry on thesvg.org (e.g. Zustand — 404s there).
-  emoji?: string;
 }
 
 const CORE_STACK: StackTech[] = [
@@ -181,7 +180,9 @@ export default function AboutView() {
           {CORE_STACK.map((tech) => (
             <div key={tech.label} title={tech.label} className="flex cursor-default transition-transform duration-200 hover:scale-110">
               {tech.emoji ? (
-                <span className="flex h-10 w-10 items-center justify-center text-3xl leading-none">{tech.emoji}</span>
+                <span className="flex h-10 w-10 items-center justify-center text-3xl leading-none" role="img" aria-label={tech.label}>
+                  {tech.emoji}
+                </span>
               ) : (
                 <Image
                   src={tech.localSrc ?? `https://thesvg.org/icons/${tech.icon}/default.svg`}

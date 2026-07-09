@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🔴 Virtualized List',
+  title: 'Virtualized List',
   description:
     'Render a list of 100 items — each labelled "div 1", "div 2" … "div 100". The items are revealed in batches as the user scrolls, using an IntersectionObserver sentinel at the bottom of the list rather than a scroll listener.',
   requirements: [

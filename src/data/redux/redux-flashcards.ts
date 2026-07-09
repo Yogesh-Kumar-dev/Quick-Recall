@@ -7,7 +7,7 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-what-is',
     front: 'What is Redux?',
-    back: 'A predictable state container for JS apps — a centralized global store holding all app state, updated only by dispatching actions to pure reducers. Library-agnostic (commonly used with React via react-redux).',
+    back: 'A predictable state container for JS apps , a centralized global store holding all app state, updated only by dispatching actions to pure reducers. Library-agnostic (commonly used with React via react-redux).',
     category: 'Q&A'
   },
   {
@@ -31,7 +31,7 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-action-creator',
     front: 'Action creator',
-    back: 'A function that builds and returns an action object — e.g. const increment = () => ({ type: "INCREMENT" }). Keeps action construction consistent and reusable.',
+    back: 'A function that builds and returns an action object , e.g. const increment = () => ({ type: "INCREMENT" }). Keeps action construction consistent and reusable.',
     category: 'Keyword'
   },
   {
@@ -43,7 +43,7 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-single-source',
     front: 'Single source of truth',
-    back: 'The entire app state lives in one immutable tree in the store — making state predictable, easy to debug, and consistent across all components.',
+    back: 'The entire app state lives in one immutable tree in the store , making state predictable, easy to debug, and consistent across all components.',
     category: 'Q&A'
   },
   {
@@ -85,19 +85,19 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-pure-side-effects',
     front: 'Pure functions vs side effects in Redux',
-    back: 'Reducers must be PURE — output depends only on input, no I/O or external mutation. Side effects (API calls, timers) live in middleware like redux-thunk or redux-saga.',
+    back: 'Reducers must be PURE , output depends only on input, no I/O or external mutation. Side effects (API calls, timers) live in middleware like redux-thunk or redux-saga.',
     category: 'Q&A'
   },
   {
     id: 'redux-thunk',
     front: 'redux-thunk',
-    back: 'Middleware that lets action creators return a FUNCTION (dispatch, getState) instead of a plain object — enabling async flows (dispatch request → await API → dispatch success/failure).',
+    back: 'Middleware that lets action creators return a FUNCTION (dispatch, getState) instead of a plain object , enabling async flows (dispatch request → await API → dispatch success/failure).',
     category: 'Keyword'
   },
   {
     id: 'redux-saga',
     front: 'redux-saga',
-    back: 'Middleware using generator functions to manage side effects via effects like call, put, takeLatest — good for complex/concurrent async flows. An alternative to thunks.',
+    back: 'Middleware using generator functions to manage side effects via effects like call, put, takeLatest , good for complex/concurrent async flows. An alternative to thunks.',
     category: 'Keyword'
   },
   {
@@ -115,13 +115,13 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-reselect',
     front: 'createSelector (memoized selector)',
-    back: 'Builds a selector that caches its result and recomputes only when its input selectors change by reference — preventing expensive recalculations and needless re-renders.',
+    back: 'Builds a selector that caches its result and recomputes only when its input selectors change by reference , preventing expensive recalculations and needless re-renders.',
     category: 'Keyword'
   },
   {
     id: 'redux-vs-local-state',
     front: 'Redux vs local component state',
-    back: 'Local state: simple, scoped, best for small/UI-only state. Redux: centralized, shareable across the tree without prop drilling, predictable — worth it for larger apps with shared, multi-level state.',
+    back: 'Local state: simple, scoped, best for small/UI-only state. Redux: centralized, shareable across the tree without prop drilling, predictable , worth it for larger apps with shared, multi-level state.',
     category: 'Q&A'
   },
 
@@ -177,13 +177,13 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-reducer-composition',
     front: 'Reducer composition',
-    back: 'Splitting state handling into small slice reducers and combining them with combineReducers. Each reducer manages its own subtree — modular, testable, scalable.',
+    back: 'Splitting state handling into small slice reducers and combining them with combineReducers. Each reducer manages its own subtree , modular, testable, scalable.',
     category: 'Q&A'
   },
   {
     id: 'redux-ducks',
     front: 'Ducks pattern',
-    back: 'A file convention that co-locates a feature’s action types, action creators, and reducer in ONE module (instead of separate files) — reducing boilerplate. RTK’s createSlice formalizes this.',
+    back: 'A file convention that co-locates a feature’s action types, action creators, and reducer in ONE module (instead of separate files) , reducing boilerplate. RTK’s createSlice formalizes this.',
     category: 'Keyword'
   },
   {
@@ -201,13 +201,13 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-higher-order-reducer',
     front: 'Higher-Order Reducer (HOR)',
-    back: 'A function that takes a reducer and returns an enhanced reducer — used to add reusable behavior (reset, undo/redo, pagination) across many reducers.',
+    back: 'A function that takes a reducer and returns an enhanced reducer , used to add reusable behavior (reset, undo/redo, pagination) across many reducers.',
     category: 'Keyword'
   },
   {
     id: 'redux-reselect',
     front: 'reselect',
-    back: 'The library providing createSelector — memoized selectors that recompute only when their inputs change by reference, avoiding wasted recalculation and re-renders.',
+    back: 'The library providing createSelector , memoized selectors that recompute only when their inputs change by reference, avoiding wasted recalculation and re-renders.',
     category: 'Keyword'
   },
   {
@@ -225,7 +225,7 @@ export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-toolkit',
     front: 'Redux Toolkit (RTK)',
-    back: 'The official, recommended way to write Redux: configureStore, createSlice (Immer + auto action creators), createAsyncThunk, and createEntityAdapter — far less boilerplate.',
+    back: 'The official, recommended way to write Redux: configureStore, createSlice (Immer + auto action creators), createAsyncThunk, and createEntityAdapter , far less boilerplate.',
     category: 'Keyword'
   }
 ];

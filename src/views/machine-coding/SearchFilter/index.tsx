@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Search Filter',
+  title: 'Search Filter',
   description:
     'Given a static list of items, build a search input that filters the list in real-time as the user types. No API calls, no debounce — purely synchronous filtering of an in-memory array.',
   requirements: [

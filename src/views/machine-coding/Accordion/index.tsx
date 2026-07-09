@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Accordion Component',
+  title: 'Accordion Component',
   description:
     'Build an accordion where sections expand/collapse on click. Implement both single-open mode (only one section open at a time) and multi-open mode (multiple sections can be open simultaneously).',
   requirements: [

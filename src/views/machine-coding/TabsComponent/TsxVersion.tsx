@@ -12,7 +12,7 @@ const TABS = [
     badge: 0,
     content: () => (
       <div>
-        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 8px' }}>📊 Project Overview</p>
+        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 8px' }}>Project Overview</p>
         <p style={{ fontSize: 14, color: '#666', margin: '0 0 12px' }}>
           This tab was rendered the first time you opened it and stays mounted after that. Switch tabs and back — it does not re-mount.
         </p>
@@ -27,7 +27,7 @@ const TABS = [
     badge: 3,
     content: () => (
       <div>
-        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 10px' }}>🔔 Recent Activity</p>
+        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 10px' }}>Recent Activity</p>
         {['PR #42 merged by @alice', 'Issue #18 opened by @bob', 'Deployment to staging succeeded'].map((item) => (
           <div key={item} style={{ padding: '8px 12px', border: '1px solid #e0e0e0', borderRadius: 6, marginBottom: 6, fontSize: 14 }}>
             {item}
@@ -41,7 +41,7 @@ const TABS = [
     badge: 0,
     content: () => (
       <div>
-        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 8px' }}>⚙️ Settings</p>
+        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 8px' }}>Settings</p>
         <p style={{ fontSize: 14, color: '#666', margin: 0 }}>Lazy loaded — not rendered until you first clicked this tab.</p>
       </div>
     )
@@ -51,7 +51,7 @@ const TABS = [
     badge: 12,
     content: () => (
       <div>
-        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 10px' }}>👥 Team Members</p>
+        <p style={{ fontWeight: 700, fontSize: 15, margin: '0 0 10px' }}>Team Members</p>
         {['Alice Chen', 'Bob Kumar', 'Carol Smith', 'Dan Lee'].map((name) => (
           <div key={name} style={{ padding: '6px 10px', background: '#f5f5f5', borderRadius: 4, marginBottom: 6, fontSize: 14 }}>
             {name}
@@ -151,7 +151,7 @@ export default function Tabs() {
       </div>
 
       <p style={{ fontSize: 12, color: '#999', marginTop: 10 }}>
-        💡 Try: Switch tabs with ← → arrow keys. Tab content is preserved (lazy mount + keep-alive).
+        Try: Switch tabs with left/right arrow keys. Tab content is preserved (lazy mount + keep-alive).
       </p>
     </div>
   );

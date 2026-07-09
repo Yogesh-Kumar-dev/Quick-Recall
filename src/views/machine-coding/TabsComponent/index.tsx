@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 Tabs Component',
+  title: 'Tabs Component',
   description:
     'Build a custom tabs component from scratch. Clicking a tab shows its content panel. Implement keyboard navigation (← → arrow keys) and a lazy-mount strategy so heavy content is only rendered the first time its tab is opened.',
   requirements: [

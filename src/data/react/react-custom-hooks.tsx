@@ -47,7 +47,7 @@ export default function useToggle(initial = false) {
 {isOpen && <Modal onClose={setOff} />}`,
     useCases: ['Modal / drawer / accordion open state', 'Show-more / show-less sections', 'Boolean feature flags in local UI state'],
     gotcha:
-      'Returning a bare setter pair without useCallback recreates the functions every render — fine for plain DOM, but it defeats React.memo on children.',
+      'Returning a bare setter pair without useCallback recreates the functions every render , fine for plain DOM, but it defeats React.memo on children.',
     demo: <ToggleDemo />
   },
   {
@@ -89,7 +89,7 @@ export default function useCopyToClipboard(resetDelay = 1500) {
 </button>`,
     useCases: ['Copy code snippets / install commands', '"Copy link" share buttons', 'Copy API keys or generated tokens'],
     gotcha:
-      'navigator.clipboard is undefined on http (non-secure) origins and some in-app webviews — always handle the false return rather than assuming success.',
+      'navigator.clipboard is undefined on http (non-secure) origins and some in-app webviews , always handle the false return rather than assuming success.',
     demo: <ClipboardDemo />
   },
   {
@@ -136,7 +136,7 @@ export default function useLocalStorage<ValueType>(key: string, defaultValue: Va
 </button>`,
     useCases: ['Theme / language preferences', 'Persisting form drafts', 'Remembering dismissed banners or onboarding state'],
     gotcha:
-      'The initial value is read from localStorage during the first render (the useState lazy initialiser) — that only survives server-side rendering because of the `typeof window` guard. Remove the guard and Next.js throws "localStorage is not defined" on the server.',
+      'The initial value is read from localStorage during the first render (the useState lazy initialiser) , that only survives server-side rendering because of the `typeof window` guard. Remove the guard and Next.js throws "localStorage is not defined" on the server.',
     demo: <LocalStorageDemo />
   },
   {
@@ -146,7 +146,7 @@ export default function useLocalStorage<ValueType>(key: string, defaultValue: Va
     difficulty: 'medium',
     category: 'effect',
     description:
-      'Returns a value that only updates after `delay`ms of silence. Each change restarts the timer, so a burst of updates (fast typing) collapses into one final update after the user pauses — the canonical "search as you type" optimisation.',
+      'Returns a value that only updates after `delay`ms of silence. Each change restarts the timer, so a burst of updates (fast typing) collapses into one final update after the user pauses , the canonical "search as you type" optimisation.',
     signature: 'const debounced = useDebounce(value, delay?)',
     source: `import { useEffect, useState } from 'react';
 
@@ -166,7 +166,7 @@ const debounced = useDebounce(query, 400);
 useEffect(() => { if (debounced) search(debounced); }, [debounced]);`,
     useCases: ['Search-as-you-type API calls', 'Validating an input only after the user pauses', 'Autosaving a draft after editing stops'],
     gotcha:
-      'Debounce waits for quiet — if the value never stops changing, it never fires. For a guaranteed cadence under continuous change, use throttle instead.',
+      'Debounce waits for quiet , if the value never stops changing, it never fires. For a guaranteed cadence under continuous change, use throttle instead.',
     demo: <DebounceDemo />
   },
   {
@@ -176,7 +176,7 @@ useEffect(() => { if (debounced) search(debounced); }, [debounced]);`,
     difficulty: 'medium',
     category: 'effect',
     description:
-      'Returns a copy of the value that changes at most once every `interval`ms. Unlike debounce (which waits for a pause), throttle emits on a fixed cadence even while the source keeps changing — ideal for scroll, mousemove, and resize.',
+      'Returns a copy of the value that changes at most once every `interval`ms. Unlike debounce (which waits for a pause), throttle emits on a fixed cadence even while the source keeps changing , ideal for scroll, mousemove, and resize.',
     signature: 'const throttled = useThrottle(value, interval?)',
     source: `import { useEffect, useRef, useState } from 'react';
 
@@ -219,7 +219,7 @@ const throttledY = useThrottle(scrollY, 200);
     difficulty: 'medium',
     category: 'ref',
     description:
-      'Answers "what was this value last render?" using a ref written inside an effect. The trick: effects run AFTER render, so while rendering, the ref still holds the previous value — no extra state, no extra re-renders.',
+      'Answers "what was this value last render?" using a ref written inside an effect. The trick: effects run AFTER render, so while rendering, the ref still holds the previous value , no extra state, no extra re-renders.',
     signature: 'const prev = usePrevious(value)',
     source: `import { useEffect, useRef } from 'react';
 
@@ -234,13 +234,13 @@ export default function usePrevious<T>(value: T): T | undefined {
 }`,
     usage: `const prevCount = usePrevious(count);
 
-<p>Now: {count} — was: {prevCount ?? '—'}</p>`,
+<p>Now: {count} · was: {prevCount ?? '—'}</p>`,
     useCases: [
       'Detecting which prop changed in an effect',
       'Animating based on the delta between renders',
       'Comparing old vs new value before running side effects'
     ],
-    gotcha: 'It returns undefined on the first render (there is no previous value yet) — always guard with a fallback.',
+    gotcha: 'It returns undefined on the first render (there is no previous value yet) , always guard with a fallback.',
     demo: <PreviousDemo />
   },
   {
@@ -276,7 +276,7 @@ const isMobile = width > 0 && width < 768;`,
       'Sizing canvases / charts to the viewport'
     ],
     gotcha:
-      'For real apps, prefer MUI useMediaQuery or CSS for layout. A raw resize listener fires very frequently — throttle it if the handler does anything expensive.',
+      'For real apps, prefer MUI useMediaQuery or CSS for layout. A raw resize listener fires very frequently , throttle it if the handler does anything expensive.',
     demo: <WindowSizeDemo />
   },
   {
@@ -318,7 +318,7 @@ export default function useClickOutside<T extends HTMLElement = HTMLElement>(
 {open && <div ref={ref}>Dropdown…</div>}`,
     useCases: ['Closing dropdowns / popovers / menus', 'Dismissing modals on backdrop click', 'Exiting an inline edit field'],
     gotcha:
-      'Use mousedown, not click — by the time a click fires, focus may already have moved and the menu may have re-rendered, causing the toggle button to immediately reopen what you just closed.',
+      'Use mousedown, not click , by the time a click fires, focus may already have moved and the menu may have re-rendered, causing the toggle button to immediately reopen what you just closed.',
     demo: <ClickOutsideDemo />
   },
   {
@@ -352,14 +352,14 @@ export default function useOnlineStatus(): boolean {
 }`,
     usage: `const isOnline = useOnlineStatus();
 
-{!isOnline && <Banner>You are offline — changes will sync later.</Banner>}`,
+{!isOnline && <Banner>You are offline, changes will sync later.</Banner>}`,
     useCases: [
       'Offline banners / toasts',
       'Pausing polling or queuing mutations while offline',
       'Disabling submit buttons that need the network'
     ],
     gotcha:
-      'navigator.onLine only means "connected to a network", not "the internet works". A captive-portal or dead Wi-Fi still reports online — for true reachability you must ping a real endpoint.',
+      'navigator.onLine only means "connected to a network", not "the internet works". A captive-portal or dead Wi-Fi still reports online , for true reachability you must ping a real endpoint.',
     demo: <OnlineStatusDemo />
   },
   {
@@ -369,7 +369,7 @@ export default function useOnlineStatus(): boolean {
     difficulty: 'advanced',
     category: 'browser',
     description:
-      'Attaches an IntersectionObserver to the returned ref and reports whether the element is intersecting. With freezeOnceVisible it disconnects after the first reveal — perfect for lazy-loading and one-shot animations.',
+      'Attaches an IntersectionObserver to the returned ref and reports whether the element is intersecting. With freezeOnceVisible it disconnects after the first reveal , perfect for lazy-loading and one-shot animations.',
     signature: 'const { ref, isIntersecting } = useIntersectionObserver(options?)',
     source: `import { useEffect, useRef, useState } from 'react';
 
@@ -409,7 +409,7 @@ export default function useIntersectionObserver<T extends HTMLElement = HTMLElem
       'Impression tracking for analytics'
     ],
     gotcha:
-      'Passing a fresh options object every render re-creates the observer each time. Pass primitive, stable values (or memoise) — here we key the effect on the individual init fields, not the object identity.',
+      'Passing a fresh options object every render re-creates the observer each time. Pass primitive, stable values (or memoise) , here we key the effect on the individual init fields, not the object identity.',
     demo: <IntersectionDemo />
   },
   {
@@ -458,7 +458,7 @@ return <Profile user={data!} />;`,
       'Learning the fetch + AbortController pattern before reaching for React Query'
     ],
     gotcha:
-      'For production prefer React Query / SWR — they add caching, dedupe, retries and revalidation. The abort on cleanup is the non-negotiable part: without it, two quick URL changes can let the slower response overwrite the newer one.',
+      'For production prefer React Query / SWR , they add caching, dedupe, retries and revalidation. The abort on cleanup is the non-negotiable part: without it, two quick URL changes can let the slower response overwrite the newer one.',
     demo: <FetchDemo />
   }
 ];

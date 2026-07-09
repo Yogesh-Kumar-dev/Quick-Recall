@@ -9,9 +9,9 @@ import type { HookDifficulty, HookDoc } from '@/types/content';
 import CodeBlock from './code-block';
 
 const DIFFICULTY_META: { value: HookDifficulty; label: string }[] = [
-  { value: 'easy', label: '🟢 Easy' },
-  { value: 'medium', label: '🟡 Medium' },
-  { value: 'advanced', label: '🔴 Advanced' }
+  { value: 'easy', label: 'Easy' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'advanced', label: 'Advanced' }
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -138,7 +138,7 @@ export default function CustomHooksView() {
   return (
     <div className="mx-auto w-full max-w-4xl space-y-4">
       <div className="flex items-baseline justify-between gap-2">
-        <h1 className="font-heading text-2xl font-bold">🪝 Custom Hooks</h1>
+        <h1 className="font-heading text-2xl font-bold">Custom Hooks</h1>
         <span className="text-sm text-muted-foreground">
           {filtered.length} of {reactCustomHooks.length}
         </span>

@@ -83,7 +83,7 @@ export default function ShoppingCart() {
     <div style={{ position: 'relative' }}>
       {/* Toolbar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <span style={{ fontWeight: 700, fontSize: 16 }}>🛍️ Store</span>
+        <span style={{ fontWeight: 700, fontSize: 16 }}>Store</span>
         <button
           onClick={() => setCartOpen(!cartOpen)}
           style={{
@@ -97,7 +97,7 @@ export default function ShoppingCart() {
             fontSize: 14
           }}
         >
-          🛒 Cart {totalItems > 0 && `(₹${grandTotal})`}
+          Cart {totalItems > 0 && `(₹${grandTotal})`}
           {totalItems > 0 && (
             <span
               style={{
@@ -173,7 +173,7 @@ export default function ShoppingCart() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <strong style={{ fontSize: 15 }}>🛒 Cart ({totalItems})</strong>
+              <strong style={{ fontSize: 15 }}>Cart ({totalItems})</strong>
               <button
                 onClick={() => setCartOpen(false)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#888' }}

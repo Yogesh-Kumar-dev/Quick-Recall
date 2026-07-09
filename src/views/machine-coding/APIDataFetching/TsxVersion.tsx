@@ -104,7 +104,7 @@ export default function APIDataFetching() {
             marginBottom: 12
           }}
         >
-          ⚠️ {request.message}
+          {request.message}
         </div>
       )}
 

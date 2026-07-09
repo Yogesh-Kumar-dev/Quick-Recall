@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 API Data Fetching',
+  title: 'API Data Fetching',
   description:
     'Fetch data from a public REST API and display it in a list. Model the request lifecycle — idle, loading, success, error — as one status value rather than parallel boolean flags. Uses the JSONPlaceholder API.',
   requirements: [

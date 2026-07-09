@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟡 Sequential Progress Bars',
+  title: 'Sequential Progress Bars',
   description:
     'Build a React component where clicking "Add Bar" creates a new progress bar that fills from 0 → 100%. Bars must animate sequentially — only one bar runs at a time. Each bar takes ~2 seconds to fill. Rapid clicks should queue bars and run them in order.',
   requirements: [

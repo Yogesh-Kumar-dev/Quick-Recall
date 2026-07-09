@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Star Rating Component',
+  title: 'Star Rating Component',
   description: 'Build a reusable 5-star rating widget. Hovering over stars should preview the rating; clicking should lock it in.',
   requirements: [
     'Display 5 stars in a row',

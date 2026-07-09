@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Dropdown / Custom Select',
+  title: 'Dropdown / Custom Select',
   description:
     'Build a custom dropdown select component from scratch. Clicking the trigger opens a list of options; selecting one closes the list and updates the displayed value.',
   requirements: [

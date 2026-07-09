@@ -8,7 +8,7 @@ export const metadata = { title: 'JS Quick Recall | QuickRecall' };
 export default function Page() {
   return (
     <QuickRecallView
-      title="⚡ JS & TypeScript Quick Recall"
+      title="JS & TypeScript Quick Recall"
       intro="Last-minute cheatsheet — scan in 5–10 minutes before your interview. Key concepts, gotchas, and code snippets."
       sections={[...jsQuickRecall, ...tsQuickRecall]}
       headerAction={<PdfLauncher guides={JS_QUICK_RECALL_PDFS} title="JS Best Practices" buttonLabel="JS best-practices PDFs" />}

@@ -50,7 +50,10 @@ export default function SearchFilter() {
             pointerEvents: 'none'
           }}
         >
-          🔍
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
         </span>
         <input
           type="text"
@@ -96,7 +99,6 @@ export default function SearchFilter() {
       {/* Results list */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: 32, color: '#9ca3af' }}>
-          <div style={{ fontSize: 32 }}>🔍</div>
           <p style={{ margin: '8px 0 0', fontSize: 14 }}>No results for &ldquo;{query}&rdquo;</p>
         </div>
       ) : (

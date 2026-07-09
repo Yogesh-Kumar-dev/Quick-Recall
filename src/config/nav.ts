@@ -76,7 +76,7 @@ export const navSections: NavSection[] = [
       { title: 'TS Notes', url: '/js/typescript', icon: IconBrandTypescript },
       { title: 'TS for React', url: '/js/ts-for-react', icon: IconBrandTypescript },
       { title: 'JS Machine Coding', url: '/js/machine-coding', icon: IconCode },
-      { title: 'Quick Recall ⚡', url: '/js/quick-recall', icon: IconBolt }
+      { title: 'Quick Recall', url: '/js/quick-recall', icon: IconBolt }
     ]
   },
   {
@@ -87,7 +87,7 @@ export const navSections: NavSection[] = [
       { title: 'React Notes', url: '/react/notes', icon: IconBrandReact },
       { title: 'Custom Hooks', url: '/react/custom-hooks', icon: IconCode },
       { title: 'React Machine Coding', url: '/react/machine-coding', icon: IconCode },
-      { title: 'Quick Recall ⚡', url: '/react/quick-recall', icon: IconBolt }
+      { title: 'Quick Recall', url: '/react/quick-recall', icon: IconBolt }
     ]
   },
   {
@@ -116,7 +116,7 @@ export const navSections: NavSection[] = [
     icon: IconBrandNodejs,
     items: [
       { title: 'Node.js Notes', url: '/nodejs/notes', icon: IconBrandNodejs },
-      { title: 'Quick Recall ⚡', url: '/nodejs/quick-recall', icon: IconBolt }
+      { title: 'Quick Recall', url: '/nodejs/quick-recall', icon: IconBolt }
     ]
   },
   {

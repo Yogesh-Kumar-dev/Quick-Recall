@@ -144,7 +144,7 @@ export default function ModalPopup() {
         </div>
       )}
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="ℹ️ Information">
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Information">
         <p style={{ margin: '0 0 20px', color: '#374151', lineHeight: 1.7, fontSize: 14 }}>
           This modal closes on <strong>backdrop click</strong>, the <strong>✕ button</strong>, or the{' '}
           <kbd style={{ background: '#f3f4f6', padding: '1px 5px', borderRadius: 4, fontSize: 12 }}>Esc</kbd> key.
@@ -167,7 +167,7 @@ export default function ModalPopup() {
         </div>
       </Modal>
 
-      <Modal isOpen={confirmOpen} onClose={() => setConfirmOpen(false)} title="⚠️ Confirm Delete">
+      <Modal isOpen={confirmOpen} onClose={() => setConfirmOpen(false)} title="Confirm Delete">
         <p style={{ margin: '0 0 20px', color: '#374151', lineHeight: 1.7, fontSize: 14 }}>
           Are you sure you want to delete this item? This action <strong>cannot be undone</strong>.
         </p>

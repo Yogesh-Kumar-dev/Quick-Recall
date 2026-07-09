@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Form Handling',
+  title: 'Form Handling',
   description:
     'Build a controlled form with multiple inputs, inline validation, and a success state after submission. The foundation of every real-world React form.',
   requirements: [

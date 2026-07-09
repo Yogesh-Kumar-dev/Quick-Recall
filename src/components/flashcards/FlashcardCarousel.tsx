@@ -1,16 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { parseAsString, useQueryState } from 'nuqs';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
+import CodeBlock from '@/components/content/code-block';
 import { flashcardKey, type FlashcardSource } from '@/data/flashcards-index';
 
 import type { Flashcard } from '@/types/content';
 
 export default function FlashcardCarousel({ cards, source, title }: { cards: Flashcard[]; source: FlashcardSource; title?: string }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardId, setCardId] = useQueryState('card', parseAsString);
   const [isFlipped, setIsFlipped] = useState(false);
+
+  const idToIndex = useMemo(() => {
+    const map = new Map<string, number>();
+    for (let i = 0; i < cards.length; i++) map.set(cards[i].id, i);
+    return map;
+  }, [cards]);
+
+  const currentIndex = useMemo(() => {
+    if (cardId) {
+      const idx = idToIndex.get(cardId);
+      if (idx !== undefined) return idx;
+    }
+    return 0;
+  }, [cardId, idToIndex]);
+
+  const goTo = useCallback(
+    (index: number) => {
+      setCardId(cards[index].id);
+      setIsFlipped(false);
+    },
+    [cards, setCardId]
+  );
+
+  useEffect(() => {
+    if (!cardId && cards.length > 0) setCardId(cards[0].id, { scroll: false });
+  }, [cardId, cards, setCardId]);
 
   if (cards.length === 0) {
     return (
@@ -23,15 +51,8 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
   const current = cards[currentIndex];
   const progress = `${currentIndex + 1} of ${cards.length}`;
 
-  const handlePrev = () => {
-    setCurrentIndex((i) => (i === 0 ? cards.length - 1 : i - 1));
-    setIsFlipped(false);
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((i) => (i === cards.length - 1 ? 0 : i + 1));
-    setIsFlipped(false);
-  };
+  const handlePrev = () => goTo(currentIndex === 0 ? cards.length - 1 : currentIndex - 1);
+  const handleNext = () => goTo(currentIndex === cards.length - 1 ? 0 : currentIndex + 1);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') handlePrev();
@@ -83,6 +104,17 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
               <div className="text-center">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">Answer</p>
                 <p className="mt-4 text-base text-foreground">{current.back}</p>
+                {current.code && (
+                  // biome-ignore lint/a11y/noStaticElementInteractions: intercept clicks to prevent card flip
+                  // biome-ignore lint/a11y/useKeyWithClickEvents: intercept clicks to prevent card flip
+                  <div
+                    className="mt-3 text-left"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <CodeBlock code={current.code} language="javascript" />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -104,10 +136,7 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
               <button
                 key={card.id}
                 type="button"
-                onClick={() => {
-                  setCurrentIndex(i);
-                  setIsFlipped(false);
-                }}
+                onClick={() => goTo(i)}
                 className={`h-2 w-2 rounded-full transition-colors ${i === currentIndex ? 'bg-primary' : 'bg-border'}`}
                 aria-label={`Go to card ${i + 1}`}
               />
@@ -123,7 +152,7 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
         </Button>
       </div>
 
-      <p className="text-center text-xs text-muted-foreground">Click the card to flip • Use arrow keys to navigate • Space to flip</p>
+      <p className="text-center text-xs text-muted-foreground">Click the card to flip, use arrow keys to navigate, space to flip</p>
     </section>
   );
 }

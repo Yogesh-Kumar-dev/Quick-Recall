@@ -11,7 +11,7 @@ const jsxCode = readFileSync(join(BASE, 'JsxVersion.jsx'), 'utf-8');
 const tsxCode = readFileSync(join(BASE, 'TsxVersion.tsx'), 'utf-8');
 
 const PROBLEM: ProblemMeta = {
-  title: '🟢 Counter',
+  title: 'Counter',
   description:
     'Build a simple counter component with increment, decrement, and reset functionality. The classic first React component — demonstrates useState and event handlers.',
   requirements: [

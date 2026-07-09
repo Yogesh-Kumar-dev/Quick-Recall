@@ -171,7 +171,7 @@ export default function JobTrackerView() {
   return (
     <div className="mx-auto w-full max-w-6xl">
       <div className="mb-6 flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold">💼 Job Tracker</h1>
+        <h1 className="text-3xl font-bold">Job Tracker</h1>
         {hasJobs && (
           <Button className="gap-1.5" onClick={openAdd}>
             <Plus className="size-4" /> Add Job
