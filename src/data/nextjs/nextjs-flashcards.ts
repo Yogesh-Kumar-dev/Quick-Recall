@@ -1,7 +1,6 @@
 import type { Flashcard } from '@/types/content';
 
 // ─── Next.js flashcards — keyword/abbreviation defs + small Q&A ───────────────
-// Seeded incrementally; empty arrays hide the Flashcards button on the landing.
 
 export const nextjsFlashcards: Flashcard[] = [
   {
@@ -379,6 +378,21 @@ export const nextjsFlashcards: Flashcard[] = [
     front: 'transpilePackages (next.config.js)',
     back: 'Tells Next.js to transpile listed workspace packages (e.g. a shared "@repo/ui") that ship untranspiled TS/JSX , required in Turborepo/monorepo setups.',
     category: 'Keyword'
+  },
+  {
+    id: 'next-draft-mode',
+    front: 'Draft Mode',
+    back: 'A cookie set via draftMode().enable() in a Route Handler that bypasses the fetch cache, "use cache", and ISR for that visitor only , lets a CMS editor preview unpublished content while everyone else sees the cached page.',
+    category: 'Q&A'
+  },
+  {
+    id: 'next-after',
+    front: 'after()',
+    back: "Schedules a callback to run after the response has already been sent , for logging/analytics that shouldn't add latency. In a Server Component, read cookies()/headers() before calling after(), not inside its callback.",
+    code: `after(async () => {
+  logUserAction({ ua: (await headers()).get('user-agent') });
+});`,
+    category: 'Q&A'
   }
 ];
 
