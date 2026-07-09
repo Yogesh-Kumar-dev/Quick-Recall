@@ -129,5 +129,17 @@ export const nodejsFlashcards: Flashcard[] = [
     front: 'nvm / n / nvs',
     back: 'Node version managers , install and switch between multiple Node.js versions on one machine without touching the system install. `node -v` confirms which one is active.',
     category: 'Keyword'
+  },
+  {
+    id: 'node-is-single-threaded',
+    front: 'Is Node.js single-threaded?',
+    back: 'Your JavaScript runs on one thread, yes , but libuv backs it with a thread pool (default 4, UV_THREADPOOL_SIZE) for fs, dns.lookup, and some crypto/zlib calls. Network I/O uses the OS kernel directly, no pool involved.',
+    category: 'Q&A'
+  },
+  {
+    id: 'node-stream-backpressure',
+    front: 'Stream backpressure',
+    back: 'writable.write() returns false once its internal buffer exceeds highWaterMark , keep writing anyway and Node just buffers until it OOMs. Wait for the "drain" event, or use .pipe(), which handles this automatically.',
+    category: 'Keyword'
   }
 ];

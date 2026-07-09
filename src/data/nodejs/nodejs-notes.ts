@@ -30,6 +30,7 @@ export const nodejsNotes: Note[] = [
     summary: "A single-threaded loop with phases that dequeue and run callbacks , the mechanism behind all of Node's async behavior.",
     difficulty: 'intermediate',
     category: 'runtime',
+    prerequisites: ['what-is-nodejs'],
     keyPoints: [
       'Phases, in order: Timers (setTimeout/setInterval) → Pending/I-O callbacks → Idle/prepare → Poll (I/O execution) → Check (setImmediate) → Close callbacks.',
       'Each phase has its own FIFO queue; the loop only moves to the next phase once the current one drains (or hits a limit).',
@@ -52,6 +53,7 @@ app.post('/compress', (req, res) => {
     summary: "Three ways to defer work , they run at different points relative to the event loop's phases.",
     difficulty: 'intermediate',
     category: 'runtime',
+    prerequisites: ['nodejs-event-loop'],
     keyPoints: [
       'process.nextTick(fn) , runs immediately after the current operation, before the event loop continues (a microtask, not a loop phase).',
       'setImmediate(fn) , runs in the Check phase, after I/O events in the current loop iteration.',
@@ -71,6 +73,7 @@ console.log('end');
     summary: 'Streams process data in chunks instead of loading it all into memory; Buffers hold raw binary data directly in memory.',
     difficulty: 'intermediate',
     category: 'runtime',
+    prerequisites: ['what-is-nodejs'],
     keyPoints: [
       'Stream types: Readable, Writable, Duplex (both), Transform (Duplex that modifies data as it passes through).',
       'Production case: uploading/processing a 1GB file via a stream avoids loading the whole file into memory and crashing the process.',
@@ -89,6 +92,7 @@ fs.createReadStream('large-file.zip')
       'Three different tools for using more than one CPU core , pick based on whether the work is "more servers", "CPU-heavy JS", or "another process/program".',
     difficulty: 'advanced',
     category: 'runtime',
+    prerequisites: ['nodejs-event-loop'],
     keyPoints: [
       'cluster module , forks multiple Node.js instances (one per CPU core) that share the same server port, improving horizontal scaling on a single machine.',
       'Worker Threads , run CPU-heavy JS (image resizing, PDF generation, ML inference) on separate threads without blocking the main event loop.',
@@ -111,6 +115,7 @@ if (cluster.isPrimary) {
       'Three categories of errors need three different handling strategies , plus a last-resort global catch and a centralized Express middleware.',
     difficulty: 'intermediate',
     category: 'runtime',
+    prerequisites: ['what-is-nodejs'],
     keyPoints: [
       'Synchronous errors: try/catch around the call site.',
       'Asynchronous errors: callback error-first convention, or .catch()/try-catch around await.',
@@ -132,6 +137,7 @@ app.use((err, req, res, next) => {
       'Built-in modules that ship with Node itself , no install needed , covering system info, files, networking, and binary/text utilities.',
     difficulty: 'basic',
     category: 'runtime',
+    prerequisites: ['what-is-nodejs'],
     keyPoints: [
       'System/diagnostics: os (os.freemem(), os.cpus()), util (util.inspect() for debugging).',
       'File system: fs , fs.readFile()/fs.writeFile() (async) vs fs.readFileSync() (sync, blocks the event loop).',
@@ -153,6 +159,7 @@ console.log(crypto.createHash('sha256').update('hi').digest('hex'));`
     summary: 'Express is built on top of this , http.createServer() takes a (req, res) listener and res.end() sends the response.',
     difficulty: 'basic',
     category: 'runtime',
+    prerequisites: ['nodejs-core-modules'],
     keyPoints: [
       'http.createServer(listener) wires a callback that runs for every incoming request; .listen(port) starts accepting connections.',
       'req (IncomingMessage) exposes req.url, req.method, req.headers for reading the request.',
@@ -181,6 +188,7 @@ server.listen(8080);`
     summary: 'Express is a minimal, unopinionated web framework built around a chain of middleware functions that a request flows through.',
     difficulty: 'basic',
     category: 'express',
+    prerequisites: ['nodejs-raw-http-server'],
     keyPoints: [
       'Middleware: a function (req, res, next) that runs during the request lifecycle , logging, auth, parsing , and calls next() to pass control along.',
       'Request lifecycle: Incoming Request → Middleware chain → Route Handler → Response, with Error Middleware able to intercept at any point.',
@@ -203,6 +211,7 @@ app.get('/secure', authMiddleware, roleMiddleware, controller);`
     summary: 'Layered folders (controllers/services/repositories/...) separate HTTP concerns from business logic from data access.',
     difficulty: 'intermediate',
     category: 'express',
+    prerequisites: ['expressjs-fundamentals'],
     keyPoints: [
       'controllers/ , parse the request, call a service, shape the response (no business logic).',
       'services/ , business logic, orchestrates repositories.',
@@ -225,6 +234,7 @@ app.get('/secure', authMiddleware, roleMiddleware, controller);`
     summary: 'Validate shape, sanitize content, and lock down cross-origin/HTTP-header behavior , three distinct layers of API hardening.',
     difficulty: 'intermediate',
     category: 'security',
+    prerequisites: ['expressjs-fundamentals'],
     keyPoints: [
       'Validation (is the shape right?): Joi, Yup, Zod, or express-validator , reject malformed payloads before they reach business logic.',
       'Sanitization (is the content safe?): strip/escape malicious input to prevent XSS and SQL injection , validator.js, DOMPurify.',
@@ -246,6 +256,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
       'JWT: server issues a signed token the client presents on each request. Refresh tokens extend a session without re-entering credentials. OAuth delegates login to a third party.',
     difficulty: 'intermediate',
     category: 'security',
+    prerequisites: ['api-security-validation'],
     keyPoints: [
       'JWT flow: user logs in → server generates a token → client sends it in request headers on subsequent calls (no server-side session needed).',
       'Refresh tokens: the (short-lived) access token expires quickly for security; a longer-lived refresh token is used to silently obtain a new access token , improves both security and UX.',
@@ -259,6 +270,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
     summary: 'A grab-bag of practical REST API conventions that come up constantly in backend interviews.',
     difficulty: 'intermediate',
     category: 'api-design',
+    prerequisites: ['expressjs-fundamentals'],
     keyPoints: [
       'Versioning prevents breaking existing clients: URL versioning (/v1/users), header versioning, or query versioning.',
       'Pagination fetches large datasets in chunks: GET /products?page=1&limit=20.',
@@ -276,6 +288,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
       'Node.js reaches SQL and NoSQL databases through drivers, ORMs, or query builders , each trading off productivity against control.',
     difficulty: 'intermediate',
     category: 'database',
+    prerequisites: ['what-is-nodejs'],
     keyPoints: [
       'SQL stacks: PostgreSQL/MySQL via pg, mysql2, Sequelize, or TypeORM.',
       'NoSQL stacks: MongoDB via Mongoose.',
@@ -291,6 +304,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
       'Pooling reuses a fixed set of DB connections instead of opening one per request; indexing speeds up lookups by avoiding full table scans.',
     difficulty: 'intermediate',
     category: 'database',
+    prerequisites: ['nodejs-database-access'],
     keyPoints: [
       'Connection pooling maintains a set of reusable DB connections , reduces connection overhead, improves performance, and prevents overloading the database.',
       "Critical at scale: without pooling, a high-traffic API (1000+ concurrent users) can exhaust the database's max connections.",
@@ -306,6 +320,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
       'ACID guarantees strict correctness for a single transaction; eventual consistency trades strictness for scale in distributed systems.',
     difficulty: 'intermediate',
     category: 'database',
+    prerequisites: ['nodejs-database-access'],
     keyPoints: [
       "ACID: Atomicity (all-or-nothing), Consistency (valid state to valid state), Isolation (concurrent transactions don't interfere), Durability (committed data survives a crash) , expected in transactional systems like payments/banking.",
       'Eventual consistency: used in distributed systems where data is not immediately consistent everywhere but converges over time.',
@@ -320,6 +335,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
       'SQL suits structured, transactional data; NoSQL suits scale and flexible schemas. Sharding and replication are the two big levers for scaling a database.',
     difficulty: 'intermediate',
     category: 'database',
+    prerequisites: ['nodejs-database-access'],
     keyPoints: [
       'Use SQL for: transactions, structured/relational data (e.g. banking systems).',
       'Use NoSQL for: high scalability, flexible schema (e.g. social media feeds).',
@@ -334,6 +350,7 @@ app.use(rateLimit({ windowMs: 60_000, max: 5 })); // e.g. 5 login attempts/min`
       'Redis is an in-memory data store used for caching, sessions, pub/sub, and rate limiting , with a few standard patterns for keeping the cache correct.',
     difficulty: 'intermediate',
     category: 'database',
+    prerequisites: ['nodejs-database-access'],
     keyPoints: [
       'Redis use cases: caching, session store, pub/sub messaging, rate limiting.',
       'Caching strategies: cache-aside (app checks cache, falls back to DB and populates cache on a miss), write-through (write to cache and DB together), write-back (write to cache first, DB later).',
@@ -361,6 +378,7 @@ if (!data) {
       'Message queues decouple services with asynchronous communication; Pub/Sub broadcasts one event to many independent subscribers.',
     difficulty: 'advanced',
     category: 'scaling',
+    prerequisites: ['nodejs-concurrency-model'],
     keyPoints: [
       'Message queue tools: RabbitMQ, Kafka, BullMQ (Redis-based job queue for Node.js).',
       "Use message queues for: background jobs, email sending, payment processing, order fulfillment , anything that shouldn't block the request/response cycle.",
@@ -376,6 +394,7 @@ if (!data) {
       'Idempotency guarantees repeating a request has no extra side effects; distributed locks prevent two processes from mutating the same data at once.',
     difficulty: 'advanced',
     category: 'scaling',
+    prerequisites: ['message-queues-pubsub'],
     keyPoints: [
       'Idempotency: the same request sent multiple times produces the same result , critical for payment APIs, which must never charge a customer twice on a retried request.',
       'Distributed locking prevents multiple processes/instances from modifying the same data concurrently.',
@@ -388,6 +407,7 @@ if (!data) {
     summary: 'A toolkit of patterns for keeping a backend responsive and resilient as traffic and service count grow.',
     difficulty: 'advanced',
     category: 'scaling',
+    prerequisites: ['api-design-essentials', 'message-queues-pubsub'],
     keyPoints: [
       'Vertical scaling: increase CPU/RAM on one machine. Horizontal scaling: add more servers , Node.js apps typically scale horizontally.',
       'Load balancing distributes traffic across multiple servers (Nginx, AWS ELB).',
@@ -403,6 +423,7 @@ if (!data) {
       'A layered, modular architecture with stateless services and externalized state is the standard shape of a scalable Node.js system.',
     difficulty: 'advanced',
     category: 'scaling',
+    prerequisites: ['scalability-patterns'],
     keyPoints: [
       'Production request path: Client → CDN → Load Balancer → API Gateway → Node Services → DB/Cache/Queue.',
       'Key design principles: stateless services (so any instance can serve any request), horizontal scaling, externalized state (Redis/DB , not in-process memory), an API gateway for routing.',
@@ -420,6 +441,7 @@ if (!data) {
       'Docker packages a Node.js app with its dependencies into a portable container , same environment from a laptop to production.',
     difficulty: 'intermediate',
     category: 'devops',
+    prerequisites: ['what-is-nodejs'],
     keyPoints: [
       'Benefits: identical environment everywhere, easy/repeatable deployment, process isolation.',
       'A minimal Dockerfile copies package files first (for layer caching), installs deps, then copies the rest of the source and sets the start command.'
@@ -437,6 +459,7 @@ CMD ["node", "server.js"]`
     summary: 'Kubernetes orchestrates containers across a cluster , auto-scaling, self-healing, and rolling deployments.',
     difficulty: 'advanced',
     category: 'devops',
+    prerequisites: ['docker-for-nodejs'],
     keyPoints: [
       'Auto scaling: adds/removes container instances based on load.',
       'Self healing: restarts or replaces failed containers automatically.',
@@ -451,6 +474,7 @@ CMD ["node", "server.js"]`
       'CI/CD automates build/test/deploy; blue-green, canary, and rolling deployments are the standard ways to ship changes without downtime or unbounded risk.',
     difficulty: 'intermediate',
     category: 'devops',
+    prerequisites: ['docker-for-nodejs'],
     keyPoints: [
       'CI/CD pipeline automates: build → test → deploy. Common tools: GitHub Actions, Jenkins, Azure DevOps.',
       'Blue-green deployment: run two environments (Blue = current, Green = new); switch traffic to Green after testing it.',
@@ -467,6 +491,7 @@ CMD ["node", "server.js"]`
       'Three complementary pillars for understanding a running system: structured logs, health/metric monitoring, and cross-service request tracing.',
     difficulty: 'intermediate',
     category: 'devops',
+    prerequisites: ['expressjs-fundamentals'],
     keyPoints: [
       'Logging tools: Winston, Pino. Best practice: log request id, user id, and the error stack , not just a message string , so logs are traceable per-request.',
       'Monitoring tools (system health): Prometheus, Grafana, Datadog.',
@@ -482,6 +507,7 @@ CMD ["node", "server.js"]`
       'Never store secrets in code, and never let a process die mid-request , both are basic production hygiene that interviewers probe for.',
     difficulty: 'intermediate',
     category: 'devops',
+    prerequisites: ['docker-for-nodejs'],
     keyPoints: [
       'Secrets: use environment variables or a secret manager (Azure Key Vault, AWS Secrets Manager) , never commit credentials to source.',
       'Infrastructure-level rate limiting is often implemented outside the app itself: API gateway, NGINX, or Cloudflare.',
@@ -500,10 +526,76 @@ CMD ["node", "server.js"]`
     summary: 'A trio of architecture/product patterns that show up when a Node.js backend serves more than one kind of frontend.',
     difficulty: 'intermediate',
     category: 'scaling',
+    prerequisites: ['scalable-nodejs-architecture'],
     keyPoints: [
       'SSR (server renders HTML, SEO-friendly) vs CSR (browser renders, faster client interactions after initial load) , a rendering-strategy trade-off, not exclusive to Node but commonly implemented in it.',
       "BFF (Backend for Frontend): a separate backend tailored to each frontend's needs , e.g. a Mobile BFF and a Web BFF in front of the same core services.",
       'Feature flagging: enable/disable features without a redeployment (LaunchDarkly, Firebase Remote Config) , decouples deploy from release.'
     ]
+  },
+
+  // ─── RUNTIME (added) ─────────────────────────────────────────────────────────
+  {
+    id: 'nodejs-libuv-thread-pool',
+    title: 'libuv & the Thread Pool: Is Node.js Really Single-Threaded?',
+    summary:
+      'JavaScript execution runs on one thread, but several built-in operations quietly run on a background thread pool underneath it.',
+    difficulty: 'advanced',
+    category: 'runtime',
+    prerequisites: ['nodejs-event-loop'],
+    keyPoints: [
+      'The accurate interview answer to "is Node.js single-threaded?" is: your JavaScript runs on a single thread (the event loop), but Node.js as a whole is not , libuv, the C library underneath Node, maintains a separate worker pool for expensive operations.',
+      'What actually runs on the thread pool: most fs operations (except the sync versions and FSWatcher), dns.lookup(), and specific CPU-heavy crypto functions (pbkdf2, scrypt, randomBytes, generateKeyPair) and zlib compression.',
+      'Default pool size is 4 threads, controlled by the UV_THREADPOOL_SIZE environment variable , a common production tuning knob when an app does heavy concurrent file I/O or password hashing and threads become the bottleneck.',
+      'Network I/O (http, most of net) does NOT use the thread pool at all , the OS kernel itself handles socket readiness asynchronously, which is what makes Node so efficient at high-concurrency networking specifically.',
+      'This is exactly why CPU-bound JavaScript (a synchronous loop, JSON.parse on a huge payload) still blocks everything , that work runs on the main JS thread, not the libuv pool, and has no way to be silently offloaded like fs/crypto calls are.'
+    ],
+    gotcha:
+      'Saying "Node.js is single-threaded" without qualification is the classic incomplete interview answer , it\'s true for JS execution, but several built-in async APIs are backed by a real, tunable thread pool underneath.',
+    codeSnippet: `const fs = require('fs');
+const crypto = require('crypto');
+
+console.log('start');
+fs.readFile('big-file.txt', () => console.log('file read done'));      // thread pool
+crypto.pbkdf2('pw', 'salt', 100000, 32, 'sha256', () => console.log('hash done')); // thread pool
+console.log('end');
+// start, end, then file/hash callbacks , main thread never blocked
+
+// Tune pool size for I/O or crypto-heavy workloads:
+// UV_THREADPOOL_SIZE=8 node app.js`
+  },
+  {
+    id: 'nodejs-stream-backpressure',
+    title: 'Stream Backpressure',
+    summary:
+      'What happens when data is written to a stream faster than it can drain , and why .pipe() handles it for you but a manual write() loop doesn’t.',
+    difficulty: 'advanced',
+    category: 'runtime',
+    prerequisites: ['nodejs-streams-buffers'],
+    keyPoints: [
+      'writable.write(chunk) returns false once the stream’s internal buffer has grown past its highWaterMark , that return value is the signal to stop writing more.',
+      'Ignoring a false return and continuing to call write() in a tight loop doesn’t error immediately , Node just keeps buffering chunks in memory until it hits a limit, then the process aborts.',
+      'When write() returns false, listen for the "drain" event , it fires once the buffer has emptied enough that writing can safely resume.',
+      '.pipe(destination) implements exactly this write/drain dance internally , that’s why piping a Readable into a Writable is memory-safe by default, and a naive manual copy loop usually isn’t.',
+      'This is the mechanism that lets Node.js stream a multi-gigabyte file without the process’s memory usage growing unbounded , the source is throttled to match how fast the destination can actually consume data.'
+    ],
+    gotcha:
+      'A manual write() loop that never checks the return value is a classic memory-leak-under-load bug , it works fine in local testing with small files, then OOMs in production with large ones because nothing was throttling the writes.',
+    codeSnippet: `// ❌ ignores backpressure — can exhaust memory on large input
+for (let i = 0; i < 1_000_000; i++) writable.write(chunk);
+
+// ✅ respects backpressure
+function writeAll(writable, chunks, i = 0) {
+  while (i < chunks.length) {
+    const ok = writable.write(chunks[i++]);
+    if (!ok) {
+      writable.once('drain', () => writeAll(writable, chunks, i));
+      return; // pause until drained
+    }
+  }
+}
+
+// ✅ simplest option — pipe() handles backpressure automatically
+readable.pipe(writable);`
   }
 ];

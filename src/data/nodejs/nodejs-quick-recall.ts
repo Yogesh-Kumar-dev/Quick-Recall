@@ -32,6 +32,22 @@ export const nodejsQuickRecall: QuickRecallSection[] = [
         codeSnippet: `fs.createReadStream('big.zip').pipe(fs.createWriteStream('copy.zip'));`
       },
       {
+        concept: 'Stream backpressure',
+        bullets: [
+          'write() returns false once the internal buffer exceeds highWaterMark , stop writing',
+          'Wait for the "drain" event before writing more',
+          '.pipe() handles this automatically; a manual write() loop that ignores the return value can OOM under load'
+        ]
+      },
+      {
+        concept: 'Is Node.js single-threaded?',
+        bullets: [
+          'JS execution: yes, one thread (the event loop)',
+          'But: libuv runs a thread pool (default 4, UV_THREADPOOL_SIZE) for fs, dns.lookup, and some crypto/zlib calls',
+          'Network I/O uses the OS kernel directly , no thread pool involved there at all'
+        ]
+      },
+      {
         concept: 'spawn vs exec vs fork',
         bullets: [
           'spawn , stream large data from a shell command',
