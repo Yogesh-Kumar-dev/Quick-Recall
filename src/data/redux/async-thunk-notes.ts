@@ -8,6 +8,7 @@ export const asyncThunkNotes: Note[] = [
     summary: 'Wraps an async function and auto-dispatches pending / fulfilled / rejected actions around its execution.',
     difficulty: 'basic',
     category: 'lifecycle',
+    prerequisites: ['extra-reducers'],
     keyPoints: [
       "First arg: a string prefix for the action types ('users/fetchAll').",
       'Second arg: the payloadCreator , an async function returning the payload or throwing on error.',
@@ -34,6 +35,7 @@ dispatch(fetchUsers(1));`
     summary: 'The three generated actions , pending, fulfilled, rejected , are handled in extraReducers to drive loading states.',
     difficulty: 'basic',
     category: 'lifecycle',
+    prerequisites: ['async-thunk-basics'],
     keyPoints: [
       "pending: set status to 'loading', optionally clear previous errors.",
       'fulfilled: action.payload holds the value returned by the payloadCreator.',
@@ -64,6 +66,7 @@ dispatch(fetchUsers(1));`
     summary: 'The second parameter to payloadCreator provides store access, an abort signal, and other utilities for advanced patterns.',
     difficulty: 'intermediate',
     category: 'lifecycle',
+    prerequisites: ['async-thunk-basics'],
     textbookDef:
       'thunkAPI is an object injected by the thunk middleware into the payloadCreator. It exposes Redux store methods and abort utilities, giving the async function the full context it needs without global imports.',
     keyPoints: [
@@ -93,6 +96,7 @@ dispatch(fetchUsers(1));`
     summary: 'rejectWithValue attaches a custom payload to the rejected action , critical for field-level API errors.',
     difficulty: 'intermediate',
     category: 'errors',
+    prerequisites: ['thunk-lifecycle'],
     textbookDef:
       'When a payloadCreator throws, RTK serializes the Error into action.error. To include richer structured data (e.g., API response body), return thunkAPI.rejectWithValue(data) , it lands in action.payload on the rejected case.',
     keyPoints: [
@@ -129,6 +133,7 @@ dispatch(fetchUsers(1));`
     summary: '.unwrap() converts the thunk result into a real promise , resolving with the payload or throwing with the error.',
     difficulty: 'intermediate',
     category: 'errors',
+    prerequisites: ['async-thunk-basics'],
     keyPoints: [
       "dispatch(thunk()) resolves to the fulfilled/rejected action , it doesn't throw by itself.",
       '.unwrap() throws if the action was rejected , making it behave like a normal async/await function.',
@@ -155,6 +160,7 @@ async function handleLogin() {
       'Thunks expose an abort() method. Pass the AbortSignal to fetch to cancel the in-flight HTTP request when the thunk is aborted.',
     difficulty: 'advanced',
     category: 'advanced',
+    prerequisites: ['thunk-api'],
     textbookDef:
       'createAsyncThunk creates a requestAbortController per invocation. Calling promise.abort() triggers the controller , sets signal.aborted, cancels any fetch using that signal, and dispatches a rejected action with AbortError.',
     keyPoints: [

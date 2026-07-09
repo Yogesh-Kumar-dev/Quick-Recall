@@ -1,7 +1,8 @@
 import type { Flashcard } from '@/types/content';
 
 // ─── Redux flashcards — keyword/abbreviation defs + small Q&A ─────────────────
-// Seeded incrementally; empty arrays hide the Flashcards button on the landing.
+// One export per topic (redux, redux-toolkit, rtk-query, async-thunk), all wired into
+// flashcard-sets.ts. An empty array here hides that set's card on the /flashcards index.
 
 export const reduxFlashcards: Flashcard[] = [
   {
@@ -230,8 +231,149 @@ export const reduxFlashcards: Flashcard[] = [
   }
 ];
 
-export const reduxToolkitFlashcards: Flashcard[] = [];
+export const reduxToolkitFlashcards: Flashcard[] = [
+  {
+    id: 'rtk-configure-store',
+    front: 'configureStore',
+    back: "RTK's store factory , auto-combines your reducer map, includes redux-thunk and dev-mode checks (serializability, immutability) by default, and wires up Redux DevTools without any extra setup.",
+    code: `const store = configureStore({ reducer: { counter: counterReducer } });`,
+    category: 'Q&A'
+  },
+  {
+    id: 'rtk-create-slice',
+    front: 'createSlice',
+    back: 'Generates a reducer AND its action creators from one object: name, initialState, reducers. Each reducer key becomes both a case handler and an auto-generated action creator , the primary way to write Redux logic in RTK.',
+    category: 'Keyword'
+  },
+  {
+    id: 'rtk-immer',
+    front: 'How does createSlice let you "mutate" state?',
+    back: 'It wraps each reducer with Immer, which gives you a draft proxy , write state.value++ and Immer produces a real immutable update behind the scenes. Return a new value OR mutate the draft, never both in the same reducer.',
+    category: 'Q&A'
+  },
+  {
+    id: 'rtk-extra-reducers',
+    front: 'extraReducers',
+    back: "Lets a slice respond to actions defined elsewhere (another slice, or a thunk's pending/fulfilled/rejected) using the builder pattern: builder.addCase(actionCreator, reducer). Unlike reducers, it doesn't generate new action creators.",
+    code: `extraReducers: (builder) => {
+  builder.addCase(fetchUsers.fulfilled, (state, action) => {
+    state.list = action.payload;
+  });
+}`,
+    category: 'Q&A'
+  },
+  {
+    id: 'rtk-entity-adapter',
+    front: 'createEntityAdapter',
+    back: 'Generates a normalized { ids, entities } state shape plus ready-made CRUD reducers (addOne, updateOne, removeOne…) and selectors (selectAll, selectById, selectTotal) for a collection , automates the normalization pattern.',
+    category: 'Keyword'
+  },
+  {
+    id: 'rtk-typed-hooks',
+    front: 'Typed useAppSelector / useAppDispatch',
+    back: 'Infer RootState = ReturnType<typeof store.getState> and AppDispatch = typeof store.dispatch, then wrap useSelector/useDispatch with those types once , every component gets full autocomplete with zero repeated generics.',
+    category: 'Q&A'
+  },
+  {
+    id: 'rtk-listener-middleware',
+    front: 'createListenerMiddleware',
+    back: "RTK's lighter alternative to redux-saga/redux-observable. startListening({ actionCreator, effect }) runs a side effect when a matching action fires; the effect gets dispatch/getState plus async helpers like condition() and fork().",
+    category: 'Keyword'
+  }
+];
 
-export const rtkQueryFlashcards: Flashcard[] = [];
+export const rtkQueryFlashcards: Flashcard[] = [
+  {
+    id: 'rtkq-create-api',
+    front: 'createApi & fetchBaseQuery',
+    back: 'createApi defines your whole API surface (endpoints, base URL, tag types) in one place; fetchBaseQuery is a thin fetch wrapper for it. You must add both api.reducer and api.middleware to the store , easy to forget the middleware.',
+    category: 'Q&A'
+  },
+  {
+    id: 'rtkq-query-hooks',
+    front: 'Auto-generated query hooks',
+    back: 'Each query endpoint gets a use + PascalCase(name) + Query hook. isLoading is true only on the very first load; isFetching is true on ANY in-flight request (including background re-fetches) , data persists from the last success meanwhile.',
+    category: 'Q&A'
+  },
+  {
+    id: 'rtkq-mutation-hooks',
+    front: 'Mutation hooks',
+    back: "A mutation endpoint's hook returns [triggerFn, status] instead of auto-fetching , call triggerFn(args). triggerFn returns a promise; .unwrap() on it gives the payload or throws, letting you await/try-catch like a normal async call.",
+    code: `const [addPost, { isLoading }] = useAddPostMutation();
+await addPost(data).unwrap();`,
+    category: 'Q&A'
+  },
+  {
+    id: 'rtkq-cache-tags',
+    front: 'providesTags & invalidatesTags',
+    back: "Queries declare what data they represent (providesTags); mutations declare what they make stale (invalidatesTags). Any overlap triggers an automatic refetch of just the affected queries , RTK Query's cache-invalidation mechanism.",
+    category: 'Q&A'
+  },
+  {
+    id: 'rtkq-cache-lifecycle',
+    front: 'keepUnusedDataFor',
+    back: 'How long (seconds, default 60) a cache entry survives after its last subscribed component unmounts before being garbage-collected. RTK Query counts active subscribers per unique endpoint+arg combination to track this.',
+    category: 'Keyword'
+  },
+  {
+    id: 'rtkq-optimistic-updates',
+    front: 'Optimistic updates',
+    back: "Inside a mutation's onQueryStarted, dispatch api.util.updateQueryData(...) to patch the cache immediately, before the server responds. If the real request fails, call the returned patchResult.undo() to roll the UI back.",
+    category: 'Q&A'
+  },
+  {
+    id: 'rtkq-polling',
+    front: 'Polling',
+    back: 'Pass pollingInterval (ms) to a query hook to re-fetch on a timer , a simple way to approximate real-time data. skipPollingIfUnfocused pauses it while the tab is unfocused (needs setupListeners(store.dispatch) once).',
+    category: 'Keyword'
+  },
+  {
+    id: 'rtkq-lazy-queries',
+    front: 'Lazy queries',
+    back: 'useLazyGetXQuery() returns [trigger, result] and does NOT fetch on mount , you call trigger(arg) manually. Built for search-as-you-type or fetch-on-click flows where an automatic useQuery would fire too eagerly.',
+    category: 'Q&A'
+  }
+];
 
-export const asyncThunkFlashcards: Flashcard[] = [];
+export const asyncThunkFlashcards: Flashcard[] = [
+  {
+    id: 'thunk-basics',
+    front: 'createAsyncThunk',
+    back: "Wraps an async payloadCreator function and auto-dispatches pending/fulfilled/rejected actions around it , dispatch(myThunk()) fires 'pending' immediately, then 'fulfilled' (with the return value as payload) or 'rejected' on throw.",
+    category: 'Keyword'
+  },
+  {
+    id: 'thunk-lifecycle-actions',
+    front: 'Handling thunk lifecycle actions',
+    back: 'pending/fulfilled/rejected are handled in extraReducers via builder.addCase , the standard pattern sets a status field ("idle"|"loading"|"succeeded"|"failed") on pending and stores the payload or error on the other two.',
+    category: 'Q&A'
+  },
+  {
+    id: 'thunk-api-object',
+    front: 'thunkAPI',
+    back: 'The second argument to a payloadCreator: { dispatch, getState, signal, rejectWithValue, extra, requestId }. signal is an AbortSignal you can pass straight to fetch() so cancellation actually cancels the HTTP request.',
+    category: 'Keyword'
+  },
+  {
+    id: 'thunk-reject-with-value',
+    front: 'rejectWithValue',
+    back: "return rejectWithValue(data) attaches a custom error payload to the rejected action (action.payload), instead of RTK's default action.error.message from a thrown Error , needed to preserve structured API error shapes like field-level validation.",
+    category: 'Q&A'
+  },
+  {
+    id: 'thunk-unwrap',
+    front: 'unwrap()',
+    back: 'dispatch(thunk()) always resolves, even on failure , it never throws by itself. Calling .unwrap() on that promise converts it back into normal throw-on-failure behaviour, so you can try/catch it like any other async call.',
+    code: `try {
+  await dispatch(loginUser(creds)).unwrap();
+  navigate('/dashboard');
+} catch (err) { setError(err.message); }`,
+    category: 'Q&A'
+  },
+  {
+    id: 'thunk-cancellation',
+    front: 'Cancelling a thunk',
+    back: "dispatch(thunk()) returns a promise with an .abort() method. Pass thunkAPI's signal into fetch() so the browser actually cancels the in-flight request , common in a useEffect cleanup to prevent state updates after unmount.",
+    category: 'Q&A'
+  }
+];

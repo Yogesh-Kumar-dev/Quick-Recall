@@ -8,6 +8,7 @@ export const reduxNotes: Note[] = [
     summary: 'Single global object holding all app state , accessed via getState(), changed only via dispatch().',
     difficulty: 'basic',
     category: 'core',
+    prerequisites: ['three-principles'],
     keyPoints: [
       'Created with configureStore() (RTK) , one store for the entire app.',
       'getState() returns a snapshot of current state; never mutate it directly.',
@@ -34,6 +35,7 @@ store.dispatch(increment());  // triggers reducer → new state`
     summary: 'Pure functions , (state, action) => newState , the only place state transitions happen.',
     difficulty: 'basic',
     category: 'core',
+    prerequisites: ['store'],
     keyPoints: [
       'Must be pure: no side effects, no random values, no async code inside a reducer.',
       'Must return a new state object (or the same reference if nothing changed) , never mutate in place.',
@@ -60,6 +62,7 @@ const counterSlice = createSlice({
     summary: 'Actions are plain objects with a type field describing what happened. Action creators are functions that return them.',
     difficulty: 'basic',
     category: 'core',
+    prerequisites: ['reducers'],
     keyPoints: [
       'Action shape: { type: string, payload?: any } , type is mandatory, payload is the RTK convention.',
       "createSlice auto-generates action creators , counterSlice.actions.increment() → { type: 'counter/increment' }.",
@@ -82,6 +85,7 @@ console.log(increment.type); // 'counter/increment'`
     summary: 'State flows one way: UI dispatches → middleware → reducer computes next state → UI re-renders. Never the reverse.',
     difficulty: 'basic',
     category: 'patterns',
+    prerequisites: ['actions'],
     keyPoints: [
       'Event in UI → dispatch(action) → middleware chain → reducer(state, action) → new state → components re-render.',
       'Components never write state directly , they only declare intent via actions.',
@@ -99,6 +103,7 @@ console.log(increment.type); // 'counter/increment'`
       'Functions that intercept every dispatch call , sitting between dispatch() and the reducer to handle async work, logging, and more.',
     difficulty: 'intermediate',
     category: 'middleware',
+    prerequisites: ['data-flow'],
     textbookDef:
       'Middleware provides a third-party extension point between dispatching an action and the moment it reaches the reducer. It composes as a chain: each piece can pass the action along, transform it, delay it, or swallow it entirely.',
     keyPoints: [
@@ -132,6 +137,7 @@ configureStore({
       "Functions that read and derive data from Redux state. createSelector memoizes results so components don't re-render on unrelated updates.",
     difficulty: 'intermediate',
     category: 'selectors',
+    prerequisites: ['store'],
     textbookDef:
       'A selector is a function that accepts Redux state and returns derived data. Memoized selectors (via createSelector) recompute only when their input selectors return different references, preventing unnecessary downstream work.',
     keyPoints: [
@@ -163,6 +169,7 @@ const selectTotal = createSelector(
     summary: 'Store entities as { ids: [], entities: {} } instead of nested arrays , enables O(1) lookups and avoids duplication.',
     difficulty: 'intermediate',
     category: 'patterns',
+    prerequisites: ['selectors'],
     textbookDef:
       "State normalization flattens nested data into a dictionary keyed by ID. Relationships are expressed as ID references (like a relational DB). RTK's createEntityAdapter automates this pattern.",
     keyPoints: [
@@ -216,6 +223,7 @@ store.dispatch(action);`
     summary: 'Single source of truth, state is read-only, and changes are made with pure functions.',
     difficulty: 'basic',
     category: 'core',
+    prerequisites: ['what-is-redux'],
     keyPoints: [
       '1) Single source of truth: the whole app state lives in one store tree.',
       '2) State is read-only: the only way to change it is to dispatch an action.',
@@ -239,6 +247,7 @@ const reducer = (state, action) => {
     summary: 'State is never mutated in place , every change produces a new object, enabling fast change detection and time travel.',
     difficulty: 'intermediate',
     category: 'core',
+    prerequisites: ['three-principles'],
     keyPoints: [
       'Reducers return a NEW state object rather than editing the existing one.',
       'Enables reference-equality checks: unchanged slices skip re-renders.',
@@ -263,6 +272,7 @@ increment: (state) => { state.value += 1; }`
     summary: 'Merges multiple slice reducers into one root reducer, each owning its own subtree of the state.',
     difficulty: 'basic',
     category: 'core',
+    prerequisites: ['reducers'],
     keyPoints: [
       'combineReducers({ notes, ui, user }) builds a root reducer.',
       'Each slice reducer manages only its own key (state.notes, state.ui…).',
@@ -285,6 +295,7 @@ const rootReducer = combineReducers({
     summary: 'Reducers must be pure; side effects (API calls, I/O) belong in middleware, not reducers.',
     difficulty: 'intermediate',
     category: 'core',
+    prerequisites: ['reducers'],
     keyPoints: [
       'Pure function: output depends only on input; no external state, no I/O, no randomness.',
       'Same (state, action) input must always yield the same output , idempotent.',
@@ -310,6 +321,7 @@ const good = (state, action) =>
     summary: 'Plain Redux is synchronous; middleware like redux-thunk or redux-saga handles async work.',
     difficulty: 'intermediate',
     category: 'async',
+    prerequisites: ['middleware'],
     keyPoints: [
       'Reducers are synchronous , async logic cannot live there.',
       'redux-thunk lets an action creator return a function (dispatch, getState) instead of an object.',
@@ -340,6 +352,7 @@ const fetchData = () => async (dispatch) => {
     summary: 'Local state is simple and scoped; Redux centralizes shared state and avoids prop drilling , worth it at scale.',
     difficulty: 'basic',
     category: 'patterns',
+    prerequisites: ['what-is-redux'],
     keyPoints: [
       'Local state (useState): quick, scoped, ideal for UI-only or small apps.',
       'Local-state pain at scale: duplication/sync bugs and deep prop drilling.',
@@ -364,6 +377,7 @@ const dispatch = useDispatch();`
     summary: '<Provider store> exposes the store to the React tree via context; components read it with hooks or connect.',
     difficulty: 'basic',
     category: 'react-redux',
+    prerequisites: ['store'],
     keyPoints: [
       '<Provider store={store}> wraps the app root and shares the store through React context.',
       'Modern access: the useSelector and useDispatch hooks from react-redux.',
@@ -386,6 +400,7 @@ root.render(
     summary: 'The modern hooks API: read state with useSelector, dispatch actions with useDispatch.',
     difficulty: 'basic',
     category: 'react-redux',
+    prerequisites: ['react-redux-provider'],
     keyPoints: [
       'useSelector(selectorFn) reads a value and re-renders when that value changes (=== comparison).',
       'useDispatch() returns the dispatch function to send actions.',
@@ -409,6 +424,7 @@ function Cart() {
     summary: 'The legacy HOC that injects store state and bound action creators as props.',
     difficulty: 'intermediate',
     category: 'react-redux',
+    prerequisites: ['react-redux-hooks'],
     keyPoints: [
       'connect(mapStateToProps, mapDispatchToProps)(Component) subscribes the component to the store.',
       'mapStateToProps(state, ownProps) → props derived from state; runs on every store change.',
@@ -431,6 +447,7 @@ export default connect(mapState, mapDispatch)(Counter);`
     summary: 'Split state handling into small slice reducers; co-locate a feature’s types, creators, and reducer in one module.',
     difficulty: 'intermediate',
     category: 'patterns',
+    prerequisites: ['combine-reducers'],
     keyPoints: [
       'Reducer composition: many small slice reducers combined by combineReducers.',
       'Each reducer owns one subtree and ignores actions it doesn’t care about.',
@@ -454,6 +471,7 @@ export default function reducer(state = { n: 0 }, action) {
     summary: 'Wrap the root reducer to reset state on a special action , a common Higher-Order Reducer use case.',
     difficulty: 'intermediate',
     category: 'patterns',
+    prerequisites: ['combine-reducers'],
     keyPoints: [
       'A Higher-Order Reducer (HOR) takes a reducer and returns an enhanced reducer.',
       'Reset pattern: on a RESET action, pass undefined as state so each slice reverts to its initialState.',
@@ -479,6 +497,7 @@ const resettable = (state, action) =>
     summary: 'The store => next => action => {…} signature lets you log, transform, delay, or block actions.',
     difficulty: 'advanced',
     category: 'middleware',
+    prerequisites: ['middleware'],
     keyPoints: [
       'Signature: store => next => action => { … } , three curried functions.',
       'Call next(action) to pass the action to the next middleware/reducer.',
@@ -504,6 +523,7 @@ configureStore({ reducer, middleware: (gdm) => gdm().concat(logger) });`
     summary: 'createSelector caches derived data, recomputing only when its input selectors change by reference.',
     difficulty: 'intermediate',
     category: 'selectors',
+    prerequisites: ['selectors'],
     keyPoints: [
       'reselect provides createSelector(inputSelectors, resultFn).',
       'resultFn re-runs only when an input selector returns a new reference.',
@@ -529,6 +549,7 @@ const selectVisible = createSelector(
     summary: 'A browser extension to inspect state, replay actions, and time-travel through state changes.',
     difficulty: 'basic',
     category: 'core',
+    prerequisites: ['store'],
     keyPoints: [
       'Inspect the live state tree and every dispatched action with its payload.',
       'Time-travel: step back/forward, replay, or revert to any past state.',
@@ -549,6 +570,7 @@ const store2 = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk))
     summary: 'The official, recommended toolset that removes most Redux boilerplate.',
     difficulty: 'intermediate',
     category: 'core',
+    prerequisites: ['what-is-redux'],
     keyPoints: [
       'configureStore: sets up the store with DevTools and thunk by default.',
       'createSlice: name + initialState + reducers → auto-generated action creators (Immer-powered).',

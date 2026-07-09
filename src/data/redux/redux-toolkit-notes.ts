@@ -8,6 +8,7 @@ export const reduxToolkitNotes: Note[] = [
     summary: "RTK's store factory , auto-combines reducers, includes thunk + dev checks, and wires up Redux DevTools.",
     difficulty: 'basic',
     category: 'store',
+    prerequisites: ['redux-toolkit'],
     keyPoints: [
       'Pass an object of slice reducers; configureStore calls combineReducers automatically.',
       'Includes redux-thunk middleware by default , no separate install.',
@@ -39,6 +40,7 @@ export type AppDispatch = typeof store.dispatch;`
     summary: 'Generates a reducer + action creators from one object , the primary way to write Redux logic in RTK.',
     difficulty: 'basic',
     category: 'slices',
+    prerequisites: ['configure-store'],
     keyPoints: [
       "name sets the prefix for all action type strings (e.g., 'users/setLoading').",
       'initialState defines the starting value , can be a lazy function (() => readFromStorage()).',
@@ -71,6 +73,7 @@ export default usersSlice.reducer;`
     summary: 'createSlice wraps reducers with Immer , you write "mutating" code and Immer produces immutable state updates automatically.',
     difficulty: 'intermediate',
     category: 'immer',
+    prerequisites: ['create-slice'],
     textbookDef:
       'Immer creates a structural Proxy (draft) of the current state. You mutate the draft freely; Immer tracks every change and produces a new immutable object at the end. If nothing changed, it returns the original reference unchanged.',
     keyPoints: [
@@ -101,6 +104,7 @@ addItem: (state, action) => ({
     summary: 'Lets a slice respond to actions defined elsewhere , used for async thunk lifecycle actions and cross-slice reactions.',
     difficulty: 'intermediate',
     category: 'slices',
+    prerequisites: ['create-slice'],
     textbookDef:
       'While reducers generates both reducers AND new action creators, extraReducers only adds case handlers without generating action types. It uses the builder pattern for type-safe action matching.',
     keyPoints: [
@@ -136,6 +140,7 @@ addItem: (state, action) => ({
     summary: 'Generates a normalized { ids, entities } state shape plus CRUD reducers and pre-built selectors for collections.',
     difficulty: 'advanced',
     category: 'utilities',
+    prerequisites: ['create-slice', 'normalized-state'],
     textbookDef:
       'createEntityAdapter provides a standardized way to store collections in a normalized lookup structure. It removes the need to manually implement ID-keyed dictionaries, CRUD operations, and sorted order maintenance.',
     keyPoints: [
@@ -168,6 +173,7 @@ export const { selectAll: selectAllUsers, selectById: selectUserById } =
     summary: 'Infer RootState and AppDispatch from the store for fully-typed hooks across the whole app.',
     difficulty: 'intermediate',
     category: 'utilities',
+    prerequisites: ['configure-store'],
     keyPoints: [
       'RootState = ReturnType<typeof store.getState> , auto-updates when slices are added/removed.',
       'AppDispatch = typeof store.dispatch , carries thunk type information.',
@@ -187,5 +193,41 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 // In components:
 const count = useAppSelector(state => state.counter.value);
 const dispatch = useAppDispatch();`
+  },
+
+  // ─── MIDDLEWARE ─────────────────────────────────────────────────────────────
+  {
+    id: 'listener-middleware',
+    title: 'createListenerMiddleware',
+    summary:
+      "RTK's lightweight alternative to redux-saga/redux-observable , reacts to actions or state changes and runs side effects without generators.",
+    difficulty: 'advanced',
+    category: 'middleware',
+    prerequisites: ['configure-store', 'async-thunk-basics'],
+    keyPoints: [
+      'createListenerMiddleware() creates one middleware instance; register handlers on it with startListening({ actionCreator | type | matcher | predicate, effect }).',
+      'The effect receives (action, listenerApi) , listenerApi carries dispatch, getState, getOriginalState (the state before the triggering action), plus async helpers.',
+      "listenerApi.condition(predicate) pauses the effect until a later action/state matches the predicate , the tool that replaces most of what a saga's take/put effects were used for.",
+      'listenerApi.fork(fn) spawns a cancellable child task inside the effect, and cancelActiveListeners() stops other running instances of the same listener , the debounce/takeLatest equivalent.',
+      'Register it before the defaults so it can observe every action: middleware: (getDefault) => getDefault().prepend(listenerMiddleware.middleware).',
+      'Reach for it instead of a thunk when the side effect needs to react to MULTIPLE different actions, or needs to be cancelled/superseded , a single simple async call is usually still simpler as a plain thunk.'
+    ],
+    gotcha:
+      "Forgetting .prepend() and using .concat() instead still works, but the listener then runs after the default middleware , usually fine, but it means the listener sees an action after other middleware (like RTK Query's) has already processed it.",
+    codeSnippet: `const listenerMiddleware = createListenerMiddleware();
+
+listenerMiddleware.startListening({
+  actionCreator: todoAdded,
+  effect: async (action, listenerApi) => {
+    listenerApi.cancelActiveListeners(); // supersede any in-flight run
+    await listenerApi.condition((_, state) => state.todos.syncing === false);
+    listenerApi.dispatch(syncTodos());
+  }
+});
+
+configureStore({
+  reducer,
+  middleware: (getDefault) => getDefault().prepend(listenerMiddleware.middleware)
+});`
   }
 ];
