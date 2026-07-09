@@ -7,22 +7,23 @@ export const jsQuickRecall: QuickRecallSection[] = [
       {
         concept: 'Closure',
         bullets: [
-          'A function that remembers variables from its outer (enclosing) scope',
-          'Created every time a function is created (capture lexical environment)',
-          'Enables: data privacy, factory functions, memoization, partial application'
+          'A function that remembers the variables from where it was created — even after that outer function has returned.',
+          'You don\'t opt in — every function automatically captures its surrounding scope ("lexical environment").',
+          'What it buys you: private state, factory functions, memoization caches, partial application.'
         ],
         codeSnippet: `const make = x => y => x + y; // closes over x
 const add5 = make(5);
 add5(3); // 8`,
-        warning: 'Loop trap: var in for-loop + async callback captures the SAME variable. Fix with let or IIFE.'
+        warning:
+          'The loop trap: a var loop variable is ONE shared variable, so every async callback sees its final value. Declare it with let (fresh per iteration) instead.'
       },
       {
         concept: 'Scope types',
         bullets: [
-          'Global scope — accessible everywhere',
-          'Function scope — var is function-scoped',
-          'Block scope — let / const are block-scoped ({ })',
-          'Lexical scope — determined where the function is WRITTEN, not called'
+          'Global scope — declared outside everything, visible everywhere.',
+          'Function scope — var and parameters belong to the whole function, ignoring blocks.',
+          'Block scope — let / const live only inside the nearest { }.',
+          'Lexical scope — what a function can see is fixed by WHERE it is written, not where it is called from.'
         ]
       }
     ]
@@ -33,10 +34,10 @@ add5(3); // 8`,
       {
         concept: 'var vs let/const vs function declarations',
         bullets: [
-          'var — hoisted AND initialised to undefined. Can read before assignment (gets undefined)',
-          'let / const — hoisted but NOT initialised → Temporal Dead Zone (TDZ). ReferenceError if accessed before declaration',
-          'function declaration — FULLY hoisted (declaration + body). Callable before its line',
-          'function expression (const fn = () => {}) — only the variable is hoisted, not the function body'
+          'var — registered AND initialised to undefined at the top of its scope. Read it before its line and you get undefined, not an error.',
+          'let / const — registered but locked until their line (the Temporal Dead Zone). Touching them early throws a ReferenceError.',
+          'function declaration — hoisted whole, body included. Callable from lines above where it is written.',
+          "function expression (const fn = () => {}) — it's just a variable holding a function, so only the variable name hoists, not the function."
         ],
         codeSnippet: `console.log(a); // undefined (var)
 console.log(b); // ReferenceError (let TDZ)
@@ -44,7 +45,8 @@ foo();          // works — function declaration
 var a = 1;
 let b = 2;
 function foo() {}`,
-        warning: 'TDZ error says "Cannot access \'b\' before initialization" — NOT "b is not defined".'
+        warning:
+          'You can tell a TDZ error apart: it says "Cannot access \'b\' before initialization" — a truly missing variable says "b is not defined".'
       }
     ]
   },
@@ -54,19 +56,19 @@ function foo() {}`,
       {
         concept: '4 binding rules (in priority order)',
         bullets: [
-          '1. new binding — new Fn() → this = new object',
-          '2. Explicit binding — call/apply/bind → this = first arg',
-          '3. Implicit binding — obj.method() → this = obj',
-          '4. Default binding — standalone fn() → this = globalThis (undefined in strict mode)'
+          '1. new binding — new Fn() → this is the freshly created object.',
+          '2. Explicit binding — call/apply/bind → this is whatever object you passed in.',
+          '3. Implicit binding — obj.method() → this is obj, the thing left of the dot.',
+          '4. Default binding — a bare fn() → this is globalThis (or undefined in strict mode).'
         ]
       },
       {
         concept: 'Arrow functions',
         bullets: [
-          'Arrow functions do NOT have their own this',
-          'They inherit this from the enclosing lexical scope at DEFINITION TIME',
-          'Cannot be used as constructors (no new)',
-          'Great for callbacks that need to preserve outer this'
+          'Arrow functions have NO this of their own.',
+          'They simply use the this of the surrounding code, captured where they are DEFINED — and nothing can rebind it.',
+          "They can't be constructors — calling one with new throws.",
+          "That capture is exactly why they're perfect for callbacks inside methods (the setInterval example below)."
         ],
         codeSnippet: `class Timer {
   seconds = 0;
@@ -74,7 +76,8 @@ function foo() {}`,
     setInterval(() => this.seconds++, 1000); // arrow — inherits 'this'
   }
 }`,
-        warning: 'obj.method = () => {} — this is NOT obj. Arrow methods inherit outer (often global) scope.'
+        warning:
+          "Don't write object methods as arrows: obj.method = () => {} does NOT get obj as this — it inherits from outside the object (often the global scope)."
       }
     ]
   },
@@ -84,18 +87,18 @@ function foo() {}`,
       {
         concept: 'Execution order',
         bullets: [
-          '1. Synchronous code runs on the call stack',
-          '2. After each task: drain the ENTIRE microtask queue',
-          '3. Then process the next macrotask',
-          'Microtasks: Promise.then/catch, queueMicrotask, MutationObserver',
-          'Macrotasks: setTimeout, setInterval, I/O callbacks, UI events'
+          '1. All synchronous code runs first, to completion, on the call stack.',
+          '2. When the stack empties, the ENTIRE microtask queue is drained.',
+          '3. Then ONE macrotask runs — and the cycle repeats.',
+          'Microtasks (the urgent queue): Promise .then/.catch, code after await, queueMicrotask, MutationObserver.',
+          'Macrotasks (the regular queue): setTimeout, setInterval, I/O callbacks, UI events.'
         ],
         codeSnippet: `console.log('1');                          // sync
 setTimeout(() => console.log('4'), 0);     // macrotask
 Promise.resolve().then(() => console.log('3')); // microtask
 console.log('2');                          // sync
 // Output: 1, 2, 3, 4`,
-        warning: 'Promise.resolve().then() ALWAYS runs before setTimeout(fn, 0) — microtasks first.'
+        warning: 'A promise callback ALWAYS beats setTimeout(fn, 0) queued at the same time — microtasks jump the queue.'
       }
     ]
   },
@@ -105,19 +108,19 @@ console.log('2');                          // sync
       {
         concept: 'Promise states',
         bullets: [
-          'pending → fulfilled | rejected (immutable once settled)',
-          '.then(onFulfilled, onRejected) returns a NEW Promise (chainable)',
-          '.catch(fn) = .then(undefined, fn)',
-          '.finally(fn) runs regardless, does not receive value'
+          'pending → fulfilled (success) or rejected (failure) — and once settled, frozen forever.',
+          ".then(onFulfilled, onRejected) returns a NEW promise — that's what makes chains possible.",
+          '.catch(fn) is just shorthand for .then(undefined, fn) — it catches failures from anywhere earlier in the chain.',
+          '.finally(fn) runs either way and receives nothing — the place for cleanup like hiding a spinner.'
         ]
       },
       {
         concept: 'Promise combinators',
         bullets: [
-          'Promise.all([...]) — resolves when ALL resolve; rejects on FIRST rejection',
-          'Promise.allSettled([...]) — always resolves; returns {status, value/reason} for each',
-          'Promise.race([...]) — settles with the FIRST to settle (either)',
-          'Promise.any([...]) — resolves with FIRST fulfillment; rejects only if ALL reject (AggregateError)'
+          'Promise.all([...]) — everything must succeed; the FIRST failure rejects the whole batch.',
+          'Promise.allSettled([...]) — waits for all, never rejects; gives a {status, value|reason} report per promise.',
+          'Promise.race([...]) — the FIRST to settle wins, success or failure (great for adding timeouts).',
+          'Promise.any([...]) — the first SUCCESS wins; only fails if all fail (AggregateError).'
         ],
         codeSnippet: `// Parallel fetches (don't await sequentially!)
 const [user, posts] = await Promise.all([fetchUser(id), fetchPosts(id)]);`
@@ -125,13 +128,13 @@ const [user, posts] = await Promise.all([fetchUser(id), fetchPosts(id)]);`
       {
         concept: 'async/await gotchas',
         bullets: [
-          'async function always returns a Promise',
-          'await pauses ONLY inside the async function — outer code continues',
-          'Avoid sequential awaits for independent tasks — use Promise.all',
-          'Always wrap in try/catch or add .catch() on the returned promise',
-          'Never use await inside forEach — use for...of or Promise.all(arr.map(async))'
+          'An async function ALWAYS returns a promise — even a plain return value comes wrapped.',
+          'await pauses only its own function — everything outside keeps running.',
+          'Independent tasks awaited one after another run one after another — start them together with Promise.all.',
+          'A rejected await throws — wrap in try/catch, or attach .catch() to the returned promise.',
+          'Never await inside forEach — it fires all the callbacks without waiting. Use for...of, or Promise.all(arr.map(async ...)).'
         ],
-        warning: 'await in forEach is BROKEN — forEach does not await promises. Use for...of or map + Promise.all.'
+        warning: 'await inside forEach is silently broken: forEach ignores the promises your callback returns, so nothing actually waits.'
       }
     ]
   },
@@ -141,32 +144,32 @@ const [user, posts] = await Promise.all([fetchUser(id), fetchPosts(id)]);`
       {
         concept: 'Destructuring',
         bullets: [
-          'Object: const { a, b: alias, c = default } = obj',
-          'Array: const [first, , third, ...rest] = arr',
-          'Nested: const { user: { address: { city } } } = data',
-          'In function params: function fn({ id, name = "anon" }) {}'
+          'Objects: const { a, b: alias, c = fallback } = obj — pick, rename, and default in one line.',
+          'Arrays: const [first, , third, ...rest] = arr — pick by position, skip with a gap, collect the tail.',
+          'Nested data in one go: const { user: { address: { city } } } = data.',
+          'Straight into function parameters: function fn({ id, name = "anon" }) {}.'
         ]
       },
       {
         concept: 'Spread & Rest',
         bullets: [
-          'Spread arrays: [...arr1, ...arr2] — shallow merge',
-          'Spread objects: { ...obj1, ...obj2 } — later keys override',
-          'Rest params: function fn(a, ...rest) — rest is a real Array',
-          'Spread is SHALLOW — nested objects are still shared by reference'
+          'Spread arrays: [...arr1, ...arr2] — copy or merge in one expression.',
+          'Spread objects: { ...obj1, ...obj2 } — merged; when keys collide, the later one wins.',
+          'Rest params: function fn(a, ...rest) — the extras arrive as a genuine Array.',
+          'Both copy ONE level deep only — nested objects inside are still shared with the original.'
         ],
-        warning: 'Object spread is a shallow clone. Nested objects are still the same reference.'
+        warning: "Spread is a shallow clone: the copy has the same nested objects as the original. Mutate one, you've mutated both."
       },
       {
         concept: '?. and ??',
         bullets: [
-          'obj?.prop — returns undefined instead of throwing on null/undefined',
-          'arr?.[0] — safe index access',
-          'fn?.() — calls only if fn is a function',
-          'a ?? b — fallback ONLY for null/undefined (not 0 or "")',
-          'a || b — fallback for any FALSY value (0, "", false, null, undefined)'
+          'obj?.prop — undefined instead of a crash when obj is null/undefined.',
+          'arr?.[0] — the same safety for index access.',
+          'fn?.() — call it only if it exists.',
+          'a ?? b — fall back ONLY when a is truly missing (null/undefined) — 0 and "" survive.',
+          'a || b — falls back on ANY falsy value, replacing legitimate 0, "", and false too.'
         ],
-        warning: '0 ?? "default" → 0. But 0 || "default" → "default". Use ?? when 0 is a valid value.'
+        warning: '0 ?? "default" gives 0, but 0 || "default" gives "default" — use ?? whenever 0 or "" are values you want to keep.'
       }
     ]
   },
@@ -176,10 +179,10 @@ const [user, posts] = await Promise.all([fetchUser(id), fetchPosts(id)]);`
       {
         concept: 'Transforming (returns new array)',
         bullets: [
-          'map(fn) — transform each element, same length',
-          'filter(fn) — keep elements where fn returns true',
-          'flatMap(fn) — map then flat(1) — replaces reduce for 1-level flattening',
-          'flat(depth) — flatten nested arrays, default depth 1'
+          'map(fn) — transform every element; same length out as in.',
+          'filter(fn) — keep only the elements where fn returns true.',
+          'flatMap(fn) — map, then flatten one level — perfect when each item can produce zero, one, or many results.',
+          'flat(depth) — lift nested arrays up into the parent, one level by default.'
         ],
         codeSnippet: `[1,2,3].map(x => x * 2);           // [2,4,6]
 [1,2,3,4].filter(x => x % 2 === 0); // [2,4]
@@ -188,23 +191,23 @@ const [user, posts] = await Promise.all([fetchUser(id), fetchPosts(id)]);`
       {
         concept: 'Aggregating (returns single value)',
         bullets: [
-          'reduce(fn, init) — accumulate to any value',
-          'find(fn) — first matching element or undefined',
-          'findIndex(fn) — index of first match or -1',
-          'some(fn) — true if ANY element passes',
-          'every(fn) — true if ALL elements pass',
-          'includes(val) — true if val is in array (uses SameValueZero)'
+          'reduce(fn, init) — fold the array into anything: a sum, an object, another array.',
+          'find(fn) — the first element that passes the test, or undefined.',
+          'findIndex(fn) — its position instead, or -1.',
+          'some(fn) — "does at least one pass?" — stops at the first yes.',
+          'every(fn) — "do they all pass?" — stops at the first no.',
+          'includes(val) — is this value in the array? (and unlike indexOf, it can find NaN).'
         ]
       },
       {
         concept: 'Sorting & mutating (mutates original!)',
         bullets: [
-          'sort((a,b) => a - b) — MUTATES the array (spread first for immutable sort)',
-          'reverse() — MUTATES',
-          'splice(i, n, ...items) — remove n items at i, optionally insert',
-          'Safe sort: [...arr].sort(comparator)'
+          'sort((a,b) => a - b) — sorts IN PLACE, and without that comparator it sorts numbers as text ([10, 2, 1] → [1, 10, 2]).',
+          'reverse() — also flips the array in place.',
+          'splice(i, n, ...items) — surgically remove/insert in place.',
+          'Want the original untouched? Copy first — [...arr].sort(comparator) — or use the ES2023 copies: toSorted / toReversed / toSpliced.'
         ],
-        warning: 'sort() mutates the original array. Always spread first for a safe copy: [...arr].sort()'
+        warning: 'sort() changes the original array — a classic React state bug. Spread first: [...arr].sort().'
       }
     ]
   },
@@ -214,21 +217,21 @@ const [user, posts] = await Promise.all([fetchUser(id), fetchPosts(id)]);`
       {
         concept: 'Prototype chain',
         bullets: [
-          'Every object has [[Prototype]] — forms a chain up to null',
-          'Property lookup: own props → prototype → prototype.prototype → null',
-          'Object.create(proto) — create object with custom prototype',
-          '__proto__ is the accessor; Object.getPrototypeOf(obj) is preferred'
+          'Every object holds a hidden link ([[Prototype]]) to another object, forming a chain that ends at null.',
+          'Property lookup walks that chain: own properties → prototype → its prototype → ... → null.',
+          'Object.create(proto) builds an object with exactly the prototype you choose.',
+          'Read the link with Object.getPrototypeOf(obj) — the __proto__ accessor works but is the legacy spelling.'
         ]
       },
       {
         concept: 'ES6 Classes',
         bullets: [
-          'Syntactic sugar over prototype-based inheritance',
-          'constructor() called on new ClassName()',
-          'super() must be first in subclass constructor',
-          'static methods on the class, not prototype',
-          '#field — truly private field (not just convention)',
-          'Methods defined in class body live on the prototype (shared)'
+          'Cleaner syntax over the same prototype system — not a new object model.',
+          'constructor() runs on new ClassName() — per-instance setup goes here.',
+          'In a subclass constructor, super() must run before you touch this.',
+          'static members live on the class itself, not on instances.',
+          '#field is genuinely private — inaccessible outside the class body, not just a naming convention.',
+          'Methods in the class body are stored once on the prototype and shared by every instance.'
         ],
         codeSnippet: `class Animal {
   #name;
@@ -247,21 +250,21 @@ class Dog extends Animal {
       {
         concept: 'Type coercion traps',
         bullets: [
-          'typeof null → "object" (historical bug)',
-          'typeof [] → "object" (use Array.isArray)',
-          'NaN !== NaN — use Number.isNaN() to check',
-          '[] + [] → "" | [] + {} → "[object Object]" | {} + [] → 0',
-          'parseInt("08") — may fail in old engines; always pass radix: parseInt("08", 10)'
+          'typeof null → "object" — a bug from 1995, kept forever. Check with value === null.',
+          'typeof [] → "object" too — arrays need Array.isArray().',
+          'NaN !== NaN — the one value not equal to itself. Check with Number.isNaN().',
+          'The party tricks: [] + [] → "" · [] + {} → "[object Object]" · {} + [] → 0 (the {} parses as an empty block!).',
+          'Always give parseInt its radix — parseInt("08", 10) — so the base is never guessed.'
         ],
-        warning: 'Always use === for comparisons. typeof null is "object" — a bug that will never be fixed.'
+        warning: 'Default to === everywhere. Loose == coercion rules are genuinely hard to memorise and breed subtle bugs.'
       },
       {
         concept: 'Pass by value vs reference',
         bullets: [
-          'Primitives (number, string, boolean, null, undefined, symbol, bigint) are passed by VALUE',
-          'Objects and arrays are passed by REFERENCE (the reference is copied, not the object)',
-          'Mutating a function parameter object mutates the original',
-          'To avoid: spread / Object.assign for shallow clone, structuredClone for deep clone'
+          'Primitives (number, string, boolean, null, undefined, symbol, bigint) are copied — the function gets its own value.',
+          'Objects and arrays pass a copy of the REFERENCE — both variables point at the same underlying object.',
+          "So mutating an object parameter inside a function mutates the caller's object too.",
+          'Defend by copying: spread/Object.assign for one level, structuredClone for a full deep clone.'
         ]
       }
     ]
@@ -276,19 +279,19 @@ export const tsQuickRecall: QuickRecallSection[] = [
       {
         concept: 'type vs interface',
         bullets: [
-          'interface — open, can be extended with extends, supports declaration merging',
-          'type — closed (no merging), supports unions, intersections, primitives, tuples',
-          'Prefer interface for object shapes / public APIs',
-          'Prefer type for unions, intersections, and complex computed types'
+          'interface — open: extendable with extends, and re-declarable to add members (declaration merging).',
+          'type — closed (no merging), but it can name ANYTHING: unions, intersections, primitives, tuples.',
+          'Reach for interface when describing object shapes and public APIs.',
+          'Reach for type when you need unions, intersections, or computed/mapped types.'
         ]
       },
       {
         concept: 'Generics',
         bullets: [
-          '<T> introduces a type variable resolved at use site',
-          'Constraint: <T extends SomeType>',
-          'Default: <T = string>',
-          'Multiple: <T, K extends keyof T>'
+          '<T> declares a type placeholder that gets filled in where the function/type is used.',
+          'Constrain what\'s allowed: <T extends SomeType> — "any T, as long as it fits SomeType".',
+          'Give it a default: <T = string>.',
+          'Combine them: <T, K extends keyof T> — "K must be a real key of T" (the typed-lookup pattern below).'
         ],
         codeSnippet: `function pick<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key];
@@ -297,23 +300,23 @@ export const tsQuickRecall: QuickRecallSection[] = [
       {
         concept: 'Key Utility Types',
         bullets: [
-          'Partial<T> — all optional',
-          'Required<T> — all required',
-          'Pick<T, K> — keep only K keys',
-          'Omit<T, K> — remove K keys',
-          'Record<K, V> — object with keys K and values V',
-          'ReturnType<typeof fn> — extract return type',
-          'NonNullable<T> — remove null & undefined'
+          'Partial<T> — every property becomes optional (perfect for update payloads).',
+          'Required<T> — the reverse: everything mandatory.',
+          'Pick<T, K> — a slimmed-down type keeping only the K keys.',
+          'Omit<T, K> — the complement: everything EXCEPT the K keys.',
+          'Record<K, V> — an object type with keys K and values V (a typed dictionary).',
+          'ReturnType<typeof fn> — extract what a function returns, no manual retyping.',
+          'NonNullable<T> — T with null and undefined stripped out.'
         ]
       },
       {
         concept: 'Type Guards',
         bullets: [
-          'typeof x === "string" — narrows to string',
-          'x instanceof Date — narrows to Date',
-          '"prop" in obj — narrows to type with that prop',
-          'Custom: function isUser(x): x is User { ... }',
-          'Discriminated union: check a "kind" | "type" literal field'
+          'typeof x === "string" — narrows x to string inside the branch.',
+          'x instanceof Date — narrows to Date.',
+          '"prop" in obj — narrows to the union member that has that property.',
+          'Custom guards: function isUser(x): x is User { ... } — your own check, trusted by the compiler.',
+          'Discriminated unions: switch on a literal "kind"/"type" field and each case narrows automatically.'
         ]
       }
     ]

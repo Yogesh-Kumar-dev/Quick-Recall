@@ -1,6 +1,7 @@
 import Fuse from 'fuse.js';
 import type { ReactNode } from 'react';
 import type { Note } from '@/types/content';
+import { type NoteLink, resolvePrerequisites } from '@/data/note-sources';
 import FilterPanel from './filter-panel';
 import NoteCard from './note-card';
 import ScrollToNote from './scroll-to-note';
@@ -57,6 +58,14 @@ export default function NotesView({
   const byDifficulty: Record<string, number> = {};
   for (const n of byDifficultyScope) byDifficulty[n.difficulty] = (byDifficulty[n.difficulty] ?? 0) + 1;
 
+  // Resolve each note's prerequisite ids into {id, title, url} chips here (server-side) so the
+  // client components below never import the full cross-topic notes arrays.
+  const prereqLinks: Record<string, NoteLink[]> = {};
+  for (const n of filtered) {
+    const links = resolvePrerequisites(n);
+    if (links.length > 0) prereqLinks[n.id] = links;
+  }
+
   const counts = {
     categoryTotal: byCategoryScope.length, // "all" topic chip: matches under the current difficulty + query
     difficultyTotal: byDifficultyScope.length, // "all" difficulty chip: matches under the current topic + query
@@ -84,11 +93,11 @@ export default function NotesView({
           {filtered.length === 0 ? (
             <p className="py-12 text-center text-muted-foreground">No notes match your filters.</p>
           ) : filtered.length > VIRTUALIZE_THRESHOLD ? (
-            <VirtualNoteList notes={filtered} openId={params.open} />
+            <VirtualNoteList notes={filtered} openId={params.open} prereqLinks={prereqLinks} />
           ) : (
             <div className="space-y-2">
               {filtered.map((note) => (
-                <NoteCard key={note.id} note={note} />
+                <NoteCard key={note.id} note={note} prereqs={prereqLinks[note.id]} />
               ))}
             </div>
           )}

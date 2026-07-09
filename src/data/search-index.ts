@@ -8,21 +8,7 @@ import { reactCustomHooks } from './react/react-custom-hooks';
 // notes — every topic's notes array, paired with the page that renders it (see resolve-content.ts
 // for the equivalent by-id lookup used by bookmarks/review; this is a separate by-page-url list
 // since search needs to link to a specific topic page, not just resolve a bare note by id).
-import type { Note } from '@/types/content';
-import { jsNotes } from './javascript/js-notes';
-import { tsNotes } from './javascript/ts-notes';
-import { tsReactNotes } from './javascript/ts-react';
-import { reactNotes } from './react/react-notes';
-import { nextjsNotes } from './nextjs/nextjs-notes';
-import { nextjsRenderingNotes } from './nextjs/nextjs-rendering';
-import { reduxNotes } from './redux/redux-notes';
-import { reduxToolkitNotes } from './redux/redux-toolkit-notes';
-import { rtkQueryNotes } from './redux/rtk-query-notes';
-import { asyncThunkNotes } from './redux/async-thunk-notes';
-import { htmlNotes } from './htmlcss/html-notes';
-import { cssNotes } from './htmlcss/css-notes';
-import { engineeringNotes } from './engineering/engineering-notes';
-import { nodejsNotes } from './nodejs/nodejs-notes';
+import { NOTE_SOURCES } from './note-sources';
 
 // nav config
 import { primaryNav, navSections } from '@/config/nav';
@@ -81,25 +67,9 @@ const hookItems: SearchItem[] = reactCustomHooks.map((h) => ({
   url: `/react/custom-hooks?open=${h.id}`
 }));
 
-// Every topic's notes, paired with the page that hosts them. Selecting a result deep-links via
-// ?open=<note.id> — NotesView/NoteCard already opens and scrolls to the matching card on load.
-const NOTE_SOURCES: { notes: Note[]; url: string; topic: string }[] = [
-  { notes: jsNotes, url: '/js/notes', topic: 'JavaScript' },
-  { notes: tsNotes, url: '/js/typescript', topic: 'TypeScript' },
-  { notes: tsReactNotes, url: '/js/ts-for-react', topic: 'TS for React' },
-  { notes: reactNotes, url: '/react/notes', topic: 'React' },
-  { notes: nextjsNotes, url: '/nextjs/notes', topic: 'Next.js' },
-  { notes: nextjsRenderingNotes, url: '/nextjs/rendering', topic: 'Next.js Rendering' },
-  { notes: reduxNotes, url: '/redux/notes', topic: 'Redux' },
-  { notes: reduxToolkitNotes, url: '/redux/toolkit', topic: 'Redux Toolkit' },
-  { notes: rtkQueryNotes, url: '/redux/rtk-query', topic: 'RTK Query' },
-  { notes: asyncThunkNotes, url: '/redux/async-thunk', topic: 'createAsyncThunk' },
-  { notes: htmlNotes, url: '/html-css/html', topic: 'HTML' },
-  { notes: cssNotes, url: '/html-css/css', topic: 'CSS' },
-  { notes: engineeringNotes, url: '/engineering/notes', topic: 'Engineering' },
-  { notes: nodejsNotes, url: '/nodejs/notes', topic: 'Node.js' }
-];
-
+// Every topic's notes, paired with the page that hosts them (NOTE_SOURCES, shared with the
+// prerequisites resolver in note-sources.ts). Selecting a result deep-links via ?open=<note.id> —
+// NotesView/NoteCard already opens and scrolls to the matching card on load.
 const noteItems: SearchItem[] = NOTE_SOURCES.flatMap(({ notes, url, topic }) =>
   notes.map((n) => ({
     id: `note-${n.id}`,

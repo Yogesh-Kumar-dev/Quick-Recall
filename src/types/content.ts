@@ -12,6 +12,7 @@ export interface Note {
   codeSnippet?: string;
   textbookDef?: string; // formal definition — rendered for intermediate + advanced
   eli5?: string; // casual analogy-driven walkthrough — rendered for intermediate + advanced
+  prerequisites?: string[]; // ids of notes (any topic) this one builds on — rendered as deep-link chips
   difficulty: 'basic' | 'intermediate' | 'advanced';
   category: string; // e.g. 'core' | 'async' | 'es6' | 'hooks' | 'generics'
 }

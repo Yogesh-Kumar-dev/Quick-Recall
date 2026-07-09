@@ -9,15 +9,17 @@ export const jsNotes: Note[] = [
   {
     id: 'es6-arrow-functions',
     title: 'Arrow Functions',
-    summary: 'Concise function syntax that lexically binds `this` instead of creating its own.',
+    summary:
+      'A shorter way to write functions — with one big behavioural difference: an arrow function has no `this` of its own, it borrows it from the surrounding code.',
     difficulty: 'basic',
     category: 'es6',
+    prerequisites: ['fn-this'],
     keyPoints: [
-      'Shorter syntax: const add = (a, b) => a + b.',
-      'No own `this` — inherits from enclosing lexical scope.',
-      'No `arguments` object — use rest params (...args) instead.',
-      'Cannot be used as constructors (no new).',
-      'Implicit return when body is a single expression (no braces).'
+      'The short syntax: const add = (a, b) => a + b.',
+      'No own `this` — it uses whatever `this` means in the code around it (the "enclosing lexical scope", as interviewers put it). That is why arrows are perfect for callbacks inside methods.',
+      'No `arguments` object either — collect extra arguments with rest parameters: (...args).',
+      'They cannot be constructors — calling one with `new` throws an error.',
+      'When the body is a single expression with no braces, its value is returned automatically (an "implicit return").'
     ],
     codeSnippet: `// Traditional
 const double = function(x) { return x * 2; };
@@ -34,14 +36,16 @@ const greet = name => {
   {
     id: 'es6-let-const',
     title: 'let & const',
-    summary: 'Block-scoped alternatives to var; const prevents reassignment.',
+    summary:
+      'The modern ways to declare variables: both live only inside their { } block, and const additionally stops the variable being reassigned.',
     difficulty: 'basic',
     category: 'es6',
+    prerequisites: ['core-scope', 'core-hoisting'],
     keyPoints: [
-      'Both are block-scoped ({ }) unlike var which is function-scoped.',
-      'Both are in the Temporal Dead Zone (TDZ) before their declaration.',
-      'const prevents reassignment but does NOT make objects immutable.',
-      'Prefer const by default; use let when reassignment is needed; avoid var.'
+      'Both are block-scoped — they exist only inside the nearest { }. var ignores blocks and belongs to the whole function, which is a common source of bugs.',
+      'Accessing them before the line that declares them throws an error. That gap between the top of the block and the declaration is called the Temporal Dead Zone (TDZ) — a favourite interview term.',
+      'const stops you *reassigning* the variable, not changing the value: a const object can still have its properties modified. It freezes the binding, not the contents.',
+      'Practical rule: use const by default, switch to let only when you genuinely need to reassign, and avoid var entirely in new code.'
     ],
     codeSnippet: `let count = 0;
 count = 1; // OK
@@ -56,14 +60,15 @@ user.name = 'Bob'; // OK — object itself is mutable
   {
     id: 'es6-template-literals',
     title: 'Template Literals',
-    summary: 'String literals using backticks that support interpolation and multi-line strings.',
+    summary:
+      'Strings written with backticks instead of quotes — you can drop variables straight into them and write across multiple lines.',
     difficulty: 'basic',
     category: 'es6',
     keyPoints: [
-      'Delimited by backticks (`) instead of quotes.',
-      'Embed expressions with ${expression}.',
-      'Multi-line strings without \\n escapes.',
-      'Tagged templates: a function can process the template parts.'
+      'Written with backticks (`) instead of single or double quotes.',
+      'Insert any expression inline with ${expression} — no more string concatenation with +.',
+      'Line breaks inside the string just work — no \\n escape characters needed.',
+      'Advanced form — tagged templates: put a function name before the backtick and it receives the string pieces and values separately, letting it process them (used by libraries like styled-components).'
     ],
     codeSnippet: `const name = 'Alice';
 const greeting = \`Hello, \${name}!\`;   // interpolation
@@ -83,16 +88,17 @@ highlight\`Score: \${42} / \${100}\`; // "Score: [42] / [100]"`
   {
     id: 'es6-destructuring',
     title: 'Destructuring',
-    summary: 'Unpack values from arrays or properties from objects into distinct variables.',
+    summary:
+      'A shortcut for pulling values out of objects and arrays into their own variables, instead of accessing them one property at a time.',
     difficulty: 'basic',
     category: 'es6',
     keyPoints: [
-      'Object destructuring: const { a, b } = obj — can rename: { a: alias }.',
-      'Array destructuring: const [first, , third] = arr — skip with commas.',
-      'Default values: const { x = 10 } = {} — x is 10 when undefined.',
-      'Nested: const { user: { name } } = data.',
-      'Rest: const { a, ...rest } = obj — rest gets remaining props.',
-      'Swap: [a, b] = [b, a].'
+      'From objects: const { a, b } = obj grabs obj.a and obj.b. Rename while grabbing: { a: alias }.',
+      'From arrays: const [first, , third] = arr picks by position — an empty slot between commas skips one.',
+      'Fallback values: const { x = 10 } = {} gives x the default 10 when the property is undefined.',
+      'Reach into nested data in one line: const { user: { name } } = data.',
+      'Collect the leftovers: const { a, ...rest } = obj puts every other property into rest.',
+      'Party trick that interviews love: swap two variables without a temp — [a, b] = [b, a].'
     ],
     codeSnippet: `const { name, age = 18, address: { city } } = user;
 const [first, ...others] = [1, 2, 3];
@@ -101,17 +107,19 @@ function fn({ id, label = 'default' }) { /* ... */ }`
   {
     id: 'es6-spread-rest',
     title: 'Spread & Rest (...)',
-    summary: '... spreads an iterable into individual elements; rest collects remaining elements.',
+    summary:
+      'The same three dots doing two opposite jobs: spread unpacks a collection into individual items; rest gathers individual items into a collection.',
     difficulty: 'basic',
     category: 'es6',
     keyPoints: [
-      'Spread in arrays: [...arr1, ...arr2] — shallow copy/merge.',
-      'Spread in objects: { ...obj1, ...obj2 } — later keys win.',
-      'Spread into function calls: Math.max(...nums).',
-      'Rest params: function fn(a, b, ...rest) — rest is a real Array.',
-      'Rest in destructuring: const [head, ...tail] = arr.'
+      'Spread in arrays: [...arr1, ...arr2] copies or merges arrays in one expression.',
+      'Spread in objects: { ...obj1, ...obj2 } merges properties — when both have the same key, the later one wins.',
+      'Spread into a function call: Math.max(...nums) passes each array element as a separate argument.',
+      'Rest in a parameter list: function fn(a, b, ...rest) collects all remaining arguments into a genuine Array (unlike the old `arguments` object).',
+      'Rest in destructuring: const [head, ...tail] = arr splits off the first element from everything after it.'
     ],
-    gotcha: 'Object spread is a SHALLOW copy. Nested objects are still shared by reference.',
+    gotcha:
+      'Spread makes a SHALLOW copy — one level deep only. Nested objects inside the copy are still the same objects as in the original, so mutating them changes both.',
     codeSnippet: `const merged = { ...defaults, ...overrides };
 const copy = [...original];
 
@@ -122,14 +130,14 @@ function sum(...nums) {
   {
     id: 'es6-default-params',
     title: 'Default Parameters',
-    summary: 'Function parameters can have default values, used when the argument is undefined.',
+    summary: 'Give a function parameter a fallback value that kicks in when the caller leaves that argument out (or passes undefined).',
     difficulty: 'basic',
     category: 'es6',
     keyPoints: [
-      'Default triggers only when the argument is undefined (not null, 0, or "").',
-      'Defaults are evaluated at call time, not definition time.',
-      'Can reference earlier parameters: function f(a, b = a * 2).',
-      'Works with destructuring: function f({ x = 0, y = 0 } = {}).'
+      'The default applies only when the argument is undefined. Passing null, 0, or "" counts as a real value — the default is skipped.',
+      'The default expression runs fresh on every call, not once at definition — so b = [] gives each call its own new array.',
+      'A default can use parameters declared before it: function f(a, b = a * 2).',
+      'Combines with destructuring for option objects: function f({ x = 0, y = 0 } = {}) — the trailing = {} makes calling f() with nothing work too.'
     ],
     codeSnippet: `function greet(name = 'World') {
   return \`Hello, \${name}!\`;
@@ -141,16 +149,18 @@ greet(null);      // "Hello, null!" — null is NOT undefined`
   {
     id: 'es6-classes',
     title: 'Classes',
-    summary: 'Syntactic sugar over prototypal inheritance — cleaner constructor + prototype method syntax.',
+    summary:
+      'Familiar class syntax for JavaScript — but under the hood it is the same old prototype system, just written more cleanly ("syntactic sugar").',
     difficulty: 'basic',
     category: 'es6',
+    prerequisites: ['oop-prototypal-inheritance'],
     keyPoints: [
-      'class Foo {} — methods go on Foo.prototype; instances share them.',
-      'constructor() is called on new Foo().',
-      'extends sets up the prototype chain.',
-      'super() must be called first in a subclass constructor.',
-      'static methods live on the class itself, not instances.',
-      'Private fields (ES2022): #field — truly private.'
+      'Methods you write in class Foo {} are stored once on Foo.prototype, and every instance shares them — they are not copied per object.',
+      'constructor() runs when you create an instance with new Foo() — it is where you set up per-instance properties.',
+      "extends wires up inheritance by linking the prototype chain — a Dog instance that lacks a method falls back to Animal's version.",
+      'In a subclass constructor, super() (which runs the parent constructor) must be called before you touch `this`.',
+      'static methods belong to the class itself (Foo.helper()), not to instances — good for factory and utility functions.',
+      'Private fields (ES2022): prefix with # (this.#secret) — genuinely inaccessible from outside, not just a naming convention.'
     ],
     codeSnippet: `class Animal {
   constructor(name) { this.name = name; }
@@ -163,16 +173,17 @@ class Dog extends Animal {
   {
     id: 'es6-modules',
     title: 'ES Modules (import / export)',
-    summary: 'Native module system with static imports and exports for tree-shaking and encapsulation.',
+    summary: "JavaScript's built-in way to split code across files: each file exports what it wants to share and imports what it needs.",
     difficulty: 'basic',
     category: 'es6',
     keyPoints: [
-      'Named exports: export const foo = 1; — import { foo } from "./mod".',
-      'Default export: export default fn; — import fn from "./mod".',
-      'Re-export: export { foo } from "./other".',
-      'Dynamic import: const mod = await import("./mod") — code splitting.',
-      'ES modules are always in strict mode.',
-      'Imports are live bindings — they reflect changes to the exported value.'
+      'Named exports: export const foo = 1 in one file, import { foo } from "./mod" in another — a file can have many.',
+      'Default export: export default fn — one per file, imported without braces: import fn from "./mod".',
+      'Re-export: export { foo } from "./other" passes something through — handy for building a single entry-point file.',
+      'Dynamic import: const mod = await import("./mod") loads a module on demand at runtime — this is what code splitting is built on.',
+      'Module files automatically run in strict mode — no sloppy-mode surprises.',
+      'Imports are live connections, not copies — if the exporting module changes the value later, importers see the new value.',
+      'Because imports/exports are static (analysable without running the code), bundlers can drop unused exports — that is tree shaking.'
     ],
     codeSnippet: `// math.js
 export const PI = 3.14;
@@ -186,15 +197,17 @@ import * as math from './math.js';`
   {
     id: 'es6-promises',
     title: 'Promises',
-    summary: 'An object representing the eventual completion (or failure) of an async operation.',
+    summary:
+      'An object that stands in for a result that isn\'t ready yet — you attach "when it\'s done, do this" handlers instead of waiting around.',
     difficulty: 'intermediate',
     category: 'es6',
+    prerequisites: ['async-sync-vs-async'],
     keyPoints: [
-      'States: pending → fulfilled | rejected. Immutable once settled.',
-      '.then(onFulfilled, onRejected) returns a new Promise — enables chaining.',
-      '.catch(fn) is shorthand for .then(undefined, fn).',
-      '.finally(fn) runs regardless of outcome.',
-      'Promise.all / .allSettled / .race / .any — combinator methods.'
+      'A promise is always in one of three states: pending (still working), fulfilled (succeeded, has a value), or rejected (failed, has a reason). Once it settles, it can never change again.',
+      '.then(onFulfilled, onRejected) registers what happens next — and returns a *new* promise, which is what makes chaining .then().then() possible.',
+      '.catch(fn) handles failures anywhere earlier in the chain — it is just shorthand for .then(undefined, fn).',
+      '.finally(fn) runs either way — the place for cleanup like hiding a spinner.',
+      'The combinators run several promises together: Promise.all (all must succeed), .allSettled (wait for all, report each outcome), .race (first to settle wins), .any (first to *succeed* wins).'
     ],
     textbookDef: `A Promise is an object representing the eventual completion or failure of an asynchronous computation and its resulting value. Defined in ECMAScript §27.2, a Promise occupies exactly one of three mutually exclusive states — pending, fulfilled, or rejected — and once it transitions from pending, its state and value are immutable.`,
     eli5: `A Promise is like a restaurant receipt when you order food.
@@ -219,15 +232,16 @@ Promise.allSettled([p1, p2]).then(results => { /* ... */ });`
   {
     id: 'es6-symbol',
     title: 'Symbol',
-    summary: 'A primitive type for unique, non-string property keys — guaranteed collision-free.',
+    summary:
+      "A primitive value that is guaranteed unique — used as object property keys that can never accidentally clash with anyone else's.",
     difficulty: 'intermediate',
     category: 'es6',
     keyPoints: [
-      'Symbol() creates a unique value — no two symbols are ever equal.',
-      'Optional description: Symbol("id") — for debugging only, not identity.',
-      'Well-known symbols: Symbol.iterator, Symbol.toPrimitive, Symbol.hasInstance.',
-      'Not enumerable in for...in or Object.keys — use Object.getOwnPropertySymbols().',
-      'Symbol.for("key") returns a shared global symbol — reuses across modules.'
+      'Every Symbol() call creates a brand-new, one-of-a-kind value — even two symbols with the same description are never equal.',
+      'The description — Symbol("id") — is purely a label for debugging; it plays no part in identity.',
+      'The language defines "well-known symbols" as hooks into its own behaviour: Symbol.iterator (makes something work in for...of), Symbol.toPrimitive (custom conversion), Symbol.hasInstance (custom instanceof).',
+      'Symbol-keyed properties are invisible to for...in, Object.keys, and JSON.stringify — to find them you need Object.getOwnPropertySymbols(). This makes them handy for semi-hidden metadata.',
+      'Symbol.for("key") is the exception to uniqueness: it looks up (or creates) a symbol in a global registry, so different modules asking for the same key get the same symbol.'
     ],
     codeSnippet: `const id = Symbol('id');
 const obj = { [id]: 42 };
@@ -242,16 +256,18 @@ class MyArray {
   {
     id: 'es6-iterators-generators',
     title: 'Iterators & Generators',
-    summary: 'Iterators define a sequence via next(); generators produce iterators with yield.',
+    summary:
+      'An iterator hands out values one at a time on request; a generator is a special function that builds one for you, pausing at each `yield` until asked for the next value.',
     difficulty: 'advanced',
     category: 'es6',
+    prerequisites: ['es6-symbol'],
     keyPoints: [
-      'Iterator protocol: object with next() returning { value, done }.',
-      'Iterable protocol: object with [Symbol.iterator]() returning an iterator.',
-      'for...of consumes any iterable (arrays, strings, Map, Set, generators).',
-      'function* declares a generator — execution pauses at each yield.',
-      'Generator return value is { value: undefined, done: true }.',
-      'Two-way communication: next(value) sends value to the last yield expression.'
+      'The iterator protocol is just a contract: an object with a next() method that returns { value, done } — done flips to true when the sequence ends.',
+      'The iterable protocol is the companion contract: an object with a [Symbol.iterator]() method that hands back an iterator. Anything meeting it works with for...of and spread.',
+      'for...of consumes any iterable — arrays, strings, Map, Set, and generator objects alike.',
+      'function* declares a generator. Calling it does not run the body — it returns an iterator, and the body executes lazily, freezing at each yield until next() is called again.',
+      'When a generator finishes (returns or falls off the end), next() reports { value: undefined, done: true }.',
+      'Communication goes both ways: gen.next(x) resumes the generator AND makes x the result of the yield expression it was paused on.'
     ],
     codeSnippet: `function* counter(start = 0) {
   while (true) {
@@ -267,14 +283,15 @@ gen.next(true);    // { value: 0, done: false } — reset`
   {
     id: 'es6-map-set',
     title: 'Map & Set',
-    summary: 'Map stores key-value pairs with any key type; Set stores unique values.',
+    summary:
+      'Two purpose-built collections: Map is a dictionary whose keys can be anything (not just strings), and Set is a list that silently refuses duplicates.',
     difficulty: 'basic',
     category: 'es6',
     keyPoints: [
-      'Map preserves insertion order; keys can be objects, functions, or primitives.',
-      'Map methods: set, get, has, delete, size, forEach, keys(), values(), entries().',
-      'Set stores unique values (SameValueZero equality); duplicates are ignored.',
-      'WeakMap/WeakSet: weak references — allow GC of keys; not iterable.'
+      'Map remembers insertion order and accepts any key type — objects, functions, primitives — where plain objects force keys into strings.',
+      'The Map toolkit: set, get, has, delete, plus a size property and iteration via forEach, keys(), values(), entries().',
+      'Set keeps each value at most once — adding a duplicate is simply ignored. Equality uses "SameValueZero": like === but NaN counts as equal to itself.',
+      'WeakMap/WeakSet hold their keys weakly — if nothing else references a key object, the garbage collector may reclaim it. The price: they cannot be iterated or sized. Use them to attach data to objects without preventing cleanup.'
     ],
     codeSnippet: `const map = new Map();
 map.set('key', 'value');
@@ -289,14 +306,15 @@ const unique = [...new Set(arr)];`
   {
     id: 'es6-proxy-reflect',
     title: 'Proxy & Reflect',
-    summary: 'Proxy wraps an object to intercept operations; Reflect provides default behaviour for those operations.',
+    summary:
+      'A Proxy is an invisible middleman wrapped around an object — every read, write, or call can be intercepted and customised. Reflect provides the matching "just do the normal thing" operations.',
     difficulty: 'advanced',
     category: 'es6',
     keyPoints: [
-      'new Proxy(target, handler) — handler traps intercept get, set, has, apply, etc.',
-      'Reflect.get/set/has mirror the default behaviour — use inside traps.',
-      'Common uses: validation, logging, reactivity (Vue 3 uses Proxy), mocking.',
-      'Proxy is transparent — typeof, instanceof, etc. work on the proxy.'
+      'new Proxy(target, handler) wraps target; the handler\'s "traps" (get, set, has, apply, ...) fire instead of the default behaviour whenever someone touches the proxy.',
+      'Inside a trap, Reflect.get/set/has performs the original, un-intercepted operation — the standard pattern is: do your custom logic, then delegate to Reflect.',
+      'Real-world uses: validating writes, logging property access, mocking in tests — and reactivity systems: Vue 3 tracks state changes entirely through Proxies.',
+      'The wrapper is transparent to the outside — typeof, instanceof, and normal property syntax all behave as if you were using the target directly.'
     ],
     codeSnippet: `const validator = new Proxy({}, {
   set(target, key, value) {
@@ -312,14 +330,14 @@ validator.age = 30; // OK
   {
     id: 'es7-array-includes',
     title: 'Array.prototype.includes()',
-    summary: 'Returns true if an array contains the given value, handling NaN correctly.',
+    summary: 'The readable way to ask "is this value in the array?" — returns true/false, and unlike indexOf it can even find NaN.',
     difficulty: 'basic',
     category: 'es7',
     keyPoints: [
-      'arr.includes(value, fromIndex?) — returns boolean.',
-      'Unlike indexOf, correctly detects NaN.',
-      'Uses SameValueZero algorithm.',
-      'fromIndex can be negative (counts from the end).'
+      'arr.includes(value, fromIndex?) returns a plain boolean — clearer than the old indexOf(value) !== -1 idiom.',
+      'It correctly finds NaN, which indexOf never can (because NaN !== NaN under ===).',
+      'That works because includes compares with "SameValueZero" — essentially === , except NaN is treated as equal to itself.',
+      'The optional fromIndex says where to start looking; a negative number counts back from the end.'
     ],
     codeSnippet: `[1, 2, 3].includes(2);     // true
 [1, NaN].includes(NaN);    // true  ← indexOf would return -1
@@ -328,13 +346,13 @@ validator.age = 30; // OK
   {
     id: 'es7-exponentiation',
     title: 'Exponentiation Operator (**)',
-    summary: 'Shorthand for Math.pow(base, exp) — base ** exponent.',
+    summary: 'A built-in power operator: base ** exponent does what Math.pow(base, exponent) does, with nicer syntax.',
     difficulty: 'basic',
     category: 'es7',
     keyPoints: [
-      '2 ** 10 === 1024 — equivalent to Math.pow(2, 10).',
-      'Right-associative: 2 ** 3 ** 2 === 2 ** 9.',
-      '**= assignment shorthand: x **= 2 — squares x in place.'
+      '2 ** 10 === 1024 — identical result to Math.pow(2, 10).',
+      'It groups from the right ("right-associative"): 2 ** 3 ** 2 means 2 ** (3 ** 2) = 2 ** 9, not (2 ** 3) ** 2.',
+      'There is an assignment form too: x **= 2 squares x in place, like += for powers.'
     ],
     codeSnippet: `2 ** 10      // 1024
 (-2) ** 2   // 4  — must parenthesise negative base
@@ -346,16 +364,18 @@ x **= 2;    // x = 9`
   {
     id: 'es8-async-await',
     title: 'async / await',
-    summary: 'Syntactic sugar over Promises — write async code that reads like synchronous code.',
+    summary: 'A friendlier way to work with promises: `await` makes async code read top-to-bottom like ordinary synchronous code.',
     difficulty: 'basic',
     category: 'es8',
+    prerequisites: ['es6-promises'],
     keyPoints: [
-      'async function always returns a Promise.',
-      'await pauses execution inside the async function until the Promise settles.',
-      'Use try/catch around await for error handling.',
-      'Parallel tasks: await Promise.all([fn1(), fn2()]) — never sequential-await independent work.'
+      'Marking a function `async` means it always returns a promise — even if you return a plain value, callers receive it wrapped in one.',
+      '`await` pauses that function (and only that function — the rest of the page keeps running) until the promise settles, then hands you its value.',
+      'Errors from an awaited promise throw like normal exceptions — so plain try/catch replaces .catch() chains.',
+      "When two tasks don't depend on each other, start them together and await both at once: await Promise.all([fn1(), fn2()])."
     ],
-    gotcha: 'Sequential awaits are a perf trap: await a(); await b(); runs b only after a. Use Promise.all for independent tasks.',
+    gotcha:
+      'The classic performance trap: `await a(); await b();` runs b only after a has completely finished — if they are independent, that doubles your waiting time. Promise.all runs them in parallel.',
     codeSnippet: `async function fetchUser(id) {
   try {
     const res = await fetch(\`/api/users/\${id}\`);
@@ -372,15 +392,15 @@ const [user, posts] = await Promise.all([fetchUser(1), fetchPosts(1)]);`
   {
     id: 'es8-object-values-entries',
     title: 'Object.values() & Object.entries()',
-    summary: 'Return arrays of own enumerable values or [key, value] pairs from an object.',
+    summary: 'Turn an object into arrays you can loop over: values() gives you just the values, entries() gives you [key, value] pairs.',
     difficulty: 'basic',
     category: 'es8',
     keyPoints: [
-      'Object.values(obj) — array of own enumerable property values.',
-      'Object.entries(obj) — array of [key, value] pairs.',
-      'Both skip inherited and non-enumerable properties.',
-      'Complement Object.keys() which returns only keys.',
-      'Useful for iterating objects with for...of.'
+      "Object.values(obj) — an array of the object's own property values.",
+      'Object.entries(obj) — an array of [key, value] pairs, one per property.',
+      "Both only look at the object's *own*, enumerable properties — anything inherited via the prototype chain is skipped.",
+      'They complete the family started by Object.keys(), which returns only the property names.',
+      "The main use: objects aren't iterable, but these arrays are — so for...of over Object.entries(obj) is the clean way to loop an object."
     ],
     codeSnippet: `const user = { name: 'Alice', age: 30 };
 Object.keys(user);    // ['name', 'age']
@@ -394,14 +414,15 @@ for (const [key, val] of Object.entries(user)) {
   {
     id: 'es8-string-padding',
     title: 'String.padStart() & String.padEnd()',
-    summary: 'Pad a string to a target length with a given fill string.',
+    summary:
+      'Stretch a string to a fixed length by adding filler characters — "5" becomes "005", perfect for clocks, IDs, and aligned output.',
     difficulty: 'basic',
     category: 'es8',
     keyPoints: [
-      'str.padStart(targetLength, fillString?) — pads from the left.',
-      'str.padEnd(targetLength, fillString?) — pads from the right.',
-      'Default fill is a space character.',
-      'If str is already at or longer than targetLength, returns str unchanged.'
+      'str.padStart(targetLength, fillString?) adds the filler on the left — the classic zero-padding tool.',
+      'str.padEnd(targetLength, fillString?) adds it on the right — handy for aligning columns of text.',
+      'Leave the filler out and you get spaces.',
+      'A string already at (or past) the target length comes back untouched — padding never truncates.'
     ],
     codeSnippet: `'5'.padStart(3, '0');   // '005'
 'hi'.padEnd(5, '-');   // 'hi---'
@@ -412,14 +433,15 @@ for (const [key, val] of Object.entries(user)) {
   {
     id: 'es9-object-rest-spread',
     title: 'Object Rest & Spread',
-    summary: 'Rest/spread extended to object literals — clone, merge, and extract remaining keys.',
+    summary: 'The three dots come to objects: clone and merge with spread, or destructure a few keys and sweep the rest into a new object.',
     difficulty: 'basic',
     category: 'es9',
+    prerequisites: ['es6-spread-rest'],
     keyPoints: [
-      'Object spread: { ...obj1, ...obj2 } — shallow merge, later keys win.',
-      'Object rest in destructuring: const { a, ...rest } = obj.',
-      'Spread creates a shallow copy — nested objects are still shared.',
-      'Complement to array spread/rest from ES6.'
+      'Object spread: { ...obj1, ...obj2 } merges properties into a new object — when keys collide, whichever comes later wins.',
+      'Object rest in destructuring: const { a, ...rest } = obj pulls out `a` and collects every other property into `rest`.',
+      'Spread copies one level deep only ("shallow") — objects nested inside are still shared with the original.',
+      'This is ES2018 extending the array spread/rest from ES6 to plain objects.'
     ],
     codeSnippet: `const defaults = { color: 'red', size: 'M' };
 const custom = { size: 'L', weight: 'light' };
@@ -431,13 +453,14 @@ const { color, ...rest } = merged;`
   {
     id: 'es9-promise-finally',
     title: 'Promise.prototype.finally()',
-    summary: 'Run cleanup logic after a Promise settles, regardless of success or failure.',
+    summary: 'The "either way, do this" step of a promise chain — perfect for cleanup like hiding a loading spinner.',
     difficulty: 'basic',
     category: 'es9',
+    prerequisites: ['es6-promises'],
     keyPoints: [
-      '.finally(fn) runs fn whether the promise resolved or rejected.',
-      'Does not receive the value/reason — use for side-effects only.',
-      'Returns a new Promise that propagates the original settled value/reason.'
+      '.finally(fn) runs fn whether the promise succeeded or failed — one place for cleanup instead of duplicating it in .then and .catch.',
+      "The callback receives nothing — it can't see the value or the error, so it's for side effects only.",
+      'It passes the original outcome straight through: whatever the chain resolved or rejected with continues past the .finally unchanged.'
     ],
     codeSnippet: `fetch('/api/data')
   .then(res => res.json())
@@ -447,14 +470,15 @@ const { color, ...rest } = merged;`
   {
     id: 'es9-async-iteration',
     title: 'Async Iteration (for await...of)',
-    summary: 'Iterate over async data sources — each iteration awaits the next value.',
+    summary: 'A loop for data that arrives over time: for await...of pauses at each step until the next chunk is ready.',
     difficulty: 'advanced',
     category: 'es9',
+    prerequisites: ['es8-async-await', 'es6-iterators-generators'],
     keyPoints: [
-      'for await...of — works with async iterables (Symbol.asyncIterator).',
-      'Each iteration awaits the Promise from the iterator.',
-      'Node.js streams, Web Streams, and async generators are async iterables.',
-      'async function* creates an async generator that yields Promises.'
+      'for await...of consumes "async iterables" — sequences whose next value comes wrapped in a promise (their contract is a [Symbol.asyncIterator]() method).',
+      'Each turn of the loop awaits the next promise before running the body — so the loop naturally paces itself to the data source.',
+      'You already have async iterables around you: Node.js streams, Web Streams, and paginated APIs wrapped in async generators.',
+      'async function* creates an async generator — a generator that can await inside itself and yield values as they become available.'
     ],
     codeSnippet: `async function* paginate(url) {
   let nextUrl = url;
@@ -475,14 +499,14 @@ for await (const page of paginate('/api/items')) {
   {
     id: 'es10-array-flat',
     title: 'Array.flat() & Array.flatMap()',
-    summary: 'flat() flattens nested arrays; flatMap() maps then flattens one level.',
+    summary: 'flat() unwraps arrays nested inside arrays; flatMap() runs a map and then unwraps one level in a single pass.',
     difficulty: 'basic',
     category: 'es10',
     keyPoints: [
-      'arr.flat(depth) — flattens nested arrays up to depth levels (default 1).',
-      'arr.flat(Infinity) — fully flattens any nesting.',
-      'arr.flatMap(fn) — equivalent to arr.map(fn).flat(1) but more efficient.',
-      'flatMap is useful when each item maps to zero, one, or many results.'
+      'arr.flat(depth) lifts nested arrays up into the parent, `depth` levels deep (default is 1 level).',
+      'arr.flat(Infinity) keeps going until nothing is nested at all.',
+      'arr.flatMap(fn) does arr.map(fn).flat(1) in one efficient step.',
+      'flatMap shines when each input item can produce zero, one, or many output items — return [] to drop an item, [a, b] to emit two.'
     ],
     codeSnippet: `[1, [2, [3]]].flat();          // [1, 2, [3]]
 [1, [2, [3]]].flat(Infinity);  // [1, 2, 3]
@@ -493,14 +517,14 @@ sentences.flatMap(s => s.split(' ')); // ['Hello', 'World', 'Foo', 'Bar']`
   {
     id: 'es10-object-from-entries',
     title: 'Object.fromEntries()',
-    summary: 'Transforms [key, value] pairs into an object — inverse of Object.entries().',
+    summary: 'Builds an object from a list of [key, value] pairs — the exact reverse of Object.entries().',
     difficulty: 'basic',
     category: 'es10',
     keyPoints: [
-      'Object.fromEntries(iterable) — works with Map, array of pairs, etc.',
-      'Inverse of Object.entries().',
-      'Useful for transforming a Map back to a plain object.',
-      'Common: Object.fromEntries(Object.entries(obj).filter(...).map(...))'
+      'Object.fromEntries(iterable) accepts anything that yields [key, value] pairs — an array of pairs, a Map, a URLSearchParams.',
+      'It undoes Object.entries(): entries turns an object into pairs, fromEntries turns pairs back into an object.',
+      'Handy for converting a Map into a plain object when an API expects one.',
+      'The power pattern: entries → filter/map the pairs with array methods → fromEntries. That\'s how you "map over an object".'
     ],
     codeSnippet: `Object.fromEntries([['name', 'Alice'], ['age', 30]]);
 // { name: 'Alice', age: 30 }
@@ -513,13 +537,13 @@ const doubled = Object.fromEntries(
   {
     id: 'es10-optional-catch',
     title: 'Optional Catch Binding',
-    summary: 'The catch clause can now omit the error parameter when you do not need it.',
+    summary: "You can now write catch { } without declaring an (err) parameter when you don't need the error object.",
     difficulty: 'basic',
     category: 'es10',
     keyPoints: [
-      'try { ... } catch { ... } — no (err) binding needed.',
-      'Use when you want to catch errors but do not care about the error value.',
-      'Reduces boilerplate for "fire and forget" patterns.'
+      'try { ... } catch { ... } — the (err) part is optional since ES2019.',
+      'Use it when you only care *that* something failed, not *why* — like probing whether a string is valid JSON.',
+      'Small quality-of-life change: no more unused `e` variables tripping up linters.'
     ],
     codeSnippet: `// Before ES2019
 try { JSON.parse(str); } catch (e) { return false; }
@@ -532,14 +556,15 @@ try { JSON.parse(str); } catch { return false; }`
   {
     id: 'es11-optional-chaining',
     title: 'Optional Chaining (?.)',
-    summary: 'Safely access nested properties — returns undefined instead of throwing if a link is null/undefined.',
+    summary:
+      'Reach into nested data without fear: if any link in the chain is null or undefined, the whole expression quietly returns undefined instead of crashing.',
     difficulty: 'basic',
     category: 'es11',
     keyPoints: [
-      'obj?.prop — returns undefined if obj is null/undefined.',
-      'arr?.[i] — safe array index access.',
-      'fn?.() — calls fn only if it is a function.',
-      'Short-circuits: once null/undefined is hit, the rest of the chain is skipped.'
+      'obj?.prop — reads the property, unless obj is null/undefined, in which case you get undefined (no "cannot read property of undefined" crash).',
+      'arr?.[i] — the same safety for bracket/index access.',
+      'fn?.() — calls the function only if it actually exists; otherwise, undefined.',
+      'It short-circuits: the moment a null/undefined link is hit, evaluation stops — nothing after it in the chain runs.'
     ],
     codeSnippet: `const city = user?.address?.city;
 const len = arr?.[0]?.length;
@@ -548,15 +573,17 @@ config?.onLoad?.();`
   {
     id: 'es11-nullish-coalescing',
     title: 'Nullish Coalescing (??)',
-    summary: 'Returns the right-hand value only when the left is null or undefined.',
+    summary:
+      'A stricter fallback operator: a ?? b uses b only when a is truly missing (null or undefined) — not when it is 0, "", or false.',
     difficulty: 'basic',
     category: 'es11',
     keyPoints: [
-      'a ?? b — returns b only if a is null or undefined.',
-      'Unlike ||, does NOT trigger on 0, "", or false.',
-      '??= assignment: x ??= defaultVal — assign only if x is null/undefined.'
+      'a ?? b — "use a, unless it\'s null or undefined, then use b".',
+      'This is the fix for the classic || problem: || treats 0, "", and false as "missing" and replaces them; ?? respects them as real values.',
+      "There's an assignment form: x ??= defaultVal fills in x only if it is currently null/undefined."
     ],
-    gotcha: '0 ?? "default" → 0. But 0 || "default" → "default". Use ?? when 0 and "" are valid values.',
+    gotcha:
+      '0 ?? "default" gives 0, but 0 || "default" gives "default" — with || a legitimate zero (or empty string) silently gets replaced. Reach for ?? whenever 0 and "" are valid values.',
     codeSnippet: `const port = config.port ?? 3000;
 const name = user?.name ?? 'Guest';
 
@@ -566,14 +593,16 @@ count ??= 0;`
   {
     id: 'es11-promise-all-settled',
     title: 'Promise.allSettled()',
-    summary: 'Waits for all promises to settle and returns all outcomes — never short-circuits.',
+    summary:
+      'Runs several promises and waits for every one to finish — successes and failures alike — then reports each outcome individually.',
     difficulty: 'intermediate',
     category: 'es11',
+    prerequisites: ['es6-promises'],
     keyPoints: [
-      'Always resolves — never rejects.',
-      'Returns array of {status: "fulfilled", value} | {status: "rejected", reason}.',
-      'Use when you want to attempt all operations and inspect every result.',
-      'Contrast: Promise.all short-circuits on first rejection.'
+      'It always resolves, never rejects — one failed promise cannot blow up the whole batch.',
+      'The result is an array of report cards: { status: "fulfilled", value } for successes, { status: "rejected", reason } for failures, in input order.',
+      'Use it when every operation should be attempted regardless of the others — sending a batch of independent requests and showing which ones failed.',
+      'Contrast with Promise.all, which bails out and rejects the moment any single promise fails.'
     ],
     codeSnippet: `const results = await Promise.allSettled([fetchUser(), fetchPosts()]);
 results.forEach(r => {
@@ -584,14 +613,16 @@ results.forEach(r => {
   {
     id: 'es11-dynamic-import',
     title: 'Dynamic import()',
-    summary: 'Load a module lazily at runtime as a Promise — enables on-demand code splitting.',
+    summary:
+      'Load a module at the moment you need it, not up front: import("./module") fetches it on demand and hands it back as a promise.',
     difficulty: 'intermediate',
     category: 'es11',
+    prerequisites: ['es6-modules', 'es6-promises'],
     keyPoints: [
-      'import("./module") returns a Promise resolving to the module namespace.',
-      'Can be used inside conditions, event handlers, or async functions.',
-      'Foundation for code splitting in bundlers (Webpack, Vite).',
-      'Unlike static import, dynamic import can load modules conditionally.'
+      'import("./module") returns a promise that resolves to the module\'s exports.',
+      'Unlike a static import (which must sit at the top of the file), you can call it anywhere — inside an if, an event handler, an async function.',
+      'This is the primitive that code splitting is built on: bundlers (Webpack, Vite) turn each dynamic import into a separate chunk downloaded only when that line runs.',
+      'Typical use: heavy features behind a click — load the chart library when the user opens the chart, not on page load.'
     ],
     codeSnippet: `button.addEventListener('click', async () => {
   const { Chart } = await import('./chart.js');
@@ -601,15 +632,16 @@ results.forEach(r => {
   {
     id: 'es11-bigint',
     title: 'BigInt',
-    summary: 'Arbitrary-precision integers for numbers larger than Number.MAX_SAFE_INTEGER.',
+    summary:
+      'A number type for integers too big for regular numbers — beyond about 9 quadrillion (Number.MAX_SAFE_INTEGER), ordinary numbers silently lose precision; BigInt never does.',
     difficulty: 'intermediate',
     category: 'es11',
     keyPoints: [
-      'Literal: 9007199254740993n — append n suffix.',
-      'BigInt() constructor: BigInt("9007199254740993").',
-      'Cannot mix BigInt and Number in arithmetic — explicit conversion needed.',
-      'typeof 1n === "bigint".',
-      'No float BigInt — integers only.'
+      'Write one by adding an n suffix: 9007199254740993n.',
+      'Or convert: BigInt("9007199254740993") — useful for big IDs arriving as strings (database IDs, tweet IDs).',
+      'You cannot mix BigInt and regular numbers in arithmetic — 1n + 1 throws; convert one side explicitly first.',
+      'It is its own primitive type: typeof 1n === "bigint".',
+      'Whole numbers only — there is no fractional BigInt.'
     ],
     codeSnippet: `const big = 9007199254740991n + 2n; // 9007199254740993n — precise!
 console.log(Number.MAX_SAFE_INTEGER + 2 === Number.MAX_SAFE_INTEGER + 1); // true  ← precision lost
@@ -620,13 +652,13 @@ console.log(big === 9007199254740993n); // true`
   {
     id: 'es12-string-replace-all',
     title: 'String.replaceAll()',
-    summary: 'Replace all occurrences of a substring without a global regex flag.',
+    summary: 'Replace every occurrence of a substring in one call — what everyone always expected replace() to do.',
     difficulty: 'basic',
     category: 'es12',
     keyPoints: [
-      'str.replaceAll(searchValue, replacement) — replaces every match.',
-      'Unlike replace(), replaces all occurrences with a string pattern.',
-      'Returns a new string — original is unchanged.'
+      'str.replaceAll(searchValue, replacement) swaps out every match, not just the first.',
+      'The old trap: replace() with a plain string only touches the FIRST occurrence — replacing all previously required a regex with the /g flag.',
+      'Strings are immutable, so it returns a new string; the original is untouched.'
     ],
     codeSnippet: `'aabbcc'.replace('b', 'x');    // 'axbcc' — only first
 'aabbcc'.replaceAll('b', 'x'); // 'aaxxcc'
@@ -635,14 +667,14 @@ console.log(big === 9007199254740993n); // true`
   {
     id: 'es12-logical-assignment',
     title: 'Logical Assignment Operators (&&=, ||=, ??=)',
-    summary: 'Combine logical operators with assignment — only assign when the condition holds.',
+    summary: 'Conditional assignment in one operator: only overwrite x when it is truthy (&&=), falsy (||=), or missing entirely (??=).',
     difficulty: 'basic',
     category: 'es12',
     keyPoints: [
-      'x &&= y — assign y only if x is truthy.',
-      'x ||= y — assign y only if x is falsy.',
-      'x ??= y — assign y only if x is null or undefined.',
-      'Short-circuit: RHS is only evaluated when needed.'
+      'x &&= y — "if x is truthy, replace it with y".',
+      'x ||= y — "if x is falsy (0, "", null...), replace it with y".',
+      'x ??= y — "if x is null or undefined specifically, fill it with y" — the safest for defaults.',
+      "They short-circuit like their logical cousins: the right-hand side isn't even evaluated unless the assignment is going to happen."
     ],
     codeSnippet: `let a = 1, b = 0, c = null;
 a &&= 2;  // a = 2  (truthy → assign)
@@ -652,14 +684,15 @@ c ??= 3;  // c = 3  (null   → assign)`
   {
     id: 'es12-promise-any',
     title: 'Promise.any()',
-    summary: 'Resolves with the first fulfilled promise; rejects only if ALL reject.',
+    summary: 'Give it several promises and it resolves with the first SUCCESS — it only fails if every single one fails.',
     difficulty: 'intermediate',
     category: 'es12',
+    prerequisites: ['es6-promises'],
     keyPoints: [
-      'Opposite of Promise.all — needs only one success.',
-      'If all reject, throws AggregateError with all reasons.',
-      'Use for "first available" patterns (fallback servers).',
-      'Contrast with Promise.race — settles with first settled (win OR loss).'
+      'Think of it as the mirror image of Promise.all: all needs every promise to succeed; any needs just one.',
+      'If literally everything rejects, you get an AggregateError bundling all the individual failure reasons.',
+      'Perfect for "first one that works" situations — trying several mirror servers and taking whichever answers successfully.',
+      "Don't confuse it with Promise.race: race settles with the first promise to finish *either way* — a fast failure wins the race; any ignores failures and waits for a success."
     ],
     codeSnippet: `const first = await Promise.any([
   fetch('https://mirror1.example.com/data'),
@@ -672,15 +705,16 @@ c ??= 3;  // c = 3  (null   → assign)`
   {
     id: 'es13-class-fields',
     title: 'Class Fields & Private Members',
-    summary: 'Public and private fields/methods declared directly in the class body.',
+    summary: "Declare a class's properties right in its body — and make them genuinely private with a # prefix.",
     difficulty: 'intermediate',
     category: 'es13',
+    prerequisites: ['es6-classes'],
     keyPoints: [
-      'Public field: class Foo { count = 0; } — instance property on every new instance.',
-      'Private field: #count — accessible only within the class body.',
-      'Private method: #validate() — same scope restriction.',
-      'Static fields: static #instances = 0 — shared across all instances.',
-      'Private fields use hard privacy (not closure-based).'
+      'Public field: class Foo { count = 0; } — every new instance starts with its own count, no constructor boilerplate needed.',
+      'Private field: #count can only be touched from inside the class body — outside code (and even subclasses) simply cannot reach it.',
+      'Methods can be private too: #validate() follows the same rule.',
+      'static fields belong to the class rather than instances — static #instances = 0 is one shared counter for all of them.',
+      'This is "hard" privacy enforced by the language itself — unlike the old _underscore convention (a polite request) or closures (a workaround).'
     ],
     codeSnippet: `class Counter {
   #count = 0;          // private field
@@ -693,14 +727,14 @@ c ??= 3;  // c = 3  (null   → assign)`
   {
     id: 'es13-array-at',
     title: 'Array / String .at()',
-    summary: 'Access elements by index, including negative indices from the end.',
+    summary: 'Index access that counts from the end too: arr.at(-1) is the last element, no length arithmetic required.',
     difficulty: 'basic',
     category: 'es13',
     keyPoints: [
-      'arr.at(0) === arr[0] — positive works like bracket notation.',
-      'arr.at(-1) — last element; arr.at(-2) — second to last.',
-      'Also works on String and TypedArray.',
-      'Simpler than arr[arr.length - 1] for end-access.'
+      'With positive numbers it behaves exactly like brackets: arr.at(0) === arr[0].',
+      'Negative numbers count backwards: arr.at(-1) is the last element, arr.at(-2) the one before it.',
+      'Works on strings and typed arrays as well as arrays.',
+      "It exists to replace the clunky arr[arr.length - 1] idiom (plain arr[-1] doesn't work — brackets treat -1 as a property name, not an index)."
     ],
     codeSnippet: `const arr = [1, 2, 3, 4, 5];
 arr.at(0);   // 1
@@ -710,13 +744,14 @@ arr.at(-1);  // 5
   {
     id: 'es13-object-has-own',
     title: 'Object.hasOwn()',
-    summary: 'A safer alternative to hasOwnProperty() for checking own properties.',
+    summary:
+      'The reliable way to ask "does this object itself have this property?" — a drop-in replacement for the fragile hasOwnProperty().',
     difficulty: 'basic',
     category: 'es13',
     keyPoints: [
-      'Object.hasOwn(obj, key) — returns true if obj has key as own property.',
-      'Works on null-prototype objects where hasOwnProperty is unavailable.',
-      'Preferred over obj.hasOwnProperty(key) in all cases.'
+      "Object.hasOwn(obj, key) returns true when key is the object's *own* property — not something inherited through the prototype chain.",
+      'Why not obj.hasOwnProperty(key)? That call lives on the prototype — so it explodes on objects created with Object.create(null), and can be shadowed by a property literally named "hasOwnProperty".',
+      'Being a static method, Object.hasOwn sidesteps both problems — use it every time.'
     ],
     codeSnippet: `Object.hasOwn({ a: 1 }, 'a'); // true
 const bare = Object.create(null);
@@ -726,14 +761,15 @@ Object.hasOwn(bare, 'x'); // true — hasOwnProperty would throw`
   {
     id: 'es13-top-level-await',
     title: 'Top-Level await',
-    summary: 'Use await directly at the top level of an ES module — no async wrapper needed.',
+    summary: 'await straight at the top of a module file — no need to wrap one-time setup in an async function.',
     difficulty: 'intermediate',
     category: 'es13',
+    prerequisites: ['es8-async-await', 'es6-modules'],
     keyPoints: [
-      'Only works in ES modules (not CommonJS).',
-      'The module pauses and its importers wait for it to finish.',
-      'Useful for one-time async initialisation (DB connections, config loading).',
-      'The enclosing module graph is suspended until the await resolves.'
+      "Only in ES modules — CommonJS (require) files can't do this.",
+      'While the awaited promise is pending, the module isn\'t "finished loading" — any file importing it automatically waits too.',
+      'Made for one-time async initialisation: opening a database connection, fetching config, loading a WASM binary.',
+      'Use with care: a slow top-level await delays every module downstream of it — the whole import chain sits waiting.'
     ],
     codeSnippet: `// config.mjs — top-level await
 const config = await fetch('/api/config').then(r => r.json());
@@ -748,15 +784,16 @@ console.log(config.apiUrl); // already resolved`
   {
     id: 'es14-array-immutable',
     title: 'Immutable Array Methods',
-    summary: 'toSorted, toReversed, toSpliced, and with — return new arrays without mutating the original.',
+    summary:
+      'Copy-making twins of the old mutating methods: toSorted, toReversed, toSpliced, and with return a changed COPY and leave the original alone.',
     difficulty: 'intermediate',
     category: 'es14',
     keyPoints: [
-      'arr.toSorted(fn?) — sorted copy.',
-      'arr.toReversed() — reversed copy.',
-      'arr.toSpliced(start, del, ...items) — spliced copy.',
-      'arr.with(index, value) — copy with one element replaced.',
-      'arr.findLast(fn) / arr.findLastIndex(fn) — search from the end.'
+      'arr.toSorted(fn?) — a sorted copy (sort() sorts in place, which has burned every React developer at least once).',
+      'arr.toReversed() — a reversed copy (reverse() flips the original).',
+      'arr.toSpliced(start, del, ...items) — a copy with elements removed/inserted (splice() edits the original).',
+      'arr.with(index, value) — a copy with just one element swapped out.',
+      'Bonus from the same edition: findLast(fn) and findLastIndex(fn) search from the end of the array.'
     ],
     codeSnippet: `const nums = [3, 1, 2];
 const sorted = nums.toSorted(); // [1, 2, 3]
@@ -770,14 +807,14 @@ nums.with(0, 99);               // [99, 1, 2]
   {
     id: 'es2024-object-groupby',
     title: 'Object.groupBy() & Map.groupBy()',
-    summary: 'Group an iterable of items by a derived key — no manual reduce needed.',
+    summary: 'Sort a list into labelled buckets in one call — "group these people by department" without writing the reduce() boilerplate.',
     difficulty: 'intermediate',
     category: 'es2024',
     keyPoints: [
-      'Object.groupBy(iterable, keyFn) — returns a null-prototype object of arrays.',
-      'Map.groupBy(iterable, keyFn) — same but returns a Map (keys can be any type).',
-      'keyFn receives (item, index).',
-      'Use Map.groupBy when you need non-string keys.'
+      'Object.groupBy(iterable, keyFn) — your function returns a group name per item, and you get back an object of arrays, one per group.',
+      'Map.groupBy(iterable, keyFn) — identical idea, but the result is a Map, so groups can be keyed by anything (objects, numbers), not just strings.',
+      'The key function receives each (item, index).',
+      'Note: Object.groupBy returns a null-prototype object — great for use as a bag of groups, but it has no inherited methods like hasOwnProperty.'
     ],
     codeSnippet: `const people = [
   { name: 'Alice', dept: 'eng' },
@@ -790,13 +827,15 @@ const byDept = Object.groupBy(people, p => p.dept);
   {
     id: 'es2024-promise-with-resolvers',
     title: 'Promise.withResolvers()',
-    summary: 'Creates a Promise and exposes its resolve/reject as a destructured tuple — no executor boilerplate.',
+    summary:
+      'Get a promise plus its resolve and reject functions as three separate pieces — for when something *outside* the promise decides when it settles.',
     difficulty: 'intermediate',
     category: 'es2024',
+    prerequisites: ['es6-promises'],
     keyPoints: [
-      'Returns { promise, resolve, reject }.',
-      'Useful when resolve/reject need to be called from outside the constructor.',
-      'Replaces the manual "deferred" pattern.'
+      'Promise.withResolvers() returns { promise, resolve, reject } ready to destructure.',
+      'Normally resolve/reject are trapped inside the new Promise(...) callback — awkward when an event listener or external callback is what should settle the promise.',
+      'It standardises the old hand-rolled "deferred" pattern (declaring let resolve outside and capturing it in the executor).'
     ],
     codeSnippet: `// Before
 let resolve, reject;
@@ -813,15 +852,16 @@ eventEmitter.on('error', reject);`
   {
     id: 'string-slice-indexof',
     title: 'slice, substring, indexOf, lastIndexOf',
-    summary: 'Extract substrings and locate character positions within a string.',
+    summary:
+      'The bread-and-butter tools for cutting strings apart (slice/substring) and finding where something sits inside them (indexOf).',
     difficulty: 'basic',
     category: 'string-methods',
     keyPoints: [
-      'str.slice(start, end) — extracts substring; supports negative indices.',
-      'str.substring(start, end) — similar but treats negative as 0 and swaps if start > end.',
-      'str.indexOf(searchValue, from?) — first index of match; -1 if not found.',
-      'str.lastIndexOf(searchValue) — last index of match.',
-      'Prefer slice over substring — it handles negatives correctly.'
+      'str.slice(start, end) cuts out the piece from start up to (not including) end — negative numbers count from the end of the string.',
+      'str.substring(start, end) looks the same but behaves oddly: negatives become 0, and if start > end it silently swaps them.',
+      "str.indexOf(searchValue, from?) tells you where a substring first appears — or -1 if it isn't there.",
+      'str.lastIndexOf(searchValue) finds the final occurrence instead.',
+      'Day-to-day advice: just use slice — its negative-index behaviour is sane and predictable.'
     ],
     codeSnippet: `const s = 'Hello, World!';
 s.slice(7, 12);        // 'World'
@@ -834,15 +874,15 @@ s.indexOf('xyz');      // -1`
   {
     id: 'string-split',
     title: 'split & Array.join()',
-    summary: 'split breaks a string into an array; join reassembles an array into a string.',
+    summary: 'A matched pair: split chops a string into an array wherever the separator appears; join glues an array back into one string.',
     difficulty: 'basic',
     category: 'string-methods',
     keyPoints: [
-      'str.split(separator, limit?) — returns an array of substrings.',
-      'split("") splits into individual characters; split(" ") splits on spaces.',
-      'split with a regex: "a1b2c".split(/\\d/) → ["a", "b", "c"].',
-      'arr.join(separator) — joins array elements into a string (default separator is ",").',
-      'split + transform + join is a common string manipulation pattern.'
+      'str.split(separator, limit?) returns an array of the pieces between separators.',
+      'split("") explodes the string into individual characters; split(" ") breaks it into words on spaces.',
+      'The separator can be a regex: "a1b2c".split(/\\d/) splits on any digit → ["a", "b", "c"].',
+      'arr.join(separator) is the reverse — beware the default separator is a comma, so pass "" for none.',
+      'The workhorse pattern for string problems: split → transform with array methods → join. (Reverse a string: s.split("").reverse().join("")).'
     ],
     codeSnippet: `'a,b,c'.split(',');          // ['a', 'b', 'c']
 'hello'.split('');          // ['h','e','l','l','o']
@@ -855,15 +895,15 @@ s.indexOf('xyz');      // -1`
   {
     id: 'string-search',
     title: 'includes, startsWith, endsWith',
-    summary: 'Boolean checks for substring presence — cleaner than indexOf !== -1.',
+    summary: 'Plain-English yes/no questions for strings: does it contain this? start with this? end with this?',
     difficulty: 'basic',
     category: 'string-methods',
     keyPoints: [
-      'str.includes(search, from?) — true if search appears anywhere.',
-      'str.startsWith(prefix, pos?) — true if string begins with prefix.',
-      'str.endsWith(suffix, length?) — true if string ends with suffix.',
-      'All are case-sensitive.',
-      'All return boolean — use over indexOf for readability.'
+      'str.includes(search, from?) — true if the substring appears anywhere.',
+      'str.startsWith(prefix, pos?) — true if the string begins with the prefix.',
+      'str.endsWith(suffix, length?) — true if it ends with the suffix.',
+      'All three are case-sensitive — "Hello".includes("hello") is false.',
+      'They return booleans directly, replacing the old indexOf(x) !== -1 dance — same result, far more readable.'
     ],
     codeSnippet: `const url = 'https://example.com/api/users';
 url.includes('/api');          // true
@@ -876,16 +916,16 @@ url.endsWith('/users');        // true
   {
     id: 'string-case-trim',
     title: 'Case, trim, repeat, padStart, padEnd',
-    summary: 'Methods for changing case, removing whitespace, and padding strings.',
+    summary: 'The everyday string clean-up kit: change case, strip stray whitespace, repeat, and pad out to a fixed width.',
     difficulty: 'basic',
     category: 'string-methods',
     keyPoints: [
-      'str.toUpperCase() / str.toLowerCase() — returns new uppercase/lowercase string.',
-      'str.trim() — removes whitespace from both ends.',
-      'str.trimStart() / str.trimEnd() — remove from one side only.',
-      'str.repeat(n) — returns string repeated n times.',
-      'str.padStart(n, fill?) / str.padEnd(n, fill?) — pad to target length.',
-      'None of these mutate the original string.'
+      'str.toUpperCase() / str.toLowerCase() — a new string in the requested case.',
+      'str.trim() — strips whitespace from both ends (great for user input before validating).',
+      'str.trimStart() / str.trimEnd() — the same, one side at a time.',
+      'str.repeat(n) — the string glued to itself n times.',
+      'str.padStart(n, fill?) / str.padEnd(n, fill?) — add characters until the string reaches length n; think "005" from "5".padStart(3, "0").',
+      'Strings are immutable in JavaScript, so all of these return new strings — the original is never changed.'
     ],
     codeSnippet: `'  Hello  '.trim();        // 'Hello'
 '  Hello  '.trimStart();   // 'Hello  '
@@ -898,15 +938,15 @@ url.endsWith('/users');        // true
   {
     id: 'string-replace',
     title: 'replace & replaceAll',
-    summary: 'Replace the first or all occurrences of a pattern in a string.',
+    summary: 'Swap text inside a string — just remember that replace() only touches the FIRST match unless you say otherwise.',
     difficulty: 'basic',
     category: 'string-methods',
     keyPoints: [
-      'str.replace(search, replacement) — replaces only the FIRST match.',
-      'str.replaceAll(search, replacement) — replaces ALL matches (ES2021).',
-      'Both accept a string or a regex as the first argument.',
-      'With a regex, use the /g flag in replace() to replace all matches.',
-      'Replacement can be a string or a function(match, ...groups) => string.'
+      'str.replace(search, replacement) with a plain string replaces only the FIRST occurrence — the top string-method gotcha.',
+      'str.replaceAll(search, replacement) (ES2021) replaces every occurrence.',
+      'Both accept either a string or a regular expression as the thing to find.',
+      'The pre-replaceAll way to replace everything: a regex with the global flag — str.replace(/x/g, "y").',
+      'The replacement can be a function — it receives each match (and capture groups) and returns what to substitute, enabling smart per-match logic.'
     ],
     codeSnippet: `'aabbcc'.replace('b', 'x');    // 'axbcc' — only first
 'aabbcc'.replaceAll('b', 'x'); // 'aaxxcc'
@@ -917,15 +957,15 @@ url.endsWith('/users');        // true
   {
     id: 'string-at-charat',
     title: 'at(), charAt(), charCodeAt()',
-    summary: 'Access individual characters or their Unicode code points by index.',
+    summary: 'Pick out single characters from a string — or convert between characters and their numeric character codes.',
     difficulty: 'basic',
     category: 'string-methods',
     keyPoints: [
-      'str.at(index) — supports negative indices (at(-1) = last char).',
-      'str.charAt(index) — returns char at index; returns "" if out of range.',
-      'str.charCodeAt(index) — UTF-16 code unit at index.',
-      'String.fromCharCode(code) — create a character from a code unit.',
-      'str[index] bracket notation — same as charAt but returns undefined if out of range.'
+      'str.at(index) — the modern pick; negative indices count from the end (at(-1) is the last character).',
+      'str.charAt(index) — the classic version; out-of-range gives an empty string "".',
+      'str.charCodeAt(index) — the character\'s numeric code (its UTF-16 code unit) — "A" is 65.',
+      'String.fromCharCode(code) — goes the other way, from number back to character.',
+      'Bracket notation str[index] also works, but out-of-range gives undefined instead of "". The code-conversion pair is what Caesar-cipher-style interview problems are built on.'
     ],
     codeSnippet: `'hello'.at(-1);          // 'o'
 'hello'.charAt(1);      // 'e'
@@ -938,15 +978,16 @@ String.fromCharCode(65); // 'A'`
   {
     id: 'array-map-filter-foreach',
     title: 'map, filter, forEach',
-    summary: 'Core iteration methods: map transforms, filter selects, forEach runs a side-effect per element.',
+    summary:
+      'The three loops you use daily: map transforms every element, filter keeps the ones that pass a test, forEach just does something with each.',
     difficulty: 'basic',
     category: 'array-methods',
     keyPoints: [
-      'arr.map(fn) — returns a NEW array with fn applied to each element.',
-      'arr.filter(fn) — returns a NEW array with only elements where fn returns true.',
-      'arr.forEach(fn) — runs fn for each element; returns undefined (no chaining).',
-      'map and filter do NOT mutate the original array.',
-      "forEach is for side-effects only — don't use it when you need the result."
+      'arr.map(fn) — a NEW array of the same length, with fn applied to each element ("double every number").',
+      'arr.filter(fn) — a NEW array keeping only the elements where fn returned true ("just the even ones").',
+      'arr.forEach(fn) — runs fn per element and returns undefined, so nothing can be chained after it.',
+      'map and filter never touch the original array — they always build fresh ones.',
+      'Pick by intent: need a resulting array? map/filter. Just need a side effect per element (logging, DOM updates)? forEach.'
     ],
     codeSnippet: `const nums = [1, 2, 3, 4, 5];
 
@@ -961,15 +1002,16 @@ nums.filter(n => n > 2).map(n => n * 10); // [30, 40, 50]`
   {
     id: 'array-reduce',
     title: 'reduce & reduceRight',
-    summary: 'Fold an array into a single accumulated value by running a reducer function on each element.',
+    summary:
+      'Boil an array down to a single value — a sum, an object, anything — by carrying a running result ("accumulator") through each element.',
     difficulty: 'intermediate',
     category: 'array-methods',
     keyPoints: [
-      'arr.reduce(fn, initialValue) — fn receives (accumulator, current, index, array).',
-      'Always provide an initialValue — without it, reduce fails on empty arrays.',
-      'Can build any output: numbers, strings, objects, arrays, Maps.',
-      'reduceRight processes from right to left.',
-      'Common uses: sum, count, group-by, flatten.'
+      'arr.reduce(fn, initialValue) — your function gets (accumulator, current, index, array) and returns the next accumulator; the last one is the result.',
+      'Always pass an initialValue — without one, reduce uses the first element as the starting point and THROWS on an empty array.',
+      'The output can be any shape: a number (sum), a string, an object (lookup table), an array, a Map.',
+      'reduceRight is the same machine running from the last element to the first.',
+      'The classics it powers: sum, count-by, group-by, flattening — anything where you fold many values into one.'
     ],
     codeSnippet: `const nums = [1, 2, 3, 4];
 const sum = nums.reduce((acc, n) => acc + n, 0); // 10
@@ -984,16 +1026,17 @@ const grouped = items.reduce((acc, item) => {
   {
     id: 'array-find-some-every',
     title: 'find, findIndex, some, every',
-    summary: 'Search and test methods: find returns the first match, some/every check conditions across the array.',
+    summary:
+      'Searching and testing with a condition: find gets you the first matching element, some asks "does at least one pass?", every asks "do they all pass?".',
     difficulty: 'basic',
     category: 'array-methods',
     keyPoints: [
-      'arr.find(fn) — returns first element where fn returns true; undefined if none.',
-      'arr.findIndex(fn) — returns index of first match; -1 if none.',
-      'arr.some(fn) — true if at least one element passes fn.',
-      'arr.every(fn) — true if ALL elements pass fn.',
-      'All four short-circuit — stop iterating as soon as the result is known.',
-      'arr.findLast(fn) / arr.findLastIndex(fn) — search from the end (ES2023).'
+      'arr.find(fn) — the first element for which fn returns true, or undefined if none does.',
+      'arr.findIndex(fn) — the same search, but you get the position instead (-1 if no match).',
+      'arr.some(fn) — true if at least ONE element passes the test.',
+      'arr.every(fn) — true only if ALL elements pass.',
+      'All four stop early ("short-circuit") the moment the answer is certain — some stops at the first pass, every at the first fail.',
+      'ES2023 added the from-the-end versions: findLast(fn) and findLastIndex(fn).'
     ],
     codeSnippet: `const users = [{ id: 1, active: true }, { id: 2, active: false }];
 
@@ -1006,17 +1049,19 @@ users.every(u => u.active);        // false`
   {
     id: 'array-sort',
     title: 'sort',
-    summary: 'Sorts an array in place. Without a comparator it sorts as strings, causing numeric bugs.',
+    summary:
+      'Sorts an array — but with two traps: it modifies the array in place, and by default it sorts values as TEXT, so 10 comes before 2.',
     difficulty: 'intermediate',
     category: 'array-methods',
     keyPoints: [
-      'arr.sort() — sorts IN PLACE, mutates the original array.',
-      'Default: converts to strings and sorts lexicographically — [10, 2, 1] → [1, 10, 2].',
-      'Numeric sort: arr.sort((a, b) => a - b) — ascending; b - a for descending.',
-      'Sort stability: guaranteed in all modern engines (ES2019+).',
-      'Use arr.toSorted() (ES2023) for an immutable sorted copy.'
+      'arr.sort() rearranges the original array itself (mutation) — it does not return a fresh copy.',
+      'With no comparator, every element is converted to a string and sorted alphabetically — which is why [10, 2, 1] "sorts" to [1, 10, 2].',
+      'For numbers, always pass a comparator: (a, b) => a - b for ascending, b - a for descending. (Negative return = a first, positive = b first.)',
+      'Modern engines guarantee a "stable" sort (ES2019+): elements that compare equal keep their original relative order.',
+      'Want the original untouched? arr.toSorted(comparator) (ES2023) returns a sorted copy instead.'
     ],
-    gotcha: '[10, 9, 2].sort() === [10, 2, 9] — string sort. Always pass a comparator for numbers.',
+    gotcha:
+      '[10, 9, 2].sort() gives [10, 2, 9] — everything was compared as strings, so "10" < "2". Any time you sort numbers, pass the (a, b) => a - b comparator.',
     codeSnippet: `[10, 9, 2].sort();               // [10, 2, 9] ← wrong!
 [10, 9, 2].sort((a, b) => a - b); // [2, 9, 10] ← correct
 
@@ -1030,17 +1075,18 @@ const sorted = original.toSorted((a, b) => a - b);`
   {
     id: 'array-splice-slice',
     title: 'splice vs slice',
-    summary: 'slice extracts a portion (immutable); splice removes/inserts in place (mutates).',
+    summary:
+      'Two nearly identical names, opposite behaviour: slice copies a portion out and leaves the array alone; splice surgically edits the array itself.',
     difficulty: 'basic',
     category: 'array-methods',
     keyPoints: [
-      'arr.slice(start, end) — returns a shallow copy of a portion; does NOT mutate.',
-      'arr.splice(start, deleteCount, ...items) — removes/inserts IN PLACE; returns removed elements.',
-      'Negative indices in slice count from the end: arr.slice(-2) = last two.',
-      'splice(2, 0, "x") inserts "x" at index 2 without removing anything.',
-      'Use toSpliced() (ES2023) for an immutable splice.'
+      'arr.slice(start, end) — hands back a copy of that portion; the original is untouched.',
+      'arr.splice(start, deleteCount, ...items) — removes and/or inserts elements IN the original array, returning whatever it removed.',
+      'slice understands negative indices: arr.slice(-2) is the last two elements.',
+      'A deleteCount of 0 makes splice a pure insert: splice(2, 0, "x") slots "x" in at index 2.',
+      'Need splice behaviour without mutation? toSpliced() (ES2023) returns an edited copy.'
     ],
-    gotcha: 'splice mutates the original array. slice does not. Easy to mix them up.',
+    gotcha: 'One letter apart, easy to mix up: splice mutates the original array, slice never does. Memory hook — sPlice is Permanent.',
     codeSnippet: `const arr = [1, 2, 3, 4, 5];
 
 arr.slice(1, 3);         // [2, 3]   — original unchanged
@@ -1053,14 +1099,15 @@ arr.splice(1, 0, 99);    // insert 99 at index 1`
   {
     id: 'array-from-of',
     title: 'Array.from() & Array.of()',
-    summary: 'Array.from converts array-like or iterable objects to real arrays; Array.of creates arrays from arguments.',
+    summary:
+      'Array.from turns "array-ish" things (NodeLists, Sets, strings) into real arrays; Array.of builds an array from exactly the values you give it.',
     difficulty: 'basic',
     category: 'array-methods',
     keyPoints: [
-      'Array.from(iterable, mapFn?) — converts NodeList, Set, Map, string, arguments to array.',
-      'Array.from({ length: 5 }, (_, i) => i) — create a filled array.',
-      'Array.of(1, 2, 3) — creates [1, 2, 3]; avoids Array(3) single-arg ambiguity.',
-      'Array(3) creates [ , , ] (3 empty slots); Array.of(3) creates [3].'
+      'Array.from(iterable, mapFn?) converts anything iterable or array-like — a NodeList from querySelectorAll, a Set, a Map, a string, the arguments object — into a genuine array with all the array methods.',
+      'The generate-a-range trick: Array.from({ length: 5 }, (_, i) => i) → [0, 1, 2, 3, 4].',
+      'Array.of(1, 2, 3) creates [1, 2, 3] — its point is fixing the classic Array() confusion.',
+      'That confusion: Array(3) does NOT create [3] — it creates an array of 3 empty slots. Array.of(3) actually gives you [3].'
     ],
     codeSnippet: `Array.from('hello');              // ['h','e','l','l','o']
 Array.from(new Set([1,1,2]));     // [1, 2]
@@ -1073,15 +1120,15 @@ Array(3);       // [empty × 3]`
   {
     id: 'array-concat-join-reverse',
     title: 'concat, join, reverse, indexOf',
-    summary: 'Classic array utility methods for merging, joining to string, reversing, and searching.',
+    summary: 'The classic utility quartet: merge arrays, turn one into a string, flip its order, and look up where a value lives.',
     difficulty: 'basic',
     category: 'array-methods',
     keyPoints: [
-      'arr.concat(...arrays) — returns a new merged array; does not mutate.',
-      'arr.join(separator) — converts array to string; default separator is ",".',
-      'arr.reverse() — reverses IN PLACE; use toReversed() for immutable copy.',
-      'arr.indexOf(value) — first index of value; -1 if not found.',
-      'arr.lastIndexOf(value) — searches from the end.'
+      'arr.concat(...arrays) — a new array with everything merged; the originals stay untouched.',
+      'arr.join(separator) — glue elements into one string; the default separator is "," so pass "" or "-" explicitly.',
+      'arr.reverse() — careful: it flips the array IN PLACE. toReversed() (ES2023) gives a flipped copy instead.',
+      'arr.indexOf(value) — the position of the first exact (===) match, or -1 if absent.',
+      'arr.lastIndexOf(value) — the same lookup, starting from the end.'
     ],
     codeSnippet: `[1, 2].concat([3, 4], [5]); // [1, 2, 3, 4, 5]
 ['a','b','c'].join('-');    // 'a-b-c'
@@ -1099,15 +1146,15 @@ arr.toReversed();           // non-mutating copy (ES2023)
   {
     id: 'error-try-catch',
     title: 'try / catch / finally / throw',
-    summary: 'Structured error handling: try wraps risky code, catch handles errors, finally always runs.',
+    summary: 'The safety net for risky code: try runs it, catch takes over if it blows up, finally runs no matter what.',
     difficulty: 'basic',
     category: 'error-handling',
     keyPoints: [
-      'try { } catch (err) { } — catch receives the thrown value as err.',
-      'throw can throw any value: throw new Error("msg") or throw 42.',
-      'finally { } runs whether an error was thrown or not — ideal for cleanup.',
-      'Errors propagate up the call stack until caught; uncaught = program crash.',
-      'catch without re-throwing silences errors — be intentional.'
+      'try { } catch (err) { } — if anything inside try throws, execution jumps straight to catch with the thrown value as err.',
+      'throw can hurl any value — but always throw new Error("msg"), because Error objects carry a stack trace and plain values (throw 42) do not.',
+      'finally { } runs whether things succeeded or failed — the reliable place for cleanup (closing connections, releasing locks).',
+      'An uncaught error climbs up through every calling function ("propagates up the call stack") until something catches it — reach the top uncaught, and the program crashes.',
+      'A catch block that neither handles nor re-throws just makes the error vanish — swallowing errors silently is how impossible-to-debug systems are born.'
     ],
     codeSnippet: `function parseJSON(str) {
   try {
@@ -1129,17 +1176,17 @@ function divide(a, b) {
   {
     id: 'error-types',
     title: 'Built-in Error Types',
-    summary: 'JavaScript has several built-in Error subclasses — each signals a specific kind of failure.',
+    summary: "JavaScript's built-in error family — recognising which one you're looking at tells you what kind of mistake happened.",
     difficulty: 'basic',
     category: 'error-handling',
     keyPoints: [
-      'Error — base type; use for generic errors.',
-      'TypeError — wrong type (calling a non-function, null property access).',
-      'ReferenceError — accessing an undeclared variable.',
-      'SyntaxError — invalid syntax (usually from eval or JSON.parse).',
-      'RangeError — value out of range (invalid array length, recursion overflow).',
-      'URIError — malformed URI in encodeURI/decodeURI.',
-      'All errors have .name, .message, and .stack properties.'
+      'Error — the generic base type, and the parent all the others extend.',
+      "TypeError — a value was the wrong type for the operation: calling something that isn't a function, or reading a property off null/undefined. The one you'll see most.",
+      "ReferenceError — you used a variable name that doesn't exist (usually a typo).",
+      "SyntaxError — the code itself couldn't be parsed; at runtime you mostly meet it from JSON.parse on malformed JSON.",
+      'RangeError — a value outside its allowed range: new Array(-1), or infinite recursion overflowing the call stack.',
+      'URIError — a malformed URI passed to encodeURI/decodeURI (rare in practice).',
+      'Every error carries .name (the type), .message (what went wrong), and .stack (where it happened) — check with err instanceof TypeError.'
     ],
     codeSnippet: `null.foo;               // TypeError
 undeclaredVar;          // ReferenceError
@@ -1156,15 +1203,17 @@ catch (err) {
   {
     id: 'error-custom',
     title: 'Custom Error Classes',
-    summary: 'Extend the Error class to create domain-specific error types with structured data.',
+    summary:
+      'Define your own error types (ApiError, ValidationError) by extending Error — so catch blocks can tell failures apart and read structured details.',
     difficulty: 'intermediate',
     category: 'error-handling',
+    prerequisites: ['es6-classes', 'error-types'],
     keyPoints: [
-      'class MyError extends Error — sets name automatically via constructor.',
-      'Always call super(message) to set the .message property.',
-      'Add custom fields to carry structured context (statusCode, code, etc.).',
-      'instanceof checks work correctly with extended Error classes.',
-      'Set this.name = this.constructor.name for correct .name.'
+      "class MyError extends Error {} — that's the whole pattern; your class inherits message and stack handling.",
+      "In the constructor, call super(message) first — that's what puts the text into .message.",
+      'The real payoff: attach extra fields (statusCode, errorCode, field name) so handlers get structured data, not just a message string to parse.',
+      'catch blocks can then branch cleanly: if (err instanceof ApiError) — instanceof works properly with extended Error classes.',
+      'Set this.name = "MyError" (or this.constructor.name) so logs and stack traces show the real type instead of plain "Error".'
     ],
     codeSnippet: `class ApiError extends Error {
   constructor(message, statusCode) {
@@ -1185,15 +1234,17 @@ catch (err) {
   {
     id: 'error-async',
     title: 'Error Handling in Async Code',
-    summary: 'Async functions and Promise chains require different error-handling strategies.',
+    summary:
+      "Errors in async code don't travel through normal try/catch unless you await them — unhandled ones can disappear silently or crash the process.",
     difficulty: 'intermediate',
     category: 'error-handling',
+    prerequisites: ['es6-promises', 'es8-async-await', 'error-try-catch'],
     keyPoints: [
-      'async/await: wrap await calls in try/catch to handle rejected Promises.',
-      'Promise chains: use .catch(fn) at the end — one handler covers the whole chain.',
-      'Unhandled Promise rejections crash Node.js and warn in browsers.',
-      'async functions that throw return a rejected Promise — always handle the result.',
-      'Promise.allSettled avoids one rejection killing all results.'
+      'With async/await, a rejected promise throws at the await — so ordinary try/catch around the await handles it.',
+      'With .then() chains, put one .catch(fn) at the end — it catches a failure from ANY earlier step in the chain.',
+      'A rejection nobody handles is serious: it crashes modern Node.js processes and logs loud warnings in browsers.',
+      'When an async function throws, nothing explodes on the spot — the function just returns a rejected promise. Someone must await it or attach .catch(), or the error evaporates.',
+      "Running a batch where one failure shouldn't sink the rest? Promise.allSettled reports every outcome instead of rejecting at the first failure."
     ],
     gotcha:
       "An async function that throws does NOT crash immediately — it returns a rejected Promise. If you don't await it or attach .catch(), the error disappears silently.",
@@ -1216,15 +1267,16 @@ danger(); // no await, no .catch() — error is lost!`
   {
     id: 'dom-selectors',
     title: 'Selecting DOM Elements',
-    summary: 'APIs to query one or multiple elements from the DOM.',
+    summary:
+      'How to grab elements from the page: querySelector for anything a CSS selector can describe, getElementById for the fast direct lookup.',
     difficulty: 'basic',
     category: 'dom',
     keyPoints: [
-      'document.querySelector(selector) — first match; returns null if not found.',
-      'document.querySelectorAll(selector) — returns a static NodeList (not live).',
-      'document.getElementById(id) — fastest single-element lookup by ID.',
-      'document.getElementsByClassName / getElementsByTagName — return live HTMLCollections.',
-      'Convert NodeList/HTMLCollection to array: Array.from(list) or [...list].'
+      'document.querySelector(selector) — the first element matching a CSS selector ("#id", ".class", "ul > li"); null when nothing matches.',
+      'document.querySelectorAll(selector) — ALL matches, as a static NodeList: a snapshot that does not update if the page changes afterwards.',
+      'document.getElementById(id) — the fastest lookup when you have an id (no CSS parsing involved).',
+      'getElementsByClassName / getElementsByTagName return LIVE collections — they magically update as matching elements are added or removed, which surprises people mid-loop.',
+      'Neither NodeList nor HTMLCollection is a real array — convert with Array.from(list) or [...list] before using map/filter.'
     ],
     codeSnippet: `const btn = document.querySelector('#submit-btn');
 const items = document.querySelectorAll('.list-item');
@@ -1238,15 +1290,15 @@ const header = document.getElementById('header');`
   {
     id: 'dom-manipulation',
     title: 'Creating & Inserting Elements',
-    summary: 'Programmatically build and insert DOM nodes.',
+    summary: 'Building the page from JavaScript: create an element, fill it in, and attach it where it belongs.',
     difficulty: 'basic',
     category: 'dom',
     keyPoints: [
-      'document.createElement(tag) — creates a new element node.',
-      'parent.appendChild(child) — appends child at the end of parent.',
-      'parent.insertBefore(newNode, refNode) — inserts before a specific child.',
-      'el.insertAdjacentHTML(position, html) — fast insertion (positions: beforebegin, afterbegin, beforeend, afterend).',
-      'el.remove() — removes element from the DOM.'
+      'document.createElement(tag) makes a new element — it exists only in memory until you attach it to the page.',
+      "parent.appendChild(child) attaches it as the parent's last child.",
+      'parent.insertBefore(newNode, refNode) places it ahead of a specific existing child instead.',
+      "el.insertAdjacentHTML(position, html) injects an HTML string at one of four spots relative to el — beforebegin, afterbegin, beforeend, afterend — without re-parsing the parent's existing content.",
+      'el.remove() takes the element off the page.'
     ],
     codeSnippet: `const li = document.createElement('li');
 li.textContent = 'New item';
@@ -1262,17 +1314,18 @@ document.querySelector('.old').remove();`
   {
     id: 'dom-content',
     title: 'innerHTML vs textContent vs innerText',
-    summary: 'Three ways to read or set element content — with important security and performance differences.',
+    summary: "Three ways to read or set an element's content — the choice matters for both security and speed.",
     difficulty: 'basic',
     category: 'dom',
     keyPoints: [
-      'innerHTML — reads/sets raw HTML markup; parses HTML on set.',
-      'textContent — reads/sets plain text; faster, no HTML parsing, no XSS risk.',
-      'innerText — like textContent but respects CSS visibility (hidden elements excluded).',
-      'Setting innerHTML with user input is an XSS vulnerability — use textContent for user data.',
-      'textContent is faster than innerHTML for plain text.'
+      'innerHTML — works with raw HTML markup: setting it parses the string and builds real elements, tags and all.',
+      'textContent — plain text only: whatever you set is displayed literally, tags included as visible text. No parsing, no risk.',
+      'innerText — like textContent, but it respects CSS: text inside hidden elements is skipped when reading (and reading it forces a layout pass, making it slower).',
+      'The security line: putting user-provided text into innerHTML lets an attacker inject a live <script>-equivalent — that is XSS (cross-site scripting). User data goes in textContent, always.',
+      'For plain text, textContent is also simply faster — no HTML parser involved.'
     ],
-    gotcha: 'Never do el.innerHTML = userInput — this is an XSS attack vector. Always use el.textContent for untrusted strings.',
+    gotcha:
+      "Never write el.innerHTML = userInput — a user who types <img src=x onerror=stealCookies()> now runs code in every visitor's browser. Untrusted strings always go through textContent.",
     codeSnippet: `const el = document.querySelector('p');
 
 // Read
@@ -1286,16 +1339,17 @@ el.innerHTML = userInput;   // ❌ XSS risk`
   {
     id: 'dom-events',
     title: 'addEventListener & the Event Object',
-    summary: 'Attach event handlers to DOM elements and inspect the event object they receive.',
+    summary:
+      'Reacting to clicks, keypresses, and everything else: addEventListener wires up a handler, and the event object tells you what happened.',
     difficulty: 'intermediate',
     category: 'dom',
     keyPoints: [
-      'el.addEventListener(type, handler, options?) — attach a handler.',
-      'el.removeEventListener(type, handler) — remove; requires the same function reference.',
-      'Event object: e.target (element that triggered), e.currentTarget (element handler is on).',
-      'e.preventDefault() — blocks default browser action (e.g. form submit, link nav).',
-      'e.stopPropagation() — stops event from bubbling up the DOM.',
-      'once: true option fires the handler only once then auto-removes it.'
+      'el.addEventListener(type, handler, options?) — run handler whenever that event fires on el.',
+      'el.removeEventListener(type, handler) — only works if you pass the SAME function reference you added; an inline arrow function can never be removed.',
+      'Inside the handler, know your two elements: e.target is what the user actually interacted with; e.currentTarget is the element this handler is attached to.',
+      "e.preventDefault() cancels the browser's built-in reaction — stop a form submitting, a link navigating.",
+      'e.stopPropagation() stops the event travelling up ("bubbling") to ancestor elements\' handlers.',
+      'The { once: true } option makes a handler self-destruct after its first run — perfect for one-time initialisation.'
     ],
     codeSnippet: `btn.addEventListener('click', handleClick);
 
@@ -1314,16 +1368,18 @@ btn.removeEventListener('click', handleClick); // must pass same fn ref`
   {
     id: 'dom-event-delegation',
     title: 'Event Bubbling & Delegation',
-    summary: 'Events bubble up the DOM; delegation uses one parent listener to handle events on many children.',
+    summary:
+      'A click doesn\'t stop at the element you clicked — it travels up through every ancestor ("bubbling"). Delegation exploits that: one listener on the parent handles clicks for all its children.',
     difficulty: 'intermediate',
     category: 'dom',
+    prerequisites: ['dom-events'],
     keyPoints: [
-      'Bubbling: event fires on target, then propagates up to document.',
-      'Capturing: opposite direction (rare); enabled with { capture: true }.',
-      'Event delegation: attach ONE listener on a parent, check e.target inside.',
-      'Delegation is more efficient than N listeners on N children.',
-      'Also handles dynamically added elements automatically.',
-      'e.target.closest(selector) — find nearest ancestor matching selector.'
+      'Bubbling: the event fires on the clicked element first, then rises parent by parent all the way up to document.',
+      'Capturing is the same trip in reverse (document down to the target) — rarely needed, opt in with { capture: true }.',
+      'Event delegation: instead of a listener on every list item, put ONE listener on the list and inspect e.target to see which item was actually clicked.',
+      'Why bother: one listener instead of hundreds saves memory and setup time.',
+      'The killer feature: items added to the list later are handled automatically — no re-wiring, because the parent listener was already in place.',
+      'e.target.closest(selector) is the delegation workhorse — it climbs from the clicked element to the nearest ancestor matching the selector (e.g. the row the click landed inside).'
     ],
     codeSnippet: `// Without delegation — bad for 100 items
 items.forEach(item => item.addEventListener('click', handleClick));
@@ -1339,15 +1395,16 @@ document.querySelector('ul').addEventListener('click', (e) => {
   {
     id: 'dom-classlist',
     title: 'classList, style & dataset',
-    summary: 'Manipulate element classes, inline styles, and data attributes.',
+    summary:
+      'The everyday styling and metadata APIs: toggle CSS classes with classList, set inline styles with style, and read data-* attributes with dataset.',
     difficulty: 'basic',
     category: 'dom',
     keyPoints: [
-      'el.classList.add("a", "b") / .remove("a") / .toggle("active") / .contains("x").',
-      'el.classList.replace("old", "new") — swap one class for another.',
-      'el.style.property = value — sets inline styles (camelCase: backgroundColor).',
-      'el.dataset.userId — reads data-user-id attribute (camelCase access).',
-      'el.getAttribute / el.setAttribute / el.removeAttribute — for any attribute.'
+      'el.classList is the class toolkit: .add("a", "b"), .remove("a"), .toggle("active") (add if missing, remove if present), .contains("x").',
+      'el.classList.replace("old", "new") swaps one class for another in a single call.',
+      'el.style.property = value writes inline styles — CSS names become camelCase (background-color → backgroundColor).',
+      'data-* attributes surface on el.dataset with camelCase names: data-user-id in HTML reads as el.dataset.userId.',
+      'For any other attribute, the generic trio: el.getAttribute, el.setAttribute, el.removeAttribute.'
     ],
     codeSnippet: `const el = document.querySelector('.card');
 el.classList.add('active');
@@ -1366,18 +1423,20 @@ el.dataset.role;   // 'admin'`
   {
     id: 'webapi-fetch',
     title: 'fetch API',
-    summary: 'Promise-based browser API for making HTTP requests — replacement for XMLHttpRequest.',
+    summary: "The browser's built-in way to make HTTP requests, promise-based — it replaced the old XMLHttpRequest.",
     difficulty: 'intermediate',
     category: 'web-apis',
+    prerequisites: ['es6-promises', 'es8-async-await'],
     keyPoints: [
-      'fetch(url, options?) returns a Promise<Response>.',
-      'fetch only rejects on network failure — HTTP errors (404, 500) still resolve!',
-      'Always check res.ok (true if status 200–299) to detect HTTP errors.',
-      'Parse body: res.json(), res.text(), res.blob(), res.formData().',
-      'POST/PUT: pass method, headers, and body (JSON.stringify for JSON).',
-      'Use AbortController to cancel in-flight requests.'
+      'fetch(url, options?) returns a promise that resolves to a Response object.',
+      'The famous surprise: fetch only rejects when the network itself fails. A 404 or 500 from the server counts as a "successful" request — the promise still resolves!',
+      "So always check res.ok yourself (true for status 200–299) and throw if it's false.",
+      'The response body needs a second await to read: res.json(), res.text(), res.blob(), or res.formData().',
+      'For POST/PUT, pass method, headers, and body in the options — JSON goes through JSON.stringify with a Content-Type: application/json header.',
+      "To cancel a request mid-flight (user navigated away, typed a new search), pass an AbortController's signal and call abort()."
     ],
-    gotcha: 'fetch does NOT reject on 404 or 500. You must check res.ok manually.',
+    gotcha:
+      'fetch does NOT reject on 404 or 500 — the .catch never fires for HTTP errors. Forgetting the res.ok check means your app happily parses error pages as data.',
     codeSnippet: `// GET
 const res = await fetch('/api/users/1');
 if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
@@ -1399,16 +1458,16 @@ ac.abort();`
   {
     id: 'webapi-storage',
     title: 'localStorage & sessionStorage',
-    summary: 'Browser key-value storage APIs for persisting data on the client.',
+    summary: 'Simple key-value storage in the browser: localStorage survives restarts, sessionStorage lives only as long as the tab.',
     difficulty: 'basic',
     category: 'web-apis',
     keyPoints: [
-      'localStorage — persists across sessions (until explicitly cleared).',
-      'sessionStorage — cleared when the tab/window is closed.',
-      'Both are synchronous and store only strings.',
-      'Use JSON.stringify/parse to store objects.',
-      'Methods: setItem, getItem, removeItem, clear, key(index), length.',
-      'Storage limit is ~5MB per origin; throws QuotaExceededError when full.'
+      "localStorage keeps data until something explicitly deletes it — close the browser, reboot, it's still there.",
+      'sessionStorage is wiped when the tab or window closes — good for per-visit state.',
+      'Both store ONLY strings, and both are synchronous (they block the main thread — avoid huge reads/writes in hot paths).',
+      'To store objects, serialise them: JSON.stringify on the way in, JSON.parse on the way out.',
+      'The API: setItem, getItem, removeItem, clear, plus key(index) and length for iteration.',
+      'The budget is roughly 5MB per origin — exceed it and setItem throws a QuotaExceededError.'
     ],
     codeSnippet: `localStorage.setItem('user', JSON.stringify({ name: 'Alice' }));
 const user = JSON.parse(localStorage.getItem('user'));
@@ -1422,15 +1481,16 @@ sessionStorage.setItem('token', 'abc123');`
   {
     id: 'webapi-url',
     title: 'URL & URLSearchParams',
-    summary: 'Parse, construct, and manipulate URLs in a structured way without string manipulation.',
+    summary:
+      'Work with URLs as structured objects — read the path, edit the query string, rebuild the URL — instead of error-prone string slicing.',
     difficulty: 'intermediate',
     category: 'web-apis',
     keyPoints: [
-      'new URL(url, base?) — parses a URL; exposes .pathname, .hostname, .searchParams, etc.',
-      'url.searchParams is a URLSearchParams instance: .get, .set, .append, .delete, .has.',
-      'url.toString() — serializes back to a full URL string.',
-      'new URLSearchParams(string|object) — build/parse query strings standalone.',
-      'Relative URLs: new URL("/api/users", window.location.origin).'
+      'new URL(url, base?) parses a URL into named parts: .pathname, .hostname, .protocol, .hash, .searchParams and more.',
+      'url.searchParams handles the query string properly: .get, .set, .append, .delete, .has — with all the ?&= encoding done for you.',
+      'url.toString() reassembles everything into a full URL string.',
+      'URLSearchParams also works on its own — new URLSearchParams({ q: "hi" }) builds a query string from an object.',
+      'Parsing a relative path needs a base: new URL("/api/users", window.location.origin).'
     ],
     codeSnippet: `const url = new URL('https://example.com/search?q=js&page=2');
 url.pathname;                     // '/search'
@@ -1445,15 +1505,16 @@ params.toString(); // 'q=hello&lang=en'`
   {
     id: 'webapi-history',
     title: 'History API',
-    summary: 'Programmatically navigate browser history and update the URL without a page reload.',
+    summary:
+      'Change the address bar and move through browser history from JavaScript — without triggering a page reload. This is what single-page-app routing is built on.',
     difficulty: 'intermediate',
     category: 'web-apis',
     keyPoints: [
-      'history.pushState(state, title, url) — add a new history entry and change URL.',
-      'history.replaceState(state, title, url) — update URL without adding a history entry.',
-      'window.onpopstate — fires when the user clicks back/forward.',
-      'history.back() / .forward() / .go(n) — navigate programmatically.',
-      'Foundation of client-side routing in SPAs (React Router, Vue Router).'
+      'history.pushState(state, title, url) changes the URL AND adds a back-button entry — the page itself does not reload.',
+      'history.replaceState(state, title, url) swaps the current URL without adding an entry — use it for corrections, not navigation.',
+      'When the user presses back/forward, the popstate event fires — your app listens and re-renders the right view.',
+      'history.back() / .forward() / .go(n) drive the same navigation from code.',
+      'This trio is exactly how React Router and Vue Router create the illusion of multiple pages inside one page.'
     ],
     codeSnippet: `history.pushState({ page: 'about' }, '', '/about');
 history.replaceState({ page: 'home' }, '', '/');
@@ -1466,15 +1527,16 @@ window.addEventListener('popstate', (e) => {
   {
     id: 'webapi-intersection-observer',
     title: 'IntersectionObserver',
-    summary: 'Asynchronously observe when elements enter or exit the viewport — ideal for lazy loading.',
+    summary:
+      'The browser tells you when an element scrolls into or out of view — the efficient way to build lazy loading, infinite scroll, and scroll animations.',
     difficulty: 'advanced',
     category: 'web-apis',
     keyPoints: [
-      'new IntersectionObserver(callback, options) — callback fires when visibility changes.',
-      'callback receives IntersectionObserverEntry[] with .isIntersecting, .intersectionRatio.',
-      'observer.observe(el) / .unobserve(el) / .disconnect().',
-      'options: root (viewport), rootMargin (offset), threshold (0–1 ratio array).',
-      'More efficient than scroll event listeners — browser-native, off main thread.'
+      "new IntersectionObserver(callback, options) — the callback runs whenever a watched element's visibility changes.",
+      'The callback receives entries; each has .isIntersecting (is it visible now?) and .intersectionRatio (how much of it, 0–1).',
+      'Start and stop watching with observer.observe(el), .unobserve(el), and .disconnect() for everything at once.',
+      'Options tune the trigger: root (which scroll container counts as the viewport), rootMargin (fire early/late by an offset), threshold (how much must be visible).',
+      'Why it beats a scroll listener: the browser does the visibility maths natively, off the main thread — no layout thrashing from your handler running on every scroll tick.'
     ],
     codeSnippet: `const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1493,16 +1555,17 @@ document.querySelectorAll('.lazy').forEach(el => observer.observe(el));`
   {
     id: 'es2026-temporal',
     title: 'Temporal API',
-    summary: 'A modern, immutable date/time API replacing the legacy Date object — timezone-aware and precise.',
+    summary:
+      'The long-awaited replacement for the broken Date object: separate types for dates, times, and timezone-aware moments — all immutable.',
     difficulty: 'intermediate',
     category: 'es2026',
     keyPoints: [
-      'Temporal.Now.plainDateTimeISO() — current date-time in local timezone.',
-      'Temporal.PlainDate, PlainTime, PlainDateTime — timezone-naive types.',
-      'Temporal.ZonedDateTime — timezone-aware; use for scheduling across timezones.',
-      'All Temporal objects are immutable — operations return new objects.',
-      'Arithmetic: date.add({ days: 5 }), date.until(otherDate).',
-      'Replaces Date which has: mutable state, zero-indexed months, poor timezone support.'
+      'Temporal.Now.plainDateTimeISO() gives you the current date-time in the local timezone.',
+      'The "Plain" types — PlainDate, PlainTime, PlainDateTime — deliberately know nothing about timezones ("timezone-naive"): perfect for birthdays and opening hours.',
+      'Temporal.ZonedDateTime carries a real timezone — the type for scheduling a meeting that people join from New York and Mumbai.',
+      'Everything is immutable: adding a day returns a NEW date, so no function can quietly modify a date you passed it.',
+      'Arithmetic reads like English: date.add({ days: 5 }), date.until(otherDate) for the difference.',
+      'Why replace Date? It was mutable, its months were zero-indexed (January is 0), and its timezone handling was nearly nonexistent.'
     ],
     codeSnippet: `const today = Temporal.Now.plainDateISO();
 console.log(today.toString()); // '2026-05-28'
@@ -1518,15 +1581,16 @@ const meeting = Temporal.ZonedDateTime.from(
   {
     id: 'es2026-using',
     title: 'Resource Management: using & await using',
-    summary: 'Automatically dispose resources (files, connections) when they go out of scope.',
+    summary:
+      'Declare a resource with `using` and it cleans itself up when the block ends — files close, connections release, even if an error is thrown.',
     difficulty: 'intermediate',
     category: 'es2026',
     keyPoints: [
-      'using x = resource — calls x[Symbol.dispose]() when the block exits (sync).',
-      'await using x = resource — calls x[Symbol.asyncDispose]() (async).',
-      'Works like try/finally but as a declaration — no extra nesting.',
-      'Disposal happens even if an error is thrown.',
-      'Objects must implement Symbol.dispose (sync) or Symbol.asyncDispose (async).'
+      'using x = resource — when the enclosing block exits, JavaScript automatically calls x[Symbol.dispose]() for you.',
+      'await using x = resource — the async flavour, calling x[Symbol.asyncDispose]() (for cleanup that itself needs awaiting, like closing a DB connection).',
+      'It replaces the try { ... } finally { cleanup() } boilerplate with a single declaration — no extra nesting.',
+      'Cleanup is guaranteed on every exit path — normal completion, early return, or thrown error.',
+      'The contract: the object must implement Symbol.dispose (sync) or Symbol.asyncDispose (async) — that method IS the cleanup.'
     ],
     codeSnippet: `// Synchronous disposal
 function processFile() {
@@ -1544,14 +1608,15 @@ async function query() {
   {
     id: 'es2026-error-iserror',
     title: 'Error.isError()',
-    summary: 'A safe cross-realm check for whether a value is an Error instance.',
+    summary:
+      'A reliable "is this actually an Error?" check that keeps working even when the error was created in another iframe or worker.',
     difficulty: 'basic',
     category: 'es2026',
     keyPoints: [
-      'Error.isError(value) — returns true if value is an Error object.',
-      'Unlike instanceof Error, works correctly across iframes and realms.',
-      'instanceof Error fails when the error comes from a different window/realm.',
-      'Useful in generic error handlers and serialisation utilities.'
+      'Error.isError(value) — true if value is a genuine Error object of any kind.',
+      'The problem it fixes: each iframe/worker ("realm") has its OWN Error class, so an error thrown in an iframe fails `instanceof Error` in the parent page.',
+      "Error.isError checks what the value fundamentally is, not which realm's class built it — like Array.isArray, which exists for the same reason.",
+      'Reach for it in generic error handlers, logging, and serialisation code that receives errors from anywhere.'
     ],
     codeSnippet: `Error.isError(new Error('oops')); // true
 Error.isError(new TypeError());  // true
@@ -1566,14 +1631,15 @@ new fromIframe() instanceof Error; // false ❌`
   {
     id: 'es2026-array-fromasync',
     title: 'Array.fromAsync()',
-    summary: 'Create an array from an async iterable — the async counterpart of Array.from().',
+    summary: "Collect an entire async stream into an array with one await — Array.from's async twin.",
     difficulty: 'intermediate',
     category: 'es2026',
+    prerequisites: ['es9-async-iteration'],
     keyPoints: [
-      'await Array.fromAsync(asyncIterable) — resolves to an array.',
-      'Also accepts sync iterables and array-likes.',
-      'Second argument: optional async mapping function.',
-      'Replaces manual for-await-of + push patterns.'
+      'await Array.fromAsync(asyncIterable) waits for every value and resolves to a complete array.',
+      'It also happily accepts ordinary sync iterables and array-likes.',
+      'An optional second argument maps each item — and that mapper may itself be async.',
+      'It replaces the boilerplate loop everyone wrote by hand: for await (const x of src) results.push(x).'
     ],
     codeSnippet: `async function* pages() {
   yield await fetchPage(1);
@@ -1589,15 +1655,15 @@ const doubled = await Array.fromAsync([1, 2, 3], async n => n * 2);
   {
     id: 'es2026-uint8array-base64',
     title: 'Uint8Array Base64 & Hex Methods',
-    summary: 'Native methods to encode/decode binary data to/from base64 and hex strings.',
+    summary: 'Built-in conversion between raw bytes and the two text formats binary data usually travels in: base64 and hex.',
     difficulty: 'basic',
     category: 'es2026',
     keyPoints: [
-      'Uint8Array.fromBase64(str) — decode base64 string to bytes.',
-      'uint8.toBase64() — encode bytes to base64 string.',
-      'Uint8Array.fromHex(hexStr) — decode hex string to bytes.',
-      'uint8.toHex() — encode bytes to lowercase hex string.',
-      'Replaces manual btoa/atob and custom hex encoders.'
+      'Uint8Array.fromBase64(str) — turn a base64 string back into bytes.',
+      'uint8.toBase64() — turn bytes into a base64 string (the format used in data: URLs, JWTs, and APIs that ship binary inside JSON).',
+      'Uint8Array.fromHex(hexStr) — hex string to bytes.',
+      'uint8.toHex() — bytes to a lowercase hex string (the format you see in hashes and colour codes).',
+      'Before this you needed btoa/atob (which choke on non-ASCII) plus hand-rolled hex loops — these are the proper replacements.'
     ],
     codeSnippet: `const bytes = new Uint8Array([72, 101, 108, 108, 111]);
 
@@ -1613,14 +1679,14 @@ Uint8Array.fromHex('48656c6c6f');        // Uint8Array [72, 101, ...]`
   {
     id: 'es2026-regexp-escape',
     title: 'RegExp.escape()',
-    summary: 'Escape special regex characters in a string so it can be safely used in a dynamic RegExp.',
+    summary: 'Make any string safe to drop into a regular expression — characters like . and ( stop being regex magic and match literally.',
     difficulty: 'basic',
     category: 'es2026',
     keyPoints: [
-      'RegExp.escape(str) — escapes all special regex metacharacters in str.',
-      'Returns a new string safe to embed in new RegExp(escaped).',
-      'Eliminates the classic "escape user input before RegExp" bug.',
-      'Escapes: . * + ? ^ $ { } [ ] | ( ) \\ / -'
+      'RegExp.escape(str) backslash-escapes every character that has special meaning in a regex.',
+      'The result is safe to feed into new RegExp(escaped) as an exact-text pattern.',
+      'It fixes an ancient footgun: building a regex from user input, where a search for "3.14" would also match "3514" because . means "any character".',
+      'The characters it neutralises: . * + ? ^ $ { } [ ] | ( ) \\ / -'
     ],
     codeSnippet: `const userQuery = 'hello.world (test)';
 
@@ -1637,15 +1703,16 @@ new RegExp(safe); // exact literal match`
   {
     id: 'core-hoisting',
     title: 'Hoisting',
-    summary: 'Declarations are moved to the top of their scope at compile time — but only some are initialized.',
+    summary:
+      'Before running your code, JavaScript scans it and registers every declaration at the top of its scope ("hoisting") — but what you can do with a name before its line depends on how it was declared.',
     difficulty: 'basic',
     category: 'core-concepts',
     keyPoints: [
-      'var: declaration hoisted and initialized to undefined — readable before its line.',
-      'let / const / class: hoisted but NOT initialized — accessing before declaration throws ReferenceError (TDZ).',
-      'function declarations: fully hoisted — callable before they appear in source.',
-      'function expressions follow the hoisting rule of their var/let/const binding.',
-      'import declarations are hoisted and their module side-effects run first.'
+      'var: the name is registered AND given the placeholder value undefined — so you can read it before its line, and you get undefined rather than an error.',
+      'let / const / class: the name is registered but left uninitialised — touching it before its line throws a ReferenceError. That forbidden zone is the Temporal Dead Zone (TDZ).',
+      'Function declarations are hoisted whole, body and all — you can call them from lines above where they are written.',
+      "A function expression (const fn = () => {}) is just a variable holding a function, so it follows its variable's hoisting rules — not the function-declaration rule.",
+      'import declarations hoist too: imported modules load and run their top-level code before anything in your file executes.'
     ],
     textbookDef: `Hoisting is the JavaScript mechanism whereby variable, function, and class declarations are conceptually moved ("hoisted") to the top of their containing scope during the compilation phase, before any code is executed. Only declarations are hoisted — not initializations — and the binding's accessibility before its lexical position depends on its declaration kind.`,
     eli5: `Imagine the JS engine reads your whole script once before running it, and writes every "name" on a whiteboard at the top of the room.
@@ -1669,15 +1736,16 @@ var bar = () => {};`
   {
     id: 'core-scope',
     title: 'Scope: Global, Function & Block',
-    summary: 'Scope determines where a variable is accessible — global, per-function, or per-block.',
+    summary:
+      'Scope is simply "where can this variable be seen from?" — and JavaScript has three sizes: everywhere (global), inside a function, or inside a { } block.',
     difficulty: 'basic',
     category: 'core-concepts',
     keyPoints: [
-      'Global scope: declared outside any function/block — accessible everywhere.',
-      'Function scope: var and parameters are scoped to the whole enclosing function.',
-      'Block scope: let/const are scoped to the nearest { } block.',
-      'Lexical scoping: scope is decided by where code is WRITTEN, not where it is called.',
-      'Inner scopes can read outer-scope variables; the reverse is not true.'
+      'Global scope: declared outside everything — visible from anywhere in the program (and easy to pollute, so keep it minimal).',
+      'Function scope: var and function parameters belong to the whole enclosing function, ignoring any blocks inside it.',
+      'Block scope: let and const live only inside the nearest { } — an if body, a loop body, or a bare block.',
+      'JavaScript uses "lexical" scoping: what a function can see is fixed by where it is WRITTEN in the source, not by where it happens to be called from.',
+      'Visibility is one-directional: code inside can read variables from outside, but outer code can never see into an inner scope.'
     ],
     codeSnippet: `let g = 'global';
 
@@ -1693,15 +1761,18 @@ function fn() {
   {
     id: 'core-closures',
     title: 'Closures',
-    summary: 'A function that remembers and accesses its lexical scope even when executed elsewhere.',
+    summary:
+      'A function that keeps access to the variables from the place it was created — even after that place has finished running. The single most-asked JavaScript interview concept.',
     difficulty: 'intermediate',
     category: 'core-concepts',
+    prerequisites: ['core-scope'],
     keyPoints: [
-      'A closure forms when an inner function references variables from an outer scope.',
-      'It keeps those variables alive after the outer function has returned.',
-      'Used for: private state, factory functions, memoization, event handlers, currying.',
-      'Each call to the outer function creates a fresh, independent closure.',
-      'Pitfall: capturing a loop variable with var (use let, or an IIFE).'
+      'A closure forms automatically whenever an inner function uses a variable from an outer function — no keyword, no opt-in.',
+      "Normally a function's variables die when it returns. If an inner function still references them, they survive — the closure keeps them alive.",
+      'This is how JavaScript does private state: variables inside makeCounter() can only be touched through the functions it returned.',
+      'Everyday closures you already write: event handlers remembering surrounding values, factory functions, memoisation caches, currying.',
+      'Each call to the outer function creates a completely fresh set of variables — two counters made by makeCounter() never share a count.',
+      'The classic pitfall: a var loop variable is ONE shared variable, so every callback created in the loop sees its final value. let creates a fresh one per iteration — problem gone.'
     ],
     textbookDef: `A closure is the combination of a function and the lexical environment within which that function was declared. It allows the function to retain access to variables from its defining scope even after that outer scope has finished executing.`,
     eli5: `A closure is like a backpack a function carries around. When the function is created, it packs the variables it can see into its backpack. Later, even far away from home, it can still open the backpack and use those variables.`,
@@ -1719,17 +1790,20 @@ c.get(); // 2`
   {
     id: 'core-eq-vs-eqeq',
     title: '== vs === (Equality)',
-    summary: '== coerces types before comparing; === compares value and type with no coercion.',
+    summary:
+      'Two equality operators: === compares values as-is and says "different type, not equal"; == first converts the values to a common type, which produces surprises.',
     difficulty: 'basic',
     category: 'core-concepts',
+    prerequisites: ['core-coercion'],
     keyPoints: [
-      '=== (strict): returns false immediately if the types differ — no coercion.',
-      '== (loose): applies the Abstract Equality algorithm, coercing types first.',
-      'Prefer === in application code to avoid surprising coercion bugs.',
-      'Common exception: x == null checks for both null and undefined at once.',
-      'Do not confuse = (assignment) with == / === (comparison).'
+      '=== (strict equality): if the types differ, the answer is false, full stop. No conversion happens.',
+      '== (loose equality): first coerces the operands toward a common type (usually numbers) using the spec\'s Abstract Equality rules, THEN compares — which is why 1 == "1" is true.',
+      'Default to === in application code — the coercion rules of == are genuinely hard to memorise and breed subtle bugs.',
+      'The one blessed exception: x == null is a deliberate idiom that is true for both null and undefined — a two-for-one check.',
+      'And keep all of these apart from single = , which is assignment, not comparison.'
     ],
-    gotcha: '0 == "" is false, but 0 == "0" is true, and "" == "0" is false — loose equality is not transitive. Use ===.',
+    gotcha:
+      'Loose equality isn\'t even consistent with itself: 0 == "" is false, 0 == "0" is true, yet "" == "0" is false — it is not transitive. === has no such puzzles.',
     codeSnippet: `1 == '1';     // true  — string coerced to number
 1 === '1';    // false — different types
 null == undefined;  // true
@@ -1739,17 +1813,19 @@ x == null;    // true when x is null OR undefined`
   {
     id: 'core-data-types',
     title: 'Data Types & typeof',
-    summary: 'Seven primitives plus object — and how to inspect a value’s type.',
+    summary:
+      'JavaScript values come in exactly eight kinds: seven simple "primitive" types plus objects — and typeof is how you ask a value what it is (with two famous lies).',
     difficulty: 'basic',
     category: 'core-concepts',
     keyPoints: [
-      'Primitives: string, number, boolean, null, undefined, symbol, bigint.',
-      'Everything else is an object (arrays, functions, dates, plain objects…).',
-      'typeof returns the type name as a string — but typeof null is "object" (a historic bug).',
-      'Arrays: use Array.isArray(x), not typeof (which returns "object").',
-      'typeof function is "function" — the one object subtype typeof distinguishes.'
+      'The seven primitives — simple, immutable values: string, number, boolean, null, undefined, symbol, bigint.',
+      'Everything else is an object: arrays, functions, dates, regexes, plain {} objects.',
+      'typeof value returns the type as a string — with one historic bug carved into the language: typeof null is "object".',
+      'typeof can\'t spot arrays (they report "object" like everything else) — ask Array.isArray(x) instead.',
+      'Functions are the one object subtype typeof does single out: typeof fn === "function".'
     ],
-    gotcha: 'typeof null === "object" and typeof NaN === "number". Use value === null and Number.isNaN(value) respectively.',
+    gotcha:
+      'The two liars: typeof null === "object" (check with value === null instead) and typeof NaN === "number" — NaN, "not a number", is a number (check with Number.isNaN(value)).',
     codeSnippet: `typeof 'hi';        // 'string'
 typeof 42;          // 'number'
 typeof 10n;         // 'bigint'
@@ -1762,15 +1838,16 @@ typeof function(){};// 'function'`
   {
     id: 'core-null-undefined',
     title: 'null vs undefined vs undeclared',
-    summary: 'Three "no value" states with different meanings, types, and behaviors.',
+    summary:
+      'Three flavours of "nothing": undefined means the engine never got a value, null means a developer deliberately said "no value", undeclared means the variable doesn\'t exist at all.',
     difficulty: 'basic',
     category: 'core-concepts',
     keyPoints: [
-      'undefined: declared but never assigned — the engine’s default "empty".',
-      'null: explicitly assigned by the developer to mean "no value".',
-      'undeclared: never declared at all — reading it throws a ReferenceError.',
-      'typeof undefined === "undefined"; typeof null === "object".',
-      'null == undefined is true; null === undefined is false.'
+      "undefined is the automatic default: a declared-but-unassigned variable, a missing function argument, a property that isn't there.",
+      'null never happens by accident — it only appears when someone explicitly assigned it to mean "intentionally empty".',
+      'undeclared is different in kind: the name was never declared anywhere, and merely reading it throws a ReferenceError.',
+      'Their types differ too: typeof undefined is "undefined", but typeof null is "object" (the historic bug).',
+      'They are loosely equal but not strictly: null == undefined is true, null === undefined is false — which is exactly why x == null works as a check for both.'
     ],
     codeSnippet: `let a;             // undefined
 let b = null;      // null (intentional)
@@ -1784,17 +1861,20 @@ a === b;           // false`
   {
     id: 'core-coercion',
     title: 'Type Coercion',
-    summary: 'Automatic conversion between types during operations like +, ==, and template literals.',
+    summary:
+      'JavaScript silently converts values between types ("coercion") when an operation mixes them — helpful sometimes, the source of its weirdest behaviour always.',
     difficulty: 'intermediate',
     category: 'core-concepts',
+    prerequisites: ['core-data-types'],
     keyPoints: [
-      '+ with a string converts the other operand to a string (concatenation).',
-      'Other arithmetic operators (-, *, /) convert operands to numbers.',
-      '== triggers coercion following the Abstract Equality algorithm.',
-      'Falsy values: false, 0, -0, 0n, "", null, undefined, NaN. Everything else is truthy.',
-      'Convert explicitly to be safe: Number(x), String(x), Boolean(x).'
+      'When + sees a string on either side, it converts the other side to a string and concatenates — 1 + "2" is "12".',
+      'Every other arithmetic operator (-, *, /) converts both sides to numbers — 1 - "2" is -1. Same values, opposite result.',
+      "== is coercion's other home: it converts the operands toward a common type before comparing (the Abstract Equality rules).",
+      'Memorise the eight falsy values — false, 0, -0, 0n, "", null, undefined, NaN — everything else, including "0", [], and {}, is truthy.',
+      'When in doubt, convert on purpose: Number(x), String(x), Boolean(x) say exactly what you mean.'
     ],
-    gotcha: '[] + [] is "" (empty string), [] + {} is "[object Object]", and 1 + "2" is "12" but 1 - "2" is -1.',
+    gotcha:
+      'The party tricks all come from these rules: [] + [] is "" (arrays become strings), [] + {} is "[object Object]", 1 + "2" is "12" but 1 - "2" is -1.',
     codeSnippet: `1 + '2';     // '12'  — string concat
 1 - '2';     // -1    — numeric
 '5' * 2;     // 10
@@ -1805,16 +1885,16 @@ Number('');  // 0`
   {
     id: 'core-strict-mode',
     title: "'use strict' (Strict Mode)",
-    summary: 'Opts into a restricted, safer variant of JavaScript that turns silent errors into thrown ones.',
+    summary: 'A stricter dialect of JavaScript you opt into: mistakes that old JS would silently swallow become loud, catchable errors.',
     difficulty: 'intermediate',
     category: 'core-concepts',
     keyPoints: [
-      "Enable per-script or per-function with the 'use strict'; directive at the top.",
-      'Prevents accidental globals — assigning to an undeclared variable throws.',
-      'Assignments that would silently fail (to read-only props) now throw.',
-      'this is undefined in a plain function call instead of the global object.',
-      'Requires unique function parameter names; disables confusing legacy features.',
-      'ES modules and class bodies are always in strict mode automatically.'
+      "Turn it on by putting the string 'use strict'; at the top of a script or an individual function.",
+      'Its best catch: typo a variable name in an assignment and instead of silently creating a global, you get a ReferenceError.',
+      'Writes that used to fail silently — like assigning to a read-only property — now throw, so bugs surface where they happen.',
+      'In a plain function call, `this` is undefined instead of the global object — no more accidentally writing properties onto window.',
+      'Various legacy foot-guns are banned outright: duplicate parameter names, the with statement, octal literals.',
+      'You may already be in it without asking: ES modules and class bodies are automatically strict.'
     ],
     codeSnippet: `'use strict';
 
@@ -1834,16 +1914,17 @@ function g() {
   {
     id: 'fn-this',
     title: 'How `this` Works',
-    summary: 'A dynamic reference to the execution context, decided by HOW a function is called.',
+    summary:
+      'The value of `this` is NOT fixed when a function is written — it is decided fresh each time by HOW the function is called. Four rules cover every case.',
     difficulty: 'intermediate',
     category: 'functions-this',
     keyPoints: [
-      'new Foo(): this is the newly created instance.',
-      'call / apply / bind: this is the explicitly passed object.',
-      'obj.method(): this is obj (the object left of the dot).',
-      'Plain fn(): this is the global object (or undefined in strict mode).',
-      'Arrow functions ignore all the above — they inherit this lexically.',
-      'When multiple rules apply, the higher-precedence one (new > bind > method > free) wins.'
+      'Rule 1 — new Foo(): `this` is the brand-new object being constructed.',
+      'Rule 2 — explicit binding: fn.call(obj) / fn.apply(obj) / fn.bind(obj) make `this` whatever object you pass.',
+      'Rule 3 — method call: in obj.method(), `this` is obj — whatever sits left of the dot at the call site.',
+      'Rule 4 — plain call: fn() on its own gets the global object as `this` (or undefined in strict mode).',
+      'Arrow functions opt out of all four rules: they have no `this` of their own and simply use the one from the surrounding code.',
+      'If several rules could apply, precedence settles it: new beats bind, bind beats method call, method call beats plain call.'
     ],
     textbookDef: `this is a keyword whose value is determined at call time by the function's invocation context. It is not bound lexically for ordinary functions; instead it is resolved according to the binding rules (new, explicit, implicit, default), except for arrow functions which capture this from their surrounding lexical scope.`,
     eli5: `"this" is like the word "here" — its meaning depends on where you're standing when you say it. Call the same function in different ways and "this" points at different things. Arrow functions are stubborn: they always mean the "here" of the place they were written.`,
@@ -1861,15 +1942,17 @@ obj.regular.call({name:'B'}); // 'B' (explicit binding)`
   {
     id: 'fn-call-apply-bind',
     title: 'call, apply & bind',
-    summary: 'Three ways to control a function’s `this` and arguments explicitly.',
+    summary:
+      "The three tools for setting a function's `this` yourself: call and apply run it right now, bind hands you a copy with `this` locked in for later.",
     difficulty: 'intermediate',
     category: 'functions-this',
+    prerequisites: ['fn-this'],
     keyPoints: [
-      'fn.call(thisArg, a, b) — invokes immediately, args passed individually.',
-      'fn.apply(thisArg, [a, b]) — invokes immediately, args passed as an array.',
-      'fn.bind(thisArg, a) — returns a NEW function with this (and leading args) fixed.',
-      'bind enables partial application and method borrowing.',
-      'Mnemonic: Array → Apply; Comma → Call.'
+      'fn.call(thisArg, a, b) — runs the function immediately, arguments listed one by one.',
+      'fn.apply(thisArg, [a, b]) — identical, except the arguments arrive as an array.',
+      'fn.bind(thisArg, a) — does NOT run anything; it returns a new function with `this` (and any leading arguments) permanently baked in.',
+      'bind is how you pre-fill arguments ("partial application") and how you keep a method\'s `this` intact when passing it as a callback.',
+      'The mnemonic everyone uses: Apply takes an Array; Call takes Commas.'
     ],
     codeSnippet: `function add(a, b) { return a + b; }
 
@@ -1885,15 +1968,17 @@ Array.prototype.slice.call(arguments);`
   {
     id: 'fn-arrow-in-constructor',
     title: 'Arrow Methods in a Constructor',
-    summary: 'An arrow method binds `this` to the instance at creation time and can never be rebound.',
+    summary:
+      'Define a method as an arrow function inside the constructor and its `this` is welded to that instance forever — nothing can rebind it.',
     difficulty: 'intermediate',
     category: 'functions-this',
+    prerequisites: ['fn-this', 'es6-arrow-functions'],
     keyPoints: [
-      'Arrow functions capture this lexically when the instance is created.',
-      'Their this cannot be changed by call/apply/bind or by detaching the method.',
-      'Great for callbacks/event handlers where you would otherwise lose this.',
-      'Trade-off: a new function is created per instance (slightly more memory).',
-      'Regular methods live on the prototype and share this via the call-site.'
+      'The arrow captures `this` from where it was created — inside the constructor, that means the freshly-made instance.',
+      "Once captured, it is unbreakable: call/apply/bind can't change it, and detaching the method into a variable doesn't lose it.",
+      'That makes arrow methods perfect for callbacks and event handlers — the places regular methods classically lose their `this`.',
+      'The cost: every instance carries its own copy of the function, instead of one shared version — slightly more memory per object.',
+      'Regular methods live once on the prototype and get their `this` from the call site — cheaper, but rebindable and losable.'
     ],
     codeSnippet: `function Person(name) {
   this.name = name;
@@ -1909,14 +1994,15 @@ john.sayArrow.call(dave);   // 'John'  — locked to john`
   {
     id: 'fn-higher-order',
     title: 'Higher-Order Functions',
-    summary: 'Functions that take functions as arguments and/or return functions.',
+    summary:
+      'A "higher-order function" is just a function that works with other functions — taking them as arguments, returning them, or both. You already use them daily.',
     difficulty: 'basic',
     category: 'functions-this',
     keyPoints: [
-      'Take a function as an argument (map, filter, reduce, forEach).',
-      'Or return a function (bind, debounce, a curried adder).',
-      'They abstract repeated operations and enable a declarative style.',
-      'Foundational to functional programming in JavaScript.'
+      'Taking a function as input: map, filter, reduce, forEach, addEventListener — you hand them the behaviour, they handle the looping/wiring.',
+      'Returning a function as output: bind, debounce, throttle, or a multiplier factory — the returned function remembers its setup via a closure.',
+      'The point: extract the repeated mechanics (iterating, timing, retrying) into one place, and plug in just the part that varies.',
+      'This is the foundation JavaScript\'s functional style is built on — and possible because functions are ordinary values ("first-class citizens").'
     ],
     codeSnippet: `// Takes a function
 const names = ['irish', 'daisy'];
@@ -1930,15 +2016,17 @@ triple(5); // 15`
   {
     id: 'fn-currying',
     title: 'Currying & Partial Application',
-    summary: 'Two functional techniques for specializing multi-argument functions.',
+    summary:
+      "Two ways to pre-fill a function's arguments: currying feeds them one at a time — f(a)(b)(c) — while partial application locks in a few now and takes the rest later.",
     difficulty: 'intermediate',
     category: 'functions-this',
+    prerequisites: ['core-closures', 'fn-higher-order'],
     keyPoints: [
-      'Currying: transform f(a, b, c) into f(a)(b)(c) — one argument at a time.',
-      'Partial application: fix SOME arguments now, get a function taking the rest.',
-      'Partial application is easily done with fn.bind(null, ...presetArgs).',
-      'Both improve reuse and readability and rely on closures.',
-      'Difference: currying always yields unary functions; partial fixes any subset.'
+      'Currying transforms f(a, b, c) into f(a)(b)(c) — each call takes exactly one argument and returns a function hungry for the next.',
+      'Partial application is looser: fix SOME arguments now and get back a function expecting whatever is left — add(5, b) from add(a, b).',
+      'The quickest partial application is built in: fn.bind(null, ...presetArgs).',
+      'Both work because of closures — each returned function remembers the arguments given so far.',
+      'The distinction interviewers probe: curried functions always take one argument at a time; partial application can fix any number at once.'
     ],
     codeSnippet: `// Currying
 const add = (a) => (b) => (c) => a + b + c;
@@ -1952,15 +2040,17 @@ add5(10); // 15`
   {
     id: 'fn-decl-vs-expr',
     title: 'Function Declarations vs Expressions',
-    summary: 'Declarations are fully hoisted; expressions follow their binding’s hoisting rules.',
+    summary:
+      'Two ways to define a function with one practical difference: a declaration can be called from lines above it, a function stored in a variable cannot.',
     difficulty: 'basic',
     category: 'functions-this',
+    prerequisites: ['core-hoisting'],
     keyPoints: [
-      'function foo() {} — a declaration; the whole function is hoisted.',
-      'const foo = function() {} — an expression; only the binding is hoisted.',
-      'Calling a declaration before its line works; calling an expression early throws.',
-      'Named function expressions: the name is only visible inside the function.',
-      'Anonymous functions are typically used as callbacks or IIFEs.'
+      'function foo() {} — a declaration: the entire function is hoisted, so it works anywhere in its scope, even before its line.',
+      "const foo = function() {} — an expression: only the variable name is hoisted, not the function value, following the variable's own hoisting rules.",
+      'Result: calling a declaration early works fine; calling an expression early throws (TypeError with var, ReferenceError with let/const).',
+      'A named function expression — const f = function helper() {} — makes "helper" visible ONLY inside itself, useful for recursion and stack traces.',
+      'Anonymous function expressions are the everyday form — inline callbacks and immediately-invoked functions (IIFEs).'
     ],
     codeSnippet: `decl();           // 'ok' — hoisted
 function decl() { return 'ok'; }
@@ -1976,15 +2066,16 @@ const f = function named() { return named; }; // 'named' only inside`
   {
     id: 'oop-prototypal-inheritance',
     title: 'Prototypal Inheritance',
-    summary: 'Objects inherit by delegating to other objects through the prototype chain.',
+    summary:
+      "JavaScript objects inherit directly from other objects: when a property isn't found on an object, the lookup automatically continues on its prototype.",
     difficulty: 'intermediate',
     category: 'oop-prototypes',
     keyPoints: [
-      'Every object has a hidden [[Prototype]] link (read via Object.getPrototypeOf).',
-      'Missing-property lookups walk up the chain until found or null is reached.',
-      'It is really delegation, not copying — instances share prototype methods.',
-      'Build chains with Object.setPrototypeOf or class extends, not Object.create anymore.',
-      'Constructor functions add shared methods on Constructor.prototype.'
+      'Every object carries a hidden link to another object — its [[Prototype]] — readable with Object.getPrototypeOf(obj).',
+      "Ask an object for a property it doesn't have, and JavaScript follows that link and asks the prototype, then the prototype's prototype, until it finds the property or hits null.",
+      'Nothing is copied — this is delegation. A thousand instances share the ONE makeSound method living on their prototype.',
+      'Modern ways to wire up a chain: class ... extends, or Object.setPrototypeOf for existing objects.',
+      'With constructor functions, shared methods go on Constructor.prototype — every instance built by `new` links to that object.'
     ],
     textbookDef: `Prototypal inheritance is a model in which objects inherit directly from other objects. Each object holds an internal reference ([[Prototype]]) to another object; property access that fails on the object itself is delegated up this prototype chain until the property is found or the chain terminates at null.`,
     eli5: `Looking up a property is like asking your parent a question. If you don't know the answer, you ask your parent (the prototype); if they don't know, they ask their parent — all the way up the family tree until someone answers or you run out of relatives (null).`,
@@ -2002,15 +2093,17 @@ d.makeSound(); // found on Animal.prototype via the chain`
   {
     id: 'oop-prototype-chain',
     title: 'The Prototype Chain',
-    summary: 'The linked series of objects JS traverses during property lookup.',
+    summary:
+      'The path JavaScript walks when you access a property: from the object, through each prototype in turn, ending at Object.prototype and finally null.',
     difficulty: 'intermediate',
     category: 'oop-prototypes',
+    prerequisites: ['oop-prototypal-inheritance'],
     keyPoints: [
-      'obj → obj’s prototype → … → Object.prototype → null.',
-      'Object.getPrototypeOf(obj) reads the link; Object.setPrototypeOf sets it.',
-      'instanceof checks whether a constructor’s prototype is in the chain.',
-      'Own vs inherited: Object.hasOwn(obj, key) checks only the object itself.',
-      'Long chains add lookup cost — keep hierarchies shallow.'
+      'The route is always: obj → obj\'s prototype → its prototype → ... → Object.prototype → null. That final Object.prototype is why every object "has" toString.',
+      'Object.getPrototypeOf(obj) shows you the next link; Object.setPrototypeOf changes it.',
+      'instanceof is really a chain question: arr instanceof Array asks "does Array.prototype appear anywhere in arr\'s chain?"',
+      "To separate an object's own properties from inherited ones, use Object.hasOwn(obj, key) — arrays don't OWN a map method, they inherit it.",
+      'Every link adds lookup work — keep inheritance hierarchies shallow.'
     ],
     codeSnippet: `const arr = [1, 2, 3];
 Object.getPrototypeOf(arr) === Array.prototype;          // true
@@ -2021,15 +2114,16 @@ arr.hasOwnProperty('map'); // false — inherited, not own`
   {
     id: 'oop-new-keyword',
     title: 'The `new` Keyword & Constructors',
-    summary: 'What happens, step by step, when you call a function with new.',
+    summary: 'The four things `new` does behind the scenes — a step-by-step answer interviewers ask for by name.',
     difficulty: 'intermediate',
     category: 'oop-prototypes',
+    prerequisites: ['oop-prototypal-inheritance', 'fn-this'],
     keyPoints: [
-      '1) A fresh empty object is created.',
-      '2) Its [[Prototype]] is linked to the constructor’s .prototype.',
-      '3) this is bound to the new object inside the constructor.',
-      '4) The body runs; the object is returned unless the body returns its own object.',
-      'Calling a constructor WITHOUT new makes this the global object (or undefined in strict mode).'
+      'Step 1: a fresh, empty object is created.',
+      "Step 2: its hidden [[Prototype]] link is pointed at the constructor's .prototype object — that's how the instance inherits the shared methods.",
+      'Step 3: the constructor runs with `this` bound to the new object, so this.name = name writes onto it.',
+      'Step 4: the new object is returned automatically — unless the constructor explicitly returns a different object, which then wins.',
+      'Forget the `new` and none of this happens: the function runs as a plain call, `this` is the global object (or undefined in strict mode), and you get back undefined.'
     ],
     gotcha:
       'const p = Person() (no new) does not create an instance — it runs Person as a plain function, often returning undefined and leaking globals.',
@@ -2045,15 +2139,17 @@ const b = Person('B');     // no new → b is undefined, leaks global name
   {
     id: 'oop-class-vs-constructor',
     title: 'ES2015 Classes vs ES5 Constructors',
-    summary: 'Classes are cleaner syntactic sugar over the prototype/constructor pattern.',
+    summary:
+      "The class keyword didn't add a new object model — it's a cleaner coat of paint over the same constructor-function-plus-prototype pattern.",
     difficulty: 'basic',
     category: 'oop-prototypes',
+    prerequisites: ['oop-prototypal-inheritance', 'es6-classes'],
     keyPoints: [
-      'class uses constructor + method syntax; ES5 uses a function + .prototype assignments.',
-      'Inheritance: extends/super vs manual Object.create + constructor.call.',
-      'Class methods are non-enumerable; the class body runs in strict mode.',
-      'Classes are not hoisted for use (TDZ); function constructors are hoisted.',
-      'Under the hood it is still prototypal inheritance.'
+      'What ES5 wrote as a function plus manual Person.prototype.method = ... assignments, class expresses as one tidy body with constructor and methods together.',
+      'Inheritance shrinks from three manual steps (Object.create, constructor.call, fixing .constructor) to two keywords: extends and super.',
+      "Small behavioural upgrades: class methods don't show up in for...in loops (non-enumerable), and class bodies always run in strict mode.",
+      'Hoisting differs: function constructors can be used before their line; classes are in the Temporal Dead Zone until theirs.',
+      'The interview line: "classes are syntactic sugar" — underneath, it is still prototypes and delegation all the way down.'
     ],
     codeSnippet: `// ES5
 function Person(name) { this.name = name; }
@@ -2071,14 +2167,15 @@ class Student extends Person2 {
   {
     id: 'oop-static-members',
     title: 'Static Class Members',
-    summary: 'Members that belong to the class itself rather than to instances.',
+    summary: 'Properties and methods that live on the class itself — you call MathUtil.square(4) without ever creating an instance.',
     difficulty: 'intermediate',
     category: 'oop-prototypes',
+    prerequisites: ['es6-classes'],
     keyPoints: [
-      'Declared with the static keyword; called as ClassName.member.',
-      'Not accessible from an instance (instance.member is undefined).',
-      'Ideal for utilities, constants, factory methods, and shared counters.',
-      'Static fields and even static private (#) members are supported.'
+      'Mark them with the static keyword and access them through the class name: ClassName.member.',
+      "Instances can't see them — instance.member is undefined, because static members never travel to instances.",
+      'Use them for things that belong to the concept, not to any one object: utility functions, constants, factory methods, an instances-created counter.',
+      'Static fields work too, and even static private members (static #count) — shared secret state for the whole class.'
     ],
     codeSnippet: `class MathUtil {
   static PI = 3.14159;
@@ -2092,15 +2189,15 @@ MathUtil.PI;        // 3.14159`
   {
     id: 'oop-object-creation',
     title: 'Ways to Create Objects',
-    summary: 'Five common ways to build objects in JavaScript.',
+    summary: 'Five ways to make an object, from the everyday literal to full classes — a classic "list them" interview question.',
     difficulty: 'basic',
     category: 'oop-prototypes',
     keyPoints: [
-      'Object literal {} — simplest and most common.',
-      'new Object() — the Object constructor.',
-      'Object.create(proto) — create with an explicit prototype.',
-      'Constructor function + new — blueprint pattern (ES5).',
-      'ES2015 class — structured syntax with constructor and methods.'
+      'Object literal { x: 1 } — the everyday way; use it unless you have a reason not to.',
+      "new Object() — the constructor form; works, but it's just a longer literal.",
+      'Object.create(proto) — build an object with exactly the prototype you specify (including null for a truly bare object).',
+      'Constructor function + new — the pre-2015 "blueprint" pattern for creating many similar objects.',
+      'class — the modern structured syntax for the same blueprint idea, with constructor and methods in one body.'
     ],
     codeSnippet: `const a = { x: 1 };                    // literal
 const b = new Object(); b.x = 1;       // constructor
@@ -2114,16 +2211,18 @@ class Q { constructor(x){ this.x = x; } } const e = new Q(1); // class`
   {
     id: 'collections-map-vs-object',
     title: 'Map vs Plain Object',
-    summary: 'When to reach for a Map instead of a plain {} object.',
+    summary:
+      'Both store key-value pairs — but Map is the purpose-built dictionary, and a plain {} is an object that happens to hold data. When to use which.',
     difficulty: 'intermediate',
     category: 'collections',
+    prerequisites: ['es6-map-set'],
     keyPoints: [
-      'Map keys can be ANY type; object keys are strings or symbols only.',
-      'Map preserves insertion order; object key order is not fully guaranteed.',
-      'Map has a .size; objects require Object.keys(obj).length.',
-      'Map is directly iterable (for…of, forEach, entries/keys/values).',
-      'Objects are JSON-serializable and have a prototype; Maps are not serializable.',
-      'Prefer Map for large or frequently-mutated key-value sets.'
+      'Map keys can be ANY type — objects, functions, numbers. Object keys are silently converted to strings (or symbols), so obj[{a:1}] becomes obj["[object Object]"].',
+      'Map guarantees keys iterate in insertion order; object key ordering has quirks (integer-like keys jump to the front).',
+      'Counting is built in: map.size, versus Object.keys(obj).length.',
+      'Maps iterate directly with for...of, forEach, entries/keys/values — no Object.entries conversion step.',
+      'Objects win at serialisation: JSON.stringify works on objects but ignores Maps entirely. Objects also carry prototype baggage (a fresh {} already "has" toString).',
+      'Rule of thumb: frequently adding/removing keys, non-string keys, or need ordering guarantees → Map. Fixed shape, JSON in/out → plain object.'
     ],
     codeSnippet: `const m = new Map();
 m.set('a', 1).set({}, 2).set(42, 3); // any key type
@@ -2136,15 +2235,17 @@ Object.keys(o).length;               // 1`
   {
     id: 'collections-weak',
     title: 'WeakMap & WeakSet',
-    summary: 'Collections that hold object keys weakly so they don’t block garbage collection.',
+    summary:
+      'Map and Set variants whose grip on their keys is "weak": if nothing else in the program uses a key object, the garbage collector may throw it (and its entry) away.',
     difficulty: 'advanced',
     category: 'collections',
+    prerequisites: ['es6-map-set'],
     keyPoints: [
-      'Keys/elements must be objects and are held by WEAK reference.',
-      'When an object key has no other references, it can be garbage-collected.',
-      'Not iterable and have no .size — you cannot enumerate them.',
-      'Use cases: private per-object data, caches keyed by objects, DOM-node metadata.',
-      'Map/Set keep their entries alive; WeakMap/WeakSet do not.'
+      'Keys (WeakMap) and elements (WeakSet) must be objects, and they are held by weak reference — the collection alone doesn\'t count as "still in use".',
+      'The payoff: attach data to an object, and when the object dies, the attached data is cleaned up automatically — no memory leak.',
+      "The price: you can't iterate them, and there is no .size — the contents could be collected at any moment, so listing them would be meaningless.",
+      'Classic uses: private per-object data, caches keyed by objects, and metadata attached to DOM nodes that come and go.',
+      'The contrast in one line: an object stored in a regular Map lives as long as the Map does; in a WeakMap, it lives only as long as someone else needs it.'
     ],
     gotcha: 'You cannot list or count WeakMap/WeakSet contents — that is the price of allowing keys to be collected.',
     codeSnippet: `const cache = new WeakMap();
@@ -2158,14 +2259,16 @@ function compute(obj) {
   {
     id: 'collections-object-equality',
     title: 'Set/Map Object Equality',
-    summary: 'Sets and Maps compare object keys by reference, not by value.',
+    summary:
+      'A Set can hold two objects with identical contents — because for objects, "equal" means "the very same object in memory", not "looks the same".',
     difficulty: 'basic',
     category: 'collections',
+    prerequisites: ['es6-map-set'],
     keyPoints: [
-      'Equality uses SameValueZero — for objects, that means reference identity.',
-      'Two different literals with identical contents are distinct entries.',
-      'Primitives are compared by value (NaN is treated as equal to NaN).',
-      'To dedupe by value you must serialize or use a custom key.'
+      'Sets and Maps compare with SameValueZero — for objects, that boils down to reference identity: is it literally the same object?',
+      'So { a: 1 } and { a: 1 } written twice are two different entries — same shape, different objects.',
+      "Primitives behave as you'd hope: compared by value, and NaN even matches itself here (unlike with ===).",
+      'Want to dedupe objects by their contents? You must create a comparable key yourself — JSON.stringify each one, or key by an id field.'
     ],
     codeSnippet: `const s = new Set();
 s.add({ a: 1 });
@@ -2182,16 +2285,18 @@ s2.size;         // 1 — same reference`
   {
     id: 'async-event-loop',
     title: 'The Event Loop',
-    summary: 'How JS runs sync code, then drains microtasks, then takes one macrotask — repeatedly.',
+    summary:
+      'How single-threaded JavaScript juggles async work: run the current code to completion, clear ALL the urgent queue (microtasks), take ONE item from the regular queue (macrotasks), repeat forever.',
     difficulty: 'intermediate',
     category: 'async-js',
+    prerequisites: ['async-sync-vs-async'],
     keyPoints: [
-      'Synchronous code runs on the call stack first.',
-      'Async work is offloaded to Web/Node APIs; their callbacks are queued.',
-      'When the stack empties: drain the ENTIRE microtask queue, then take ONE macrotask.',
-      'After each macrotask, microtasks are drained again before the next macrotask.',
-      'Microtasks: Promise callbacks, await continuations, queueMicrotask, MutationObserver.',
-      'Macrotasks: setTimeout/setInterval, I/O, UI events.'
+      'All synchronous code runs first, to completion, on the call stack — nothing can interrupt a running function.',
+      'Async operations (timers, fetches) are handed to the browser/Node.js to do in the background; when finished, their callbacks line up in queues.',
+      'There are two queues with different priority. When the stack empties, the loop drains the ENTIRE microtask queue first, then takes just ONE macrotask.',
+      'After every macrotask, microtasks get drained again — so microtasks can always jump the queue.',
+      'Microtasks (the urgent queue): promise .then callbacks, code after an await, queueMicrotask, MutationObserver.',
+      'Macrotasks (the regular queue): setTimeout/setInterval callbacks, I/O completions, UI events like clicks.'
     ],
     textbookDef: `The event loop is the runtime mechanism that coordinates execution of synchronous code on the call stack with asynchronous callbacks held in the microtask and macrotask queues, processing all available microtasks between each macrotask to provide non-blocking concurrency on a single thread.`,
     eli5: `Think of a chef (the single thread). Orders pile up in two trays: urgent sticky-notes (microtasks) and regular tickets (macrotasks). After finishing the current dish, the chef clears ALL sticky-notes first, then does just ONE regular ticket — then checks the sticky-notes again. That loop never stops.`,
@@ -2206,14 +2311,15 @@ console.log('2');
   {
     id: 'async-sync-vs-async',
     title: 'Synchronous vs Asynchronous',
-    summary: 'Sync code blocks until done; async code continues and runs callbacks later.',
+    summary:
+      'Synchronous code makes everything wait its turn; asynchronous code says "start this, carry on, and deal with the result when it arrives".',
     difficulty: 'basic',
     category: 'async-js',
     keyPoints: [
-      'Synchronous statements complete in order, blocking the thread.',
-      'Asynchronous operations return control immediately and finish later.',
-      'Long synchronous work freezes the UI; offload heavy/I/O work asynchronously.',
-      'Async results arrive via callbacks, Promises, or async/await.'
+      'Synchronous statements run strictly in order — each one blocks the single thread until it finishes.',
+      'Asynchronous operations hand control back immediately; the actual work (network request, timer) completes in the background.',
+      'This matters because JavaScript has one thread shared with the UI — a long synchronous task freezes the whole page, clicks and all.',
+      'Async results come back through three evolutions of the same idea: callbacks, then Promises, then async/await.'
     ],
     codeSnippet: `console.log('Fetching…');
 setTimeout(() => console.log('data arrived'), 2000); // async
@@ -2223,15 +2329,17 @@ console.log('Request sent');
   {
     id: 'async-promises-vs-callbacks',
     title: 'Promises vs Callbacks',
-    summary: 'Promises fix callback hell with chaining, composition, and centralized errors.',
+    summary:
+      'Why promises replaced raw callbacks: flat chains instead of pyramid-shaped nesting, and one .catch instead of an error argument in every callback.',
     difficulty: 'intermediate',
     category: 'async-js',
+    prerequisites: ['es6-promises'],
     keyPoints: [
-      'Callbacks nest deeply ("callback hell") and have scattered error handling.',
-      'Promises chain with .then and centralize errors in one .catch.',
-      'Promises compose: all (parallel/fail-fast), allSettled, race, any.',
-      'async/await is syntactic sugar over Promises for readable sequential code.',
-      'Trade-off: Promises add a few more concepts to learn.'
+      'Callbacks for dependent steps nest inside each other, marching rightward across the screen — the infamous "callback hell" — with error handling repeated at every level.',
+      'Promises flatten that: each step is a .then in a straight chain, and a single .catch at the end handles a failure from ANY step.',
+      'Promises also compose — running several at once is a one-liner: Promise.all (all must succeed), allSettled (report everything), race (first to settle), any (first to succeed).',
+      'async/await builds on promises to make the chain read like plain sequential code.',
+      'The honest trade-off: promises introduce their own concepts (states, chaining, combinators) — a small learning tax for much better code.'
     ],
     codeSnippet: `// Callback hell
 getUser(id, (u) => getPosts(u, (p) => render(p)));
@@ -2245,14 +2353,16 @@ getUser(id)
   {
     id: 'async-combinators',
     title: 'Promise Combinators',
-    summary: 'all, allSettled, race, and any — choosing the right parallel strategy.',
+    summary:
+      'Four ways to run promises in parallel, differing only in what counts as "done": all of them, every outcome, the first to finish, or the first to succeed.',
     difficulty: 'intermediate',
     category: 'async-js',
+    prerequisites: ['es6-promises'],
     keyPoints: [
-      'Promise.all — resolves with all results; rejects on the FIRST rejection (fail-fast).',
-      'Promise.allSettled — never rejects; returns every {status, value|reason}.',
-      'Promise.race — settles with the first promise to SETTLE (win or lose).',
-      'Promise.any — resolves with the first to FULFILL; rejects only if all reject (AggregateError).'
+      'Promise.all — "I need every one to succeed": resolves with all the results, but the FIRST failure rejects the whole thing immediately (fail-fast).',
+      'Promise.allSettled — "attempt everything, tell me how each went": never rejects; you get a {status, value|reason} report per promise.',
+      'Promise.race — "first to cross the line, win or crash": settles the moment ANY promise settles — a fast rejection wins the race. Classic use: racing a request against a timeout.',
+      'Promise.any — "first SUCCESS wins": ignores failures unless literally everything fails, in which case you get an AggregateError of all the reasons.'
     ],
     codeSnippet: `await Promise.all([a(), b()]);        // both, or first error
 await Promise.allSettled([a(), b()]); // every outcome, no throw
@@ -2265,15 +2375,17 @@ await Promise.any([m1(), m2()]);      // first success`
   {
     id: 'modules-esm-vs-cjs',
     title: 'ES Modules vs CommonJS',
-    summary: 'The two JavaScript module systems and why ESM is the modern standard.',
+    summary:
+      "JavaScript has two module systems living side by side: ES Modules (import/export, the official standard) and CommonJS (require, Node's original system).",
     difficulty: 'intermediate',
     category: 'modules',
+    prerequisites: ['es6-modules'],
     keyPoints: [
-      'ESM: import/export, static, asynchronous, the official standard.',
-      'CommonJS: require/module.exports, synchronous, Node’s legacy system.',
-      'ESM is statically analyzable → enables tree shaking and named-export checking.',
-      'ESM imports are live read-only bindings; CommonJS exports are a copied value.',
-      'ESM is always strict mode; top-level await works only in ESM.'
+      'ES Modules (ESM): import/export syntax, the official language standard, loads asynchronously — what browsers and modern tooling speak natively.',
+      "CommonJS (CJS): require() and module.exports, loads synchronously — Node.js's original system, still everywhere in the npm ecosystem.",
+      'The deep difference: ESM\'s imports are fixed at the top of the file and analysable WITHOUT running the code ("static"). That is precisely what makes tree shaking and missing-export errors at build time possible; require(anything) can\'t be analysed that way.',
+      'ESM imports are live, read-only views of the exported value — if the module updates it, importers see the change. CommonJS hands you a snapshot copied at require time.',
+      'Two practical perks of ESM: files are automatically strict mode, and top-level await only works there.'
     ],
     codeSnippet: `// ESM
 export const add = (a, b) => a + b;
@@ -2286,15 +2398,17 @@ const { add } = require('./math.js');`
   {
     id: 'modules-tree-shaking',
     title: 'Tree Shaking & Bundlers',
-    summary: 'Bundlers drop unused ES module exports to shrink the final bundle.',
+    summary:
+      "Tree shaking is the bundler throwing away code you never use: import one function from a library, and the rest doesn't ship to your users.",
     difficulty: 'intermediate',
     category: 'modules',
+    prerequisites: ['modules-esm-vs-cjs'],
     keyPoints: [
-      'Tree shaking = dead-code elimination of unused exports.',
-      'Relies on the static structure of ES modules (imports resolved at build time).',
-      'Bundlers (Vite, webpack, Rollup, esbuild) combine modules and optimize.',
-      'Side-effectful modules can block shaking — mark sideEffects: false in package.json.',
-      'Benefits: fewer HTTP requests, smaller payloads, scope hoisting.'
+      'The name is the mental model: shake the dependency tree and the dead leaves — exports nothing imports — fall off the bundle.',
+      "It only works because ES module imports are static: the bundler can see exactly what's used just by reading the files, without executing anything. CommonJS require can't be shaken.",
+      'The bundler (Vite, webpack, Rollup, esbuild) is the tool doing this — it walks your import graph, combines modules, and optimises the result.',
+      'One blocker: modules with side effects (code that runs on import, like registering a polyfill) can\'t safely be dropped. Declaring "sideEffects": false in package.json tells the bundler your files are safe.',
+      'The payoff stack: smaller downloads, fewer requests, and scope hoisting (modules merged into one function scope for less overhead).'
     ],
     codeSnippet: `// utils.js exports add + subtract
 import { add } from './utils.js'; // only 'add' ends up in the bundle
@@ -2306,14 +2420,14 @@ add(1, 2);`
   {
     id: 'pattern-singleton',
     title: 'Singleton Pattern',
-    summary: 'Guarantees a single shared instance with a global access point.',
+    summary: 'A pattern that guarantees there is exactly ONE instance of something, and everyone who asks gets that same one.',
     difficulty: 'intermediate',
     category: 'design-patterns',
     keyPoints: [
-      'Ensures a class is instantiated only once.',
-      'Implement via a cached static instance or a module-level closure.',
-      'Use for shared resources: config store, logger, DB connection pool.',
-      'Downside: introduces global state — can hinder testing.'
+      'However many times you "create" it, you always receive the same single instance.',
+      'Two common implementations: the constructor caches and returns a static instance (as in the snippet), or — the JavaScript-native way — a module that exports one object, since modules are only evaluated once.',
+      'Reach for it when duplicates would be wasteful or wrong: a config store, a logger, a database connection pool.',
+      "The known downside: a singleton is global state in disguise — tests can't easily isolate or reset it, and hidden dependencies creep in."
     ],
     codeSnippet: `class Config {
   constructor() {
@@ -2327,14 +2441,15 @@ new Config() === new Config(); // true`
   {
     id: 'pattern-factory',
     title: 'Factory Pattern',
-    summary: 'Creates objects without exposing the exact class, deciding the type at runtime.',
+    summary:
+      'One creation function that decides at runtime which kind of object to hand back — callers say WHAT they want, the factory worries about HOW to build it.',
     difficulty: 'intermediate',
     category: 'design-patterns',
     keyPoints: [
-      'Encapsulates instantiation logic behind a single creation function.',
-      'Chooses the concrete type based on input/runtime conditions.',
-      'Decouples calling code from concrete constructors.',
-      'Useful when creation is complex or varies by parameter.'
+      'All the "how do I construct this?" logic lives in one function instead of being scattered through the codebase.',
+      'The factory picks the concrete variant from its input — createAnimal("dog") vs createAnimal("cat") — at runtime.',
+      'Callers never touch specific constructors, so swapping an implementation or adding a new variant changes one file, not every call site.',
+      'It earns its keep when construction is complicated, conditional, or likely to change.'
     ],
     codeSnippet: `function createAnimal(type) {
   switch (type) {
@@ -2348,14 +2463,15 @@ createAnimal('dog').sound(); // 'woof'`
   {
     id: 'pattern-observer',
     title: 'Observer Pattern',
-    summary: 'A subject notifies a list of observers whenever its state changes (pub/sub).',
+    summary:
+      'A "subject" keeps a list of interested functions and calls them all whenever something happens — the newsletter model, and the idea behind every event system.',
     difficulty: 'intermediate',
     category: 'design-patterns',
     keyPoints: [
-      'A subject keeps a list of subscribers (observers).',
-      'On change, it calls each observer’s update/handler.',
-      'Basis of event systems, reactive UIs, and EventEmitter.',
-      'Decouples the source of events from their consumers.'
+      'The subject maintains a subscriber list; anyone can join via subscribe(fn).',
+      "When the subject's state changes, it loops through the list and notifies every subscriber with the new data.",
+      "You use this constantly without naming it: addEventListener, Node's EventEmitter, RxJS, and reactive UI updates are all the observer pattern.",
+      'The win is decoupling: the thing announcing events knows nothing about who is listening — subscribers come and go freely.'
     ],
     codeSnippet: `class Subject {
   observers = [];
@@ -2369,14 +2485,16 @@ s.notify(42); // 'got 42'`
   {
     id: 'pattern-module',
     title: 'Module Pattern',
-    summary: 'An IIFE that exposes only public members, keeping the rest private via closure.',
+    summary:
+      'The classic pre-ES-modules way to get public and private: a function runs once (an IIFE) and returns only the parts meant to be public — everything else stays locked inside.',
     difficulty: 'intermediate',
     category: 'design-patterns',
+    prerequisites: ['core-closures'],
     keyPoints: [
-      'An IIFE returns an object of public methods.',
-      'Variables inside the IIFE stay private (closure encapsulation).',
-      'Avoids polluting the global namespace.',
-      'Conceptual ancestor of ES modules.'
+      "An IIFE — an Immediately Invoked Function Expression, (function(){ ... })() — runs the moment it's defined and returns an object of public methods.",
+      'Variables declared inside never escape: the returned methods can reach them through their closure, but outside code cannot — real privacy.',
+      'It also keeps the global namespace clean — one variable for the whole module instead of a scatter of globals.',
+      'Historically important: this pattern is the conceptual ancestor of ES modules, which give the same privacy per file, natively.'
     ],
     codeSnippet: `const counter = (function () {
   let count = 0;            // private
@@ -2391,14 +2509,15 @@ counter.value(); // 1`
   {
     id: 'pattern-strategy-decorator-command',
     title: 'Strategy, Decorator & Command',
-    summary: 'Three more classic patterns: interchangeable algorithms, dynamic wrapping, and request objects.',
+    summary:
+      'Three more classics worth recognising: swap algorithms in and out (Strategy), wrap objects to add features (Decorator), and turn actions into objects (Command).',
     difficulty: 'advanced',
     category: 'design-patterns',
     keyPoints: [
-      'Strategy: encapsulate interchangeable algorithms; swap behavior without changing the client.',
-      'Decorator: wrap an object to add behavior dynamically without altering its class.',
-      'Command: package a request as an object with execute()/undo() — enables queues and undo.',
-      'All three favor composition over inheritance.'
+      'Strategy: the surrounding code stays fixed while the algorithm is passed in as an interchangeable piece — think of a sorter that accepts different comparison functions, or a checkout accepting different payment methods.',
+      'Decorator: wrap an existing object in another that adds behaviour on top, without touching the original class — a Car wrapped in WithGPS still drives, plus navigation.',
+      'Command: package an action as an object with execute() and undo() methods — once actions are objects, you can queue them, log them, and build undo/redo stacks.',
+      'The common thread: all three build behaviour by composing objects rather than by inheritance hierarchies.'
     ],
     codeSnippet: `// Strategy
 const ctx = { run: (strategy, data) => strategy(data) };
@@ -2418,17 +2537,20 @@ const cmd = { execute: () => light.on(), undo: () => light.off() };`
   {
     id: 'security-xss',
     title: 'Cross-Site Scripting (XSS)',
-    summary: 'Attackers inject malicious scripts into pages other users view.',
+    summary:
+      "An attacker sneaks their JavaScript into your page — say, via a comment field — and it runs in every visitor's browser with that visitor's permissions.",
     difficulty: 'intermediate',
     category: 'security',
+    prerequisites: ['dom-content'],
     keyPoints: [
-      'Occurs when untrusted input is rendered as executable HTML/JS.',
-      'Consequences: cookie/session theft, keylogging, defacement.',
-      'Prevent: escape/sanitize output, avoid innerHTML with user data (use textContent).',
-      'Use a Content Security Policy as defense in depth.',
-      'Frameworks like React auto-escape — but dangerouslySetInnerHTML reopens the hole.'
+      'The root cause is always the same: text from an untrusted source ends up rendered as executable HTML/JavaScript instead of as plain text.',
+      "What the injected script can do: steal cookies and sessions, log keystrokes, rewrite the page — anything the legitimate page's code can do.",
+      'The core defence: never render untrusted input as HTML. Escape or sanitise on output, and prefer textContent over innerHTML for user data.',
+      'Add a Content Security Policy (CSP) header as a second layer — even if injection slips through, the browser refuses to run scripts from unapproved sources.',
+      "React and friends escape output automatically — you're safe by default until someone reaches for dangerouslySetInnerHTML, which reopens the hole by design."
     ],
-    gotcha: 'el.innerHTML = userInput is the classic XSS vector. Use el.textContent for untrusted strings.',
+    gotcha:
+      'el.innerHTML = userInput is the textbook XSS vector — one line, full compromise. Untrusted strings go in el.textContent, no exceptions.',
     codeSnippet: `// vulnerable
 el.innerHTML = userInput;
 
@@ -2441,15 +2563,16 @@ el.textContent = userInput;
   {
     id: 'security-csrf',
     title: 'Cross-Site Request Forgery (CSRF)',
-    summary: 'A malicious site tricks a logged-in user’s browser into unwanted authenticated requests.',
+    summary:
+      'You\'re logged into your bank in one tab; a shady site in another tab makes your browser send a "transfer money" request — and your session cookie rides along automatically.',
     difficulty: 'intermediate',
     category: 'security',
     keyPoints: [
-      'Exploits the browser auto-sending cookies on cross-site requests.',
-      'Performs actions as the victim without their consent.',
-      'Mitigate: anti-CSRF tokens validated server-side.',
-      'Set SameSite=Lax/Strict on session cookies.',
-      'Verify Origin/Referer and configure CORS correctly.'
+      'The exploit hinges on one browser behaviour: cookies for a site are attached automatically to ANY request going to that site, no matter which page triggered it.',
+      "So a hidden form on evil.com submitting to bank.com arrives authenticated — the server can't tell it wasn't the user's idea.",
+      "Defence 1 — anti-CSRF tokens: the server embeds a secret token in its own forms and rejects requests without it; the attacker's page can't read the token.",
+      'Defence 2 — SameSite cookies: SameSite=Lax or Strict tells the browser NOT to attach the session cookie to cross-site requests, cutting the attack off at the source.',
+      'Defence 3 — verify the Origin/Referer headers on state-changing requests, and keep CORS configured tightly.'
     ],
     codeSnippet: `// Mitigations (conceptual)
 // 1) Per-form anti-CSRF token checked on the server
@@ -2459,15 +2582,17 @@ el.textContent = userInput;
   {
     id: 'security-csp-headers',
     title: 'CSP & Security Headers',
-    summary: 'HTTP headers that harden a site against XSS, clickjacking, and MIME sniffing.',
+    summary:
+      'A handful of HTTP response headers that tell the browser to lock things down — cheap to add, and they blunt whole categories of attack.',
     difficulty: 'intermediate',
     category: 'security',
+    prerequisites: ['security-xss'],
     keyPoints: [
-      'Content-Security-Policy: whitelist trusted sources for scripts/styles/images.',
-      'X-Frame-Options / frame-ancestors: prevent clickjacking via framing.',
-      'Strict-Transport-Security (HSTS): force HTTPS.',
-      'X-Content-Type-Options: nosniff — block MIME-type sniffing.',
-      'Referrer-Policy: control how much referrer info is sent.'
+      'Content-Security-Policy (CSP): an allowlist of where scripts, styles, and images may come from — injected script from anywhere else simply refuses to run. The big anti-XSS header.',
+      'X-Frame-Options / CSP frame-ancestors: stop other sites embedding yours in an invisible iframe and tricking users into clicking things ("clickjacking").',
+      'Strict-Transport-Security (HSTS): tells the browser to always use HTTPS for this site, even if the user types http:// — blocks downgrade attacks.',
+      'X-Content-Type-Options: nosniff: stops the browser "guessing" file types — without it, a disguised upload could be reinterpreted as runnable script.',
+      'Referrer-Policy: controls how much of the current URL leaks to other sites in the Referer header when users click away.'
     ],
     codeSnippet: `// Example response headers
 // Content-Security-Policy: script-src 'self'
@@ -2478,15 +2603,16 @@ el.textContent = userInput;
   {
     id: 'security-same-origin',
     title: 'Same-Origin Policy & CORS',
-    summary: 'Browsers restrict cross-origin access; CORS selectively relaxes it.',
+    summary:
+      "The browser's default rule — a page may only read responses from its own origin — and CORS, the header-based mechanism servers use to relax it deliberately.",
     difficulty: 'intermediate',
     category: 'security',
     keyPoints: [
-      'Origin = scheme + host + port. Same origin requires all three to match.',
-      'The policy blocks reading cross-origin responses by default.',
-      'CORS headers (Access-Control-Allow-Origin…) let a server opt in to sharing.',
-      'Preflight OPTIONS requests check non-simple cross-origin calls.',
-      'Protects users from one site reading another’s authenticated data.'
+      'An "origin" is the trio scheme + host + port (https + app.com + 443). Change any one and it\'s a different origin.',
+      'The Same-Origin Policy: your page can SEND requests anywhere, but by default the browser refuses to let your JavaScript READ a response from a different origin.',
+      'CORS (Cross-Origin Resource Sharing) is the opt-in: the SERVER adds headers like Access-Control-Allow-Origin: https://app.com to say "this origin may read my responses". Note who\'s in control — a CORS error is fixed on the server, not in your fetch call.',
+      'For non-simple requests (custom headers, JSON content type, PUT/DELETE), the browser first sends an OPTIONS "preflight" asking permission before the real request.',
+      'The point of it all: without this policy, any random site you visit could silently read your logged-in Gmail, bank, and internal dashboards.'
     ],
     codeSnippet: `// Same origin?  https://app.com:443/page
 // https://app.com/api   → same origin
@@ -2503,6 +2629,7 @@ el.textContent = userInput;
     summary: 'Beyond addEventListener: emit your own events, opt into passive listeners for smooth scrolling, and clean up to avoid leaks.',
     difficulty: 'intermediate',
     category: 'dom',
+    prerequisites: ['dom-events'],
     keyPoints: [
       'Custom events: new CustomEvent("name", { detail }) + el.dispatchEvent(ev) let parts of an app talk through the DOM; detail carries the payload.',
       'Passive listeners: { passive: true } promises you will NOT call preventDefault, so the browser scrolls without waiting on your handler — removes touch/wheel scroll jank.',
@@ -2536,6 +2663,7 @@ window.removeEventListener('scroll', onScroll); // ✅ works`
     summary: 'When results depend on which async task finishes first, a stale earlier response can clobber a newer one — guard against it.',
     difficulty: 'intermediate',
     category: 'async-js',
+    prerequisites: ['es6-promises', 'webapi-fetch'],
     keyPoints: [
       'A race condition: two or more async operations whose final outcome depends on their arrival order rather than the order you started them.',
       'Classic case: type "ab" → request "a" fires, then "ab"; if "a" resolves last it overwrites the correct "ab" results.',
@@ -2566,6 +2694,7 @@ async function search(q) {
     summary: 'A background script that sits between the page and the network — the engine behind offline support, caching, and push.',
     difficulty: 'advanced',
     category: 'web-apis',
+    prerequisites: ['webapi-fetch', 'es6-promises'],
     keyPoints: [
       'A worker script the browser runs separately from the page — no DOM access, event-driven, and it keeps running after the tab closes.',
       'Acts as a programmable network proxy: it intercepts fetch events and can answer from a cache instead of the network (offline support).',

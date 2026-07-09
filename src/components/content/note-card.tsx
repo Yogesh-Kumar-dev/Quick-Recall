@@ -2,8 +2,10 @@
 
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
+import Link from 'next/link';
 import { parseAsString, useQueryState } from 'nuqs';
 import type { Note } from '@/types/content';
+import type { NoteLink } from '@/data/note-sources';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
 import CodeBlock from './code-block';
 
@@ -26,7 +28,9 @@ function Badge({ children, className = '' }: { children: React.ReactNode; classN
   return <span className={`rounded-full border px-2 py-0.5 text-xs ${className}`}>{children}</span>;
 }
 
-export default function NoteCard({ note }: { note: Note }) {
+// `prereqs` are resolved server-side (note-sources.ts) so the client bundle never imports the
+// full notes arrays — the card only receives the ready-made {id, title, url} chips.
+export default function NoteCard({ note, prereqs }: { note: Note; prereqs?: NoteLink[] }) {
   const showDeepDive = note.difficulty !== 'basic';
 
   // Each card owns its slice of the shared `open` URL param — nuqs keeps every instance in sync,
@@ -57,6 +61,21 @@ export default function NoteCard({ note }: { note: Note }) {
       description={note.summary}
     >
       <div className="space-y-4">
+        {prereqs && prereqs.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Builds on</span>
+            {prereqs.map((p) => (
+              <Link
+                key={p.id}
+                href={p.url}
+                onClick={(e) => e.stopPropagation()}
+                className="rounded-full border border-border px-2 py-0.5 text-xs text-primary transition-colors hover:border-primary/40 hover:bg-primary/10"
+              >
+                {p.title}
+              </Link>
+            ))}
+          </div>
+        )}
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Key Points</p>
           <ul className="list-disc space-y-0.5 pl-5 text-sm text-muted-foreground">

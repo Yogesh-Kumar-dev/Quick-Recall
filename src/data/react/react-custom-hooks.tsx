@@ -28,7 +28,7 @@ export const reactCustomHooks: HookDoc[] = [
     difficulty: 'easy',
     category: 'state',
     description:
-      'Wraps a boolean useState and returns memoised toggle / setOn / setOff callbacks. The stable references mean you can pass them to memoised children without breaking memoisation.',
+      'Wraps a boolean useState and returns toggle / setOn / setOff callbacks that keep the same identity across renders (memoised with useCallback). Because the references never change, you can pass them to React.memo children without triggering pointless re-renders.',
     signature: 'const { value, toggle, setOn, setOff } = useToggle(initial)',
     source: `import { useCallback, useState } from 'react';
 
@@ -136,7 +136,7 @@ export default function useLocalStorage<ValueType>(key: string, defaultValue: Va
 </button>`,
     useCases: ['Theme / language preferences', 'Persisting form drafts', 'Remembering dismissed banners or onboarding state'],
     gotcha:
-      'Reading localStorage during the initial render (lazy init) is SSR-safe only because of the window guard — without it, Next.js server rendering throws "localStorage is not defined".',
+      'The initial value is read from localStorage during the first render (the useState lazy initialiser) — that only survives server-side rendering because of the `typeof window` guard. Remove the guard and Next.js throws "localStorage is not defined" on the server.',
     demo: <LocalStorageDemo />
   },
   {
@@ -146,7 +146,7 @@ export default function useLocalStorage<ValueType>(key: string, defaultValue: Va
     difficulty: 'medium',
     category: 'effect',
     description:
-      'Returns a value that only updates after `delay`ms of no changes. Each change clears the previous timer, so a burst of updates (typing) collapses into one trailing update — the canonical "search as you type" optimisation.',
+      'Returns a value that only updates after `delay`ms of silence. Each change restarts the timer, so a burst of updates (fast typing) collapses into one final update after the user pauses — the canonical "search as you type" optimisation.',
     signature: 'const debounced = useDebounce(value, delay?)',
     source: `import { useEffect, useState } from 'react';
 
@@ -219,7 +219,7 @@ const throttledY = useThrottle(scrollY, 200);
     difficulty: 'medium',
     category: 'ref',
     description:
-      'Stores a value in a ref that is written inside an effect. Because effects run after render, during render the ref still holds the prior value — giving you "what was it last time?" without extra state.',
+      'Answers "what was this value last render?" using a ref written inside an effect. The trick: effects run AFTER render, so while rendering, the ref still holds the previous value — no extra state, no extra re-renders.',
     signature: 'const prev = usePrevious(value)',
     source: `import { useEffect, useRef } from 'react';
 
