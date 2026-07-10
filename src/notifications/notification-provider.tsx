@@ -8,17 +8,15 @@ import type { NotificationCategory, NotificationPolicyContext, NotifyRequest } f
 
 // ==============================|| NOTIFICATIONS - REACT BINDING ||============================== //
 
-// Thin glue between the framework-agnostic manager and React. Wires a live
-// policy-context getter into the manager once, so feature code can call
-// `useNotify().notify(...)` without touching either.
+// Thin glue between the framework-agnostic manager and React: wires a live policy-context
+// getter into the manager once so feature code can call `useNotify().notify(...)`.
 
 export default function NotificationProvider({ children }: { children: ReactNode }) {
-  // Read the live timer status for the suppression rule.
   const timerStatus = useTimerStore((s) => s.status);
   const timerActive = timerStatus === 'running' || timerStatus === 'paused';
 
-  // Keep the policy context in a ref so the manager (called from anywhere, async)
-  // always reads the current value without us re-configuring on every change.
+  // Ref so the manager (called from anywhere, async) always reads the current value
+  // without re-configuring on every change.
   const ctxRef = useRef<NotificationPolicyContext>({ timerActive });
   ctxRef.current = { timerActive };
 
@@ -37,15 +35,14 @@ export function useNotify() {
   return { notify: fire, dismissCategory: dismiss, requestPermission: request };
 }
 
-// Hook for a preferences UI toggle. Subscribes to cross-tab pref changes so
-// every tab's UI stays in sync.
+// Subscribes to cross-tab pref changes so every tab's UI stays in sync.
 export function useNotificationPrefs(): [NotificationPrefs, (next: NotificationPrefs) => void] {
   const [prefs, setLocal] = useState<NotificationPrefs>(() => getPrefs());
 
   useEffect(() => subscribePrefs(setLocal), []);
 
   const update = useCallback((next: NotificationPrefs) => {
-    setPrefs(next); // persists + notifies subscribers (including this hook)
+    setPrefs(next);
   }, []);
 
   return [prefs, update];

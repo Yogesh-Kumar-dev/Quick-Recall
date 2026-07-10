@@ -77,6 +77,11 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
     urls: ['/nextjs/notes', '/nextjs/rendering']
   },
   {
+    id: 'nodejs',
+    label: 'Node.js',
+    urls: ['/nodejs/notes', '/nodejs/quick-recall']
+  },
+  {
     id: 'html-css',
     label: 'HTML & CSS',
     urls: ['/html-css/html', '/html-css/css']

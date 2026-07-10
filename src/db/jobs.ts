@@ -4,12 +4,10 @@ import { db } from './index';
 // types
 import type { JobApplication, JobApplicationInput } from '@/types/job-tracker';
 
-// The ONLY module that touches persistence (Dexie / IndexedDB via the shared `db`) for
-// jobs. All methods are async-shaped on purpose: to migrate to an HTTP / server backend
-// later, replace the body of these functions only — every consumer (useJobs, the drawer,
-// the cards) stays untouched.
+// Only module that touches persistence for jobs; async-shaped so a future HTTP backend
+// only needs the body of these functions changed.
 
-// Guard the collection fields so a malformed/partial record can't crash the UI.
+// Guards against malformed/partial records crashing the UI.
 function normalizeJob(raw: JobApplication): JobApplication {
   return {
     ...raw,
@@ -28,7 +26,6 @@ function makeId(): string {
 }
 
 export async function getAll(): Promise<JobApplication[]> {
-  // newest first
   const rows = await db.jobs.orderBy('createdAt').reverse().toArray();
   return rows.map(normalizeJob);
 }

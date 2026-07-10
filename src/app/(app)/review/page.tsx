@@ -14,11 +14,8 @@ import type { ReviewQuality, ReviewState } from '@/types/study';
 
 // ==============================|| SRS REVIEW SESSION ||============================== //
 
-// Three states: landing ("N due" → Start), in-session (flip + rate), done ("all caught up").
-// The deck is a FROZEN snapshot of the due cards taken at Start, so rating a card (which pushes
-// its dueAt into the future and removes it from the live `due` query) doesn't reshuffle the
-// session under the user. We keep the full ReviewState so each rating's next interval can be
-// PREVIEWED on the buttons, so the user sees when a card resurfaces before choosing.
+// The deck is a frozen snapshot of the due cards taken at Start, so rating a card (which pushes
+// it out of the live `due` query) doesn't reshuffle the session mid-way.
 
 const RATINGS: { quality: ReviewQuality; label: string; className: string }[] = [
   { quality: 'again', label: 'Again', className: 'text-destructive border-destructive/40' },
@@ -28,7 +25,6 @@ const RATINGS: { quality: ReviewQuality; label: string; className: string }[] = 
 ];
 
 export default function ReviewPage() {
-  // Live due list + enrolled count — stay in sync as cards are rated or enrolled (incl. other tabs).
   const due = useLiveQuery(() => reviewsRepository.getDue(Date.now()));
   const enrolledCount = useLiveQuery(() => reviewsRepository.count());
   const loading = due === undefined;
@@ -153,8 +149,7 @@ export default function ReviewPage() {
       ) : (
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {RATINGS.map((r) => {
-            // Preview where this rating sends the card, using the same pure scheduler that
-            // persists on click — so the label shows exactly when the card will come back.
+            // Preview uses the same pure scheduler that persists on click.
             const preview = schedule(current, r.quality, Date.now());
             return (
               <Button

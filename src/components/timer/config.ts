@@ -1,7 +1,6 @@
 import { BookOpen, Clock, Code, Coffee, type LucideIcon, Users } from 'lucide-react';
 
-// Purpose is free text — these are just suggestions surfaced as chips in the config
-// dialog and used to pick a matching icon. The chip's `label` is what gets stored.
+// purpose is free text — these are just chip suggestions; the chip's `label` is what gets stored
 export const TIMER_PURPOSE_SUGGESTIONS: { label: string; icon: LucideIcon }[] = [
   { label: 'Problem solve', icon: Code },
   { label: 'Mock interview', icon: Users },
@@ -9,8 +8,6 @@ export const TIMER_PURPOSE_SUGGESTIONS: { label: string; icon: LucideIcon }[] = 
   { label: 'Break', icon: Coffee }
 ];
 
-// Icon for a (possibly free-text) purpose — matches a suggestion case-insensitively,
-// otherwise a generic clock.
 export function purposeIcon(purpose: string): LucideIcon {
   const match = TIMER_PURPOSE_SUGGESTIONS.find((s) => s.label.toLowerCase() === purpose.trim().toLowerCase());
   return match ? match.icon : Clock;

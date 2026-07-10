@@ -4,9 +4,7 @@ import { IconArrowsMaximize, IconArrowsMinimize } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-// Header icon that toggles the whole app into/out of fullscreen (Fullscreen API) — one click
-// expands the app for heads-down study sessions. Tracks `fullscreenchange` so the icon/label stay
-// correct if the user exits via Esc instead of the button.
+// tracks `fullscreenchange` so the icon/label stay correct if the user exits via Esc
 export default function FullscreenButton() {
   const [open, setOpen] = useState(false);
 

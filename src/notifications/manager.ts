@@ -5,9 +5,8 @@ import type { NotificationCategory, NotificationHandle, NotificationPolicyContex
 
 // ==============================|| NOTIFICATIONS - MANAGER (core) ||============================== //
 
-// The framework-agnostic brain. The ONLY place that touches the Web Notification
-// API or decides native-vs-toast. React glue (notification-provider) injects a
-// getter for the live policy context; the in-app fallback goes straight to sonner.
+// Framework-agnostic; the only place that touches the Web Notification API or decides
+// native-vs-toast. notification-provider injects a getter for the live policy context.
 
 const NOOP_HANDLE: NotificationHandle = { dismiss: () => {} };
 
@@ -24,8 +23,7 @@ function canUseNative(): boolean {
   return typeof window !== 'undefined' && 'Notification' in window;
 }
 
-// Request OS permission once. Safe to call repeatedly — only prompts when the
-// permission is still in the default (un-decided) state.
+// Safe to call repeatedly — only prompts while permission is still un-decided.
 export async function requestPermission(): Promise<NotificationPermission | 'unsupported'> {
   if (!canUseNative()) return 'unsupported';
   if (Notification.permission === 'default') {
@@ -86,7 +84,6 @@ function fireNative(req: NotifyRequest): NotificationHandle {
   return { dismiss: () => dismissCategory(req.category) };
 }
 
-// The single entry point every feature calls.
 export function notify(req: NotifyRequest): NotificationHandle {
   if (typeof window === 'undefined') return NOOP_HANDLE;
 
@@ -99,7 +96,7 @@ export function notify(req: NotifyRequest): NotificationHandle {
 
   let handle: NotificationHandle = NOOP_HANDLE;
   if (resolved === 'native') {
-    // 'native' channel with permission missing → stay silent (matches distraction behavior).
+    // Explicit 'native' request without permission stays silent rather than falling back.
     if (canUseNative() && Notification.permission === 'granted') handle = fireNative(req);
   } else {
     fireSnackbar(req);

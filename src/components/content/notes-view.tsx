@@ -9,13 +9,9 @@ import VirtualNoteList from './virtual-note-list';
 
 export type NotesSearchParams = { q?: string; cat?: string; diff?: string; open?: string };
 
-// Below this many filtered notes, a plain server-rendered list is both simpler and keeps content
-// in the initial HTML. Above it, virtualize (client-only render) so hundreds of ExpandableCard
-// instances don't all mount at once.
+// above this count, virtualize (client-only) so hundreds of ExpandableCards don't all mount at once
 const VIRTUALIZE_THRESHOLD = 50;
 
-// Shared Server Component for every notes route. Filters `notes` from the URL params (server-side)
-// and renders the list + the client filter island.
 export default function NotesView({
   title,
   notes,
@@ -25,15 +21,12 @@ export default function NotesView({
   title: string;
   notes: Note[];
   params: NotesSearchParams;
-  // Optional slot next to the title (e.g. a PdfLauncher on pages with companion PDF guides).
   headerAction?: ReactNode;
 }) {
   const q = params.q ?? '';
   const cat = params.cat ?? 'all';
   const diff = params.diff ?? 'all';
 
-  // Fuzzy title/summary match (fuse.js, ranked) when a query is present, otherwise the full set
-  // in natural order — then the exact category/difficulty filters narrow it further.
   const textMatched = q.trim()
     ? new Fuse(notes, { keys: ['title', 'summary'], threshold: 0.4, ignoreLocation: true, minMatchCharLength: 2 })
         .search(q)
@@ -41,14 +34,11 @@ export default function NotesView({
     : notes;
   const filtered = textMatched.filter((n) => (cat === 'all' || n.category === cat) && (diff === 'all' || n.difficulty === diff));
 
-  // Chip labels always list every topic (even ones the current filters zero out) so users can
-  // still navigate back to them — only the counts next to each chip are cross-filtered.
+  // chips always list every topic, even ones the current filters zero out, so users can navigate back
   const categories = [...new Set(notes.map((n) => n.category))].sort();
 
-  // Cross-filtered (faceted) counts: each facet's numbers reflect the OTHER active facet + the
-  // text query, but ignore its own current selection — so picking "Basic" updates the Topic
-  // counts to "how many Basic notes per topic", while every topic chip (including the selected
-  // one) stays visible with an accurate, live count instead of a frozen global total.
+  // faceted counts: each facet reflects the OTHER active facet + text query, not its own
+  // selection — so picking "Basic" updates Topic counts to "Basic notes per topic"
   const byCategoryScope = textMatched.filter((n) => diff === 'all' || n.difficulty === diff);
   const byDifficultyScope = textMatched.filter((n) => cat === 'all' || n.category === cat);
 
@@ -58,8 +48,7 @@ export default function NotesView({
   const byDifficulty: Record<string, number> = {};
   for (const n of byDifficultyScope) byDifficulty[n.difficulty] = (byDifficulty[n.difficulty] ?? 0) + 1;
 
-  // Resolve each note's prerequisite ids into {id, title, url} chips here (server-side) so the
-  // client components below never import the full cross-topic notes arrays.
+  // resolved server-side so client components never import the full cross-topic notes arrays
   const prereqLinks: Record<string, NoteLink[]> = {};
   for (const n of filtered) {
     const links = resolvePrerequisites(n);
@@ -67,8 +56,8 @@ export default function NotesView({
   }
 
   const counts = {
-    categoryTotal: byCategoryScope.length, // "all" topic chip: matches under the current difficulty + query
-    difficultyTotal: byDifficultyScope.length, // "all" difficulty chip: matches under the current topic + query
+    categoryTotal: byCategoryScope.length,
+    difficultyTotal: byDifficultyScope.length,
     byCategory,
     byDifficulty
   };
@@ -85,7 +74,6 @@ export default function NotesView({
         </div>
       </div>
 
-      {/* List on the left, sticky filter rail on the right; on mobile the rail becomes a slide-over. */}
       <div className="flex flex-col gap-6 lg:flex-row-reverse">
         <FilterPanel categories={categories} counts={counts} />
 

@@ -57,8 +57,6 @@ function getSpeechRecognition(): SpeechRecognitionConstructor | undefined {
 // ==============================|| SPEECH PRACTICE ||============================== //
 
 interface SpeechPracticeProps {
-  // The current question index and advance handler are owned by the Speak Up page so
-  // the Q&A bank beside it can highlight the matching card in sync.
   questionIndex: number;
   onNextQuestion: () => void;
 }
@@ -201,21 +199,18 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
     }
   };
 
-  // Stop the camera stream on unmount so the webcam light turns off.
   // biome-ignore lint/correctness/useExhaustiveDependencies: unmount-only cleanup; stopCamera isn't memoized
   useEffect(() => () => stopCamera(), []);
 
   return (
     <Card>
       <CardContent className="flex flex-col gap-4 py-6">
-        {/* Keyframes for the listening mic pulse ring. */}
         <style>{`@keyframes speakup-pulse {
           0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.5); }
           70% { box-shadow: 0 0 0 16px rgba(244, 67, 54, 0); }
           100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
         }`}</style>
 
-        {/* Header — question block */}
         <div className="min-w-0 text-center">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Practice answering out loud</p>
           <h4 className="mt-1 text-lg font-bold break-words">{predefinedQuestions[questionIndex].question}</h4>
@@ -224,7 +219,6 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
           </Button>
         </div>
 
-        {/* Video preview — centered, with overlaid controls */}
         <div className="relative mx-auto aspect-video w-full max-w-[640px] overflow-hidden rounded-xl border bg-neutral-900">
           <video
             ref={videoRef}
@@ -234,7 +228,6 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
             className={cn('size-full -scale-x-100 object-cover', cameraOn ? 'block' : 'hidden')}
           />
 
-          {/* Camera-off placeholder */}
           {!cameraOn && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-white/65">
               <VideoOff className="size-8" />
@@ -242,7 +235,6 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
             </div>
           )}
 
-          {/* Overlaid control pill bar (bottom-center) */}
           <div className="absolute bottom-3.5 left-1/2 flex -translate-x-1/2 items-center gap-2.5 rounded-full bg-black/55 px-3 py-1.5 backdrop-blur-sm">
             {supported && (
               <button
@@ -271,7 +263,6 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
           </div>
         </div>
 
-        {/* Privacy + status line under the video */}
         <div className="flex w-full flex-col items-center gap-1 text-center">
           {!supported && (
             <p className="text-sm text-destructive">Speech recognition isn&apos;t supported in this browser — try Chrome or Edge.</p>
@@ -289,7 +280,6 @@ export default function SpeechPractice({ questionIndex, onNextQuestion }: Speech
           </p>
         </div>
 
-        {/* Live transcription panel */}
         {supported && (
           <div className="w-full">
             <div className="mb-1 flex items-center justify-between">

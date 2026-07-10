@@ -31,18 +31,15 @@ interface QAFormDrawerProps {
   open: boolean;
   mode: 'add' | 'edit';
   initialValues?: SpeakUpQA | null;
-  // When set, this is a fresh answer to a predefined question — the question text is
-  // fixed (read-only) and carried through as the saved record's `sourceId`.
+  // set when this is a fresh answer to a predefined question; carried through as the record's sourceId
   sourceId?: string;
   questionLocked?: boolean;
-  // Existing tags (predefined categories + user tags) to suggest in the tag field.
   tagOptions: string[];
   jobs: JobApplication[];
   onClose: () => void;
   onSubmit: (values: SpeakUpQAInput) => void | Promise<void>;
 }
 
-// Small labelled-field wrapper (label above, optional error below).
 function Field({
   label,
   htmlFor,
@@ -101,8 +98,6 @@ export default function QAFormDrawer({
 
   const submit = handleSubmit(async (values) => {
     const payload: SpeakUpQAInput = {
-      // Preserve the link to a predefined question: prefer the existing record's
-      // sourceId on edit, fall back to the one passed when answering a predefined card.
       sourceId: initialValues?.sourceId ?? sourceId,
       question: values.question.trim(),
       answer: values.answer.trim(),
@@ -176,7 +171,6 @@ export default function QAFormDrawer({
             </Field>
           </div>
 
-          {/* Footer */}
           <div className="flex justify-end gap-3 border-t p-5">
             <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting}>
               Cancel

@@ -10,9 +10,7 @@ import { createSearchFuse, type SearchItem } from '@/data/search-index';
 
 const MAX_RESULTS = 8;
 
-// Global fuzzy search over problems, custom hooks, and pages (fuse.js — see src/data/search-index.ts),
-// surfaced as a Cmd/Ctrl+K command palette. `shouldFilter={false}` on <Command> because we drive the
-// result list ourselves from fuse's ranked matches instead of cmdk's built-in filter.
+// `shouldFilter={false}` because we drive the result list from fuse's ranked matches, not cmdk's own filter
 export default function HeaderSearch() {
   const router = useRouter();
   const fuse = useMemo(() => createSearchFuse(), []);

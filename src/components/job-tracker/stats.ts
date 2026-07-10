@@ -5,14 +5,12 @@ import { STALE_DAYS } from './config';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-// Statuses that mean the application is no longer in play.
 const CLOSED_STATUSES: JobStatus[] = ['rejected', 'ghosted', 'fake'];
 
 export function isActive(job: JobApplication): boolean {
   return !CLOSED_STATUSES.includes(job.status);
 }
 
-// Stale = still sitting in 'applied', with an applied date older than STALE_DAYS.
 export function isStale(job: JobApplication, now: number = Date.now()): boolean {
   if (job.status !== 'applied') return false;
   if (!job.appliedAt) return false;
@@ -35,7 +33,6 @@ export interface JobStats {
   offerRate: number; // % of applications that became an offer
 }
 
-// Reached interviewing or further down the funnel (offer means they got past interviews).
 function reachedInterview(job: JobApplication): boolean {
   return job.status === 'interviewing' || job.status === 'offer' || (job.rounds?.length ?? 0) > 0;
 }
@@ -69,7 +66,6 @@ export function deriveStats(jobs: JobApplication[], now: number = Date.now()): J
   };
 }
 
-// Format a salary range using the stored currency (defaults to a bare number).
 export function formatSalary(job: JobApplication): string {
   const { salaryMin, salaryMax, salaryCurrency } = job;
   if (salaryMin == null && salaryMax == null) return '';

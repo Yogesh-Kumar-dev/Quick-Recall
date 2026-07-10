@@ -8,21 +8,15 @@ import { extractPlaylistId } from '@/data/video-playlists';
 
 // ==============================|| PLAYLIST PLAYER ||============================== //
 
-// Plays an ordered list of YouTube playlists (by URL) back-to-back in an adaptive frame that flips
-// between portrait (Shorts) and landscape (regular videos) per video — see fetchOrientation. The
-// native Shorts swipe UI isn't embeddable, so this is the standard IFrame player. The player
-// auto-sequences each playlist; when one finishes (IFrame API fires ENDED at the last video of a
-// non-looping playlist) we load the next playlist's first video, so the set plays as one feed.
+// Plays playlists back-to-back in a frame that flips portrait/landscape per video (Shorts vs
+// regular) since the IFrame API has no "isShort" flag — see fetchOrientation.
 
-const YT_ENDED = 0; // YT.PlayerState.ENDED
-const YT_PLAYING = 1; // YT.PlayerState.PLAYING
+const YT_ENDED = 0;
+const YT_PLAYING = 1;
 
 type Orientation = 'portrait' | 'landscape';
 
-// Ask YouTube's public oEmbed endpoint for the current video's true pixel dimensions and decide
-// the frame orientation. There is no "isShort" flag in the IFrame API, so we infer it from the
-// aspect ratio: a Short is portrait (height > width), a regular video is landscape. oEmbed sends
-// permissive CORS headers, so a plain browser fetch works without a proxy or API key.
+// No "isShort" flag in the IFrame API, so infer orientation from oEmbed's reported pixel dimensions.
 async function fetchOrientation(videoId: string): Promise<Orientation | null> {
   try {
     const url = `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`;
@@ -32,14 +26,12 @@ async function fetchOrientation(videoId: string): Promise<Orientation | null> {
     if (!data.width || !data.height) return null;
     return data.height > data.width ? 'portrait' : 'landscape';
   } catch {
-    // Network/CORS failure — caller keeps the current orientation.
     return null;
   }
 }
 
-// Fisher-Yates shuffle (returns a new array). Used to randomize the order in which playlists are
-// played so each launch starts in a different playlist — the IFrame API can only shuffle within a
-// single loaded playlist, so randomizing playlist order is how we vary the cross-playlist start.
+// Fisher-Yates shuffle. The IFrame API can only shuffle within a single loaded playlist, so
+// randomizing playlist order here is how cross-playlist start position varies.
 function shuffleArray<T>(input: readonly T[]): T[] {
   const out = input.slice();
   for (let i = out.length - 1; i > 0; i--) {
@@ -49,28 +41,23 @@ function shuffleArray<T>(input: readonly T[]): T[] {
   return out;
 }
 
-// Shuffle the loaded playlist and jump to the first item of the freshly-shuffled order.
 // setShuffle(true) reorders the queue but leaves the cursor on the original first video, so
-// we playVideoAt(0) to actually land on a (new) random video. Without this, every launch would
-// start on the same video and the user would have to skip through to reach a later one.
+// playVideoAt(0) is needed to actually land on a random one.
 function shuffleAndStart(player: YouTubePlayer | null) {
   if (!player) return;
   try {
     player.setShuffle(true);
     player.playVideoAt(0);
   } catch {
-    // Player not fully ready / API shape changed — degrade to default (unshuffled) playback.
+    // player not ready / API shape changed — fall back to default playback
   }
 }
 
 interface PlaylistPlayerProps {
-  playlists: string[]; // ordered playlist URLs
+  playlists: string[];
 }
 
 export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
-  // Resolve URLs → playlist IDs once, dropping anything unparseable, then shuffle the playlist
-  // order so each mount starts in a random playlist (combined with per-playlist shuffle on play,
-  // this gives a fresh feed every launch). Runs once per mount since deps are just [playlists].
   const ids = useMemo(() => shuffleArray(playlists.map(extractPlaylistId).filter((id): id is string => id !== null)), [playlists]);
 
   const [current, setCurrent] = useState(0);
@@ -78,13 +65,10 @@ export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
   const [orientation, setOrientation] = useState<Orientation>('portrait');
   const playerRef = useRef<YouTubePlayer | null>(null);
 
-  // Last video we've kicked off an orientation lookup for. Guards against re-fetching on every
-  // pause/resume (which also fire PLAYING) and against a stale response from a previous video
-  // clobbering the current frame after the user has already advanced.
+  // Guards against re-fetching on pause/resume (also fires PLAYING) and against a stale response
+  // clobbering the frame after the user has advanced.
   const lastProbedId = useRef<string | null>(null);
 
-  // Resolve the frame orientation for whatever video is now playing. Reads the id from the player
-  // (the IFrame API doesn't tell us which video it auto-advanced to), then asks oEmbed.
   const probeOrientation = (player: YouTubePlayer | null) => {
     if (!player) return;
     let videoId: string | undefined;
@@ -96,7 +80,6 @@ export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
     if (!videoId || videoId === lastProbedId.current) return;
     lastProbedId.current = videoId;
     fetchOrientation(videoId).then((result) => {
-      // Ignore if the user has since moved on to another video.
       if (result && lastProbedId.current === videoId) setOrientation(result);
     });
   };
@@ -109,11 +92,7 @@ export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
     );
   }
 
-  // Advance to the next playlist when the current one ends. The player instance is reused
-  // (loadPlaylist) so there's no iframe remount/flash between playlists.
   const handleStateChange = (event: YouTubeEvent<number>) => {
-    // Each new video (incl. the player's own auto-advance within a playlist) reaches PLAYING —
-    // re-probe orientation so the frame flips between Shorts (portrait) and regular (landscape).
     if (event.data === YT_PLAYING) {
       probeOrientation(event.target);
       return;
@@ -142,14 +121,12 @@ export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
         'relative mx-auto overflow-hidden rounded-lg bg-black transition-[width,height] duration-200 ' +
         (orientation === 'portrait'
           ? 'h-[min(80dvh,720px)] w-auto aspect-[9/16]'
-          : // Width is capped by 100dvh-minus-chrome converted through the 16:9 ratio too, so the
-            // derived height can never outgrow the sheet and force a scrollbar (only bounding width
-            // by viewport width, as before, left height unconstrained on short viewports).
+          : // width also capped via the 16:9 ratio of (100dvh - chrome), so derived height can
+            // never outgrow the sheet and force a scrollbar
             'h-auto w-[min(100%,1100px,calc((100dvh-140px)*16/9))] aspect-video')
       }
     >
       <YouTube
-        // First playlist seeds the player; subsequent ones load via loadPlaylist on ENDED.
         opts={{
           width: '100%',
           height: '100%',
@@ -157,9 +134,7 @@ export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
         }}
         onReady={(e) => {
           playerRef.current = e.target;
-          // Shuffle the seed playlist on launch so we open on a random video instead of always
-          // the first one. Done here (not via playerVars) because shuffle must be applied after
-          // the playlist is loaded into the player.
+          // must shuffle after the playlist is loaded into the player, not via playerVars
           shuffleAndStart(e.target);
         }}
         onStateChange={handleStateChange}
@@ -167,7 +142,6 @@ export default function PlaylistPlayer({ playlists }: PlaylistPlayerProps) {
         style={{ width: '100%', height: '100%' }}
       />
 
-      {/* End-of-all-playlists overlay */}
       {finished && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/85 px-6 text-center text-white">
           <IconBrandYoutube size={48} />

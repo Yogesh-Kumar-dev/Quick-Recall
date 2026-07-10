@@ -9,10 +9,6 @@ import SpeechPractice from './speech-practice';
 
 // ==============================|| SPEAK UP - VIEW ||============================== //
 
-// Client-only feature (Web Speech API + Dexie/IndexedDB per device). The current-question
-// index is the single source of truth shared between the rehearsal tool (advances it via
-// "Next question") and the question bank (click a row to select / highlight it).
-
 export default function SpeakUpView() {
   const [questionIndex, setQuestionIndex] = useState(0);
 
@@ -27,8 +23,6 @@ export default function SpeakUpView() {
         </p>
       </div>
 
-      {/* Rehearsal tool (player) on the left, question bank ("up next") on the right.
-          Below md the bank stacks underneath. */}
       <div className="grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] md:items-stretch">
         <div className="min-w-0">
           <SpeechPractice questionIndex={questionIndex} onNextQuestion={handleNextQuestion} />
@@ -40,7 +34,6 @@ export default function SpeakUpView() {
 
       <Separator className="my-8" />
 
-      {/* Related — AI voice partners (full width, below the player) */}
       <AiVoiceTools />
     </div>
   );

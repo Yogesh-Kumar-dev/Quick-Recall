@@ -4,11 +4,7 @@ import { IconDeviceMobileDown } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-// Captures the browser's `beforeinstallprompt` event and exposes a custom "Install app" button
-// that triggers the native install dialog. Hides itself when there's no prompt available (e.g.
-// already installed, unsupported browser, or the app is already running standalone).
-
-// Minimal typing for the non-standard beforeinstallprompt event.
+// non-standard beforeinstallprompt event has no DOM lib typing
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
@@ -49,7 +45,6 @@ export default function InstallButton() {
     if (outcome === 'accepted') setDeferredPrompt(null);
   }, [deferredPrompt]);
 
-  // Nothing to install (already installed, or no prompt yet) → render nothing.
   if (isStandalone || !deferredPrompt) return null;
 
   return (

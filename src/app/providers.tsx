@@ -8,13 +8,8 @@ import { Toaster } from 'sonner';
 import NotificationProvider from '@/notifications/notification-provider';
 import EmotionRegistry from './emotion-registry';
 
-// App is dark-only (MongoDB design). LeafyGreen manages its own dark mode via context; the shadcn /
-// Tailwind side is dark via the static tokens in globals.css. EmotionRegistry flushes LeafyGreen's
-// emotion styles into the SSR HTML. NotificationProvider wires the notification manager's live policy
-// context (native Web Notifications + sonner fallback). SerwistProvider registers the PWA service
-// worker (served at /serwist/sw.js — see src/app/serwist/[path]/route.ts); disabled in dev since the
-// service worker's install-time route warm-up would otherwise trigger a recompile per route on
-// every "download for offline" run against Turbopack's on-demand dev compiler.
+// SerwistProvider is disabled in dev because its install-time route warm-up would trigger a
+// Turbopack recompile per route on every "download for offline" run.
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <SerwistProvider swUrl="/serwist/sw.js" disable={process.env.NODE_ENV === 'development'}>

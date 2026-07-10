@@ -10,22 +10,16 @@ import { ensurePdfBuffer, prunePdfCache, requestPersistentStorage } from '@/util
 
 import type { DocumentManagerCapability, PDFViewerConfig, PluginRegistry } from '@embedpdf/react-pdf-viewer';
 
-// The EmbedPDF viewer is browser-only (Canvas + WebAssembly) — load it client-side so it never runs
-// during SSR.
+// EmbedPDF is browser-only (Canvas + WebAssembly) — load client-side so it never runs during SSR.
 const PDFViewer = dynamic(() => import('@embedpdf/react-pdf-viewer').then((m) => m.PDFViewer), { ssr: false });
 
-// EmbedPDF's DocumentManager plugin id (avoid importing the plugin class so the EmbedPDF runtime stays
-// out of the SSR/server bundle — only the dynamic import above pulls it in, in the browser).
+// plugin id as a string (not the class) so the EmbedPDF runtime stays out of the SSR/server bundle
 const DOC_MANAGER_ID = 'document-manager';
 
 interface PdfViewerPanelProps {
   guides: PdfGuide[];
 }
 
-// Hosts the EmbedPDF viewer (browser-style tab bar) and drives it from our cache:
-//   pick a guide → ensurePdfBuffer (one network fetch ever, else from `pdf-cache`) → openDocumentBuffer.
-// The viewer is mounted once and persists across guide switches; the first guide auto-opens so the
-// drawer shows a PDF immediately. Nothing downloads until a guide is opened.
 export default function PdfViewerPanel({ guides }: PdfViewerPanelProps) {
   const registryRef = useRef<PluginRegistry | null>(null);
   const [ready, setReady] = useState(false);
@@ -33,7 +27,6 @@ export default function PdfViewerPanel({ guides }: PdfViewerPanelProps) {
   const [openIds, setOpenIds] = useState<Set<string>>(() => new Set());
   const [error, setError] = useState<{ id: string; message: string } | null>(null);
 
-  // Best-effort, once per mount: make storage persistent and drop cached PDFs no longer referenced.
   useEffect(() => {
     void requestPersistentStorage();
     void prunePdfCache(ALL_PDF_GUIDE_URLS);
@@ -41,14 +34,12 @@ export default function PdfViewerPanel({ guides }: PdfViewerPanelProps) {
 
   const config = useMemo<PDFViewerConfig>(
     () => ({
-      // Self-hosted engine (see scripts/copy-pdfium-wasm.mjs + package.json). Absolute same-origin
-      // URL so the worker resolves it correctly. Default would fetch this ~4.6 MB binary from a CDN.
+      // self-hosted engine (scripts/copy-pdfium-wasm.mjs); absolute same-origin URL so the worker
+      // resolves it — default would fetch this ~4.6 MB binary from a CDN
       wasmUrl: typeof window !== 'undefined' ? `${window.location.origin}/pdfium.wasm` : '/pdfium.wasm',
       tabBar: 'always',
-      // App is MongoDB dark theme only — no light/dark toggle.
       theme: { preference: 'dark' },
-      // No external font requests (jsDelivr fallback fonts + Google Fonts UI font) → offline-safe and
-      // no third-party calls; the viewer UI falls back to the system font stack.
+      // avoid jsDelivr/Google Fonts requests so the viewer stays offline-safe
       fontFallback: null,
       fonts: { ui: null, signature: null }
     }),

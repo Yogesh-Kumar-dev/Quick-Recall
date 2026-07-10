@@ -7,21 +7,10 @@ import { countCached, getCachedPathnames, refreshCachedPathnames } from '@/utils
 
 // ==============================|| HOOKS - OFFLINE DOWNLOAD ||============================== //
 //
-// Owns the "download for offline" state: detecting what's already saved, and a sequential
-// download queue so the user can pick individual sections (or all of them).
-//
-// Detection (on mount): asks the active service worker for its manifest version, probes the
-// Cache Storage API to count which of each section's URLs are already cached, and compares
-// against a persisted marker to classify each section as saved / partially saved / stale (a
-// newer build is deployed than what was downloaded).
-//
-// Queue: `enqueueSection(id)` / `enqueueAll()` add sections to a FIFO queue drained one at a
-// time. The "core" section is always pulled to the front (the app shell others depend on), and
-// is auto-enqueued ahead of any non-core section the user picks if it isn't saved yet.
-//
-// Caveat: a route's HTML being cached doesn't guarantee every _next/static chunk it pulls is
-// cached too — so "saved" is a strong signal, not an absolute guarantee. After a deploy, stale
-// detection flips sections back to "update available" so the user re-pulls the new assets.
+// Owns "download for offline" state: cache detection (via SW manifest version + Cache Storage
+// probing) plus a FIFO download queue, with "core" (the app shell others depend on) always
+// pulled to the front. A route's HTML being cached doesn't guarantee every chunk it pulls is
+// cached too, so "saved" is a strong signal, not a guarantee.
 
 const MARKER_KEY = 'quickrecall:offline-download';
 const CORE_ID = 'core';
@@ -92,21 +81,13 @@ function readMarker(): DownloadMarker | null {
   }
 }
 
-// Warm a route into the dedicated `offline-pages` cache (see src/app/sw.ts). We issue TWO requests
-// so both navigation modes resolve offline:
-//   1. A document request → used on hard load / app launch.
-//   2. An RSC request (`RSC: 1` header) → used on client-side <Link> navigation. Without this,
-//      in-app navigation to a never-prefetched route (e.g. the dynamic /js/machine-coding/<slug>
-//      pages) misses the cache entirely offline.
-// Both hit the offline-pages NetworkFirst rule, which has `ignoreSearch: true` so the cached entry
-// matches regardless of the `?_rsc=…` token or nuqs filter params on a later navigation.
+// Warms a route with both a document request (hard load) and an RSC request (client <Link> nav)
+// so in-app navigation to a never-prefetched route still resolves offline (see src/app/sw.ts).
 async function warmUrl(url: string): Promise<boolean> {
-  // RSC variant the way Next's router requests it: cache-busting ?_rsc + the RSC header.
   const rscUrl = url + (url.includes('?') ? '&' : '?') + '_rsc=offline';
 
-  // Accept: text/html is required so the SW's offlinePages matcher captures this request — a plain
-  // fetch() sends `Accept: */*`, which matches neither `mode: 'navigate'` nor `destination: 'document'`
-  // nor the RSC header, so without it this request silently skipped the offline-pages cache entirely.
+  // Accept: text/html is required — a plain fetch() sends `Accept: */*`, which matches none of
+  // the SW's offlinePages matcher conditions, silently skipping the cache entirely.
   const docReq = fetch(url, { cache: 'reload', credentials: 'same-origin', headers: { Accept: 'text/html' } })
     .then((res) =>
       res
@@ -126,8 +107,7 @@ async function warmUrl(url: string): Promise<boolean> {
     .catch(() => false);
 
   const [docOk, rscOk] = await Promise.all([docReq, rscReq]);
-  // Consider the route warmed if either representation cached — the guard/probe matches by
-  // pathname across all caches, so one hit is enough to count it "saved".
+  // Either representation caching is enough — the probe matches by pathname across all caches.
   return docOk || rscOk;
 }
 
@@ -148,9 +128,8 @@ export default function useOfflineDownload(): UseOfflineDownload {
   // Tracks the previous isRunning value so we can detect the moment a run finishes.
   const wasRunningRef = useRef(false);
 
-  // Starts false (matching SSR, which has no `navigator`) and flips after mount — computing this
-  // synchronously via useMemo would read the real browser value on the client's first render,
-  // mismatching the server-rendered null and causing a hydration error in every SW-capable browser.
+  // Starts false to match SSR (no `navigator`), then flips after mount — computing it
+  // synchronously would mismatch the server-rendered output and cause a hydration error.
   const [isSupported, setIsSupported] = useState(false);
   useEffect(() => {
     setIsSupported(typeof navigator !== 'undefined' && 'serviceWorker' in navigator);
@@ -158,9 +137,8 @@ export default function useOfflineDownload(): UseOfflineDownload {
 
   const isRunning = activeId !== null || queue.length > 0;
 
-  // Detect the running→idle transition (a download run just finished). At that point the marker has
-  // been refreshed to the current SW version (see the drain effect), so the content is no longer
-  // stale — clear the "new version available" banner and surface the "up to date" confirmation.
+  // Detect the running→idle transition: the marker was just refreshed to the current SW version
+  // by the drain effect, so clear the stale banner and surface the "up to date" confirmation.
   useEffect(() => {
     if (wasRunningRef.current && !isRunning) {
       setIsStale(false);
@@ -217,9 +195,10 @@ export default function useOfflineDownload(): UseOfflineDownload {
   const processSection = useCallback(async (section: OfflineSection, forceRefetch: boolean): Promise<void> => {
     setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, status: 'downloading' } : s)));
 
-    // Snapshot what's already cached once (ground truth from cache.keys()), so the per-URL
-    // skip below is a cheap set lookup rather than re-enumerating Cache Storage each iteration.
-    const cachedSet = forceRefetch ? new Set<string>() : await getCachedPathnames();
+    // Snapshot once so the per-URL skip is a cheap set lookup, not a re-enumeration each iteration.
+    // Always the real snapshot even when stale — the progress bar starts from what's genuinely
+    // cached rather than dropping to 0 while a re-download refreshes it in place.
+    const cachedSet = await getCachedPathnames();
     const pathOf = (url: string) => {
       try {
         return new URL(url, location.origin).pathname;
@@ -233,10 +212,12 @@ export default function useOfflineDownload(): UseOfflineDownload {
     setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, completed } : s)));
 
     for (const url of section.urls) {
-      if (!forceRefetch && cachedSet.has(pathOf(url))) continue; // already saved
+      const alreadyCached = cachedSet.has(pathOf(url));
+      if (!forceRefetch && alreadyCached) continue;
       const ok = await warmUrl(url);
       if (!ok) anyFailed = true;
-      completed = Math.min(completed + 1, section.urls.length);
+      // A forced refetch of an already-cached URL replaces it in place — not new progress.
+      if (!alreadyCached) completed = Math.min(completed + 1, section.urls.length);
       setSections((prev) => prev.map((s) => (s.id === section.id ? { ...s, completed } : s)));
     }
 

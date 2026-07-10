@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import NoteFilters, { type FilterConfig, type FilterCounts } from './note-filters';
 
-// Desktop: sticky filter rail. Mobile: a "Filters" button that opens the same controls in a
-// right-side slide-over (shadcn Sheet) — matches the legacy FilterShell + MobileFilterDrawer.
+// desktop: sticky filter rail. mobile: a "Filters" button that opens the same controls in a slide-over
 export default function FilterPanel({ categories, counts, ...config }: { categories: string[]; counts: FilterCounts } & FilterConfig) {
   const [open, setOpen] = useState(false);
   const [q] = useQueryState('q', { defaultValue: '' });

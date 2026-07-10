@@ -2,9 +2,6 @@ import type { InterviewOutcome, JobSource, JobStatus, WorkMode } from '@/types/j
 
 // ==============================|| JOB TRACKER - CONFIG ||============================== //
 
-// Single source of truth for status → label + color, reused by the card chip, filter
-// chips, the board columns, and the drawer's status select so they never drift apart.
-// MUI palette names are replaced by Tailwind classes (chips/filters are Tailwind).
 // `border` = left accent on cards; `colBorder` = bottom accent on board columns. Both are
 // literal classes (not built at runtime) so Tailwind's scanner emits them.
 export const JOB_STATUS_CONFIG: Record<JobStatus, { label: string; badgeClass: string; border: string; colBorder: string }> = {
@@ -43,7 +40,6 @@ export const JOB_STATUS_CONFIG: Record<JobStatus, { label: string; badgeClass: s
 
 export const JOB_STATUS_ORDER: JobStatus[] = ['applied', 'interviewing', 'offer', 'rejected', 'ghosted', 'fake'];
 
-// Interview round outcome → label + text color (for the card timeline icons and chips).
 export const INTERVIEW_OUTCOME_CONFIG: Record<InterviewOutcome, { label: string; textClass: string }> = {
   pending: { label: 'Pending', textClass: 'text-muted-foreground' },
   passed: { label: 'Passed', textClass: 'text-emerald-400' },
@@ -52,8 +48,6 @@ export const INTERVIEW_OUTCOME_CONFIG: Record<InterviewOutcome, { label: string;
 
 export const INTERVIEW_OUTCOME_ORDER: InterviewOutcome[] = ['pending', 'passed', 'failed'];
 
-// Preconfigured round-name suggestions for the drawer's combobox (a native <datalist>).
-// Users can pick one or type their own (the field is free-text).
 export const INTERVIEW_ROUND_NAME_OPTIONS: string[] = [
   'Phone screen',
   'Recruiter call',
@@ -69,7 +63,6 @@ export const INTERVIEW_ROUND_NAME_OPTIONS: string[] = [
   'HR round'
 ];
 
-// Work mode → label, for the drawer select and the card chip.
 export const WORK_MODE_CONFIG: Record<WorkMode, { label: string }> = {
   remote: { label: 'Remote' },
   hybrid: { label: 'Hybrid' },
@@ -78,7 +71,6 @@ export const WORK_MODE_CONFIG: Record<WorkMode, { label: string }> = {
 
 export const WORK_MODE_ORDER: WorkMode[] = ['remote', 'hybrid', 'onsite'];
 
-// Where the lead came from.
 export const JOB_SOURCE_CONFIG: Record<JobSource, { label: string }> = {
   linkedin: { label: 'LinkedIn' },
   naukri: { label: 'Naukri' },
@@ -90,6 +82,5 @@ export const JOB_SOURCE_CONFIG: Record<JobSource, { label: string }> = {
 
 export const JOB_SOURCE_ORDER: JobSource[] = ['linkedin', 'naukri', 'indeed', 'referral', 'company', 'other'];
 
-// An application is "stale" if it was applied this many days ago (or earlier) and has
-// had no movement beyond the 'applied' status.
+// stale = applied this many days ago (or earlier) with no movement beyond 'applied'
 export const STALE_DAYS = 14;

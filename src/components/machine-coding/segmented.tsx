@@ -9,9 +9,6 @@ interface Props {
   className?: string;
 }
 
-// Segmented pill control — fully rounded (stadium/capsule shape), so the machine-coding
-// approach/version picker is visually identical to the Details|Code tabs beside it — mirrors legacy's
-// `segmentedControlSx` (borderRadius: 999), where both toolbars shared one style.
 export default function Segmented({ options, value, onChange, className }: Props) {
   return (
     <div className={cn('inline-flex h-8 w-fit items-center justify-center rounded-full bg-background p-[3px]', className)}>

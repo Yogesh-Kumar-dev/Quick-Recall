@@ -46,15 +46,13 @@ const OUTCOME_ICON: Record<InterviewOutcome, typeof Check> = {
   failed: X
 };
 
-// Rounds sorted chronologically, with invalid dates dropped.
 function sortedRounds(job: JobApplication) {
   return [...(job.rounds ?? [])]
     .filter((r) => !Number.isNaN(new Date(r.at).getTime()))
     .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
 }
 
-// Pick the round to surface on the card: the soonest upcoming round if any, otherwise
-// the most recent past round.
+// surfaces the soonest upcoming round if any, otherwise the most recent past round
 function pickHighlightRound(rounds: ReturnType<typeof sortedRounds>) {
   if (rounds.length === 0) return null;
   const now = Date.now();
@@ -80,7 +78,6 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange, onToggl
         status.border
       )}
     >
-      {/* Header: favorite + company + status */}
       <div className="flex items-start justify-between gap-1">
         <div className="flex min-w-0 items-start gap-0.5">
           <Button
@@ -106,7 +103,6 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange, onToggl
         </Badge>
       </div>
 
-      {/* Meta chips */}
       {(salary || job.location || job.workMode || job.source || stale) && (
         <div className="flex flex-wrap gap-1.5 text-[11px]">
           {salary && <Badge variant="outline">{salary}</Badge>}
@@ -126,7 +122,6 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange, onToggl
         </div>
       )}
 
-      {/* Interview rounds */}
       {showTimeline ? (
         <div className="mt-0.5">
           {rounds.map((round, index) => {
@@ -170,10 +165,8 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange, onToggl
         )
       )}
 
-      {/* Description */}
       {job.jobDescription && <p className="line-clamp-2 text-sm text-muted-foreground">{job.jobDescription}</p>}
 
-      {/* Contacts */}
       {contacts.length > 0 && (
         <div className="mt-0.5 flex flex-col gap-1">
           {contacts.map((contact) => (
@@ -208,7 +201,6 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange, onToggl
         </div>
       )}
 
-      {/* Links: source + documents */}
       {(job.sourceUrl || documents.length > 0) && (
         <div className="mt-0.5 flex flex-wrap gap-3 text-xs">
           {job.sourceUrl && (
@@ -235,7 +227,6 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange, onToggl
         </div>
       )}
 
-      {/* Footer actions */}
       <div className="mt-auto">
         <div className="mb-0.5 border-t" />
         <div className="flex justify-end gap-0.5">

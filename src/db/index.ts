@@ -9,16 +9,11 @@ import type { Bookmark, ReviewState } from '@/types/study';
 
 // ==============================|| DEXIE - SHARED CLIENT DATABASE ||============================== //
 
-// One IndexedDB database for the whole app. Each feature owns a table here and
-// accesses it ONLY through its own repository (never the components directly), so
-// features stay decoupled and each can later be swapped to a server-backed source
-// by rewriting just its repository.
-//
-// Adding a feature later: bump `this.version(n).stores({ ...existing, newTable: 'id, idx' })`
-// with an optional `.upgrade()` callback — Dexie migrates each browser automatically.
+// One IndexedDB database for the whole app; each feature owns a table, accessed only through
+// its own repository. New feature: bump `this.version(n).stores({ ...existing, newTable })`
+// with an optional `.upgrade()` — Dexie migrates each browser automatically.
 
 class QuickRecallDB extends Dexie {
-  // <recordType, primaryKeyType>
   jobs!: Table<JobApplication, string>;
   speakUpQAs!: Table<SpeakUpQA, string>;
   bookmarks!: Table<Bookmark, string>;
@@ -26,14 +21,9 @@ class QuickRecallDB extends Dexie {
 
   constructor() {
     super('quickrecall');
-    // The store string lists the primary key + indexed fields only (not every
-    // column) — Dexie stores the whole object regardless; indexes are for
-    // querying/sorting. `createdAt` is indexed so getAll can sort newest-first.
-    //
-    // Single clean v1: greenfield rebuild, so the legacy v1→v2→v3 chain is collapsed
-    // into one schema. ponytail: no migration path from legacy DBs — fine because the
-    // new app is a fresh origin; if this ever cuts over to the same origin as a shipped
-    // app whose users hold a higher IndexedDB version, restore the version chain.
+    // Store string lists only the primary key + indexed fields; Dexie still stores the whole
+    // object. ponytail: no legacy migration chain — fresh origin, so v1 is the only version;
+    // restore the chain if this ever reuses an origin with a shipped higher IndexedDB version.
     this.version(1).stores({
       jobs: 'id, status, favorite, createdAt',
       speakUpQAs: 'id, sourceId, jobId, createdAt',

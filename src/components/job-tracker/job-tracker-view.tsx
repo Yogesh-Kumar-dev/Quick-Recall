@@ -23,10 +23,7 @@ import useJobs from './use-jobs';
 type StatusFilter = JobStatus | 'all';
 type ViewMode = 'list' | 'board';
 
-// Rank for ordering the listing by interview activity:
-//  - jobs with an upcoming round sort first, soonest date ascending
-//  - then jobs whose rounds are all in the past, most recent first
-//  - then jobs with no rounds, by created date (newest first)
+// order: upcoming rounds first (soonest date) → past rounds (most recent first) → no rounds (newest created first)
 function sortRank(job: JobApplication): [number, number] {
   const times = (job.rounds ?? []).map((r) => new Date(r.at).getTime()).filter((t) => !Number.isNaN(t));
   if (times.length === 0) return [2, -job.createdAt];
@@ -42,8 +39,6 @@ function byInterviewDate(a: JobApplication, b: JobApplication): number {
   return ga !== gb ? ga - gb : va - vb;
 }
 
-// Flatten a job into a single searchable string covering every meaningful field so Fuse
-// can match a query against any data present on the application.
 function searchableText(job: JobApplication): string {
   const parts: (string | undefined)[] = [
     job.companyName,
@@ -100,8 +95,7 @@ function ChipFilter({
 export default function JobTrackerView() {
   const { jobs, loading, addJob, editJob, deleteJob, patchJob } = useJobs();
 
-  // ?seed=1 → reset the jobs table to the sample set. Works on any device. Because it
-  // WIPES current data, confirm first, then strip the param so a refresh can't re-trigger.
+  // ?seed=1 wipes and reloads sample data — confirm first, then strip the param so a refresh can't retrigger
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('seed') !== '1') return;
@@ -185,7 +179,6 @@ export default function JobTrackerView() {
         <div className="flex flex-col gap-6">
           <StatsStrip jobs={jobs} />
 
-          {/* Controls */}
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="relative w-full md:w-80">
               <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -226,7 +219,6 @@ export default function JobTrackerView() {
             </div>
           </div>
 
-          {/* Listing */}
           {filtered.length === 0 ? (
             <div className="py-12 text-center">
               <h2 className="text-lg font-semibold">No matching applications</h2>
@@ -244,7 +236,6 @@ export default function JobTrackerView() {
         </div>
       )}
 
-      {/* Add / Edit drawer */}
       {drawerOpen && (
         <JobFormDrawer
           open={drawerOpen}
@@ -255,7 +246,6 @@ export default function JobTrackerView() {
         />
       )}
 
-      {/* Delete confirmation */}
       <Dialog open={Boolean(pendingDelete)} onOpenChange={(o) => !o && setPendingDelete(null)}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>

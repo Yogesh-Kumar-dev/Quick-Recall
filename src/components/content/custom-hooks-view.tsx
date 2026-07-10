@@ -89,15 +89,11 @@ function HookCard({ hook, open, onToggle }: { hook: HookDoc; open: boolean; onTo
 }
 
 export default function CustomHooksView() {
-  // URL state (nuqs, shallow — no server refetch needed, the full hook list is already client-side)
-  // so filters are shareable and search results can deep-link a hook via ?open=<id>. Safe here
-  // because the route is forced dynamic (see page.tsx), avoiding the CSR-bailout that nuqs would
-  // otherwise cause on a statically-prerendered page — see the custom-hooks-ssr-nuqs memory.
+  // route is forced dynamic (page.tsx) to avoid nuqs's CSR-bailout on a static page
   const [difficulty, setDifficultyState] = useQueryState('diff', { defaultValue: 'all', clearOnDefault: true });
   const [category, setCategoryState] = useQueryState('cat', { defaultValue: 'all', clearOnDefault: true });
   const [openId, setOpenId] = useQueryState('open', parseAsString);
 
-  // Changing any filter collapses the open card so its id can't point at a now-hidden hook.
   const setDifficulty = (val: HookDifficulty | 'all') => {
     void setDifficultyState(val);
     void setOpenId(null);
@@ -126,8 +122,7 @@ export default function CustomHooksView() {
     [difficulty, category]
   );
 
-  // When a hook is deep-linked via ?open=<id> (e.g. from header fuzzy search), scroll it into view
-  // once its card is actually visible (i.e. it survived the active filters).
+  // scroll a deep-linked hook (?open=<id>) into view once it survives the active filters
   useEffect(() => {
     if (!openId) return;
     if (!filtered.some((h) => h.id === openId)) return;

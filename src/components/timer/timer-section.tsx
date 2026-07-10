@@ -11,8 +11,7 @@ import { formatClock } from './config';
 import TimerFormDialog from './timer-form-dialog';
 import { useTimerTick } from './use-timer-tick';
 
-// Header universal timer. Always mounted (layout header), so it drives the tick and
-// survives route navigation.
+// always mounted in the layout header so it drives the tick and survives route navigation
 export default function TimerSection() {
   useTimerTick();
 
@@ -35,8 +34,7 @@ export default function TimerSection() {
 
   const active = status === 'running' || status === 'paused';
 
-  // Detect the natural finish (→ 'completed') and prompt for feedback, capturing the
-  // name before reset clears it.
+  // detect natural finish, capturing the name before reset clears it
   const prevStatus = useRef(status);
   useEffect(() => {
     if (prevStatus.current !== 'completed' && status === 'completed') {
@@ -78,7 +76,6 @@ export default function TimerSection() {
           <X className="size-4" />
         </Button>
 
-        {/* Stop confirmation — offer pausing as the gentler alternative. */}
         <Dialog open={confirmStopOpen} onOpenChange={setConfirmStopOpen}>
           <DialogContent className="sm:max-w-xs">
             <DialogHeader>
@@ -125,8 +122,7 @@ export default function TimerSection() {
   );
 }
 
-// Shown when a timer finishes naturally. A quick moment-of-reflection prompt — not
-// persisted, just acknowledged with an encouraging toast.
+// not persisted — just acknowledged with an encouraging toast
 function FeedbackDialog({ open, name, onRespond }: { open: boolean; name: string; onRespond: (achieved: boolean) => void }) {
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onRespond(false)}>

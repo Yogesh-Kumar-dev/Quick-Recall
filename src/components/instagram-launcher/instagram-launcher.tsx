@@ -5,19 +5,14 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import type { InstagramLink } from '@/data/video-playlists';
 
-// Reusable Instagram launcher icon. Instagram can't be embedded, so this just redirects to external
-// profile/reel URLs in a new tab. Drop it anywhere and pass an array of links. One link → opens
-// directly on click; multiple → a dropdown to pick one. Renders nothing when the array is empty, so
-// pages can pass their (possibly empty) list unconditionally.
+// Instagram can't be embedded, so this just redirects to external profile/reel URLs in a new tab.
 
 interface InstagramLauncherProps {
   links: InstagramLink[];
-  // Tooltip + aria-label.
   label?: string;
 }
 
 function openLink(url: string) {
-  // noopener/noreferrer: the opened tab can't reach back into this window.
   window.open(url, '_blank', 'noopener,noreferrer');
 }
 

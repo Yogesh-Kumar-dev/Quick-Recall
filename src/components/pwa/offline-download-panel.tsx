@@ -14,9 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Progress } from '@/components/ui/progress';
 import type { SectionProgress, UseOfflineDownload } from '@/hooks/useOfflineDownload';
 
-// Modal listing each content section with its own Download control + progress, plus an overall
-// bar and a "Download everything" action. Pure presentation: all state comes from the
-// useOfflineDownload hook passed in by the button.
+// pure presentation: all state comes from the useOfflineDownload hook passed in by the button
 
 interface Props {
   open: boolean;
@@ -33,7 +31,6 @@ function StatusIcon({ status }: { status: SectionProgress['status'] }) {
   return null;
 }
 
-// Short caption shown after a section label to convey its saved state at a glance.
 function statusLabel(s: SectionProgress): string {
   switch (s.status) {
     case 'done':
@@ -53,7 +50,6 @@ function statusLabel(s: SectionProgress): string {
   }
 }
 
-// Per-section action label: nothing actionable while it's working, otherwise Download/Re-download.
 function sectionButtonLabel(s: SectionProgress): string {
   if (s.status === 'done') return 'Re-download';
   if (s.status === 'stale') return 'Update';
@@ -64,7 +60,6 @@ function sectionButtonLabel(s: SectionProgress): string {
 export default function OfflineDownloadPanel({ open, onOpenChange, download }: Props) {
   const { sections, overallProgress, isRunning, isSupported, isStale, isChecking, justCompleted, enqueueSection, enqueueAll } = download;
   const allSaved = !isChecking && sections.length > 0 && sections.every((s) => s.status === 'done');
-  // Celebrate when a run just finished and everything is saved (and not freshly stale again).
   const showUpToDate = justCompleted && allSaved && !isStale && !isRunning;
 
   return (
@@ -97,7 +92,6 @@ export default function OfflineDownloadPanel({ open, onOpenChange, download }: P
               </p>
             )}
 
-            {/* overall */}
             <div>
               <div className="mb-1 flex items-center justify-between">
                 <span className="text-sm font-semibold">Overall</span>
@@ -106,7 +100,6 @@ export default function OfflineDownloadPanel({ open, onOpenChange, download }: P
               <Progress value={overallProgress} aria-label="Overall download progress" />
             </div>
 
-            {/* per-section */}
             <div className="space-y-3">
               {sections.map((s) => {
                 const pct = s.total ? Math.round((s.completed / s.total) * 100) : 0;

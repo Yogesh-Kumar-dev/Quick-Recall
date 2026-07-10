@@ -29,8 +29,7 @@ export default function TimerFormDialog({ open, onOpenChange }: Props) {
   const [cycles, setCycles] = useState(POMODORO_DEFAULTS.cycles);
   const [labelError, setLabelError] = useState(false);
 
-  // A break is a one-off rest, not a cycle of work blocks — pomodoro makes no sense
-  // for it. Force countdown when the purpose is "Break".
+  // a break is a one-off rest, not a cycle of work blocks — force countdown for it
   const isBreak = purpose.trim().toLowerCase() === 'break';
   const effectiveMode = isBreak ? 'countdown' : mode;
 
@@ -55,8 +54,7 @@ export default function TimerFormDialog({ open, onOpenChange }: Props) {
       setLabelError(true);
       return;
     }
-    // Drive the OS permission prompt off the user's explicit "start" gesture.
-    await requestPermission();
+    await requestPermission(); // must fire off a user gesture, not on mount
     if (effectiveMode === 'pomodoro') {
       start({
         mode: 'pomodoro',

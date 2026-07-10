@@ -70,11 +70,8 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
         <p className="mt-1 text-sm text-muted-foreground">{progress}</p>
       </div>
 
-      {/* positioning context: bookmark is a sibling of the flip button (not nested) so we
-          keep a single native button as the click/keyboard flip surface. */}
       <div className="relative h-96">
-        {/* Bookmark overlay stays fixed above the rotating faces; stopPropagation avoids
-            flipping the card. Bookmarking a flashcard enrolls it in Review. */}
+        {/* bookmark is a sibling of the flip button, not nested, so there's one flip surface */}
         <div className="absolute right-2 top-2 z-10">
           <BookmarkButton kind="flashcard" refId={flashcardKey(source, current.id)} stopPropagation />
         </div>
@@ -96,7 +93,6 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
             className="relative h-full w-full transition-transform duration-300 [transform-style:preserve-3d]"
             style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
           >
-            {/* Front side */}
             <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden]">
               <div className="text-center">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">Question</p>
@@ -104,7 +100,6 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
               </div>
             </div>
 
-            {/* Back side */}
             <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]">
               <div className="text-center">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">Answer</p>
@@ -122,7 +117,6 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
         </div>
       </div>
 
-      {/* Navigation controls */}
       <div className="flex items-center justify-between gap-4">
         <Button onClick={handlePrev} variant="outline" size="sm" aria-label="Previous card">
           <ChevronLeft className="h-4 w-4" />

@@ -5,16 +5,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import PlaylistDrawer from './playlist-drawer';
 
-// All-in-one, reusable entry point: drop this icon anywhere and pass an array of YouTube playlist
-// URLs. It owns its own open/close state and renders the button + the bottom sheet (which mounts
-// the adaptive player only while open).
-
 interface PlaylistLauncherProps {
-  // Ordered YouTube playlist URLs to play back-to-back.
   playlists: string[];
-  // Drawer header title.
   title?: string;
-  // Button tooltip + aria-label.
   buttonLabel?: string;
 }
 

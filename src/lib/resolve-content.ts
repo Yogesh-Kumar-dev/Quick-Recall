@@ -1,8 +1,7 @@
 // ==============================|| RESOLVE CONTENT (refId → item) ||============================== //
 
-// Bookmarks/reviews store only a `kind` + namespaced `refId`. This resolves that back to the
-// real content item plus a route-stable URL, so the Saved view can render bookmarks without each
-// feature re-implementing the lookup. Pure (no React) — it reads the same static `src/data` arrays.
+// Bookmarks/reviews store only a `kind` + namespaced `refId`; this resolves that back to the
+// real content item plus a route-stable URL so the Saved view doesn't re-implement the lookup.
 
 import type { BaseProblemEntry, Flashcard, Note } from '@/types/content';
 import type { BookmarkKind } from '@/types/study';
@@ -30,8 +29,7 @@ import { cssNotes } from '@/data/htmlcss/css-notes';
 import { engineeringNotes } from '@/data/engineering/engineering-notes';
 
 // ─── Note lookup (by note.id) ─────────────────────────────────────────────────
-// Note ids are unique within their arrays and, in practice, across the app; we merge then
-// index by id. First-write-wins on the rare collision (deterministic).
+// First-write-wins on an id collision across topics (deterministic).
 const ALL_NOTES: Note[] = [
   ...jsNotes,
   ...tsNotes,
@@ -55,7 +53,6 @@ ALL_NOTES.forEach((n) => {
 });
 
 // ─── Problem lookup (by slug) + its route ─────────────────────────────────────
-// JS and React problems live at different base paths.
 const problemBySlug = new Map<string, { problem: BaseProblemEntry; url: string }>();
 jsProblems.forEach((p) => {
   problemBySlug.set(p.slug, { problem: p, url: `/js/machine-coding/${p.slug}` });
@@ -71,8 +68,7 @@ type ResolvedFlashcard = { kind: 'flashcard'; refId: string; card: Flashcard };
 type ResolvedProblem = { kind: 'problem'; refId: string; problem: BaseProblemEntry; url: string };
 export type ResolvedContent = ResolvedNote | ResolvedFlashcard | ResolvedProblem;
 
-// Returns the real content for a bookmark/review, or null if the refId no longer resolves
-// (e.g. content removed since it was saved, or a not-yet-supported kind). Callers skip nulls.
+// Null if the refId no longer resolves (content removed since saved); callers skip nulls.
 export function resolveContent(kind: BookmarkKind, refId: string): ResolvedContent | null {
   if (kind === 'note') {
     const note = noteById.get(refId);

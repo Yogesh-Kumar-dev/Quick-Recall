@@ -137,7 +137,6 @@ const CORE_STACK: StackTech[] = [
 export default function AboutView() {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8">
-      {/* The story */}
       <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between md:gap-10">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-wide text-primary">Why I built this</p>
@@ -168,7 +167,6 @@ export default function AboutView() {
 
       <hr className="border-border" />
 
-      {/* Header + stack icons */}
       <div>
         <h2 className="font-heading text-2xl font-bold">Under the Hood</h2>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -196,7 +194,6 @@ export default function AboutView() {
         </div>
       </div>
 
-      {/* Bento grid */}
       <div className="grid grid-cols-1 gap-4 [grid-auto-flow:dense] sm:grid-cols-2 md:grid-cols-3">
         {FEATURES.map((f) => (
           <div
@@ -222,7 +219,6 @@ export default function AboutView() {
 
       <hr className="border-border" />
 
-      {/* Get in touch */}
       <div className="max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-wide text-primary">Get in touch</p>
         <h2 className="mt-1 font-heading text-2xl font-bold">Want a problem added?</h2>

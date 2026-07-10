@@ -10,10 +10,8 @@ export type JobSource = 'linkedin' | 'naukri' | 'indeed' | 'referral' | 'company
 
 export interface InterviewRound {
   id: string;
-  // ISO date-time string
-  at: string;
-  // optional round name, e.g. "Phone screen", "Technical", "HR"
-  name?: string;
+  at: string; // ISO date-time string
+  name?: string; // e.g. "Phone screen", "Technical", "HR"
   outcome: InterviewOutcome;
 }
 
@@ -44,35 +42,22 @@ export interface JobApplication {
   status: JobStatus;
   jobDescription?: string;
 
-  // Compensation
   salaryMin?: number;
   salaryMax?: number;
   salaryCurrency?: string;
 
-  // Location & mode
   location?: string;
   workMode?: WorkMode;
 
-  // Where the lead came from
   source?: JobSource;
   sourceUrl?: string;
 
-  // When the user actually applied (distinct from createdAt, the row's creation)
-  appliedAt?: string; // ISO date string
+  appliedAt?: string; // ISO date string; distinct from createdAt (the row's creation)
 
-  // Priority flag
   favorite?: boolean;
-
-  // Multiple interview rounds, each with its own date/time, name and outcome.
   rounds: InterviewRound[];
-
-  // Multiple contacts (recruiter, hiring manager, referrer…)
   contacts: JobContact[];
-
-  // Documents sent for this application (links only — no file upload)
-  documents: JobDocument[];
-
-  // Timestamped activity log
+  documents: JobDocument[]; // links only, no file upload
   notes: JobNote[];
 
   createdAt: number;

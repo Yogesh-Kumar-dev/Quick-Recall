@@ -8,14 +8,8 @@ import type { SpeakUpQAInput } from '@/types/speak-up';
 
 // ==============================|| SPEAK UP - useSpeakUpQAs HOOK ||============================== //
 
-// Bridges UI ↔ repository. The list is a LIVE query: Dexie re-runs it and the component
-// re-renders automatically whenever the speakUpQAs table changes — including edits made in
-// another browser tab. So there's no local state to keep in sync and no optimistic
-// patching; mutations just write, and the live query reflects them. Components never call
-// the repository directly — they go through here.
-
 export default function useSpeakUpQAs() {
-  // `undefined` until the first query resolves → that's our loading signal.
+  // undefined until the first query resolves — doubles as the loading signal
   const qas = useLiveQuery(() => qaRepository.getAll());
   const loading = qas === undefined;
 

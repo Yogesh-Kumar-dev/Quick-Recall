@@ -19,10 +19,7 @@ import useSpeakUpQAs from './use-speak-up-qas';
 const ALL = 'all';
 
 interface QAPracticeBankProps {
-  // The shared current-question index (driven by SpeechPractice's "Next" button and by
-  // clicking a card here). The matching predefined card is highlighted + scrolled to.
   activeIndex: number;
-  // Set the rehearsal question to the predefined question at this index.
   onSelectQuestion: (index: number) => void;
 }
 
@@ -33,9 +30,6 @@ interface DrawerState {
   questionLocked?: boolean;
 }
 
-// Answer block. Long answers collapse behind a Show more/less toggle; short ones render
-// plainly so we don't show a pointless toggle. Default-open for the active row. Clicks
-// inside are stopped so toggling doesn't also select the row.
 function Answer({ answer, isActive }: { answer: string; isActive: boolean }) {
   const canToggle = answer.length > 120 || answer.includes('\n');
   const [open, setOpen] = useState(isActive);
@@ -47,7 +41,6 @@ function Answer({ answer, isActive }: { answer: string; isActive: boolean }) {
   return (
     <div>
       <p className={cn('text-xs whitespace-pre-wrap text-muted-foreground', !open && 'line-clamp-2')}>{answer}</p>
-      {/* stopPropagation so toggling doesn't also select the row */}
       <button
         type="button"
         onClick={(e) => {
@@ -64,8 +57,7 @@ function Answer({ answer, isActive }: { answer: string; isActive: boolean }) {
 
 export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPracticeBankProps) {
   const { qas, addQA, editQA, deleteQA } = useSpeakUpQAs();
-  // `undefined` until the first query resolves; memoize the fallback so it's a stable
-  // reference (avoids re-running the jobById memo / re-rendering the drawer each pass).
+  // memoized fallback keeps a stable reference so the jobById memo below doesn't re-run every render
   const jobsQuery = useLiveQuery(() => jobsRepository.getAll());
   const jobs = useMemo(() => jobsQuery ?? [], [jobsQuery]);
 
@@ -73,7 +65,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
   const [pendingDelete, setPendingDelete] = useState<SpeakUpQA | null>(null);
   const [filter, setFilter] = useState<string>(ALL);
 
-  // Fast lookups: saved answer for a predefined question (by sourceId) and a job by id.
   const answerBySource = useMemo(() => {
     const map = new Map<string, SpeakUpQA>();
     qas.forEach((qa) => {
@@ -90,11 +81,8 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
     return map;
   }, [jobs]);
 
-  // User-added questions are records with no sourceId — they get their own rows.
   const userQAs = useMemo(() => qas.filter((qa) => !qa.sourceId), [qas]);
 
-  // A predefined row's tag is its category; a user row's tag is its own `tag`. The
-  // filter chips are the distinct union of both, in encounter order.
   const allTags = useMemo(() => {
     const seen = new Set<string>();
     const list: string[] = [];
@@ -114,14 +102,10 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
     return list;
   }, [userQAs]);
 
-  // If the selected filter chip disappears (e.g. last question with that tag deleted),
-  // fall back to "All".
   useEffect(() => {
     if (filter !== ALL && !allTags.includes(filter)) setFilter(ALL);
   }, [filter, allTags]);
 
-  // Predefined questions kept under the current filter (carry their original index so
-  // selection still maps to the shared questionIndex).
   const visiblePredefined = useMemo(
     () =>
       predefinedQuestions.map((predef, index) => ({ predef, index })).filter(({ predef }) => filter === ALL || predef.category === filter),
@@ -129,8 +113,7 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
   );
   const visibleUserQAs = useMemo(() => userQAs.filter((qa) => filter === ALL || qa.tag === filter), [userQAs, filter]);
 
-  // Reset-to-first-visible: when the active question is filtered out, select the first
-  // still-visible predefined question so the player and list stay in sync.
+  // when the active question is filtered out, fall back to the first still-visible one
   useEffect(() => {
     if (filter === ALL) return;
     const activeVisible = visiblePredefined.some(({ index }) => index === activeIndex);
@@ -139,7 +122,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
     }
   }, [filter, visiblePredefined, activeIndex, onSelectQuestion]);
 
-  // Highlighted predefined row scrolls into view when the shared index changes.
   const activeRowRef = useRef<HTMLDivElement | null>(null);
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll the active row into view on index change
   useEffect(() => {
@@ -157,7 +139,7 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
   const jobBadge = (jobId?: string) => {
     if (!jobId) return null;
     const job = jobById.get(jobId);
-    if (!job) return null; // job was deleted — hide the badge gracefully
+    if (!job) return null; // job deleted — hide the badge instead of erroring
     return (
       <Badge variant="outline" className="max-w-full gap-1">
         <Briefcase className="size-3 shrink-0" />
@@ -177,7 +159,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
         <p className="text-sm text-muted-foreground">Tap a question to rehearse it, or prepare your own answer.</p>
       </div>
 
-      {/* Filter chips — YouTube-style category row */}
       {allTags.length > 0 && (
         <div className="mb-3 flex shrink-0 gap-2 overflow-x-auto py-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <FilterChip label="All" active={filter === ALL} onClick={() => setFilter(ALL)} />
@@ -187,7 +168,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
         </div>
       )}
 
-      {/* Add tile — pinned outside the scroll area so it's always visible */}
       <button
         type="button"
         onClick={() => setDrawer({ mode: 'add' })}
@@ -197,9 +177,7 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
         <span className="text-sm font-bold">Add your own question</span>
       </button>
 
-      {/* Fill the remaining height and scroll internally */}
       <div className="flex grow flex-col gap-3 overflow-y-auto pr-1">
-        {/* Predefined question rows */}
         {visiblePredefined.map(({ predef, index }) => {
           const saved = answerBySource.get(predef.id);
           const isActive = index === activeIndex;
@@ -239,7 +217,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
 
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">{saved && jobBadge(saved.jobId)}</div>
-                {/* Stop propagation so action buttons don't also select the question. */}
                 {/* biome-ignore lint/a11y/noStaticElementInteractions: propagation guard for row-select */}
                 <div className="flex shrink-0 gap-0.5" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
                   {saved ? (
@@ -285,7 +262,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
           );
         })}
 
-        {/* User-added question rows */}
         {visibleUserQAs.map((qa) => (
           <div key={qa.id} className={rowClass}>
             <Badge variant="outline" className="self-start text-primary">
@@ -314,7 +290,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
         ))}
       </div>
 
-      {/* Add / Edit drawer */}
       {drawer && (
         <QAFormDrawer
           open={Boolean(drawer)}
@@ -329,7 +304,6 @@ export default function QAPracticeBank({ activeIndex, onSelectQuestion }: QAPrac
         />
       )}
 
-      {/* Delete confirmation */}
       <Dialog open={Boolean(pendingDelete)} onOpenChange={(o) => !o && setPendingDelete(null)}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>

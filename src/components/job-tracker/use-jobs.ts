@@ -8,14 +8,8 @@ import type { JobApplication, JobApplicationInput } from '@/types/job-tracker';
 
 // ==============================|| JOB TRACKER - useJobs HOOK ||============================== //
 
-// Bridges UI ↔ repository. The list is a LIVE query: Dexie re-runs it and the component
-// re-renders automatically whenever the jobs table changes — including edits made in
-// another browser tab. So there's no local state to keep in sync and no optimistic
-// patching; mutations just write, and the live query reflects them. Components never call
-// the repository directly — they go through here.
-
 export default function useJobs() {
-  // `undefined` until the first query resolves → that's our loading signal.
+  // undefined until the first query resolves — doubles as the loading signal
   const jobs = useLiveQuery(() => jobsRepository.getAll());
   const loading = jobs === undefined;
 
@@ -46,12 +40,9 @@ export default function useJobs() {
     }
   }, []);
 
-  // Lightweight partial update used by quick inline actions (status menu, favorite star)
-  // where the full edit form isn't involved.
+  // used by quick inline actions (status menu, favorite star) that skip the full edit form
   const patchJob = useCallback(async (job: JobApplication, partial: Partial<JobApplicationInput>) => {
     try {
-      // Rebuild the input from the job's own fields (excluding server-managed ones) so the
-      // payload matches JobApplicationInput, then apply the patch.
       const base: JobApplicationInput = {
         companyName: job.companyName,
         jobTitle: job.jobTitle,

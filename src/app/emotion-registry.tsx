@@ -4,11 +4,8 @@ import { cache } from '@leafygreen-ui/emotion';
 import { useServerInsertedHTML } from 'next/navigation';
 import { useRef, type ReactNode } from 'react';
 
-// LeafyGreen ships its own @emotion/css instance (key "leafygreen-ui"). On the server that instance
-// only fills cache.inserted in memory — the <style> never reaches the HTML, so LeafyGreen markup
-// ships classNames with no styles (unstyled flash until hydration). This registry flushes the
-// inserted rules into the streamed HTML via useServerInsertedHTML. Needs a single emotion instance
-// app-wide — enforced by the React version override in pnpm-workspace.yaml.
+// LeafyGreen's own @emotion/css instance only fills cache.inserted in memory on the server — the
+// <style> never reaches the HTML without this flush, causing an unstyled flash until hydration.
 export default function EmotionRegistry({ children }: { children: ReactNode }) {
   const flushed = useRef<Set<string>>(null);
   if (flushed.current === null) flushed.current = new Set();

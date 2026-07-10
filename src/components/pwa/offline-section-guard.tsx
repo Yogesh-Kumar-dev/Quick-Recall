@@ -11,14 +11,9 @@ import useOnlineStatus from '@/hooks/useOnlineStatus';
 import { countCached, isCached, refreshCachedPathnames } from '@/utils/offline-cache';
 import OfflineDownloadPanel from './offline-download-panel';
 
-// Wraps app content. When the device is offline AND the current route isn't cached, it renders a
-// friendly "this section isn't saved offline yet" panel (with links to the sections that ARE
-// downloaded + a Download action) instead of the broken/blank page a failed offline navigation
-// would otherwise produce. When online, or when the route is cached, it renders the children
-// untouched.
-//
-// This catches the common client-side link-navigation case, which the SW's /~offline document
-// fallback does not (that only fires for hard document navigations).
+// Renders a "not saved offline" fallback instead of a broken page when offline + uncached route.
+// Covers client-side link navigation, which the SW's /~offline document fallback does not (that
+// only fires for hard document navigations).
 
 interface AvailableSection {
   id: string;
@@ -37,8 +32,6 @@ export default function OfflineSectionGuard({ children }: { children: React.Reac
   const [available, setAvailable] = useState<AvailableSection[]>([]);
   const [panelOpen, setPanelOpen] = useState(false);
 
-  // Probe whether the current route is cached. Only meaningful offline; while online we always
-  // render children, so skip the work.
   useEffect(() => {
     if (online) {
       setRouteCached(null);
@@ -52,14 +45,11 @@ export default function OfflineSectionGuard({ children }: { children: React.Reac
       if (cancelled) return;
       setRouteCached(cached);
 
-      // Only compute the "available sections" list when we're actually going to show the
-      // fallback (offline + uncached route).
       if (!cached) {
         const results = await Promise.all(
           OFFLINE_SECTIONS.map(async (s) => {
             const count = await countCached(s.urls);
             if (count === 0) return null;
-            // pick the first cached URL as the link target
             let href: string | null = null;
             for (const url of s.urls) {
               if (await isCached(url)) {
@@ -79,12 +69,10 @@ export default function OfflineSectionGuard({ children }: { children: React.Reac
     };
   }, [online, pathname]);
 
-  // Render children when online, or while still probing, or when the route is cached.
   if (online || routeCached === null || routeCached) {
     return <>{children}</>;
   }
 
-  // Offline + uncached route → friendly fallback.
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-12 text-center">
       <IconCloudOff size={48} strokeWidth={1.5} className="text-[color:var(--chart-4)]" />

@@ -17,7 +17,6 @@ interface Props {
   problems: BaseProblemEntry[];
   basePath: string; // e.g. '/react/machine-coding'
   params: ProblemSearchParams;
-  // Optional slot next to the title (e.g. a PlaylistLauncher for companion videos).
   headerAction?: ReactNode;
 }
 
@@ -26,8 +25,6 @@ export default function ProblemList({ title, problems, basePath, params, headerA
   const cat = params.cat ?? 'all';
   const diff = params.diff ?? 'all';
 
-  // Fuzzy title/tag match (fuse.js, ranked) when a query is present, otherwise the full set in
-  // natural order — then the exact category/difficulty filters narrow it further.
   const textMatched = q.trim()
     ? new Fuse(problems, { keys: ['title', 'tags'], threshold: 0.4, ignoreLocation: true, minMatchCharLength: 2 })
         .search(q)
@@ -35,12 +32,9 @@ export default function ProblemList({ title, problems, basePath, params, headerA
     : problems;
   const shown = textMatched.filter((p) => (cat === 'all' || p.category === cat) && (diff === 'all' || p.difficulty === diff));
 
-  // Chip labels always list every category (even ones the current filters zero out) so users can
-  // still navigate back to them — only the counts next to each chip are cross-filtered.
   const categories = [...new Set(problems.map((p) => p.category))].sort();
 
-  // Cross-filtered (faceted) counts: each facet's numbers reflect the OTHER active facet + the
-  // text query, but ignore its own current selection — see notes-view.tsx for the same pattern.
+  // faceted counts — see notes-view.tsx for the same pattern
   const byCategoryScope = textMatched.filter((p) => diff === 'all' || p.difficulty === diff);
   const byDifficultyScope = textMatched.filter((p) => cat === 'all' || p.category === cat);
 
@@ -69,7 +63,6 @@ export default function ProblemList({ title, problems, basePath, params, headerA
         </div>
       </div>
 
-      {/* Grid on the left, sticky filter rail on the right; on mobile the rail becomes a slide-over. */}
       <div className="flex flex-col gap-6 lg:flex-row-reverse">
         <FilterPanel
           categories={categories}

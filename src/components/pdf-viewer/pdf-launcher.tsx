@@ -6,16 +6,11 @@ import { Button } from '@/components/ui/button';
 import type { PdfGuide } from '@/data/pdf-guides';
 import PdfDrawer from './pdf-drawer';
 
-// All-in-one, reusable entry point: drop this icon anywhere and pass an array of PDF guides. It owns
-// its open/close state and renders the button + bottom sheet (which mounts the EmbedPDF viewer only
-// while open). PDFs download once on first open and are served from cache thereafter (offline-friendly).
+// PDFs download once on first open and are served from cache thereafter (offline-friendly).
 
 interface PdfLauncherProps {
-  // PDF guides to show as tabs (each downloaded on demand when first opened).
   guides: PdfGuide[];
-  // Drawer header title.
   title?: string;
-  // Button tooltip + aria-label.
   buttonLabel?: string;
 }
 

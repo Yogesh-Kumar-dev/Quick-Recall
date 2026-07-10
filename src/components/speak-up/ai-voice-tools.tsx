@@ -27,9 +27,6 @@ const PRACTICE_TOOLS = [
 
 // ==============================|| AI VOICE TOOLS ||============================== //
 
-// Full-width row of external AI voice partners, shown below the rehearsal tool
-// (YouTube-style — like a "related" strip under the player).
-
 export default function AiVoiceTools() {
   return (
     <div>

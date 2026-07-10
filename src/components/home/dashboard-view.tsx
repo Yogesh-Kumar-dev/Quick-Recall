@@ -50,7 +50,6 @@ const totalDiff: Diff = {
   hard: jsDiff.hard + reactDiff.hard
 };
 
-// MongoDB LeafyGreen palette: blue.base, purple.base, green.dark1, yellow.base, red.base
 const OVERVIEW = [
   { label: 'Total Notes', value: totalNotes, color: '#016bf8' },
   { label: 'Machine Coding', value: totalProblems, color: '#b45af2' },
@@ -74,7 +73,6 @@ export default function DashboardView() {
         <InstagramLauncher links={DASHBOARD_INSTAGRAM} />
       </div>
 
-      {/* Overview strip */}
       <div className="mb-6 flex flex-wrap gap-3">
         {OVERVIEW.map((o) => (
           <div
@@ -90,8 +88,8 @@ export default function DashboardView() {
         ))}
       </div>
 
-      {/* Topic cards — HTML&CSS top-left, React top-right, JS&TS centered spanning both rows, Redux
-          bottom-left, Next.js bottom-right (md+); a plain stack below md. */}
+      {/* HTML&CSS top-left, React top-right, JS&TS spans both rows centered, Redux bottom-left,
+          Next.js bottom-right (md+); plain stack below md */}
       <div className="grid items-stretch gap-4 sm:grid-cols-2 md:grid-cols-3">
         <TopicStatCard
           className="md:col-start-1 md:row-start-1"

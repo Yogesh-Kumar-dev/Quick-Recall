@@ -1,11 +1,9 @@
 // ==============================|| STUDY — BOOKMARKS + SRS TYPES ||============================== //
 
-// Shared by the Bookmarks ("mark for review") and Spaced-Repetition Review features.
-// Both are Dexie-backed (see src/db/index.ts version 3) and keyed by a stable,
-// namespaced `refId` so the same content item resolves the same way everywhere.
+// Shared by Bookmarks and Spaced-Repetition Review; both are Dexie-backed and keyed by a
+// stable, namespaced `refId` so the same content item resolves the same way everywhere.
 
-// What kind of content a bookmark points at. SRS in v1 covers flashcards only,
-// but anything below can be bookmarked.
+// SRS in v1 covers flashcards only, but anything below can be bookmarked.
 export type BookmarkKind = 'note' | 'flashcard' | 'problem';
 
 export interface Bookmark {
@@ -19,8 +17,7 @@ export interface Bookmark {
 export type ReviewQuality = 'again' | 'hard' | 'good' | 'easy';
 
 // One enrolled flashcard's scheduling state. "Due" when `dueAt <= now`. Intervals are tracked
-// in MINUTES (not days) so the short, same-session learning steps used for interview-timeframe
-// prep (1m, 10m, …) are representable alongside multi-day gaps.
+// in MINUTES (not days) so the same-session learning steps (1m, 10m, …) are representable.
 export interface ReviewState {
   id: string; // `flashcard:${refId}` — same composite scheme as Bookmark
   refId: string; // namespaced flashcard key `${source}:${cardId}`

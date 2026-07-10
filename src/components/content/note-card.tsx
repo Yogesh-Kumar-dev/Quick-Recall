@@ -9,15 +9,14 @@ import type { NoteLink } from '@/data/note-sources';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
 import CodeBlock from './code-block';
 
-// difficulty → badge accent (MongoDB palette tokens). These chips were MUI in the original, so they
-// stay Tailwind — only the ExpandableCard / Callout / Code stay LeafyGreen.
+// these chips stay Tailwind; only ExpandableCard / Callout / Code stay LeafyGreen
 const DIFFICULTY_BADGE: Record<Note['difficulty'], string> = {
   basic: 'border-primary/40 text-primary',
   intermediate: 'border-[color:var(--chart-4)]/40 text-[color:var(--chart-4)]',
   advanced: 'border-destructive/40 text-destructive'
 };
 
-// Difficulty accent on the card's left edge (! wins over LeafyGreen's own emotion border).
+// `!` wins over LeafyGreen's own emotion border
 const DIFFICULTY_BORDER: Record<Note['difficulty'], string> = {
   basic: 'border-l-4! border-l-primary!',
   intermediate: 'border-l-4! border-l-[color:var(--chart-4)]!',
@@ -28,14 +27,11 @@ function Badge({ children, className = '' }: { children: React.ReactNode; classN
   return <span className={`rounded-full border px-2 py-0.5 text-xs ${className}`}>{children}</span>;
 }
 
-// `prereqs` are resolved server-side (note-sources.ts) so the client bundle never imports the
-// full notes arrays — the card only receives the ready-made {id, title, url} chips.
 export default function NoteCard({ note, prereqs }: { note: Note; prereqs?: NoteLink[] }) {
   const showDeepDive = note.difficulty !== 'basic';
 
-  // Each card owns its slice of the shared `open` URL param — nuqs keeps every instance in sync,
-  // so clicking one card's header updates the URL and every other card observing the same key
-  // re-renders closed. This makes a single note deep-linkable/shareable via ?open=<note.id>.
+  // shared `open` URL param via nuqs — opening one card closes any other, and makes a note
+  // deep-linkable via ?open=<note.id>
   const [openId, setOpenId] = useQueryState('open', parseAsString);
   const isOpen = openId === note.id;
   const handleClick = () => void setOpenId(isOpen ? null : note.id);

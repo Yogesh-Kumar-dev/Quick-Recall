@@ -11,15 +11,12 @@ import { resolveContent, type ResolvedContent } from '@/lib/resolve-content';
 
 // ==============================|| SAVED (BOOKMARKS) VIEW ||============================== //
 
-// Lists everything the user has starred, grouped by kind, each linking back to its source.
-// Content is resolved from the namespaced refId via `resolveContent`; refIds that no longer
-// resolve (content removed since saving, or a not-yet-supported kind) are skipped silently.
+// refIds that no longer resolve (content removed since saving) are skipped silently.
 
 export default function BookmarksPage() {
   const bookmarks = useLiveQuery(() => bookmarksRepository.list());
   const loading = bookmarks === undefined;
 
-  // Resolve each bookmark (newest-first order preserved from the repository) and bucket by kind.
   const { notes, flashcards, problems } = useMemo(() => {
     const notesAcc: Extract<ResolvedContent, { kind: 'note' }>[] = [];
     const flashcardsAcc: Extract<ResolvedContent, { kind: 'flashcard' }>[] = [];

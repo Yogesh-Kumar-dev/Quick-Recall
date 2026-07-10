@@ -4,11 +4,9 @@ import { useEffect } from 'react';
 import { notify } from '@/notifications/manager';
 import { useTimerStore } from '@/stores/timer';
 
-// Mounted once (in TimerSection). Drives the per-second countdown from wall-clock
-// elapsed time (drift-corrected — background tabs throttle setInterval) and fires
-// toasts on phase transitions / completion. Reads fresh state via getState() inside
-// the interval, so one interval runs for the whole 'running' span — pomodoro phase
-// changes keep status 'running' and are picked up on the next tick without re-arming.
+// Drives the countdown from wall-clock elapsed time (drift-corrected — background tabs throttle
+// setInterval). Reads fresh state via getState() inside the interval so one interval runs for the
+// whole 'running' span — pomodoro phase changes are picked up on the next tick without re-arming.
 export function useTimerTick() {
   const status = useTimerStore((s) => s.status);
 
@@ -25,7 +23,6 @@ export function useTimerTick() {
         return;
       }
 
-      // Phase finished. Prefer the label, then the (free-text) purpose, then a fallback.
       const name = s.label || s.purpose || 'Timer';
 
       if (s.mode === 'pomodoro') {

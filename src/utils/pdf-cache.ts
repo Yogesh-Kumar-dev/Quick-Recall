@@ -1,36 +1,26 @@
 // ==============================|| PDF CACHE (CacheFirst, forever) ||============================== //
 //
-// Client-side cache for the PDF guides served from Vercel Blob (see src/data/pdf-guides.ts). A guide
-// is fetched from Blob storage **exactly once per device, ever**, stored in a dedicated `pdf-cache`
-// Cache Storage bucket, and read from cache on every later open — including offline (the Cache API is
-// read directly here; no service worker involvement). This is the egress protection: normal use = one
-// download per device per PDF. There is deliberately NO "clear cache" button — it would be the only
-// thing that hands a user a repeatable re-download trigger.
-//
-// EmbedPDF opens a tab from in-memory bytes (`openDocumentBuffer({ buffer })`), so we hand back an
-// ArrayBuffer rather than a URL — keeping the fetch/caching entirely under our control.
+// Client-side cache for PDF guides from Vercel Blob (see src/data/pdf-guides.ts). Fetched exactly
+// once per device, ever, then read from the `pdf-cache` Cache Storage bucket — this is the egress
+// protection, so there is deliberately NO "clear cache" button (it'd be a repeatable re-download
+// trigger). EmbedPDF opens from in-memory bytes (`openDocumentBuffer`), hence ArrayBuffer not URL.
 
 const PDF_CACHE = 'pdf-cache';
 
-// Dedupe concurrent requests for the same URL (e.g. double-click) so we don't fetch twice.
+// Dedupe concurrent requests for the same URL so we don't fetch twice.
 const inFlight = new Map<string, Promise<ArrayBuffer>>();
 
 function cachesAvailable(): boolean {
   return typeof caches !== 'undefined';
 }
 
-/**
- * Return the bytes for `url`, fetching + caching on first request and reading from `pdf-cache`
- * thereafter. Throws if the network fetch fails on a cache miss (caller shows a retry / open-in-new-tab
- * fallback). Reading the body requires CORS on the blob — Vercel public blobs send permissive CORS.
- */
+/** Throws on a cache-miss fetch failure; caller shows a retry/open-in-new-tab fallback. */
 export async function ensurePdfBuffer(url: string): Promise<ArrayBuffer> {
   const pending = inFlight.get(url);
   if (pending) return pending;
 
   const task = (async () => {
     if (!cachesAvailable()) {
-      // No Cache Storage (very old browser / non-secure context) — fetch without persisting.
       const res = await fetch(url, { mode: 'cors' });
       if (!res.ok) throw new Error(`PDF fetch failed: ${res.status}`);
       return res.arrayBuffer();
@@ -42,7 +32,7 @@ export async function ensurePdfBuffer(url: string): Promise<ArrayBuffer> {
 
     const res = await fetch(url, { mode: 'cors' });
     if (!res.ok) throw new Error(`PDF fetch failed: ${res.status}`);
-    // Persist a clone, then read the original into bytes (a Response body can only be read once).
+    // Persist a clone; a Response body can only be read once.
     await cache.put(url, res.clone());
     return res.arrayBuffer();
   })();
@@ -55,10 +45,7 @@ export async function ensurePdfBuffer(url: string): Promise<ArrayBuffer> {
   }
 }
 
-/**
- * Drop cached PDFs that are no longer referenced by the current guide list — bounds device storage
- * without any user-facing clear button. Call with every URL still in use (across all pages' arrays).
- */
+/** Drops cached PDFs no longer referenced, bounding device storage without a clear button. */
 export async function prunePdfCache(currentUrls: string[]): Promise<void> {
   if (!cachesAvailable()) return;
   try {
@@ -71,10 +58,7 @@ export async function prunePdfCache(currentUrls: string[]): Promise<void> {
   }
 }
 
-/**
- * Ask the browser to mark this origin's storage as persistent so the cached PDFs aren't evicted
- * under storage pressure → "cached forever until uninstalled". Best-effort and idempotent.
- */
+/** Marks storage persistent so cached PDFs survive storage pressure. Best-effort and idempotent. */
 export async function requestPersistentStorage(): Promise<void> {
   try {
     if (typeof navigator !== 'undefined' && navigator.storage?.persist && !(await navigator.storage.persisted())) {

@@ -96,7 +96,7 @@ const schema = z
     if (data.salaryMin && data.salaryMax && Number(data.salaryMax) < Number(data.salaryMin)) {
       ctx.addIssue({ code: 'custom', path: ['salaryMax'], message: 'Max must be ≥ min' });
     }
-    // An interview round can't be scheduled before the day the application was sent.
+    // a round can't be scheduled before the day the application was sent
     if (data.appliedAt) {
       const appliedDayStart = new Date(data.appliedAt);
       appliedDayStart.setHours(0, 0, 0, 0);
@@ -107,7 +107,6 @@ const schema = z
         }
       });
     }
-    // Each round must be strictly later than the round before it.
     for (let i = 1; i < data.rounds.length; i++) {
       const prev = new Date(data.rounds[i - 1].at).getTime();
       const curr = new Date(data.rounds[i].at).getTime();
@@ -115,9 +114,8 @@ const schema = z
         ctx.addIssue({ code: 'custom', path: ['rounds', i, 'at'], message: 'Must be after the previous round' });
       }
     }
-    // Every round except the last must have been passed to justify the round after it:
-    //  - a failed round ends the process, so it can't be followed by another round
-    //  - a pending round's outcome is unknown, so a later round can't exist yet
+    // every round but the last must be 'passed': a failed round ends the process, a
+    // pending round's outcome is unknown, so neither can be followed by another round
     const chronological = data.rounds
       .map((r, index) => ({ index, time: new Date(r.at).getTime(), outcome: r.outcome }))
       .filter((r) => !Number.isNaN(r.time))
@@ -382,7 +380,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
 
         <form onSubmit={submit} noValidate className="flex min-h-0 flex-1 flex-col">
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-5">
-            {/* Basics */}
             <div className="flex items-start gap-2">
               <Field label="Company name" htmlFor="companyName" error={errors.companyName?.message} className="flex-1">
                 <Input id="companyName" {...register('companyName')} aria-invalid={Boolean(errors.companyName)} />
@@ -447,7 +444,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
               </Field>
             </div>
 
-            {/* Compensation & location */}
             <SectionDivider>Compensation &amp; location</SectionDivider>
             <div className="flex items-start gap-4">
               <Field label="Salary min" htmlFor="salaryMin" error={errors.salaryMin?.message} className="flex-1">
@@ -487,7 +483,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
               </Field>
             </div>
 
-            {/* Source */}
             <div className="flex items-start gap-4">
               <Field label="Source" className="max-w-[180px] flex-1">
                 <Controller
@@ -524,7 +519,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
               <Textarea id="jobDescription" rows={3} {...register('jobDescription')} />
             </Field>
 
-            {/* Interview rounds */}
             <SectionDivider>Interview rounds{status === 'interviewing' ? '' : ' (optional)'}</SectionDivider>
             {rounds.fields.length === 0 && (
               <p className={cn('text-sm', roundsError ? 'text-destructive' : 'text-muted-foreground')}>
@@ -604,7 +598,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
               </Button>
             )}
 
-            {/* Contacts */}
             <SectionDivider>Contacts (optional)</SectionDivider>
             {contacts.fields.map((field, index) => (
               <div key={field.id} className="flex flex-col gap-3 rounded-lg border p-3">
@@ -649,7 +642,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
               <Plus className="size-4" /> Add contact
             </Button>
 
-            {/* Documents */}
             <SectionDivider>Documents (optional)</SectionDivider>
             {documents.fields.map((field, index) => (
               <div key={field.id} className="flex items-start gap-2">
@@ -686,7 +678,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
               <Plus className="size-4" /> Add document
             </Button>
 
-            {/* Notes / activity log */}
             <SectionDivider>Notes</SectionDivider>
             <Field label="Add a note" htmlFor="newNote">
               <Textarea id="newNote" rows={2} placeholder="Add to the activity log…" {...register('newNote')} />
@@ -703,7 +694,6 @@ export default function JobFormDrawer({ open, mode, initialValues, onClose, onSu
             )}
           </div>
 
-          {/* Footer */}
           <div className="flex justify-end gap-3 border-t p-5">
             <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting}>
               Cancel

@@ -9,8 +9,7 @@ import { Button } from '@/components/ui/button';
 import type { QuickRecallItem, QuickRecallSection } from '@/types/content';
 import CodeBlock from './code-block';
 
-// Below this many sections, a plain list is simpler. Above it, virtualize so hundreds of
-// ExpandableCard instances don't all mount at once.
+// above this count, virtualize so hundreds of ExpandableCard instances don't all mount at once
 const VIRTUALIZE_THRESHOLD = 50;
 
 function QRItem({ concept, bullets, codeSnippet, warning }: QuickRecallItem) {
@@ -41,7 +40,6 @@ export default function QuickRecallView({
   title: string;
   intro?: string;
   sections: QuickRecallSection[];
-  // Optional slot next to the expand/collapse buttons (e.g. a PdfLauncher for companion PDF guides).
   headerAction?: ReactNode;
 }) {
   const [open, setOpen] = useState<Record<string, boolean>>(() => Object.fromEntries(sections.map((s) => [s.title, true])));
@@ -68,11 +66,9 @@ export default function QuickRecallView({
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="font-heading text-2xl font-bold">{title}</h1>
         <div className="flex items-center gap-2">
-          {/* Keyed wrapper: headerAction is created in the (server) page.tsx and crosses into this
-              Client Component as a prop — rendered bare alongside the Buttons below (elements this
-              component creates itself), that RSC-boundary crossing spuriously trips React's dev-only
-              "missing key" warning even though there's no real list here. A stable key on a Fragment
-              wrapper silences it. */}
+          {/* headerAction crosses the RSC boundary as a prop from the server page; that spuriously
+              trips React's dev-only "missing key" warning alongside the Buttons below even though
+              there's no real list here — a stable key on this Fragment silences it. */}
           <Fragment key="header-action">{headerAction}</Fragment>
           <Button variant="outline" size="sm" onClick={() => setAll(true)}>
             Expand all

@@ -3,9 +3,8 @@
 import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
-// Root-level error boundary: catches errors thrown in the root layout itself, so it must render its
-// own <html>/<body> and can't rely on globals.css (the root layout is what failed). Styles are
-// inlined against the LeafyGreen dark palette. Segment errors are handled by (app)/error.tsx.
+// Catches errors in the root layout itself, so it must render its own <html>/<body> and can't
+// rely on globals.css (the root layout is what failed) — styles are inlined instead.
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error(error);

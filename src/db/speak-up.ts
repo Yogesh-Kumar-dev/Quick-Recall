@@ -6,10 +6,8 @@ import type { SpeakUpQA, SpeakUpQAInput } from '@/types/speak-up';
 
 // ==============================|| SPEAK UP - REPOSITORY ||============================== //
 
-// The ONLY module that touches persistence (Dexie / IndexedDB via the shared `db`) for
-// Speak Up Q&As. All methods are async-shaped on purpose: to migrate to an HTTP / server
-// backend later, replace the body of these four functions only — every consumer
-// (useSpeakUpQAs, the drawer, the cards) stays untouched.
+// Only module that touches persistence for Speak Up Q&As; async-shaped so a future HTTP
+// backend only needs the body of these functions changed.
 
 function makeId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -19,7 +17,6 @@ function makeId(): string {
 }
 
 export async function getAll(): Promise<SpeakUpQA[]> {
-  // newest first
   return db.speakUpQAs.orderBy('createdAt').reverse().toArray();
 }
 

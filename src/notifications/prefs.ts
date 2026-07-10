@@ -2,10 +2,8 @@ import type { NotificationCategory } from './types';
 
 // ==============================|| NOTIFICATIONS - USER PREFERENCES ||============================== //
 
-// Persisted, cross-tab notification preferences. Backed by localStorage directly
-// (rather than a hook) so the framework-agnostic manager can read prefs
-// synchronously when deciding whether to fire. React consumers use
-// `useNotificationPrefs` (in notification-provider) which subscribes to changes.
+// Backed by localStorage directly (not a hook) so the framework-agnostic manager can read
+// prefs synchronously when deciding whether to fire.
 
 const STORAGE_KEY = 'quickrecall.notifications';
 
@@ -27,8 +25,7 @@ function read(): NotificationPrefs {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_PREFS;
     const parsed = JSON.parse(raw);
-    // Merge over defaults so a newly-added category is enabled by default and a
-    // malformed/partial blob can't crash reads.
+    // Merge over defaults so a newly-added category defaults on and a malformed blob can't crash reads.
     return {
       enabled: typeof parsed.enabled === 'boolean' ? parsed.enabled : DEFAULT_PREFS.enabled,
       categories: { ...DEFAULT_PREFS.categories, ...(parsed.categories ?? {}) }
@@ -41,7 +38,7 @@ function read(): NotificationPrefs {
 type Listener = (prefs: NotificationPrefs) => void;
 const listeners = new Set<Listener>();
 
-// Cross-tab: pick up writes made in other tabs via the storage event.
+// Cross-tab sync via the storage event.
 if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
     if (e.storageArea === window.localStorage && e.key === STORAGE_KEY) {
@@ -64,7 +61,7 @@ export function setPrefs(next: NotificationPrefs): void {
   } catch {
     // quota / serialization failure — no-op
   }
-  // The storage event does NOT fire in the tab that wrote it, so notify locally.
+  // storage event doesn't fire in the tab that wrote it, so notify locally too.
   listeners.forEach((l) => {
     l(next);
   });
@@ -75,7 +72,6 @@ export function subscribePrefs(listener: Listener): () => void {
   return () => listeners.delete(listener);
 }
 
-// Convenience used by the manager's mute check.
 export function isCategoryEnabled(category: NotificationCategory): boolean {
   const prefs = read();
   return prefs.enabled && prefs.categories[category] !== false;
