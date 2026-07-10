@@ -9,7 +9,7 @@ const FEATURES = [
   { icon: <IconTrendingUp size={22} />, title: 'Improve' }
 ];
 
-// Most common background pixel in hero.png (sampled) so the illustration blends into the page instead of sitting in a box.
+// Most common background pixel in hero.webp (sampled) so the illustration blends into the page instead of sitting in a box.
 const HERO_BG = '#00121e';
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
       style={{ backgroundColor: HERO_BG }}
     >
       <Image
-        src="/assets/images/decorator.png"
+        src="/assets/images/decorator.webp"
         alt=""
         width={1344}
         height={1120}
@@ -54,7 +54,16 @@ export default function Home() {
       </div>
 
       <div className="relative mx-auto w-full min-w-0 max-w-xs sm:max-w-md lg:max-w-xl">
-        <Image src="/assets/images/hero.png" alt="" width={1416} height={1111} priority className="h-auto w-full" />
+        <Image
+          src="/assets/images/hero.webp"
+          alt=""
+          width={1416}
+          height={1111}
+          priority
+          fetchPriority="high"
+          sizes="(min-width: 1024px) 576px, (min-width: 640px) 448px, 320px"
+          className="h-auto w-full"
+        />
       </div>
     </div>
   );
