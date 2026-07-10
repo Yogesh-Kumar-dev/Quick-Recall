@@ -68,7 +68,7 @@ const offlinePages: RuntimeCaching = {
       (request.headers.get('Accept')?.includes('text/html') ?? false)),
   handler: new NetworkFirst({
     cacheName: OFFLINE_PAGES_CACHE,
-    matchOptions: { ignoreSearch: true, ignoreVary: true },
+    matchOptions: { ignoreSearch: true },
     plugins: [
       new ExpirationPlugin({ maxEntries: 300, maxAgeSeconds: 30 * 24 * 60 * 60 }),
       new CacheableResponsePlugin({ statuses: [0, 200] })
