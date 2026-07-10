@@ -62,10 +62,13 @@ const offlinePages: RuntimeCaching = {
   matcher: ({ request, url: { pathname }, sameOrigin }) =>
     sameOrigin &&
     !pathname.startsWith('/api/') &&
-    (request.mode === 'navigate' || request.destination === 'document' || request.headers.get('RSC') === '1'),
+    (request.mode === 'navigate' ||
+      request.destination === 'document' ||
+      request.headers.get('RSC') === '1' ||
+      (request.headers.get('Accept')?.includes('text/html') ?? false)),
   handler: new NetworkFirst({
     cacheName: OFFLINE_PAGES_CACHE,
-    matchOptions: { ignoreSearch: true },
+    matchOptions: { ignoreSearch: true, ignoreVary: true },
     plugins: [
       new ExpirationPlugin({ maxEntries: 300, maxAgeSeconds: 30 * 24 * 60 * 60 }),
       new CacheableResponsePlugin({ statuses: [0, 200] })
@@ -104,7 +107,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all(
       ALL_ROUTES.flatMap((url) => [
-        serwist.handleRequest({ request: new Request(url), event }),
+        serwist.handleRequest({ request: new Request(url, { headers: { Accept: 'text/html' } }), event }),
         serwist.handleRequest({ request: new Request(url, { headers: { RSC: '1' } }), event })
       ])
     ).catch(() => undefined) // best-effort: a failed warm must not block SW install

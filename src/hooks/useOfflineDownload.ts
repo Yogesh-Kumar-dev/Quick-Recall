@@ -104,7 +104,10 @@ async function warmUrl(url: string): Promise<boolean> {
   // RSC variant the way Next's router requests it: cache-busting ?_rsc + the RSC header.
   const rscUrl = url + (url.includes('?') ? '&' : '?') + '_rsc=offline';
 
-  const docReq = fetch(url, { cache: 'reload', credentials: 'same-origin' })
+  // Accept: text/html is required so the SW's offlinePages matcher captures this request — a plain
+  // fetch() sends `Accept: */*`, which matches neither `mode: 'navigate'` nor `destination: 'document'`
+  // nor the RSC header, so without it this request silently skipped the offline-pages cache entirely.
+  const docReq = fetch(url, { cache: 'reload', credentials: 'same-origin', headers: { Accept: 'text/html' } })
     .then((res) =>
       res
         .text()
