@@ -58,6 +58,12 @@ export const engineeringFlashcards: Flashcard[] = [
     category: 'Q&A'
   },
   {
+    id: 'eng-robots-txt',
+    front: 'What is robots.txt for?',
+    back: 'A text file at /robots.txt telling search-engine crawlers which paths they may or may not visit. Well-behaved bots respect it, but it is not a security control , don’t use it to hide private pages.',
+    category: 'Q&A'
+  },
+  {
     id: 'eng-n-plus-1',
     front: 'The N+1 query problem',
     back: 'Running one query per item in a loop (1 to list them + N to fetch each detail) instead of a single join/IN query. A common ORM performance killer.',

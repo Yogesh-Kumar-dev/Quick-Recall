@@ -161,6 +161,33 @@ fetch('/payments', {
 });`
   },
 
+  {
+    id: 'eng-robots-txt',
+    title: 'robots.txt',
+    summary: 'A plain-text file at the root of a website that tells search-engine crawlers which pages they may or may not visit.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'It lives at a fixed, well-known address: yoursite.com/robots.txt , crawlers check it before visiting anything else.',
+      'Rules are grouped by User-agent (which bot the rule applies to, or * for all bots), followed by Allow/Disallow paths.',
+      'It is a request, not a lock , well-behaved bots (Google, Bing) respect it, but nothing stops a script from ignoring it and fetching the page anyway. Never rely on it to hide private or sensitive pages.',
+      'It can also point crawlers at your Sitemap (a list of your pages) so they discover content faster.',
+      'In Next.js (App Router), you don’t hand-write the file , an app/robots.ts that exports a default function returning the rules is built into /robots.txt automatically at build time.'
+    ],
+    gotcha:
+      'A single stray "Disallow: /" for User-agent: * blocks the entire site from every search engine , always double-check the file after deploying, since this mistake silently kills SEO with no error anywhere.',
+    codeSnippet: `# Plain robots.txt
+User-agent: *
+Allow: /
+Sitemap: https://example.com/sitemap.xml
+
+// Next.js app/robots.ts (generates the file above)
+export default function robots() {
+  return { rules: { userAgent: '*', allow: '/' } };
+}`
+  },
+
   // ─── DATABASES ────────────────────────────────────────────────────────────────
   {
     id: 'eng-sql-vs-nosql',
