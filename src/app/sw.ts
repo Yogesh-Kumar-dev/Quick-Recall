@@ -49,30 +49,51 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Dedicated, high-capacity page cache for "the whole app, offline". Serwist's defaultCache page
+// Dedicated, high-capacity page caches for "the whole app, offline". Serwist's defaultCache page
 // caches are capped at 32 entries (LRU) and its HTML rule matches on the *request* Content-Type
 // header (which a plain fetch never sends), so bulk-downloading ~55 routes can't reliably persist
-// there. This custom rule — prepended to defaultCache so it wins for page requests — uses our own
-// cacheName with a high maxEntries and `ignoreSearch: true`. ignoreSearch is essential: notes
+// there. These custom rules — prepended to defaultCache so they win for page requests — use our
+// own cacheNames with a high maxEntries and `ignoreSearch: true`. ignoreSearch is essential: notes
 // pages carry nuqs filter state in the query (`?difficulty=…&q=…&open=…`) and RSC payloads carry a
 // build-specific `?_rsc=…` token — one cached entry per route must serve all of those.
-const OFFLINE_PAGES_CACHE = 'offline-pages';
+//
+// Documents and RSC payloads are split into TWO caches (rather than one keyed by pathname) so we
+// can also set `ignoreVary: true`. Real requests for the same pathname show up with inconsistent
+// header combinations offline — a hard navigation, a client <Link> prefetch, and our own warming
+// fetch all send different Accept/RSC/Next-Router-Prefetch headers — and Next's document responses
+// carry a `Vary` header that makes Chrome's default (Vary-respecting) cache.match() miss on those
+// differences even though the pathname is genuinely cached. `ignoreVary: true` fixes that, but if
+// both variants shared one cache, a document navigation could then match the *RSC* entry for the
+// same pathname and render raw RSC flight-stream text instead of the page — hence two caches: one
+// per representation, matched separately, each safe to fully ignore Vary on.
+const OFFLINE_DOCS_CACHE = 'offline-pages-doc';
+const OFFLINE_RSC_CACHE = 'offline-pages-rsc';
 
-const offlinePages: RuntimeCaching = {
+const offlineExpirationPlugins = [
+  new ExpirationPlugin({ maxEntries: 300, maxAgeSeconds: 30 * 24 * 60 * 60 }),
+  new CacheableResponsePlugin({ statuses: [0, 200] })
+];
+
+const offlineDocuments: RuntimeCaching = {
   matcher: ({ request, url: { pathname }, sameOrigin }) =>
     sameOrigin &&
     !pathname.startsWith('/api/') &&
-    (request.mode === 'navigate' ||
-      request.destination === 'document' ||
-      request.headers.get('RSC') === '1' ||
-      (request.headers.get('Accept')?.includes('text/html') ?? false)),
+    request.headers.get('RSC') !== '1' &&
+    (request.mode === 'navigate' || request.destination === 'document' || (request.headers.get('Accept')?.includes('text/html') ?? false)),
   handler: new NetworkFirst({
-    cacheName: OFFLINE_PAGES_CACHE,
-    matchOptions: { ignoreSearch: true },
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 300, maxAgeSeconds: 30 * 24 * 60 * 60 }),
-      new CacheableResponsePlugin({ statuses: [0, 200] })
-    ]
+    cacheName: OFFLINE_DOCS_CACHE,
+    matchOptions: { ignoreSearch: true, ignoreVary: true },
+    plugins: offlineExpirationPlugins
+  })
+};
+
+const offlineRsc: RuntimeCaching = {
+  matcher: ({ request, url: { pathname }, sameOrigin }) =>
+    sameOrigin && !pathname.startsWith('/api/') && request.headers.get('RSC') === '1',
+  handler: new NetworkFirst({
+    cacheName: OFFLINE_RSC_CACHE,
+    matchOptions: { ignoreSearch: true, ignoreVary: true },
+    plugins: offlineExpirationPlugins
   })
 };
 
@@ -81,8 +102,8 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  // Custom page cache MUST come before defaultCache or defaultCache's page rules match first.
-  runtimeCaching: [offlinePages, ...defaultCache],
+  // Custom page caches MUST come before defaultCache or defaultCache's page rules match first.
+  runtimeCaching: [offlineDocuments, offlineRsc, ...defaultCache],
   fallbacks: {
     entries: [
       {
@@ -98,8 +119,8 @@ const serwist = new Serwist({
 // Warm EVERY offline route at install so the whole app is available offline immediately — even
 // before the user opens the download panel. Routes come from OFFLINE_SECTIONS (the same source of
 // truth the download UI uses). We warm two representations per route through serwist.handleRequest
-// so both navigation modes resolve offline: the document (hard load / app launch) and the RSC
-// payload (client-side <Link> navigation). Both land in the offline-pages cache above.
+// so both navigation modes resolve offline: the document (hard load / app launch) lands in
+// OFFLINE_DOCS_CACHE, the RSC payload (client-side <Link> navigation) lands in OFFLINE_RSC_CACHE.
 // This is the Serwist maintainer's recommended pattern (handleRequest at install).
 const ALL_ROUTES = [...new Set(OFFLINE_SECTIONS.flatMap((s) => s.urls))];
 
