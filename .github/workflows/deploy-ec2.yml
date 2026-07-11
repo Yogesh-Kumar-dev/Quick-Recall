@@ -71,13 +71,15 @@ jobs:
             ./ "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/opt/quickrecall/"
 
       # Full install (not --prod) to match the exact dependency-resolution tree the build used —
-      # see deploy/README.md's "Why not --prod" note.
+      # see deploy/README.md's "Why not --prod" note. CI=true because pnpm refuses to purge/
+      # restructure node_modules (needed here since the hoist pattern changes its shape)
+      # without an interactive TTY to confirm — there's none over a scripted SSH session.
       - name: Install deps + reload PM2
         run: |
           ssh "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" '
             set -e
             cd /opt/quickrecall
-            pnpm install --frozen-lockfile
+            CI=true pnpm install --frozen-lockfile
             pm2 reload deploy/ecosystem.config.cjs
           '
 
