@@ -5,6 +5,16 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
+# Sentry's Node auto-instrumentation (require-in-the-middle / import-in-the-middle) patches
+# modules by walking node_modules at the top level. pnpm's default layout nests packages under
+# .pnpm/ instead of hoisting them, so Turbopack's externalRequire can't find them at runtime —
+# "Cannot find module 'require-in-the-middle-<hash>'" crashing next start on every request.
+# Documented fix (same across every Sentry framework guide): force-hoist just these two.
+# https://github.com/getsentry/sentry-javascript/issues/15209
+publicHoistPattern:
+  - '*require-in-the-middle*'
+  - '*import-in-the-middle*'
+
 # Collapse React to one version so every @leafygreen-ui/emotion resolves to a single instance
 # (otherwise legacy's React 19.1.0 splits emotion into two caches and breaks SSR style flushing).
 overrides:
