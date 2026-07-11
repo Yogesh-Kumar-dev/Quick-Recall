@@ -1,0 +1,68 @@
+name: Deploy to EC2
+
+# Separate from Vercel: Vercel deploys quickrecall.vercel.app automatically via its own git
+# integration and is untouched by this workflow. This pipeline only pushes to the EC2 practice
+# deployment (quickrecall-aws.duckdns.org).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-ec2
+  cancel-in-progress: false # never cancel a deploy mid-rsync
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+        env:
+          # Optional: enables Sentry sourcemap upload during build. Build succeeds without it,
+          # just with less readable production stack traces. Add as a repo secret to enable.
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Load SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Trust the EC2 host key
+        run: ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
+      # Ship the whole working tree (minus .git/node_modules/CI-only dirs), not just .next + public:
+      # the machine-coding pages read their own source files via readFileSync at render time (see
+      # CLAUDE.md's outputFileTracingIncludes note), so src/ must physically exist on the server too.
+      - name: rsync build output + source to EC2
+        run: |
+          rsync -az --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.github' \
+            ./ "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/opt/quickrecall/"
+
+      - name: Install production deps + reload PM2
+        run: |
+          ssh "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" '
+            set -e
+            cd /opt/quickrecall
+            pnpm install --prod --frozen-lockfile
+            pm2 reload deploy/ecosystem.config.cjs
+          '
+
+      - name: Health check
+        run: |
+          sleep 3
+          ssh "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
+            'curl -fsS -o /dev/null -w "quickrecall responded %{http_code}\n" http://127.0.0.1:3000'
