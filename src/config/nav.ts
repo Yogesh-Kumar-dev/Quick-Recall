@@ -1,4 +1,5 @@
 import {
+  IconAccessible,
   IconBolt,
   IconBookmark,
   IconBookmarks,
@@ -16,10 +17,14 @@ import {
   IconCode,
   IconCpu,
   IconCards,
+  IconGauge,
   IconInfoCircle,
+  IconKey,
   IconMicrophone,
   IconNotes,
-  IconServer
+  IconServer,
+  IconShieldLock,
+  IconWorld
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
 
@@ -117,6 +122,17 @@ export const navSections: NavSection[] = [
     items: [
       { title: 'Node.js Notes', url: '/nodejs/notes', icon: IconBrandNodejs },
       { title: 'Quick Recall', url: '/nodejs/quick-recall', icon: IconBolt }
+    ]
+  },
+  {
+    id: 'web',
+    title: 'Web Platform',
+    icon: IconWorld,
+    items: [
+      { title: 'Web Security', url: '/web/security', icon: IconShieldLock },
+      { title: 'Auth & Identity', url: '/web/auth', icon: IconKey },
+      { title: 'Accessibility', url: '/web/accessibility', icon: IconAccessible },
+      { title: 'Web Performance', url: '/web/performance', icon: IconGauge }
     ]
   },
   {

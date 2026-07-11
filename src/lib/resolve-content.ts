@@ -27,6 +27,10 @@ import { asyncThunkNotes } from '@/data/redux/async-thunk-notes';
 import { htmlNotes } from '@/data/htmlcss/html-notes';
 import { cssNotes } from '@/data/htmlcss/css-notes';
 import { engineeringNotes } from '@/data/engineering/engineering-notes';
+import { webSecurityNotes } from '@/data/web/web-security-notes';
+import { authNotes } from '@/data/web/auth-notes';
+import { accessibilityNotes } from '@/data/web/accessibility-notes';
+import { webPerformanceNotes } from '@/data/web/web-performance-notes';
 
 // ─── Note lookup (by note.id) ─────────────────────────────────────────────────
 // First-write-wins on an id collision across topics (deterministic).
@@ -44,7 +48,11 @@ const ALL_NOTES: Note[] = [
   ...asyncThunkNotes,
   ...htmlNotes,
   ...cssNotes,
-  ...engineeringNotes
+  ...engineeringNotes,
+  ...webSecurityNotes,
+  ...authNotes,
+  ...accessibilityNotes,
+  ...webPerformanceNotes
 ];
 
 const noteById = new Map<string, Note>();

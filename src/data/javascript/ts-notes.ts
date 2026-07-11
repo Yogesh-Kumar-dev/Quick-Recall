@@ -227,6 +227,7 @@ type Dir = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';`
       'T[K] , index access type, the type of property K in T.',
       'typeof value , infers the type from a runtime value.',
       'Common combo: Record<keyof Config, string> or typeof defaultConfig.',
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: content teaches template-literal-type syntax
       'Template literal types: `${keyof T}Changed` , generates string unions.'
     ],
     textbookDef: `The \`keyof\` operator in a type position produces a union of all known public property keys of an object type T as string or number literal types. The \`typeof\` operator in a type position infers the TypeScript type of a runtime value, enabling the type system to derive structural information from existing JavaScript objects without redundant manual annotation.`,

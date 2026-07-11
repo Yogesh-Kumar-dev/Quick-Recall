@@ -16,6 +16,10 @@ import { htmlNotes } from './htmlcss/html-notes';
 import { cssNotes } from './htmlcss/css-notes';
 import { engineeringNotes } from './engineering/engineering-notes';
 import { nodejsNotes } from './nodejs/nodejs-notes';
+import { webSecurityNotes } from './web/web-security-notes';
+import { authNotes } from './web/auth-notes';
+import { accessibilityNotes } from './web/accessibility-notes';
+import { webPerformanceNotes } from './web/web-performance-notes';
 
 export const NOTE_SOURCES: { notes: Note[]; url: string; topic: string }[] = [
   { notes: jsNotes, url: '/js/notes', topic: 'JavaScript' },
@@ -31,7 +35,11 @@ export const NOTE_SOURCES: { notes: Note[]; url: string; topic: string }[] = [
   { notes: htmlNotes, url: '/html-css/html', topic: 'HTML' },
   { notes: cssNotes, url: '/html-css/css', topic: 'CSS' },
   { notes: engineeringNotes, url: '/engineering/notes', topic: 'Engineering' },
-  { notes: nodejsNotes, url: '/nodejs/notes', topic: 'Node.js' }
+  { notes: nodejsNotes, url: '/nodejs/notes', topic: 'Node.js' },
+  { notes: webSecurityNotes, url: '/web/security', topic: 'Web Security' },
+  { notes: authNotes, url: '/web/auth', topic: 'Auth & Identity' },
+  { notes: accessibilityNotes, url: '/web/accessibility', topic: 'Accessibility' },
+  { notes: webPerformanceNotes, url: '/web/performance', topic: 'Web Performance' }
 ];
 
 // A resolved prerequisite chip: enough to render a deep link without shipping the note itself.

@@ -87,6 +87,11 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
     urls: ['/html-css/html', '/html-css/css']
   },
   {
+    id: 'web',
+    label: 'Web Platform',
+    urls: ['/web/security', '/web/auth', '/web/accessibility', '/web/performance']
+  },
+  {
     id: 'engineering',
     label: 'Engineering Essentials',
     urls: ['/engineering/notes']

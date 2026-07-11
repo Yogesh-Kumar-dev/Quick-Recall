@@ -66,6 +66,7 @@ user.name = 'Bob'; // OK — object itself is mutable
     category: 'es6',
     keyPoints: [
       'Written with backticks (`) instead of single or double quotes.',
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: content teaches template-literal syntax
       'Insert any expression inline with ${expression} , no more string concatenation with +.',
       'Line breaks inside the string just work , no \\n escape characters needed.',
       'Advanced form , tagged templates: put a function name before the backtick and it receives the string pieces and values separately, letting it process them (used by libraries like styled-components).'

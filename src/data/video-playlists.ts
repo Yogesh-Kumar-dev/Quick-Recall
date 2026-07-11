@@ -78,7 +78,7 @@ export function extractPlaylistId(url: string): string | null {
   try {
     const parsed = new URL(url);
     const list = parsed.searchParams.get('list');
-    return list && list.trim() ? list.trim() : null;
+    return list?.trim() ? list.trim() : null;
   } catch {
     // Not a full URL — fall back to a regex (handles a bare `list=...` fragment).
     const match = url.match(/[?&]list=([^&\s]+)/);

@@ -84,7 +84,7 @@ function readMarker(): DownloadMarker | null {
 // Warms a route with both a document request (hard load) and an RSC request (client <Link> nav)
 // so in-app navigation to a never-prefetched route still resolves offline (see src/app/sw.ts).
 async function warmUrl(url: string): Promise<boolean> {
-  const rscUrl = url + (url.includes('?') ? '&' : '?') + '_rsc=offline';
+  const rscUrl = `${url}${url.includes('?') ? '&' : '?'}_rsc=offline`;
 
   // Accept: text/html is required — a plain fetch() sends `Accept: */*`, which matches none of
   // the SW's offlinePages matcher conditions, silently skipping the cache entirely.
