@@ -66,8 +66,11 @@ jobs:
         run: pnpm exec vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy prebuilt to Vercel (production)
+        # --archive=tgz bundles the deployment into a handful of tarballs instead of uploading
+        # thousands of individual files, avoiding vercel CLI's "Upload aborted" failure mode on
+        # large file counts (documented Vercel workaround, not project-specific).
         run: |
-          url=$(pnpm exec vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          url=$(pnpm exec vercel deploy --prebuilt --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }})
           echo "Production deployment: $url"
           echo "### 🚀 Production deployment" >> "$GITHUB_STEP_SUMMARY"
           echo "$url" >> "$GITHUB_STEP_SUMMARY"
