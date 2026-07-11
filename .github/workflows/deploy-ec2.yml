@@ -59,27 +59,21 @@ jobs:
       - name: Trust the EC2 host key
         run: ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
 
-      # Ship the whole working tree (minus .git/node_modules/CI-only dirs), not just .next + public:
-      # the machine-coding pages read their own source files via readFileSync at render time (see
-      # CLAUDE.md's outputFileTracingIncludes note), so src/ must physically exist on the server too.
+      # Ship whole tree (src/ needed too: machine-coding pages readFileSync their own source
+      # at render time). Exclude pattern must be /node_modules (leading slash, anchored to
+      # root) — unanchored 'node_modules' also strips .next/node_modules, which holds Sentry's
+      # require-in-the-middle-<hash> alias needed at runtime. That was the real 500 crash cause.
       - name: rsync build output + source to EC2
         run: |
           rsync -az --delete \
             --exclude='.git' \
-            --exclude='node_modules' \
+            --exclude='/node_modules' \
             --exclude='.github' \
             ./ "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/opt/quickrecall/"
 
-      # Full install (not --prod) to match the exact dependency-resolution tree the build used —
-      # see deploy/README.md's "Why not --prod" note. CI=true because pnpm refuses to purge/
-      # restructure node_modules (needed here since the hoist pattern changes its shape)
-      # without an interactive TTY to confirm — there's none over a scripted SSH session.
-      #
-      # startOrReload, not reload: `pm2 reload` only gracefully reloads an ALREADY-RUNNING
-      # process — once a process exhausts ecosystem.config.cjs's max_restarts (e.g. after a
-      # deploy that crashed on start), PM2 marks it "errored" and `reload` is a silent no-op on
-      # it. startOrReload additionally starts the process fresh if it isn't currently running,
-      # so a bad deploy can't wedge every deploy after it.
+      # Full install (not --prod): matches CI's exact dependency tree. CI=true skips pnpm's
+      # interactive purge prompt (no TTY over SSH). startOrReload not reload: plain reload
+      # no-ops on a PM2 process stuck "errored" from a past crash-looped deploy.
       - name: Install deps + reload PM2
         run: |
           ssh "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" '
