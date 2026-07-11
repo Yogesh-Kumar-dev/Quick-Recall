@@ -74,7 +74,6 @@ Settings → Secrets and variables → Actions → New repository secret:
 | `EC2_HOST` | the instance's public IP (or `quickrecall-aws.duckdns.org` once DNS has propagated) |
 | `EC2_USER` | `ubuntu` |
 | `EC2_SSH_KEY` | the full contents of the `.pem` file from step 2 (private key, `-----BEGIN...-----END-----` and all) |
-| `SENTRY_AUTH_TOKEN` | optional — only if you want Sentry sourcemap upload during the CI build |
 
 Push to `main` (or run the workflow manually from the Actions tab: **Deploy to EC2** →
 *Run workflow*). `.github/workflows/deploy-ec2.yml` will:
@@ -83,8 +82,17 @@ Push to `main` (or run the workflow manually from the Actions tab: **Deploy to E
 2. `rsync` the whole working tree (minus `.git`/`node_modules`) to `/opt/quickrecall`
    on the instance — not just `.next`/`public`, because the machine-coding pages read their
    own source files with `readFileSync` at render time, so `src/` must exist on the server too.
-3. SSH in, run `pnpm install --prod --frozen-lockfile`, `pm2 reload deploy/ecosystem.config.cjs`.
+3. SSH in, run `pnpm install --frozen-lockfile` (**full install, not `--prod`**) and
+   `pm2 reload deploy/ecosystem.config.cjs`.
 4. Curl `127.0.0.1:3000` on the instance as a smoke test.
+
+**Why not `--prod`:** Next's Turbopack build externalizes Sentry/OpenTelemetry's
+instrumentation loader (`require-in-the-middle`) with a reference baked to the exact pnpm
+dependency-resolution tree at build time. `--prod` excludes devDependencies, which changes
+that tree just enough that the baked-in reference stops resolving (`Cannot find module
+'require-in-the-middle-<hash>'`), crashing the server on every request with a 500. Running
+the identical install command CI used to build keeps the layout consistent — without needing
+to rsync the (large) `node_modules` directory over the network on every deploy.
 
 This first run creates everything under `/opt/quickrecall`, including
 `deploy/ecosystem.config.cjs`. After it finishes, run **COOKBOOK.md step 6** to start PM2

@@ -12,26 +12,44 @@ concurrency:
   group: deploy-ec2
   cancel-in-progress: false # never cancel a deploy mid-rsync
 
+permissions:
+  contents: read
+
 jobs:
-  deploy:
+  quality:
+    name: Quality gate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
+      - name: Lint & format (Biome)
+        run: pnpm lint:ci
+        continue-on-error: true
 
-      - run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Dead-code check (Knip)
+        run: pnpm knip
+        continue-on-error: true
+
+      - name: Test
+        run: pnpm test
+
+  deploy:
+    name: Deploy
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - run: pnpm build
-        env:
-          # Optional: enables Sentry sourcemap upload during build. Build succeeds without it,
-          # just with less readable production stack traces. Add as a repo secret to enable.
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Load SSH key
         uses: webfactory/ssh-agent@v0.9.0
@@ -52,12 +70,14 @@ jobs:
             --exclude='.github' \
             ./ "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/opt/quickrecall/"
 
-      - name: Install production deps + reload PM2
+      # Full install (not --prod) to match the exact dependency-resolution tree the build used —
+      # see deploy/README.md's "Why not --prod" note.
+      - name: Install deps + reload PM2
         run: |
           ssh "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" '
             set -e
             cd /opt/quickrecall
-            pnpm install --prod --frozen-lockfile
+            pnpm install --frozen-lockfile
             pm2 reload deploy/ecosystem.config.cjs
           '
 
