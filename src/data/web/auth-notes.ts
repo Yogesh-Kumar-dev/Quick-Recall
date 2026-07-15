@@ -130,6 +130,80 @@ app.post('/logout', (req, res) => req.session.destroy(() => res.sendStatus(204))
     gotcha:
       '"JWTs are more secure than sessions" is a red-flag answer , they are differently shaped, not more secure. A JWT in localStorage is XSS-stealable; a session id in an HttpOnly cookie is not, but is CSRF-exposed instead. Security depends on storage and attributes, not on the token format.'
   },
+  {
+    id: 'auth-logout-all-devices',
+    title: 'Logout from All Devices',
+    summary:
+      'A single logout button that must kill every session or token the user has anywhere , the design depends entirely on whether you chose stateful sessions or stateless tokens.',
+    difficulty: 'intermediate',
+    category: 'sessions',
+    prerequisites: ['auth-server-sessions', 'auth-session-vs-token'],
+    textbookDef:
+      'Global logout (or "log out all devices") is the requirement that revoking one authenticated session invalidates every other active session or credential belonging to that user, across all devices and browsers, immediately.',
+    eli5: 'Normal logout is returning one hotel key card. Logout-everywhere is calling the front desk and saying "cancel every key card ever issued for my room", even the ones you forgot you left in other jackets.',
+    keyPoints: [
+      'With server-side sessions this is easy by design: every login writes a row to a shared session store (Redis, a sessions table) keyed by user id, so "logout everywhere" is just deleting every row for that user id , the very next request from any device fails to find its session and is rejected.',
+      'With stateless JWTs it is the opposite problem: a signed token is valid purely by its own signature and expiry, and the server never "looks it up", so there is no row to delete , this is the standard interview follow-up to "how do you revoke a JWT?".',
+      'The practical fix for JWT-based auth is to track a small piece of state after all: store a tokenVersion or sessionId per user, stamp it into every token you mint, and on "logout everywhere" bump that stored version , verification then checks the tokens claim against the current stored version and rejects anything older.',
+      'A blocklist (denylist) of revoked token ids works too, but it only scales if tokens are short-lived (a few minutes), because the denylist has to be checked on every request and kept until the token would have expired anyway.',
+      'Most production systems track active sessions as a table of refresh tokens (one row per device/login, with device info and last-used time), and "logout everywhere" deletes every row for that user , this doubles as the data behind a "manage your devices" settings screen.',
+      'This is exactly why many systems keep access tokens short-lived (5 to 15 minutes) even when using JWTs , a device you cannot immediately revoke is still cut off within minutes once its access token expires and its refresh attempt fails.'
+    ],
+    gotcha:
+      'Implementing "logout everywhere" as "delete the refresh tokens" alone is a common half-fix , any access token issued before that point is still a valid, unexpired JWT and keeps working on its own until it naturally expires. True immediate global logout on a JWT system needs either very short access token lifetimes or a version/denylist check on every single request, not just at refresh time.',
+    codeSnippet: `// Stateless JWT + tokenVersion, the common production pattern
+// users table: { id, ..., tokenVersion: 3 }
+
+function mintAccessToken(user) {
+  return jwt.sign({ sub: user.id, tv: user.tokenVersion }, secret, { expiresIn: '10m' });
+}
+
+function verifyAccessToken(token) {
+  const claims = jwt.verify(token, secret);
+  const user = getUserById(claims.sub);
+  if (claims.tv !== user.tokenVersion) throw new Error('revoked'); // logged out everywhere
+  return claims;
+}
+
+// "Log out all devices" button:
+async function logoutEverywhere(userId) {
+  await db.incrementTokenVersion(userId); // every existing token instantly fails the check above
+  await db.deleteRefreshTokens(userId);   // and no new access token can be minted either
+}`
+  },
+  {
+    id: 'auth-password-hashing',
+    title: 'Password Hashing, Salting, and Why "Encryption" Is the Wrong Word',
+    summary:
+      'Passwords are never stored as plain text or even encrypted , they are hashed with a salt, so the server itself cannot recover the original password, even if it wanted to.',
+    difficulty: 'basic',
+    category: 'sessions',
+    prerequisites: ['auth-server-sessions'],
+    textbookDef:
+      'Password hashing applies a one-way cryptographic function to a password before storage, so the stored value cannot practically be reversed back to the password. A salt is a unique, random value combined with the password before hashing, stored alongside the hash, to ensure identical passwords never produce identical stored hashes.',
+    eli5: 'Hashing a password is like putting it through a wood chipper , what comes out never turns back into the original plank, but you CAN feed a fresh guess through the same chipper and check whether the output matches. Salting means every user gets their own uniquely shaped chipper, so even if two people picked the same password, their chipped output looks completely different.',
+    keyPoints: [
+      'Hashing is one-way: a function like bcrypt or Argon2 turns "hunter2" into a long fixed-length string, and there is no inverse function to turn that string back into "hunter2" , to check a login, the server hashes the submitted password again and compares the two hashes, it never "decrypts" anything.',
+      'A salt is a random value generated per user (not per app) and stored next to the hash. Without a salt, two users with the same password get the exact same hash, so an attacker with a precomputed table of common-password hashes (a rainbow table) can crack every match at once; with a salt, that same precomputed table is useless because the attacker would need one table per possible salt.',
+      'Plain fast hashes like MD5 or SHA-256 are wrong for passwords even though they are technically one-way , they are DESIGNED to be fast (good for checksums, bad here), so an attacker with a leaked hash database can try billions of guesses per second on cheap GPU hardware.',
+      'Password hashing algorithms (bcrypt, scrypt, Argon2) are deliberately slow and tunable (a "cost" or "work factor" parameter), so hashing one real login takes a fraction of a second for you but makes brute-forcing millions of guesses prohibitively expensive for an attacker , that deliberate slowness is the entire point.',
+      'bcrypt and Argon2 store the salt and cost factor INSIDE the output string itself, so the database only needs one column , no separate "salt" column to manage, and the verify call just needs the stored string plus the guess.',
+      'Because hashing is one-way, "forgot password" flows correctly generate a NEW random password or a time-limited reset link, never "email me my current password" , a service that CAN email you your existing password is proof they are storing it in a reversible form, which is itself a red flag.'
+    ],
+    gotcha:
+      'The recurring interview trap is calling this "password encryption". Encryption is reversible by design (you decrypt it with a key), which is exactly the property you do NOT want for passwords , if a password store were merely encrypted, a leaked encryption key (or a subpoena, or an insider) would expose every plaintext password at once. Hashing has no key to leak because there is nothing to decrypt; the worst a stolen hash database gives an attacker is a slow, expensive guessing game, not an instant reveal.',
+    codeSnippet: `import bcrypt from 'bcrypt';
+
+// Signup: hash includes a random salt automatically
+const hash = await bcrypt.hash(plainPassword, 12); // 12 = cost factor
+// hash looks like: $2b$12$N9qo8uLOickgx2ZMRZoMy.MHRB2/kDvT... (salt is embedded)
+await db.saveUser({ email, passwordHash: hash });
+
+// Login: never decrypt, just re-hash the guess and compare
+const user = await db.getUserByEmail(email);
+const ok = await bcrypt.compare(submittedPassword, user.passwordHash);
+if (!ok) throw new Error('Invalid credentials');`
+  },
 
   // ─── TOKENS ─────────────────────────────────────────────────────────────────
   {
@@ -169,6 +243,40 @@ const claims = jwt.verify(token, publicKey, {
   issuer: 'api.example.com',
   audience: 'example-web'
 });`
+  },
+  {
+    id: 'auth-jwt-revocation',
+    title: 'JWT Stolen: Limiting Damage and Revoking It',
+    summary:
+      'A signed JWT is valid purely by its own signature, so the server cannot "unsign" it , preventing misuse means never letting a stolen token stay useful for long.',
+    difficulty: 'advanced',
+    category: 'tokens',
+    prerequisites: ['auth-jwt', 'auth-refresh-tokens'],
+    textbookDef:
+      'JWT revocation is the general problem of invalidating a previously issued, cryptographically valid, unexpired token before its natural expiry, despite the JWT model being designed for stateless verification with no server-side lookup.',
+    eli5: 'A JWT is a printed festival wristband, not a swipe card , once it is printed and handed out, the gate staff check the print and the date on it, they do not radio the office to ask "is this one still allowed in?". If a wristband is stolen, you cannot un-print it; you can only make the print expire fast, or start telling gate staff to also check a small "banned list" on top of the print.',
+    keyPoints: [
+      'Short expiry is the first and most important defence: give access tokens a lifetime of 5 to 15 minutes, so a stolen token is only useful for a short window no matter what happens next , this is why JWTs are almost always paired with a separate, revocable refresh token rather than one long-lived token.',
+      'True revocation needs the server to remember SOMETHING, which is a deliberate step back from pure statelessness , either a denylist of specific revoked token ids (checked on every request, only practical because tokens are short-lived), or a tokenVersion/sessionId stamped into the token and compared against a stored value that you can bump on demand.',
+      'If theft is suspected, immediately rotate the signing key/secret , every JWT signed with the old key instantly fails verification everywhere, which is a blunt but total instrument (it also logs out every other legitimate user, so it is a last resort, not routine hygiene).',
+      'Scope the damage at mint time: keep the payload minimal (no sensitive data, since it is only base64-encoded, not encrypted), set a tight aud (audience) so a token stolen from one service cannot be replayed against another, and never accept alg:none or let the token dictate its own verification algorithm.',
+      'Refresh token rotation (covered separately) is what actually contains a stolen REFRESH token: because each refresh token is single-use, a stolen one being replayed after the legitimate client already used it is a detectable red flag, and the standard response is revoking the whole token family and forcing re-login.',
+      'Bind the token to context where possible , checking the requests IP range or device fingerprint against what was recorded at login time makes a stolen token, used from a different machine, fail even with a technically valid signature. This is a heuristic, not a guarantee, since IPs and user agents can be spoofed or legitimately change.'
+    ],
+    gotcha:
+      'The honest interview answer to "how do you revoke a JWT?" is that pure stateless JWTs cannot be revoked at all, only allowed to expire , any real revocation mechanism (denylist, tokenVersion, key rotation) reintroduces server-side state, which is exactly the cost JWTs were chosen to avoid in the first place. Saying "just delete it" or "blocklist it" without acknowledging that trade-off is the red flag answer.',
+    codeSnippet: `// Denylist approach: only viable because access tokens are short-lived
+const revoked = new Set(); // in production: Redis with a TTL matching token exp
+
+function verifyAccessToken(token) {
+  const claims = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
+  if (revoked.has(claims.jti)) throw new Error('revoked'); // jti = unique token id claim
+  return claims;
+}
+
+async function reportStolenToken(jti, exp) {
+  await redis.set(\`revoked:\${jti}\`, '1', 'EX', exp - Math.floor(Date.now() / 1000));
+}`
   },
   {
     id: 'auth-jwt-storage',
@@ -224,6 +332,33 @@ async function api(path) {
     ],
     gotcha:
       'Rotation plus real networks has a sharp edge: the client sends a refresh, the response is lost (flaky connection), the client retries with the now-consumed token , and strict family revocation logs the innocent user out of everything. Production implementations allow a tiny reuse grace window or idempotent retry handling; knowing this failure mode is senior-level signal.'
+  },
+  {
+    id: 'auth-access-vs-refresh-tokens',
+    title: 'Access Token vs Refresh Token: Side by Side',
+    summary:
+      'Two tokens with opposite jobs , the access token proves who you are on every request, the refresh token exists only to quietly mint a new one when it expires.',
+    difficulty: 'intermediate',
+    category: 'tokens',
+    prerequisites: ['auth-jwt', 'auth-refresh-tokens'],
+    keyPoints: [
+      'Purpose: the access token is sent on every API call to prove identity/permissions right now; the refresh token is sent to exactly one endpoint (/auth/refresh) and does nothing else , it cannot be used to call any other API.',
+      'Lifetime: access tokens live minutes (5 to 15 is typical); refresh tokens live days to weeks, which is precisely why the short-lived one is the one attached to every request, containing the blast radius of theft.',
+      'Verification: an access token (usually a JWT) is verified statelessly, just checking the signature and claims, no database hit; a refresh token is verified statefully, the server looks it up in a store and checks it has not been revoked or already used , the refresh token is the one place the server CAN say no on demand.',
+      'What "logout" actually does: clicking logout deletes/revokes the refresh token server-side (and clears it client-side) so no NEW access token can ever be minted again , but any access token issued before logout is still a validly signed, unexpired JWT, and keeps working on its own until it naturally expires a few minutes later. This is why access tokens are kept deliberately short.',
+      'Storage: the access token typically lives in memory only (a JS variable, gone on refresh, never touching storage); the refresh token gets the strongest protection available, an HttpOnly, Secure, SameSite=Strict cookie scoped to the refresh path, because it is the one credential that grants everything if stolen.',
+      'The relationship is one-directional: a refresh token can always mint a fresh access token (until revoked), but an access token can never be used to get a new refresh token , if the whole session needs renewing, the user has to re-authenticate.'
+    ],
+    gotcha:
+      'The near-universal interview trap: "so does logout instantly kill access?" No , logout is instant for the refresh token but only eventually consistent for the access token, which keeps working until it expires on its own. If a product genuinely needs an instant, hard logout (e.g. a compromised account), the access token verification path needs its own revocation check (a tokenVersion or denylist), not just deleting the refresh token.',
+    codeSnippet: `// What logout actually revokes vs what keeps working briefly
+async function logout(req, res) {
+  await db.deleteRefreshToken(req.cookies.refreshToken); // kills future refreshes
+  res.clearCookie('refreshToken');
+  res.sendStatus(204);
+  // Any access token already handed to the client is STILL VALID
+  // until its own exp claim passes , typically a few more minutes.
+}`
   },
 
   // ─── OAUTH ──────────────────────────────────────────────────────────────────

@@ -160,6 +160,34 @@ fetch('/payments', {
   body: …
 });`
   },
+  {
+    id: 'eng-pagination',
+    title: 'Offset vs Cursor Pagination',
+    summary:
+      'Offset pagination says "skip N, take M" and is simple but drifts on changing data; cursor pagination points to "after this item" and stays stable.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api', 'eng-db-indexing'],
+    keyPoints: [
+      'Offset pagination (LIMIT/OFFSET or ?page=3&size=20) asks the database to skip a number of rows then return the next batch , simple to implement and lets a user jump straight to page 7.',
+      'Offset has two real problems at scale: OFFSET 100000 still makes the database walk through and discard 100,000 rows before it can return anything, so later pages get slower the deeper you go, and if a row is inserted or deleted while paging, items can be skipped entirely or shown twice as everything shifts by one.',
+      'Cursor pagination instead asks for "the next N items after this specific one" , the cursor is usually the last seen items id or sort key, encoded opaquely, and the query becomes WHERE id > :cursor ORDER BY id LIMIT 20, which an index can jump straight to without scanning anything before it.',
+      'Because a cursor pins to an actual row rather than a numeric position, items inserted or deleted elsewhere in the list do not shift what the next page returns , this is why every major feed-style API (Twitter/X, GitHub, Stripe) uses cursor pagination for anything that changes in real time.',
+      'The trade-off: cursor pagination cannot jump to an arbitrary page number ("go to page 50") because there is no concept of numbered pages, only "the next batch after here" , offset is still the right, simpler choice for small, mostly-static datasets like an admin table with a page-number control.',
+      'A composite cursor (sort key + id, e.g. WHERE (created_at, id) > (:cursorTime, :cursorId)) is needed whenever the sort column is not unique on its own, otherwise rows with identical sort values can be skipped or duplicated across pages.'
+    ],
+    gotcha:
+      'Reaching for OFFSET/LIMIT on an infinite-scroll social feed is the classic mistake , as users scroll and new posts arrive, everyones offsets shift, so the same post can appear twice or vanish from the feed entirely. Any endpoint backing a live, frequently-changing, or infinitely-scrolling list should default to cursor pagination; offset is fine for a bounded admin table with page numbers.',
+    codeSnippet: `-- Offset: slow and drift-prone at depth
+SELECT * FROM posts ORDER BY created_at DESC LIMIT 20 OFFSET 10000;
+
+-- Cursor: jumps straight in via the index, immune to shifting rows
+SELECT * FROM posts
+WHERE (created_at, id) < (:cursorTime, :cursorId)
+ORDER BY created_at DESC, id DESC
+LIMIT 20;
+-- next cursor = (last row's created_at, last row's id)`
+  },
 
   {
     id: 'eng-robots-txt',
@@ -232,6 +260,44 @@ JOIN orders o ON o.user_id = u.id;
 -- check the plan
 EXPLAIN SELECT * FROM users WHERE email = ?;
 -- "Index Scan" good · "Seq Scan" on a big table = slow`
+  },
+  {
+    id: 'eng-csv-bulk-import',
+    title: 'Parsing a Large CSV and Loading It Into a Database',
+    summary:
+      'Never read the whole file into memory , stream it row by row, validate as you go, and insert in batches inside a transaction.',
+    difficulty: 'intermediate',
+    category: 'databases',
+    prerequisites: ['eng-db-indexing', 'eng-idempotency'],
+    keyPoints: [
+      'Step 1, stream instead of load: fs.readFileSync or reading the whole upload into a string works fine for a small file, but a multi-gigabyte CSV will exhaust memory , open a readable stream and parse it incrementally (a streaming CSV parser like csv-parse or Papa Parse in streaming mode) so you only ever hold one row, or one small batch, in memory at a time.',
+      'Step 2, validate and transform per row before it ever reaches the database: check required columns are present, coerce types (a CSV is always plain text, so "42" and "true" need explicit parsing), and reject or quarantine malformed rows into a separate error report rather than letting one bad row crash the whole import.',
+      'Step 3, batch the inserts: inserting one row at a time means one round trip per row, which is dominated by network/transaction overhead at scale , buffer rows into batches (commonly 500 to 5,000 rows) and issue one multi-row INSERT (or a bulk-loading utility like PostgreSQs COPY) per batch instead.',
+      'Step 4, wrap batches in a transaction, but not the WHOLE file in one transaction: one giant transaction for a 10-million-row file holds locks and an undo log for the entire duration and makes a late failure roll back everything already done , batch-per-transaction (commit every N rows) balances all-or-nothing safety per chunk against not losing all progress on a crash near the end.',
+      'Step 5, make the import idempotent/resumable: track progress (e.g. the last successfully committed row number or batch id) somewhere durable, so re-running after a crash or a partial failure does not double-insert rows that already made it in , this is the same idempotency-key idea used for retried API requests, applied to a long-running job.',
+      'For genuinely huge files (millions of rows), do the parse-and-insert as a background job (a queue worker), not inline in an HTTP request handler , the request just accepts the upload, kicks off the job, and returns immediately with a job id the client can poll for progress.'
+    ],
+    gotcha:
+      'The classic mistake is JSON.parse(fs.readFileSync(file)).forEach(row => db.insert(row)) style code that reads the entire file into memory and then makes one database round trip per row , it works fine in a quick local test with 50 rows and then falls over in production with a 2GB file, both by exhausting memory on read and by taking hours doing one insert at a time. Streaming plus batched inserts fixes both problems at once.',
+    codeSnippet: `import { parse } from 'csv-parse';
+import fs from 'node:fs';
+
+const BATCH_SIZE = 1000;
+let batch = [];
+
+fs.createReadStream('huge-import.csv')
+  .pipe(parse({ columns: true, trim: true }))
+  .on('data', async (row) => {
+    batch.push(normalizeRow(row)); // validate/coerce types here
+    if (batch.length >= BATCH_SIZE) {
+      const toInsert = batch;
+      batch = [];
+      await db.bulkInsert('users', toInsert); // one multi-row INSERT, not 1000 single ones
+    }
+  })
+  .on('end', async () => {
+    if (batch.length) await db.bulkInsert('users', batch); // flush the final partial batch
+  });`
   },
 
   // ─── SYSTEM DESIGN ──────────────────────────────────────────────────────────
@@ -740,6 +806,62 @@ on('OrderPlaced', decrementInventory);`
 
 // Serverless: just the handler, cloud runs it
 export async function handler(event) { return respond(event); }`
+  },
+  {
+    id: 'arch-serverless',
+    title: 'Serverless, in Depth',
+    summary:
+      'You ship a function, not a server , the cloud provider handles provisioning, scaling to zero, and scaling up, and you pay per invocation instead of per hour.',
+    difficulty: 'intermediate',
+    category: 'architecture',
+    prerequisites: ['arch-cloud-native'],
+    keyPoints: [
+      'The core deal: you write a function (a "handler") that responds to an event, an HTTP request, a queue message, a file upload, and upload just that code. There is no server to patch, size, or keep running , the provider (AWS Lambda, Vercel Functions, Cloudflare Workers) starts an instance of your function on demand and tears it down when idle.',
+      '"Serverless" does not mean no servers, it means the server is not YOUR problem. Provisioning, OS patching, and capacity planning move to the cloud provider , what you give up in exchange is control over the runtime environment and long-lived in-memory state.',
+      'Scaling is automatic and near-instant in both directions: zero traffic costs nothing (the function simply is not running), and a sudden spike gets many parallel instances spun up by the platform, without you configuring an auto-scaling group.',
+      'The cold start trade-off: a function that has not run recently needs a fresh instance spun up, code loaded, and (for some runtimes) a VM initialised before it can handle the first request , this adds noticeable latency (tens to hundreds of milliseconds, more for heavier runtimes) that a warm, already-running server does not pay.',
+      'Functions are meant to be stateless and short-lived , anything that must persist between invocations (a database connection pool, a user session, a long computation) has to live in an external service (a managed database, Redis, a queue), not in the function’s own memory, because the next invocation may run on a completely different, fresh instance.',
+      'Cost model flips from "pay for a server whether it is busy or not" to "pay per invocation and execution time" , this is cheap for spiky or low-traffic workloads and can become MORE expensive than a modest always-on server once traffic is high and constant, because you are paying a per-request premium on every single one.'
+    ],
+    gotcha:
+      'Treating a serverless function like a regular long-running server, keeping a database connection open in module scope and expecting it to persist, is a common production bug , the platform can freeze, reuse, or completely discard an instance between invocations, so connections silently go stale or you end up opening far more connections than the database can handle, one per concurrent cold instance. Use a connection pooler designed for serverless (e.g. PgBouncer-style pooling, or a provider-managed pooled connection string) instead of assuming one persistent connection.',
+    codeSnippet: `// A serverless function: stateless, event-in / response-out
+export async function handler(event) {
+  const db = await getPooledConnection(); // pooled, not a long-lived module-level connection
+  const user = await db.query('SELECT * FROM users WHERE id = ?', [event.userId]);
+  return { statusCode: 200, body: JSON.stringify(user) };
+}
+// Between invocations: no guarantee this same instance, or its memory, still exists.`
+  },
+  {
+    id: 'arch-modular-monolith',
+    title: 'Modular Monolith',
+    summary:
+      'One deployable app, like a monolith, but internally split into strict, independent modules with enforced boundaries , most of microservices discipline without the network.',
+    difficulty: 'advanced',
+    category: 'architecture',
+    prerequisites: ['eng-microservices'],
+    keyPoints: [
+      'A modular monolith is still ONE codebase and ONE deployment, exactly like a plain monolith , the difference is internal, the code is organised into clearly bounded modules (e.g. Orders, Billing, Inventory) that each own their own data and logic and only talk to each other through explicit, defined interfaces.',
+      'It sits deliberately between a tangled "big ball of mud" monolith and microservices: you get most of the team-autonomy and clear-ownership benefits of microservices (each module is owned by one team, changes are contained) without paying the network calls, distributed data, and operational overhead of running many separate services.',
+      'Boundaries are enforced in-process rather than over a network , a module cannot reach into another modules database tables or internal functions directly, it must go through that modules public interface, the same discipline as a microservice API but called as a normal function, not an HTTP request.',
+      'This gets you a genuinely useful property: because module boundaries were already respected as if they were service boundaries, splitting a module out into its own real microservice later, if and when it actually needs independent scaling or deployment, is a much smaller, more mechanical change than untangling a traditionally-organised monolith would be.',
+      'The trade-off compared to plain "everything is one big pile" monolith is upfront discipline: you have to actively design and enforce the module boundaries (often with lint rules, a dependency-cruiser-style tool, or separate packages in a monorepo) rather than letting anything import anything, which is more design effort early on for a payoff that only shows up as the codebase grows.',
+      'It is increasingly the recommended DEFAULT starting point for new products precisely because of the "microservices adopted too early" trap , you get a simpler single deployment and single database transaction model now, while keeping the door open to split out a genuinely hot module later without a rewrite.'
+    ],
+    gotcha:
+      'A "modular monolith" that only exists as a folder structure, without any actual enforcement, tends to decay back into a normal tangled monolith within a few months, because nothing stops one module quietly importing another modules internals or reaching into its database table directly under time pressure. The modularity only holds if boundary violations are caught automatically (build-time lint rules, separate packages, or a dependency-graph check in CI), not just by convention and code review discipline alone.',
+    codeSnippet: `// Modular monolith: one deploy, enforced internal boundaries
+// src/modules/orders/     (owns its own tables, exposes only this:)
+export function placeOrder(input) { /* ... */ }
+
+// src/modules/billing/    (cannot import orders' internals directly)
+import { placeOrder } from '@/modules/orders'; // ✅ via the public interface
+// import { ordersTable } from '@/modules/orders/db'; // ❌ blocked by lint/dependency rule
+
+// Later, if Orders needs independent scaling:
+// its enforced boundary means extracting it into a real microservice
+// is a deployment change, not a rewrite of tangled imports.`
   },
   {
     id: 'arch-cap-consistency',

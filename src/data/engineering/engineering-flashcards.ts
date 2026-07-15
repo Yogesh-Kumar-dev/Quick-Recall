@@ -58,9 +58,34 @@ export const engineeringFlashcards: Flashcard[] = [
     category: 'Q&A'
   },
   {
+    id: 'eng-csv-bulk-import',
+    front: 'How do you import a huge CSV into a database?',
+    back: 'Stream the file row by row (never load it all into memory), validate/coerce each row, buffer rows into batches and insert with one multi-row query per batch, commit per batch not one giant transaction, and track progress so a crash can resume without duplicating rows.',
+    code: `fs.createReadStream('huge.csv')
+  .pipe(parse({ columns: true }))
+  .on('data', (row) => {
+    batch.push(normalize(row)); // coerce strings to real types, e.g. "42" -> 42
+    if (batch.length >= 1000) flush(batch.splice(0)); // one bulk INSERT per 1000 rows
+  })
+  .on('end', () => flush(batch)); // flush the final partial batch`,
+    category: 'Q&A'
+  },
+  {
     id: 'eng-robots-txt',
     front: 'What is robots.txt for?',
     back: 'A text file at /robots.txt telling search-engine crawlers which paths they may or may not visit. Well-behaved bots respect it, but it is not a security control , don’t use it to hide private pages.',
+    category: 'Q&A'
+  },
+  {
+    id: 'eng-pagination',
+    front: 'Offset vs cursor pagination',
+    back: 'Offset (LIMIT/OFFSET) skips N rows, simple but slows down at depth and can skip/duplicate rows when data changes. Cursor pagination asks for "next after this id", stays fast via an index and stable against inserts/deletes , the default for live feeds.',
+    code: `// Offset: DB still scans + discards 10,000 rows first
+SELECT * FROM posts ORDER BY created_at DESC LIMIT 20 OFFSET 10000;
+
+// Cursor: jumps straight in via the index
+SELECT * FROM posts WHERE id < :lastSeenId
+ORDER BY id DESC LIMIT 20;`,
     category: 'Q&A'
   },
   {
@@ -85,6 +110,28 @@ export const engineeringFlashcards: Flashcard[] = [
     id: 'eng-microservices',
     front: 'Monolith vs microservices',
     back: 'Monolith: one deployable app (simple early). Microservices: independent per-domain services (independent scaling/teams) at the cost of network calls, distributed data, and ops. Start monolith.',
+    category: 'Q&A'
+  },
+  {
+    id: 'arch-modular-monolith',
+    front: 'What is a modular monolith?',
+    back: 'One deployment, like a monolith, but split internally into strict modules with enforced boundaries and no reaching into another module’s data. Gets most microservices benefits (clear ownership) without the network/ops cost, and makes splitting a module out later much easier.',
+    code: `// modules/orders/index.ts — the ONLY thing other modules may import
+export function placeOrder(input) { /* ... */ }
+
+// modules/billing/index.ts
+import { placeOrder } from '@/modules/orders';        // ✅ public interface
+// import { ordersTable } from '@/modules/orders/db'; // ❌ blocked by lint rule`,
+    category: 'Q&A'
+  },
+  {
+    id: 'arch-serverless',
+    front: 'What is serverless?',
+    back: 'You ship a function that the cloud runs on demand and scales to zero when idle, no server to provision or patch. Trades control and cold-start latency for pay-per-invocation pricing and automatic scaling , keep functions stateless, use pooled DB connections.',
+    code: `export async function handler(event) {
+  const db = await getPooledConnection(); // never a long-lived module-level connection
+  return { statusCode: 200, body: await db.query(event) };
+}`,
     category: 'Q&A'
   },
   {
@@ -234,7 +281,7 @@ export const engineeringFlashcards: Flashcard[] = [
     category: 'Q&A'
   },
   {
-    id: 'arch-serverless',
+    id: 'arch-cloud-native',
     front: 'Containers vs serverless',
     back: 'Containers (Docker/K8s): portable image you run/scale yourself. Serverless (Lambda): run code per request, auto-scales to zero, pay per execution , trades control + cold-start latency for zero ops.',
     category: 'Q&A'

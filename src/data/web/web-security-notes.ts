@@ -167,6 +167,36 @@ X-Frame-Options: DENY   # legacy fallback
 Content-Security-Policy: frame-ancestors 'self'`
   },
   {
+    id: 'websec-dos-ddos',
+    title: 'Denial of Service (DoS) & DDoS',
+    summary:
+      'An attack that does not try to steal data at all , it just overwhelms a service with traffic or expensive requests until real users cannot get through.',
+    difficulty: 'intermediate',
+    category: 'attacks',
+    prerequisites: ['eng-rate-limiting-algorithms', 'arch-load-balancing'],
+    textbookDef:
+      'A Denial of Service attack aims to make a service unavailable to its legitimate users by exhausting a limiting resource, such as network bandwidth, server compute, memory, or connection slots. A Distributed Denial of Service (DDoS) attack sources that traffic from many machines simultaneously, typically a botnet, making it far harder to block by simply blocking one source.',
+    eli5: 'A shop can normally serve one customer at a time at the till. DoS is one person endlessly walking back through the queue to be served again and again, so nobody else gets served. DDoS is a thousand people doing that at once from every entrance, so there is no single troublemaker to point at and remove.',
+    keyPoints: [
+      'Volumetric attacks simply flood the network pipe with traffic (UDP floods, amplification attacks that spoof your IP and trick third-party servers into sending you huge replies) , the goal is to saturate bandwidth before the request even reaches your application.',
+      'Protocol attacks exploit weaknesses in how connections are established, like a SYN flood that opens thousands of half-finished TCP handshakes and exhausts the servers connection table without ever completing a request.',
+      'Application-layer attacks look like completely normal, valid requests, just an overwhelming number of them (or a few very expensive ones, like an unindexed search hitting the database) , these are the hardest to filter because each individual request is legitimate.',
+      'DDoS specifically means the traffic comes from many distributed sources (often a botnet of compromised devices), which defeats simple defences like "block this one IP" , the traffic looks like it is coming from thousands of different, ordinary users.',
+      'Rate limiting (see the rate limiting algorithms note) is the first line of defence at the application layer, capping how many requests any one client/IP/token can make in a window , it stops one abusive client but does not stop a large distributed flood on its own.',
+      'Real infrastructure defence layers on top of rate limiting: a CDN/edge network absorbs and filters volumetric traffic before it reaches your servers, auto-scaling and load balancing spread legitimate load across capacity, and specialised DDoS protection services (Cloudflare, AWS Shield) detect and scrub attack traffic patterns in real time.'
+    ],
+    gotcha:
+      'A common mistaken belief is "rate limiting solves DDoS" , rate limiting caps a single identity (an IP, an API key, a user), but a real DDoS attack spreads the same total request volume across thousands of different IPs, each staying comfortably under any per-client limit. Meaningful DDoS defence has to operate at the network/edge layer (filtering and absorbing traffic before it reaches your app), with application-layer rate limiting as a complementary, not sufficient, second line.',
+    codeSnippet: `// Application-layer rate limiting stops abuse from ONE client:
+if (requestsInLastMinute(clientIp) > 100) return res.status(429).send('Too Many Requests');
+
+// It does NOT stop a real DDoS, spread across thousands of IPs:
+// client A: 80 req/min  ✓ under limit
+// client B: 80 req/min  ✓ under limit
+// ...x5000 clients      = 400,000 req/min hitting your servers anyway
+// -> needs edge/CDN-level filtering, not just app-level rate limiting`
+  },
+  {
     id: 'websec-owasp-top-10',
     title: 'The OWASP Top 10, from a frontend seat',
     summary:

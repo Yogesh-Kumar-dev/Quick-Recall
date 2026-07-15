@@ -40,6 +40,33 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
     if (!cardId && cards.length > 0) setCardId(cards[0].id, { scroll: false });
   }, [cardId, cards, setCardId]);
 
+  // ponytail: document-level listener so space/arrows work the same as a click even when the
+  // card itself never received focus — otherwise Space falls through to the browser's native
+  // "scroll the page down" action instead of flipping, which looks like a layout flicker.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) return;
+      // A focused real <button> (Prev/Next/dots) should keep its own native Space/Enter behavior.
+      if (tag === 'BUTTON' && (e.key === ' ' || e.key === 'Enter')) return;
+
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goTo(currentIndex === 0 ? cards.length - 1 : currentIndex - 1);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goTo(currentIndex === cards.length - 1 ? 0 : currentIndex + 1);
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        setIsFlipped((f) => !f);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [cards.length, currentIndex, goTo]);
+
   if (cards.length === 0) {
     return (
       <div className="mx-auto max-w-2xl py-12 text-center">
@@ -53,15 +80,6 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
 
   const handlePrev = () => goTo(currentIndex === 0 ? cards.length - 1 : currentIndex - 1);
   const handleNext = () => goTo(currentIndex === cards.length - 1 ? 0 : currentIndex + 1);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') handlePrev();
-    if (e.key === 'ArrowRight') handleNext();
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      setIsFlipped((f) => !f);
-    }
-  };
 
   return (
     <section className="mx-auto w-full max-w-2xl space-y-8" aria-label="Flashcard carousel">
@@ -81,12 +99,12 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
             a CodeBlock, whose copy control is itself a <button> — nesting a <button> inside a
             <button> is invalid HTML and triggers a hydration error. */}
         {/* biome-ignore lint/a11y/useSemanticElements: must be a div, not a button — see comment above */}
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard flip/navigate is a document-level listener above, not a per-element handler */}
         <div
           role="button"
           tabIndex={0}
           className="h-full w-full cursor-pointer [perspective:1000px]"
           onClick={() => setIsFlipped((f) => !f)}
-          onKeyDown={handleKeyDown}
           aria-label={`Flashcard ${currentIndex + 1}: ${current.front}. Press Space to flip, arrow keys to navigate.`}
         >
           <div
