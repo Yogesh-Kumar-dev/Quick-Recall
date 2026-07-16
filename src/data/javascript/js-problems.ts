@@ -136,5 +136,45 @@ export const jsProblems: JsProblemEntry[] = [
     difficulty: 'hard',
     category: 'object',
     tags: ['recursion', 'json', 'serialization', 'polyfill']
+  },
+  {
+    id: 'deep-equal',
+    title: 'Deep Equality Check',
+    slug: 'deep-equal',
+    difficulty: 'medium',
+    category: 'object',
+    tags: ['recursion', 'object', 'comparison']
+  },
+  {
+    id: 'async-retry',
+    title: 'Async Retry with Backoff',
+    slug: 'async-retry',
+    difficulty: 'medium',
+    category: 'async',
+    tags: ['async', 'promise', 'error-handling', 'backoff']
+  },
+  {
+    id: 'pipe-compose',
+    title: 'Implement pipe / compose',
+    slug: 'pipe-compose',
+    difficulty: 'easy',
+    category: 'functional',
+    tags: ['functional-programming', 'reduce', 'higher-order-function']
+  },
+  {
+    id: 'array-chunk',
+    title: 'Chunk an Array',
+    slug: 'array-chunk',
+    difficulty: 'easy',
+    category: 'array',
+    tags: ['array', 'slice', 'lodash', 'pagination']
+  },
+  {
+    id: 'once',
+    title: 'Implement once()',
+    slug: 'once',
+    difficulty: 'easy',
+    category: 'functional',
+    tags: ['closure', 'higher-order-function', 'lodash']
   }
 ];

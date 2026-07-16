@@ -18,7 +18,12 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   'promise-all-settled': () => import('@/views/js-machine-coding/PromiseAllSettled'),
   'event-emitter': () => import('@/views/js-machine-coding/EventEmitter'),
   'lru-cache': () => import('@/views/js-machine-coding/LruCache'),
-  'json-stringify': () => import('@/views/js-machine-coding/JsonStringify')
+  'json-stringify': () => import('@/views/js-machine-coding/JsonStringify'),
+  'deep-equal': () => import('@/views/js-machine-coding/DeepEqual'),
+  'async-retry': () => import('@/views/js-machine-coding/AsyncRetry'),
+  'pipe-compose': () => import('@/views/js-machine-coding/PipeCompose'),
+  'array-chunk': () => import('@/views/js-machine-coding/ArrayChunk'),
+  once: () => import('@/views/js-machine-coding/Once')
 };
 
 export function generateStaticParams() {
