@@ -88,5 +88,29 @@ export const jsProblems: JsProblemEntry[] = [
     difficulty: 'easy',
     category: 'array',
     tags: ['hash-map', 'frequency', 'array', 'reduce', 'object']
+  },
+  {
+    id: 'promise-race',
+    title: 'Implement Promise.race',
+    slug: 'promise-race',
+    difficulty: 'medium',
+    category: 'async',
+    tags: ['promise', 'async', 'polyfill', 'timeout']
+  },
+  {
+    id: 'promise-any',
+    title: 'Implement Promise.any',
+    slug: 'promise-any',
+    difficulty: 'hard',
+    category: 'async',
+    tags: ['promise', 'async', 'polyfill', 'aggregate-error']
+  },
+  {
+    id: 'promise-all-settled',
+    title: 'Implement Promise.allSettled',
+    slug: 'promise-all-settled',
+    difficulty: 'medium',
+    category: 'async',
+    tags: ['promise', 'async', 'polyfill', 'error-handling']
   }
 ];

@@ -12,7 +12,10 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   'custom-bind': () => import('@/views/js-machine-coding/CustomBind'),
   'group-by': () => import('@/views/js-machine-coding/GroupBy'),
   'electricity-bill': () => import('@/views/js-machine-coding/ElectricityBill'),
-  'frequency-calculator': () => import('@/views/js-machine-coding/FrequencyCalculator')
+  'frequency-calculator': () => import('@/views/js-machine-coding/FrequencyCalculator'),
+  'promise-race': () => import('@/views/js-machine-coding/PromiseRace'),
+  'promise-any': () => import('@/views/js-machine-coding/PromiseAny'),
+  'promise-all-settled': () => import('@/views/js-machine-coding/PromiseAllSettled')
 };
 
 export function generateStaticParams() {
