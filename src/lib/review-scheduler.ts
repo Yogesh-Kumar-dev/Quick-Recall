@@ -7,7 +7,7 @@
 // diverge from the first review (Again 1m / Hard 10m / Good 1d / Easy 3d) instead of all
 // collapsing to "1 day", and intervals are capped (~2 weeks) so nothing falls off the radar.
 
-import type { ReviewQuality, ReviewState } from '@/types/study';
+import type { BookmarkKind, ReviewQuality, ReviewState } from '@/types/study';
 
 const MS_PER_MIN = 60 * 1000;
 const MIN = 1;
@@ -27,9 +27,9 @@ const EASE_DELTA: Record<ReviewQuality, number> = {
 
 const clampInterval = (minutes: number): number => Math.min(MAX_INTERVAL, Math.round(minutes));
 
-export function initialReviewState(refId: string, now: number): ReviewState {
+export function initialReviewState(refId: string, now: number, kind: BookmarkKind = 'flashcard'): ReviewState {
   return {
-    id: `flashcard:${refId}`,
+    id: `${kind}:${refId}`,
     refId,
     easiness: 2.5,
     intervalMinutes: 0,

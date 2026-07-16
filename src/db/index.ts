@@ -5,7 +5,7 @@ import Dexie, { type Table } from 'dexie';
 // types
 import type { JobApplication } from '@/types/job-tracker';
 import type { SpeakUpQA } from '@/types/speak-up';
-import type { Bookmark, ReviewState } from '@/types/study';
+import type { Bookmark, PracticeAttempt, ReviewState } from '@/types/study';
 
 // ==============================|| DEXIE - SHARED CLIENT DATABASE ||============================== //
 
@@ -18,6 +18,7 @@ class QuickRecallDB extends Dexie {
   speakUpQAs!: Table<SpeakUpQA, string>;
   bookmarks!: Table<Bookmark, string>;
   reviews!: Table<ReviewState, string>;
+  attempts!: Table<PracticeAttempt, string>;
 
   constructor() {
     super('quickrecall');
@@ -28,7 +29,8 @@ class QuickRecallDB extends Dexie {
       jobs: 'id, status, favorite, createdAt',
       speakUpQAs: 'id, sourceId, jobId, createdAt',
       bookmarks: 'id, kind, createdAt',
-      reviews: 'id, dueAt'
+      reviews: 'id, dueAt',
+      attempts: 'id, refId, startedAt'
     });
   }
 }
