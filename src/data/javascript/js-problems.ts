@@ -112,5 +112,29 @@ export const jsProblems: JsProblemEntry[] = [
     difficulty: 'medium',
     category: 'async',
     tags: ['promise', 'async', 'polyfill', 'error-handling']
+  },
+  {
+    id: 'event-emitter',
+    title: 'Build an EventEmitter',
+    slug: 'event-emitter',
+    difficulty: 'medium',
+    category: 'class',
+    tags: ['class', 'pub-sub', 'events', 'design']
+  },
+  {
+    id: 'lru-cache',
+    title: 'LRU Cache',
+    slug: 'lru-cache',
+    difficulty: 'hard',
+    category: 'class',
+    tags: ['class', 'cache', 'map', 'design']
+  },
+  {
+    id: 'json-stringify',
+    title: 'Implement JSON.stringify',
+    slug: 'json-stringify',
+    difficulty: 'hard',
+    category: 'object',
+    tags: ['recursion', 'json', 'serialization', 'polyfill']
   }
 ];

@@ -15,7 +15,10 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   'frequency-calculator': () => import('@/views/js-machine-coding/FrequencyCalculator'),
   'promise-race': () => import('@/views/js-machine-coding/PromiseRace'),
   'promise-any': () => import('@/views/js-machine-coding/PromiseAny'),
-  'promise-all-settled': () => import('@/views/js-machine-coding/PromiseAllSettled')
+  'promise-all-settled': () => import('@/views/js-machine-coding/PromiseAllSettled'),
+  'event-emitter': () => import('@/views/js-machine-coding/EventEmitter'),
+  'lru-cache': () => import('@/views/js-machine-coding/LruCache'),
+  'json-stringify': () => import('@/views/js-machine-coding/JsonStringify')
 };
 
 export function generateStaticParams() {
