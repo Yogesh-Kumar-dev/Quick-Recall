@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { type ComponentRef, lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { toast } from 'sonner';
 
@@ -14,6 +14,7 @@ import { jsProblems } from '@/data/javascript/js-problems';
 import { reactMcProblems } from '@/data/react/react-mc-problems';
 import type { CodeLang } from '@/components/content/code-highlighted';
 import type { ReviewQuality } from '@/types/study';
+import type { PracticeEditorHandle } from './practice-editor';
 import type { PracticeSession } from './use-practice-session';
 
 // ==============================|| PRACTICE PANEL (timed attempt + self-grade) ||============================== //
@@ -21,15 +22,12 @@ import type { PracticeSession } from './use-practice-session';
 // The daily-practice loop: write the solution from scratch under a countdown, self-grade
 // against the revealed solution, and the problem re-enters the SRS queue (`problem:${slug}`).
 
-// CodeMirror is heavy — lazy-load it only when a session starts. React.lazy (not next/dynamic)
-// because the ref must reach the editor for getContents(); it never renders during prerender
-// since the idle state shows only the Start screen.
-const CodeEditor = lazy(() => import('@leafygreen-ui/code-editor').then((m) => ({ default: m.CodeEditor })));
+// CodeMirror is heavy — lazy-load the editor wrapper only when a session starts. React.lazy
+// (not next/dynamic) because the ref must reach the editor for getContents(); it never renders
+// during prerender since the idle state shows only the Start screen.
+const PracticeEditor = lazy(() => import('./practice-editor'));
 
 const DURATION_MIN = { easy: 15, medium: 25, hard: 40 } as const;
-
-// LeafyGreen doesn't export its CodeEditorHandle type — derive it from the component.
-type CodeEditorHandle = ComponentRef<typeof CodeEditor>;
 
 // Same look as the /review rating bar.
 const RATINGS: { quality: ReviewQuality; label: string; className: string }[] = [
@@ -68,7 +66,7 @@ export default function PracticePanel({ session, solutionCode, language }: Props
   // truth is getContents() on the ref, captured at submit/give-up time. The draft only
   // persists at those moments — a mid-session reload loses unsubmitted typing.
   const draftKey = `practice-draft:${slug}`;
-  const editorRef = useRef<CodeEditorHandle>(null);
+  const editorRef = useRef<PracticeEditorHandle>(null);
   const [code, setCode] = useState(() => (typeof window === 'undefined' ? '' : (localStorage.getItem(draftKey) ?? '')));
   const reviewState = useLiveQuery(() => reviewsRepository.get(slug, 'problem'), [slug]);
 
@@ -90,6 +88,26 @@ export default function PracticePanel({ session, solutionCode, language }: Props
       session.start(durationMin);
     }
   }, [session, durationMin]);
+
+  // Panel copy button → offer to run the snippet in an online sandbox.
+  const offerToRun = () => {
+    toast('Code copied. Want to run it?', {
+      duration: 8000,
+      action: {
+        label: 'Open OneCompiler',
+        onClick: () =>
+          window.open(kind === 'js' ? 'https://onecompiler.com/javascript' : 'https://onecompiler.com/react', '_blank', 'noopener')
+      }
+    });
+  };
+
+  // One-time nudge when the countdown hits zero — the timer keeps going (negative, red),
+  // like a real interview where you finish your thought instead of freezing.
+  useEffect(() => {
+    if (session.status === 'active' && session.secondsLeft === 0) {
+      toast.warning("Time's up — wrap up and submit, just like a real interview.");
+    }
+  }, [session.status, session.secondsLeft]);
 
   const grade = async (quality: ReviewQuality, gaveUp: boolean, writtenCode: string = code) => {
     const now = Date.now();
@@ -165,14 +183,7 @@ export default function PracticePanel({ session, solutionCode, language }: Props
         </div>
 
         <Suspense fallback={<div className="flex h-80 items-center justify-center text-sm text-muted-foreground">Loading editor…</div>}>
-          <CodeEditor
-            ref={editorRef}
-            defaultValue={code}
-            language={kind === 'js' ? 'javascript' : 'jsx'}
-            minHeight="320px"
-            maxHeight="60vh"
-            darkMode
-          />
+          <PracticeEditor ref={editorRef} defaultValue={code} language={kind === 'js' ? 'javascript' : 'jsx'} onCopy={offerToRun} />
         </Suspense>
 
         {session.status === 'submitted' && (
