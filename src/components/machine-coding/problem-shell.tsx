@@ -1,11 +1,13 @@
 'use client';
 
-import { Activity, type ReactNode, useState } from 'react';
+import { Activity, type ReactNode, useEffect, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import CodeBlock from '@/components/content/code-block';
 import Segmented from './segmented';
 import ProblemStatement from './problem-statement';
+import PracticePanel from './practice-panel';
+import usePracticeSession from './use-practice-session';
 import type { ProblemMeta } from '@/types/content';
 
 interface VersionData {
@@ -26,6 +28,16 @@ const VERSIONS = [
 export default function ProblemShell({ problem, versions }: Props) {
   const [active, setActive] = useState<'jsx' | 'tsx'>('jsx');
   const [tab, setTab] = useState('preview');
+  const session = usePracticeSession();
+
+  // ?practice=1 deep-links (from /review, dashboard) open straight onto the Practice tab.
+  // Read post-mount instead of via nuqs — these pages are SSG'd and useSearchParams would
+  // force a Suspense boundary into every problem view.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('practice') === '1') setTab('practice');
+  }, []);
+  // Preview stays open (it IS the spec you're building against); only Code is locked mid-attempt.
+  const locked = session.status === 'active';
   const current = versions[active];
 
   return (
@@ -44,7 +56,10 @@ export default function ProblemShell({ problem, versions }: Props) {
         <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
           <TabsList>
             <TabsTrigger value="preview">Preview</TabsTrigger>
-            <TabsTrigger value="code">Code</TabsTrigger>
+            <TabsTrigger value="code" disabled={locked}>
+              Code
+            </TabsTrigger>
+            <TabsTrigger value="practice">Practice</TabsTrigger>
           </TabsList>
           <Segmented options={VERSIONS} value={active} onChange={(v) => setActive(v as 'jsx' | 'tsx')} />
         </div>
@@ -58,6 +73,9 @@ export default function ProblemShell({ problem, versions }: Props) {
           <Activity mode={tab === 'code' ? 'visible' : 'hidden'}>
             <CodeBlock code={current.code} language={active} />
           </Activity>
+        </TabsContent>
+        <TabsContent value="practice" className="max-h-[80vh] overflow-auto p-4">
+          <PracticePanel session={session} solutionCode={current.code} language={active} />
         </TabsContent>
       </Tabs>
     </Card>

@@ -23,6 +23,7 @@
     "@hookform/resolvers": "^5.4.0",
     "@leafygreen-ui/callout": "^12.1.5",
     "@leafygreen-ui/code": "^20.2.7",
+    "@leafygreen-ui/code-editor": "^1.0.6",
     "@leafygreen-ui/emotion": "5.2.0",
     "@leafygreen-ui/expandable-card": "^5.2.4",
     "@leafygreen-ui/leafygreen-provider": "^5.0.4",
