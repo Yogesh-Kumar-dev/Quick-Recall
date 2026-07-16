@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import CodeBlock from '@/components/content/code-block';
 import * as attemptsRepository from '@/db/attempts';
+import * as practiceSessionsRepository from '@/db/practice-sessions';
 import * as reviewsRepository from '@/db/reviews';
 import { initialReviewState, review as schedule, formatDuePhrase, formatInterval } from '@/lib/review-scheduler';
 import { jsProblems } from '@/data/javascript/js-problems';
@@ -63,31 +64,59 @@ export default function PracticePanel({ session, solutionCode, language }: Props
   const durationMin = DURATION_MIN[difficulty];
 
   // The editor's onChange is unreliable across its lazy module loading, so the source of
-  // truth is getContents() on the ref, captured at submit/give-up time. The draft only
-  // persists at those moments — a mid-session reload loses unsubmitted typing.
-  const draftKey = `practice-draft:${slug}`;
+  // truth is getContents() on the ref, captured at submit/give-up and into the periodic
+  // session snapshot below.
   const editorRef = useRef<PracticeEditorHandle>(null);
-  const [code, setCode] = useState(() => (typeof window === 'undefined' ? '' : (localStorage.getItem(draftKey) ?? '')));
+  const [code, setCode] = useState('');
   const reviewState = useLiveQuery(() => reviewsRepository.get(slug, 'problem'), [slug]);
+  // An unfinished attempt persisted in Dexie; undefined = still loading, null-ish row = none.
+  const savedSession = useLiveQuery(() => practiceSessionsRepository.get(slug), [slug]);
 
   const captureCode = (): string => {
     const written = editorRef.current?.getContents() ?? code;
     setCode(written);
-    localStorage.setItem(draftKey, written);
     return written;
   };
 
-  // ?practice=1 (from /review or the dashboard) auto-starts one session. Read post-mount
-  // instead of via nuqs — these pages are SSG'd and useSearchParams would force a Suspense
-  // boundary into every problem view.
+  const resume = () => {
+    if (!savedSession) return;
+    setCode(savedSession.code);
+    session.start(savedSession.durationMin, savedSession.startedAt);
+  };
+
+  // Snapshot the in-flight attempt every 5s (and on start) so navigating away is resumable.
+  useEffect(() => {
+    if (session.status !== 'active') return;
+    const snapshot = () =>
+      practiceSessionsRepository.save({
+        refId: slug,
+        kind,
+        startedAt: session.startedAt,
+        durationMin,
+        code: editorRef.current?.getContents() ?? ''
+      });
+    snapshot();
+    const id = setInterval(snapshot, 5000);
+    return () => clearInterval(id);
+  }, [session.status, session.startedAt, slug, kind, durationMin]);
+
+  // ?practice=1 (from /review or the dashboard) auto-starts one session — resuming the saved
+  // one if it exists. Read post-mount instead of via nuqs — these pages are SSG'd and
+  // useSearchParams would force a Suspense boundary into every problem view.
   const autoStarted = useRef(false);
   useEffect(() => {
+    if (savedSession === undefined) return; // wait for the live query before deciding
     const wantsPractice = new URLSearchParams(window.location.search).get('practice') === '1';
     if (wantsPractice && session.status === 'idle' && !autoStarted.current) {
       autoStarted.current = true;
-      session.start(durationMin);
+      if (savedSession) {
+        setCode(savedSession.code);
+        session.start(savedSession.durationMin, savedSession.startedAt);
+      } else {
+        session.start(durationMin);
+      }
     }
-  }, [session, durationMin]);
+  }, [session, durationMin, savedSession]);
 
   // Panel copy button → offer to run the snippet in an online sandbox.
   const offerToRun = () => {
@@ -131,16 +160,38 @@ export default function PracticePanel({ session, solutionCode, language }: Props
     } catch {
       toast.error('Could not save your attempt.');
     }
+    await practiceSessionsRepository.remove(slug); // attempt finished — nothing left to resume
     session.markGraded();
   };
 
   const practiceAgain = () => {
-    localStorage.removeItem(draftKey);
     setCode('');
     session.reset();
   };
 
   if (session.status === 'idle') {
+    // A saved snapshot means an attempt was interrupted mid-session — offer to pick it up
+    // with the original clock (time spent away still counts).
+    if (savedSession) {
+      const secondsLeft = savedSession.durationMin * 60 - Math.round((Date.now() - savedSession.startedAt) / 1000);
+      return (
+        <div className="rounded-lg border border-dashed border-border p-8 text-center">
+          <h3 className="text-lg font-semibold">Attempt in progress</h3>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            You left mid-attempt — the clock kept running, like a real interview. {formatClock(secondsLeft)} left.
+          </p>
+          <div className="mt-5 flex justify-center gap-3">
+            <Button size="lg" onClick={resume}>
+              Resume attempt
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => practiceSessionsRepository.remove(slug)}>
+              Discard
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="rounded-lg border border-dashed border-border p-8 text-center">
         <h3 className="text-lg font-semibold">Practice this problem</h3>

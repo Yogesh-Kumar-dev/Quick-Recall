@@ -28,6 +28,18 @@ export interface ReviewState {
   lastReviewedAt: number; // epoch ms (0 before first review)
 }
 
+// An in-flight practice session, snapshotted every few seconds so navigating away
+// mid-attempt is resumable — the wall clock keeps running against `startedAt`.
+// One per problem (refId is the primary key); deleted once the attempt is graded.
+export interface PracticeSessionState {
+  refId: string; // problem slug
+  kind: 'js' | 'react';
+  startedAt: number; // epoch ms — elapsed/remaining time derives from this
+  durationMin: number;
+  code: string;
+  updatedAt: number;
+}
+
 // One timed machine-coding practice session, logged when the user self-grades.
 // Powers the dashboard streak/activity widgets; `code` keeps what was written for later self-diff.
 export interface PracticeAttempt {

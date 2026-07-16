@@ -21,9 +21,11 @@ export default function usePracticeSession() {
     return () => clearInterval(timer);
   }, [status]);
 
-  const start = (durationMin: number) => {
-    startedAtRef.current = Date.now();
-    setSecondsLeft(durationMin * 60);
+  // `startedAt` defaults to now; resuming a persisted session passes its original start
+  // time, so minutes spent on other pages still count against the clock.
+  const start = (durationMin: number, startedAt: number = Date.now()) => {
+    startedAtRef.current = startedAt;
+    setSecondsLeft(durationMin * 60 - Math.round((Date.now() - startedAt) / 1000));
     setStatus('active');
   };
 
