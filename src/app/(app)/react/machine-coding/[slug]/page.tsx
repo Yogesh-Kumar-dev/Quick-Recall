@@ -24,7 +24,11 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   'drag-and-drop': () => import('@/views/machine-coding/DragAndDrop'),
   'file-tree': () => import('@/views/machine-coding/FileTree'),
   'shopping-cart': () => import('@/views/machine-coding/ShoppingCart'),
-  'virtualized-list': () => import('@/views/machine-coding/VirtualizedList')
+  'virtualized-list': () => import('@/views/machine-coding/VirtualizedList'),
+  stopwatch: () => import('@/views/machine-coding/Stopwatch'),
+  'traffic-light': () => import('@/views/machine-coding/TrafficLight'),
+  'tic-tac-toe': () => import('@/views/machine-coding/TicTacToe'),
+  'image-carousel': () => import('@/views/machine-coding/ImageCarousel')
 };
 
 export function generateStaticParams() {

@@ -192,5 +192,37 @@ export const reactMcProblems: ReactMcProblem[] = [
     difficulty: 'hard',
     category: 'performance',
     tags: ['IntersectionObserver', 'react-virtuoso', 'virtualization', 'useRef']
+  },
+  {
+    id: 'stopwatch',
+    title: 'Stopwatch',
+    slug: 'stopwatch',
+    difficulty: 'easy',
+    category: 'ui-state',
+    tags: ['useEffect', 'setInterval', 'cleanup', 'useRef']
+  },
+  {
+    id: 'traffic-light',
+    title: 'Traffic Light',
+    slug: 'traffic-light',
+    difficulty: 'easy',
+    category: 'ui-state',
+    tags: ['state-machine', 'setTimeout', 'useEffect', 'config-driven']
+  },
+  {
+    id: 'tic-tac-toe',
+    title: 'Tic-Tac-Toe',
+    slug: 'tic-tac-toe',
+    difficulty: 'medium',
+    category: 'ui-state',
+    tags: ['derived-state', 'immutability', 'game-logic']
+  },
+  {
+    id: 'image-carousel',
+    title: 'Image Carousel',
+    slug: 'image-carousel',
+    difficulty: 'medium',
+    category: 'advanced-ui',
+    tags: ['setInterval', 'modulo', 'auto-play', 'hover-pause']
   }
 ];
