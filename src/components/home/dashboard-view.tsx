@@ -15,6 +15,7 @@ import { htmlNotes } from '@/data/htmlcss/html-notes';
 import { cssNotes } from '@/data/htmlcss/css-notes';
 import { DASHBOARD_INSTAGRAM } from '@/data/video-playlists';
 import TopicStatCard from './topic-stat-card';
+import PracticeStats from './practice-stats';
 
 // ─── Difficulty tally helper ───────────────────────────────────────────────────
 
@@ -72,6 +73,8 @@ export default function DashboardView() {
         </div>
         <InstagramLauncher links={DASHBOARD_INSTAGRAM} />
       </div>
+
+      <PracticeStats />
 
       <div className="mb-6 flex flex-wrap gap-3">
         {OVERVIEW.map((o) => (
