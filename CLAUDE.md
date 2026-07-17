@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**QuickRecall** — a personal developer interview-prep knowledge base built with Next.js 16 (App Router, Turbopack, React 19). Covers JavaScript, TypeScript, React, Next.js, Redux, HTML/CSS, and general engineering topics through notes, quick-recall cheat sheets, flashcards, and machine-coding problems with a side-by-side live demo + code viewer. Also includes a Job Tracker (kanban), a Speak Up rehearsal tool for behavioral/technical answers, bookmarks, and a spaced-repetition review queue — all persisted client-side. Ships as an installable, offline-capable PWA. There is no auth and no backend — everything runs and persists locally in the browser.
+**QuickRecall** — a personal full-stack developer interview-prep knowledge base built with Next.js 16 (App Router, Turbopack, React 19). Covers JavaScript, TypeScript, React, Next.js, Redux, HTML/CSS, Node.js, databases (PostgreSQL, MongoDB, Redis, DynamoDB), and general engineering topics through notes, quick-recall cheat sheets, flashcards, and machine-coding problems with a side-by-side live demo + code viewer. Also includes a Job Tracker (kanban), a Speak Up rehearsal tool for behavioral/technical answers, bookmarks, and a spaced-repetition review queue — all persisted client-side. Ships as an installable, offline-capable PWA. There is no auth and no backend — everything runs and persists locally in the browser.
 
 ## Commands
 
