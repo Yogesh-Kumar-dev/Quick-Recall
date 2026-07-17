@@ -20,6 +20,7 @@ import {
   IconGauge,
   IconInfoCircle,
   IconKey,
+  IconMessageQuestion,
   IconMicrophone,
   IconNotes,
   IconServer,
@@ -48,7 +49,8 @@ export const primaryNav: NavLink[] = [
   { title: 'Dashboard', url: '/dashboard', icon: IconBrandChrome },
   { title: 'About', url: '/about', icon: IconInfoCircle },
   { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase },
-  { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone }
+  { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone },
+  { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion }
 ];
 
 // Grouped sections (each renders as a labelled sidebar group).

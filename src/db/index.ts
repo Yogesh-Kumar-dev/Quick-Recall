@@ -4,6 +4,7 @@ import Dexie, { type Table } from 'dexie';
 
 // types
 import type { JobApplication } from '@/types/job-tracker';
+import type { MockInterview } from '@/types/mock-interview';
 import type { SpeakUpQA } from '@/types/speak-up';
 import type { Bookmark, PracticeAttempt, PracticeSessionState, ReviewState } from '@/types/study';
 
@@ -20,6 +21,7 @@ class QuickRecallDB extends Dexie {
   reviews!: Table<ReviewState, string>;
   attempts!: Table<PracticeAttempt, string>;
   practiceSessions!: Table<PracticeSessionState, string>;
+  mockInterviews!: Table<MockInterview, string>;
 
   constructor() {
     super('quickrecall');
@@ -32,7 +34,8 @@ class QuickRecallDB extends Dexie {
       bookmarks: 'id, kind, createdAt',
       reviews: 'id, dueAt',
       attempts: 'id, refId, startedAt',
-      practiceSessions: 'refId'
+      practiceSessions: 'refId',
+      mockInterviews: 'id, status, startedAt'
     });
   }
 }

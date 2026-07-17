@@ -6,8 +6,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import type { JobApplication, JobApplicationInput, JobStatus } from '@/types/job-tracker';
+import { ChipFilter } from './chip-filter';
 import { INTERVIEW_OUTCOME_CONFIG, JOB_SOURCE_CONFIG, JOB_STATUS_CONFIG, JOB_STATUS_ORDER, WORK_MODE_CONFIG } from './config';
 import JobCard from './job-card';
 import JobFormDrawer from './job-form-drawer';
@@ -63,33 +63,6 @@ type SearchEntry = { job: JobApplication; text: string };
 function createJobsFuse(jobs: JobApplication[]): Fuse<SearchEntry> {
   const entries: SearchEntry[] = jobs.map((job) => ({ job, text: searchableText(job) }));
   return new Fuse(entries, { keys: ['text'], threshold: 0.4, ignoreLocation: true, minMatchCharLength: 2 });
-}
-
-function ChipFilter({
-  active,
-  count,
-  label,
-  colorClass,
-  onClick
-}: {
-  active: boolean;
-  count: number;
-  label: string;
-  colorClass?: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs transition-colors',
-        active ? 'border-primary bg-primary text-primary-foreground' : cn('hover:bg-accent', colorClass)
-      )}
-    >
-      <span className="font-bold">{count}</span> {label}
-    </button>
-  );
 }
 
 export default function JobTrackerView() {
