@@ -224,5 +224,29 @@ export const reactMcProblems: ReactMcProblem[] = [
     difficulty: 'medium',
     category: 'advanced-ui',
     tags: ['setInterval', 'modulo', 'auto-play', 'hover-pause']
+  },
+  {
+    id: 'nested-comments',
+    title: 'Nested Comments',
+    slug: 'nested-comments',
+    difficulty: 'medium',
+    category: 'advanced-ui',
+    tags: ['recursion', 'tree-update', 'immutability', 'reply-thread']
+  },
+  {
+    id: 'toast-notifications',
+    title: 'Toast Notifications',
+    slug: 'toast-notifications',
+    difficulty: 'medium',
+    category: 'advanced-ui',
+    tags: ['context', 'custom-hook', 'setTimeout', 'design-api']
+  },
+  {
+    id: 'undo-redo',
+    title: 'Undo / Redo',
+    slug: 'undo-redo',
+    difficulty: 'medium',
+    category: 'ui-state',
+    tags: ['useReducer', 'history', 'state-design', 'immutability']
   }
 ];

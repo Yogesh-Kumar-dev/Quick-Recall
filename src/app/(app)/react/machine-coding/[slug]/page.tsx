@@ -28,7 +28,10 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   stopwatch: () => import('@/views/machine-coding/Stopwatch'),
   'traffic-light': () => import('@/views/machine-coding/TrafficLight'),
   'tic-tac-toe': () => import('@/views/machine-coding/TicTacToe'),
-  'image-carousel': () => import('@/views/machine-coding/ImageCarousel')
+  'image-carousel': () => import('@/views/machine-coding/ImageCarousel'),
+  'nested-comments': () => import('@/views/machine-coding/NestedComments'),
+  'toast-notifications': () => import('@/views/machine-coding/ToastNotifications'),
+  'undo-redo': () => import('@/views/machine-coding/UndoRedo')
 };
 
 export function generateStaticParams() {

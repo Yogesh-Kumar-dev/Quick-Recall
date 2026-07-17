@@ -23,7 +23,8 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   'async-retry': () => import('@/views/js-machine-coding/AsyncRetry'),
   'pipe-compose': () => import('@/views/js-machine-coding/PipeCompose'),
   'array-chunk': () => import('@/views/js-machine-coding/ArrayChunk'),
-  once: () => import('@/views/js-machine-coding/Once')
+  once: () => import('@/views/js-machine-coding/Once'),
+  'map-limit': () => import('@/views/js-machine-coding/MapLimit')
 };
 
 export function generateStaticParams() {

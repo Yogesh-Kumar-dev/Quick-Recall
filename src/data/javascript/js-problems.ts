@@ -176,5 +176,13 @@ export const jsProblems: JsProblemEntry[] = [
     difficulty: 'easy',
     category: 'functional',
     tags: ['closure', 'higher-order-function', 'lodash']
+  },
+  {
+    id: 'map-limit',
+    title: 'Concurrency-Limited Task Runner (mapLimit)',
+    slug: 'map-limit',
+    difficulty: 'hard',
+    category: 'async',
+    tags: ['async', 'promise', 'concurrency', 'worker-pool']
   }
 ];
