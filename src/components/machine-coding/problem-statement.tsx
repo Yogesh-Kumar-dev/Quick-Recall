@@ -3,10 +3,19 @@ import type { ProblemMeta } from '@/types/content';
 
 type Props = Omit<ProblemMeta, 'title'>;
 
-export default function ProblemStatement({ description, requirements, keyPatterns, interviewTip }: Props) {
+export default function ProblemStatement({ description, requirements, keyPatterns, interviewTip, sampleData }: Props) {
   return (
     <div>
       <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{description}</p>
+
+      {sampleData && (
+        <>
+          <p className="mb-1 text-sm font-semibold">Sample Data</p>
+          <pre className="mb-4 overflow-x-auto rounded-md border border-border bg-background p-3 font-mono text-xs whitespace-pre text-muted-foreground">
+            {sampleData}
+          </pre>
+        </>
+      )}
 
       <p className="mb-1 text-sm font-semibold">Requirements</p>
       <ul className="mb-4 list-disc space-y-0.5 pl-5 text-sm text-muted-foreground">

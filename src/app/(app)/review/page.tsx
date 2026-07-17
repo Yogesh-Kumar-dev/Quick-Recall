@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import Link from 'next/link';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { IconBrain, IconChecks } from '@tabler/icons-react';
+import { IconBrain, IconChecks, IconCode } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import * as reviewsRepository from '@/db/reviews';
 import { review as schedule, formatInterval, formatDuePhrase } from '@/lib/review-scheduler';
 import { flashcardByKey } from '@/data/flashcards-index';
+import { resolveContent } from '@/lib/resolve-content';
 import type { ReviewQuality, ReviewState } from '@/types/study';
 
 // ==============================|| SRS REVIEW SESSION ||============================== //
@@ -28,17 +30,22 @@ export default function ReviewPage() {
   const due = useLiveQuery(() => reviewsRepository.getDue(Date.now()));
   const enrolledCount = useLiveQuery(() => reviewsRepository.count());
   const loading = due === undefined;
-  const dueCount = due?.length ?? 0;
+
+  // Flashcards run in the flip-card session below; due problems are practiced on their own
+  // pages (deep-linked with ?practice=1), so they render as a separate list on the landing.
+  const dueFlashcards = due?.filter((d) => d.id.startsWith('flashcard:'));
+  const dueProblems = due?.filter((d) => d.id.startsWith('problem:'));
+  const dueCount = dueFlashcards?.length ?? 0;
 
   const [deck, setDeck] = useState<ReviewState[] | null>(null); // frozen snapshot; null = not started
   const [pos, setPos] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
   const start = useCallback(() => {
-    setDeck(due ?? []);
+    setDeck(dueFlashcards ?? []);
     setPos(0);
     setRevealed(false);
-  }, [due]);
+  }, [dueFlashcards]);
 
   const handleRate = useCallback(
     async (quality: ReviewQuality) => {
@@ -86,6 +93,7 @@ export default function ReviewPage() {
             </Button>
           </div>
         )}
+        {(dueProblems?.length ?? 0) > 0 && <DueProblems states={dueProblems ?? []} />}
       </div>
     );
   }
@@ -185,6 +193,37 @@ function Header() {
         </a>
         .
       </p>
+    </div>
+  );
+}
+
+// Due coding problems — rated on their own pages, so the live query drops them from this
+// list as soon as they're graded.
+function DueProblems({ states }: { states: ReviewState[] }) {
+  const resolved = states.flatMap((s) => {
+    const hit = resolveContent('problem', s.refId);
+    return hit?.kind === 'problem' ? [hit] : []; // content removed since enrollment — skip
+  });
+  if (resolved.length === 0) return null;
+
+  return (
+    <div className="mt-6 rounded-xl border border-border bg-card p-6">
+      <h2 className="flex items-center gap-2 text-lg font-semibold">
+        <IconCode size={20} className="opacity-70" />
+        Coding problems due ({resolved.length})
+      </h2>
+      <p className="mt-1 text-sm text-muted-foreground">Solve each one from scratch — the link opens it in practice mode.</p>
+      <ul className="mt-4 divide-y divide-border">
+        {resolved.map((r) => (
+          <li key={r.refId} className="flex items-center justify-between gap-3 py-2.5">
+            <span className="text-sm font-medium">{r.problem.title}</span>
+            <span className="flex items-center gap-3">
+              <span className="text-xs capitalize text-muted-foreground">{r.problem.difficulty}</span>
+              <Button size="sm" variant="outline" nativeButton={false} render={<Link href={`${r.url}?practice=1`}>Practice</Link>} />
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

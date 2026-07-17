@@ -49,46 +49,25 @@ const ITEMS: AccordionItem[] = [
 export default function Accordion() {
   const [isMultiOpen, setIsMultiOpen] = useState<boolean>(false);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [openItems, setOpenItems] = useState<Set<number>>(new Set([0]));
+  // Array — O(n) includes/filter for multi-open ids, needs a manual dedupe check before adding
+  // (compare to JsxVersion.jsx, which uses a Set for O(1) has/add/delete and no dedupe check).
+  const [openItems, setOpenItems] = useState<number[]>([0]);
 
-  const toggle = (index: number) => {
+  const toggle = (index: number): void => {
     if (isMultiOpen) {
-      setOpenItems((prev) => {
-        const next = new Set(prev);
-        if (next.has(index)) {
-          next.delete(index);
-        } else {
-          next.add(index);
-        }
-        return next;
-      });
+      setOpenItems((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
     } else {
       setOpenIndex((prev) => (prev === index ? null : index));
     }
   };
 
-  const isOpen = (index: number) => (isMultiOpen ? openItems.has(index) : openIndex === index);
+  const isOpen = (index: number): boolean => (isMultiOpen ? openItems.includes(index) : openIndex === index);
 
   return (
-    <div style={{ maxWidth: 600 }}>
+    <div className="max-w-[600px]">
       {/* Mode toggle */}
-      <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          marginBottom: 16,
-          cursor: 'pointer',
-          fontSize: 14,
-          color: '#555'
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={isMultiOpen}
-          onChange={(e) => setIsMultiOpen(e.target.checked)}
-          style={{ width: 16, height: 16, cursor: 'pointer' }}
-        />
+      <label className="mb-4 flex cursor-pointer items-center gap-2.5 text-sm text-gray-400">
+        <input type="checkbox" checked={isMultiOpen} onChange={(e) => setIsMultiOpen(e.target.checked)} className="h-4 w-4 cursor-pointer" />
         {isMultiOpen ? 'Multi-open: multiple sections can be open' : 'Single-open: only one section at a time'}
       </label>
 
@@ -96,16 +75,7 @@ export default function Accordion() {
       {ITEMS.map((item) => {
         const open = isOpen(item.id);
         return (
-          <details
-            key={item.id}
-            open={open}
-            style={{
-              border: '1px solid #e0e0e0',
-              borderRadius: 8,
-              marginBottom: 8,
-              overflow: 'hidden'
-            }}
-          >
+          <details key={item.id} open={open} className="mb-2 overflow-hidden rounded-lg border border-[#2a3742]">
             {/* summary replaces the header div; e.preventDefault() stops the
                 browser's native toggle so React state stays the single source of truth */}
             <summary
@@ -113,53 +83,21 @@ export default function Accordion() {
                 e.preventDefault();
                 toggle(item.id);
               }}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '14px 16px',
-                cursor: 'pointer',
-                listStyle: 'none' /* removes the native ▶ marker */,
-                background: open ? '#e3f2fd' : '#fafafa',
-                borderBottom: open ? '1px solid #e0e0e0' : 'none',
-                transition: 'background 0.15s',
-                userSelect: 'none'
-              }}
+              className={`flex cursor-pointer list-none items-center justify-between px-4 py-3.5 select-none transition-colors duration-150 ${
+                open ? 'border-b border-[#2a3742] bg-[#173049]' : 'bg-[#141d26]'
+              }`}
             >
-              <strong style={{ fontSize: 14 }}>{item.title}</strong>
+              <strong className="text-sm">{item.title}</strong>
               <span
-                style={{
-                  fontSize: 18,
-                  color: '#555',
-                  lineHeight: 1,
-                  transition: 'transform 0.2s',
-                  display: 'inline-block',
-                  transform: open ? 'rotate(180deg)' : 'rotate(0deg)'
-                }}
+                className={`inline-block text-lg leading-none text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : 'rotate-0'}`}
               >
                 ▾
               </span>
             </summary>
 
             {/* max-height trick still needed — <details> itself has no animation */}
-            <div
-              style={{
-                maxHeight: open ? '500px' : '0',
-                overflow: 'hidden',
-                transition: 'max-height 0.3s ease'
-              }}
-            >
-              <p
-                style={{
-                  margin: 0,
-                  padding: '14px 16px',
-                  fontSize: 14,
-                  color: '#555',
-                  lineHeight: 1.7
-                }}
-              >
-                {item.body}
-              </p>
+            <div className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${open ? 'max-h-[500px]' : 'max-h-0'}`}>
+              <p className="m-0 px-4 py-3.5 text-sm leading-[1.7] text-gray-400">{item.body}</p>
             </div>
           </details>
         );

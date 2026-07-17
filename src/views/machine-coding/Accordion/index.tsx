@@ -14,6 +14,13 @@ const PROBLEM: ProblemMeta = {
   title: 'Accordion Component',
   description:
     'Build an accordion where sections expand/collapse on click. Implement both single-open mode (only one section open at a time) and multi-open mode (multiple sections can be open simultaneously).',
+  sampleData: `[
+  { id: 0, title: 'What is React?', body: '...' },
+  { id: 1, title: 'What is the Virtual DOM?', body: '...' },
+  { id: 2, title: 'What are React Hooks?', body: '...' },
+  { id: 3, title: 'What is the difference between useMemo and useCallback?', body: '...' },
+  { id: 4, title: 'What is prop drilling and how do you avoid it?', body: '...' }
+]`,
   requirements: [
     'Render a list of items, each with a header and collapsible body',
     'Click a header to expand/collapse its body',
@@ -26,7 +33,6 @@ const PROBLEM: ProblemMeta = {
     'openIndex: number | null (single-open)',
     'openItems: Set<number> (multi-open)',
     'CSS max-height transition',
-    'MUI Collapse component',
     'Toggle pattern with Set'
   ],
   interviewTip:

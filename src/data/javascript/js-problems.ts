@@ -88,5 +88,101 @@ export const jsProblems: JsProblemEntry[] = [
     difficulty: 'easy',
     category: 'array',
     tags: ['hash-map', 'frequency', 'array', 'reduce', 'object']
+  },
+  {
+    id: 'promise-race',
+    title: 'Implement Promise.race',
+    slug: 'promise-race',
+    difficulty: 'medium',
+    category: 'async',
+    tags: ['promise', 'async', 'polyfill', 'timeout']
+  },
+  {
+    id: 'promise-any',
+    title: 'Implement Promise.any',
+    slug: 'promise-any',
+    difficulty: 'hard',
+    category: 'async',
+    tags: ['promise', 'async', 'polyfill', 'aggregate-error']
+  },
+  {
+    id: 'promise-all-settled',
+    title: 'Implement Promise.allSettled',
+    slug: 'promise-all-settled',
+    difficulty: 'medium',
+    category: 'async',
+    tags: ['promise', 'async', 'polyfill', 'error-handling']
+  },
+  {
+    id: 'event-emitter',
+    title: 'Build an EventEmitter',
+    slug: 'event-emitter',
+    difficulty: 'medium',
+    category: 'class',
+    tags: ['class', 'pub-sub', 'events', 'design']
+  },
+  {
+    id: 'lru-cache',
+    title: 'LRU Cache',
+    slug: 'lru-cache',
+    difficulty: 'hard',
+    category: 'class',
+    tags: ['class', 'cache', 'map', 'design']
+  },
+  {
+    id: 'json-stringify',
+    title: 'Implement JSON.stringify',
+    slug: 'json-stringify',
+    difficulty: 'hard',
+    category: 'object',
+    tags: ['recursion', 'json', 'serialization', 'polyfill']
+  },
+  {
+    id: 'deep-equal',
+    title: 'Deep Equality Check',
+    slug: 'deep-equal',
+    difficulty: 'medium',
+    category: 'object',
+    tags: ['recursion', 'object', 'comparison']
+  },
+  {
+    id: 'async-retry',
+    title: 'Async Retry with Backoff',
+    slug: 'async-retry',
+    difficulty: 'medium',
+    category: 'async',
+    tags: ['async', 'promise', 'error-handling', 'backoff']
+  },
+  {
+    id: 'pipe-compose',
+    title: 'Implement pipe / compose',
+    slug: 'pipe-compose',
+    difficulty: 'easy',
+    category: 'functional',
+    tags: ['functional-programming', 'reduce', 'higher-order-function']
+  },
+  {
+    id: 'array-chunk',
+    title: 'Chunk an Array',
+    slug: 'array-chunk',
+    difficulty: 'easy',
+    category: 'array',
+    tags: ['array', 'slice', 'lodash', 'pagination']
+  },
+  {
+    id: 'once',
+    title: 'Implement once()',
+    slug: 'once',
+    difficulty: 'easy',
+    category: 'functional',
+    tags: ['closure', 'higher-order-function', 'lodash']
+  },
+  {
+    id: 'map-limit',
+    title: 'Concurrency-Limited Task Runner (mapLimit)',
+    slug: 'map-limit',
+    difficulty: 'hard',
+    category: 'async',
+    tags: ['async', 'promise', 'concurrency', 'worker-pool']
   }
 ];

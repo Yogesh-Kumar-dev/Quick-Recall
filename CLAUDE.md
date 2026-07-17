@@ -53,6 +53,16 @@ Both React and JS variants follow the same shape: a `src/views/{machine-coding,j
 
 **Gotcha:** because `readFileSync` reads *raw, uncompiled* source files, Next's output file tracer doesn't pick them up automatically for serverless bundling. `outputFileTracingIncludes` in `next.config.ts` explicitly traces `src/views/**/*.{tsx,jsx,js}` into the relevant function bundles — forgetting to extend this when adding a new problem shape causes an ENOENT/500 in production despite working locally.
 
+#### React machine-coding style guide (`JsxVersion.jsx` / `TsxVersion.tsx`)
+
+These two files intentionally diverge in style so each teaches a different interview scenario — don't unify them.
+
+- **`JsxVersion.jsx`**: both Tailwind `className` (active) and the equivalent inline `style={{...}}` object (commented directly above, as a reference for interview environments without Tailwind configured). Keep branching logic visible in multiple forms too (ternary commented out, `if/else` active, IIFE where it reads naturally) — the point is showing several ways to express the same thing.
+- **`TsxVersion.tsx`**: Tailwind `className` only, no commented `style` blocks, no dead code. Every function (including inline handlers where it's not noisy) gets an explicit return type — this file is also the types-practice reference.
+- **Sample data**: if a problem requires sample/seed data (a list to render, an API shape to consume, etc.), the problem statement/description must include it in detail — either the raw data inline or a URL to fetch it from. Don't leave the reader to invent their own shape.
+
+Add further conventions to this list as they come up.
+
 ### PWA / offline support
 
 The app builds with **Turbopack**, and `@serwist/next`'s webpack-based compilation doesn't support that — so the service worker is compiled via a Route Handler instead (`src/app/serwist/[path]/route.ts`, wired through `@serwist/turbopack`). `withSerwist(nextConfig)` in `next.config.ts` only adds `esbuild`/`esbuild-wasm` to `serverExternalPackages` so that route handler can bundle in the Node runtime. `SerwistProvider` (in `src/app/providers.tsx`) registers the worker at `/serwist/sw.js` and is disabled in dev — its install-time warm-up would otherwise trigger a Turbopack recompile per route on every "download for offline" run. Offline content selection/caching lives in `src/utils/offline-cache.ts` and `src/utils/pdf-cache.ts`, driven by `src/data/offline-content.ts` and the `useOfflineDownload` hook.

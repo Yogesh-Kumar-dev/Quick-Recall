@@ -12,7 +12,19 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   'custom-bind': () => import('@/views/js-machine-coding/CustomBind'),
   'group-by': () => import('@/views/js-machine-coding/GroupBy'),
   'electricity-bill': () => import('@/views/js-machine-coding/ElectricityBill'),
-  'frequency-calculator': () => import('@/views/js-machine-coding/FrequencyCalculator')
+  'frequency-calculator': () => import('@/views/js-machine-coding/FrequencyCalculator'),
+  'promise-race': () => import('@/views/js-machine-coding/PromiseRace'),
+  'promise-any': () => import('@/views/js-machine-coding/PromiseAny'),
+  'promise-all-settled': () => import('@/views/js-machine-coding/PromiseAllSettled'),
+  'event-emitter': () => import('@/views/js-machine-coding/EventEmitter'),
+  'lru-cache': () => import('@/views/js-machine-coding/LruCache'),
+  'json-stringify': () => import('@/views/js-machine-coding/JsonStringify'),
+  'deep-equal': () => import('@/views/js-machine-coding/DeepEqual'),
+  'async-retry': () => import('@/views/js-machine-coding/AsyncRetry'),
+  'pipe-compose': () => import('@/views/js-machine-coding/PipeCompose'),
+  'array-chunk': () => import('@/views/js-machine-coding/ArrayChunk'),
+  once: () => import('@/views/js-machine-coding/Once'),
+  'map-limit': () => import('@/views/js-machine-coding/MapLimit')
 };
 
 export function generateStaticParams() {

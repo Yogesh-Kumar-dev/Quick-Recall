@@ -61,11 +61,16 @@ ALL_NOTES.forEach((n) => {
 });
 
 // ─── Problem lookup (by slug) + its route ─────────────────────────────────────
+// JS and React problems share this slug namespace (reviews/bookmarks store bare slugs) —
+// a collision would silently point saved items at the wrong problem, hence the dev warning.
 const problemBySlug = new Map<string, { problem: BaseProblemEntry; url: string }>();
 jsProblems.forEach((p) => {
   problemBySlug.set(p.slug, { problem: p, url: `/js/machine-coding/${p.slug}` });
 });
 reactMcProblems.forEach((p) => {
+  if (process.env.NODE_ENV !== 'production' && problemBySlug.has(p.slug)) {
+    console.warn(`resolve-content: duplicate problem slug "${p.slug}" — JS and React machine-coding slugs must not collide`);
+  }
   problemBySlug.set(p.slug, { problem: p, url: `/react/machine-coding/${p.slug}` });
 });
 
