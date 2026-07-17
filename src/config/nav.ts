@@ -9,6 +9,8 @@ import {
   IconBrandHtml5,
   IconBrandJavascript,
   IconBrandNextjs,
+  IconBrandAws,
+  IconBrandMongodb,
   IconBrandNodejs,
   IconBrandReact,
   IconBrandRedux,
@@ -17,6 +19,7 @@ import {
   IconCode,
   IconCpu,
   IconCards,
+  IconDatabase,
   IconGauge,
   IconInfoCircle,
   IconKey,
@@ -124,6 +127,17 @@ export const navSections: NavSection[] = [
     items: [
       { title: 'Node.js Notes', url: '/nodejs/notes', icon: IconBrandNodejs },
       { title: 'Quick Recall', url: '/nodejs/quick-recall', icon: IconBolt }
+    ]
+  },
+  {
+    id: 'databases',
+    title: 'Databases',
+    icon: IconDatabase,
+    items: [
+      { title: 'PostgreSQL', url: '/databases/postgresql', icon: IconDatabase },
+      { title: 'MongoDB', url: '/databases/mongodb', icon: IconBrandMongodb },
+      { title: 'Redis', url: '/databases/redis', icon: IconBolt },
+      { title: 'DynamoDB', url: '/databases/dynamodb', icon: IconBrandAws }
     ]
   },
   {

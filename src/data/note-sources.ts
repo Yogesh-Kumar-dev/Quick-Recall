@@ -16,6 +16,10 @@ import { htmlNotes } from './htmlcss/html-notes';
 import { cssNotes } from './htmlcss/css-notes';
 import { engineeringNotes } from './engineering/engineering-notes';
 import { nodejsNotes } from './nodejs/nodejs-notes';
+import { postgresqlNotes } from './databases/postgresql-notes';
+import { mongodbNotes } from './databases/mongodb-notes';
+import { redisNotes } from './databases/redis-notes';
+import { dynamodbNotes } from './databases/dynamodb-notes';
 import { webSecurityNotes } from './web/web-security-notes';
 import { authNotes } from './web/auth-notes';
 import { accessibilityNotes } from './web/accessibility-notes';
@@ -36,6 +40,10 @@ export const NOTE_SOURCES: { notes: Note[]; url: string; topic: string }[] = [
   { notes: cssNotes, url: '/html-css/css', topic: 'CSS' },
   { notes: engineeringNotes, url: '/engineering/notes', topic: 'Engineering' },
   { notes: nodejsNotes, url: '/nodejs/notes', topic: 'Node.js' },
+  { notes: postgresqlNotes, url: '/databases/postgresql', topic: 'PostgreSQL' },
+  { notes: mongodbNotes, url: '/databases/mongodb', topic: 'MongoDB' },
+  { notes: redisNotes, url: '/databases/redis', topic: 'Redis' },
+  { notes: dynamodbNotes, url: '/databases/dynamodb', topic: 'DynamoDB' },
   { notes: webSecurityNotes, url: '/web/security', topic: 'Web Security' },
   { notes: authNotes, url: '/web/auth', topic: 'Auth & Identity' },
   { notes: accessibilityNotes, url: '/web/accessibility', topic: 'Accessibility' },
