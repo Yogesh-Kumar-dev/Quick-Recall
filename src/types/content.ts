@@ -106,6 +106,8 @@ export interface ProblemMeta {
   requirements: string[];
   keyPatterns: string[];
   interviewTip: string;
+  /** Raw sample/seed data (as source text) or a URL to fetch it from — required whenever the problem needs data to work with. */
+  sampleData?: string;
 }
 
 // ---------------------------------------------------------------------------

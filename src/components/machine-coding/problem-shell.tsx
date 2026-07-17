@@ -49,6 +49,7 @@ export default function ProblemShell({ problem, versions }: Props) {
           requirements={problem.requirements}
           keyPatterns={problem.keyPatterns}
           interviewTip={problem.interviewTip}
+          sampleData={problem.sampleData}
         />
       </div>
 
@@ -71,7 +72,9 @@ export default function ProblemShell({ problem, versions }: Props) {
         </TabsContent>
         <TabsContent value="code" keepMounted className="max-h-[80vh] overflow-auto p-4">
           <Activity mode={tab === 'code' ? 'visible' : 'hidden'}>
-            <CodeBlock code={current.code} language={active} />
+            <div className="mc-code">
+              <CodeBlock code={current.code} language={active} />
+            </div>
           </Activity>
         </TabsContent>
         <TabsContent value="practice" className="max-h-[80vh] overflow-auto p-4">

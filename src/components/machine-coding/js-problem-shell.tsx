@@ -77,7 +77,9 @@ export default function JsProblemShell({ problem, approaches }: Props) {
                 onChange={(v) => setIdx(Number(v))}
               />
             </div>
-            <CodeBlock code={current.code} language="javascript" />
+            <div className="mc-code">
+              <CodeBlock code={current.code} language="javascript" />
+            </div>
           </Activity>
         </TabsContent>
         <TabsContent value="practice" className="max-h-[75vh] overflow-auto p-4">

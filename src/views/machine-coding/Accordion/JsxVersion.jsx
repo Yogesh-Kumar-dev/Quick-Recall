@@ -42,6 +42,7 @@ const ITEMS = [
 export default function Accordion() {
   const [isMultiOpen, setIsMultiOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(0);
+  // Set — O(1) has/add/delete for multi-open ids, no manual dedupe like an array needs.
   const [openItems, setOpenItems] = useState(new Set([0]));
 
   const toggle = (index) => {
@@ -63,24 +64,29 @@ export default function Accordion() {
   const isOpen = (index) => (isMultiOpen ? openItems.has(index) : openIndex === index);
 
   return (
-    <div style={{ maxWidth: 600 }}>
+    <div
+      // style={{ maxWidth: 600 }}
+      className="max-w-[600px]"
+    >
       {/* Mode toggle */}
       <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          marginBottom: 16,
-          cursor: 'pointer',
-          fontSize: 14,
-          color: '#555'
-        }}
+        // style={{
+        //   display: 'flex',
+        //   alignItems: 'center',
+        //   gap: 10,
+        //   marginBottom: 16,
+        //   cursor: 'pointer',
+        //   fontSize: 14,
+        //   color: '#9ca3af'
+        // }}
+        className="mb-4 flex cursor-pointer items-center gap-2.5 text-sm text-gray-400"
       >
         <input
           type="checkbox"
           checked={isMultiOpen}
           onChange={(e) => setIsMultiOpen(e.target.checked)}
-          style={{ width: 16, height: 16, cursor: 'pointer' }}
+          // style={{ width: 16, height: 16, cursor: 'pointer' }}
+          className="h-4 w-4 cursor-pointer"
         />
         {isMultiOpen ? 'Multi-open — multiple sections can be open' : 'Single-open — only one section at a time'}
       </label>
@@ -92,41 +98,46 @@ export default function Accordion() {
           <details
             key={item.id}
             open={open}
-            style={{
-              border: '1px solid #e0e0e0',
-              borderRadius: 8,
-              marginBottom: 8,
-              overflow: 'hidden'
-            }}
+            // style={{
+            //   border: '1px solid #2a3742',
+            //   borderRadius: 8,
+            //   marginBottom: 8,
+            //   overflow: 'hidden'
+            // }}
+            className="mb-2 overflow-hidden rounded-lg border border-[#2a3742]"
           >
             <summary
               onClick={(e) => {
                 e.preventDefault();
                 toggle(item.id);
               }}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '14px 16px',
-                cursor: 'pointer',
-                listStyle: 'none',
-                background: open ? '#e3f2fd' : '#fafafa',
-                borderBottom: open ? '1px solid #e0e0e0' : 'none',
-                transition: 'background 0.15s',
-                userSelect: 'none'
-              }}
+              // style={{
+              //   display: 'flex',
+              //   justifyContent: 'space-between',
+              //   alignItems: 'center',
+              //   padding: '14px 16px',
+              //   cursor: 'pointer',
+              //   listStyle: 'none',
+              //   background: open ? '#173049' : '#141d26',
+              //   borderBottom: open ? '1px solid #2a3742' : 'none',
+              //   transition: 'background 0.15s',
+              //   userSelect: 'none'
+              // }}
+              className={`flex cursor-pointer list-none items-center justify-between px-4 py-3.5 select-none transition-colors duration-150 ${
+                open ? 'border-b border-[#2a3742] bg-[#173049]' : 'bg-[#141d26]'
+              }`}
             >
-              <strong style={{ fontSize: 14 }}>{item.title}</strong>
+              <strong className="text-sm">{item.title}</strong>
               <span
-                style={{
-                  fontSize: 18,
-                  color: '#555',
-                  lineHeight: 1,
-                  transition: 'transform 0.2s',
-                  display: 'inline-block',
-                  transform: open ? 'rotate(180deg)' : 'rotate(0deg)'
-                }}
+                // style={{
+                //   fontSize: 18,
+                //   color: '#9ca3af',
+                //   lineHeight: 1,
+                //   transition: 'transform 0.2s',
+                //   display: 'inline-block',
+                //   transform: open ? 'rotate(180deg)' : 'rotate(0deg)'
+                // }}
+                className={`inline-block text-lg leading-none text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : 'rotate-0'}`}
               >
                 ▾
               </span>
@@ -134,20 +145,22 @@ export default function Accordion() {
 
             {/* max-height trick still needed — <details> itself has no animation */}
             <div
-              style={{
-                maxHeight: open ? '500px' : '0',
-                overflow: 'hidden',
-                transition: 'max-height 0.3s ease'
-              }}
+              // style={{
+              //   maxHeight: open ? '500px' : '0',
+              //   overflow: 'hidden',
+              //   transition: 'max-height 0.3s ease'
+              // }}
+              className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${open ? 'max-h-[500px]' : 'max-h-0'}`}
             >
               <p
-                style={{
-                  margin: 0,
-                  padding: '14px 16px',
-                  fontSize: 14,
-                  color: '#555',
-                  lineHeight: 1.7
-                }}
+                // style={{
+                //   margin: 0,
+                //   padding: '14px 16px',
+                //   fontSize: 14,
+                //   color: '#9ca3af',
+                //   lineHeight: 1.7
+                // }}
+                className="m-0 px-4 py-3.5 text-sm leading-[1.7] text-gray-400"
               >
                 {item.body}
               </p>

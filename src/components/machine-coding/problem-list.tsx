@@ -1,4 +1,3 @@
-import Fuse from 'fuse.js';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import FilterPanel from '@/components/content/filter-panel';
@@ -25,10 +24,9 @@ export default function ProblemList({ title, problems, basePath, params, headerA
   const cat = params.cat ?? 'all';
   const diff = params.diff ?? 'all';
 
-  const textMatched = q.trim()
-    ? new Fuse(problems, { keys: ['title', 'tags'], threshold: 0.4, ignoreLocation: true, minMatchCharLength: 2 })
-        .search(q)
-        .map((r) => r.item)
+  const needle = q.trim().toLowerCase();
+  const textMatched = needle
+    ? problems.filter((p) => p.title.toLowerCase().includes(needle) || p.tags.some((t) => t.toLowerCase().includes(needle)))
     : problems;
   const shown = textMatched.filter((p) => (cat === 'all' || p.category === cat) && (diff === 'all' || p.difficulty === diff));
 
