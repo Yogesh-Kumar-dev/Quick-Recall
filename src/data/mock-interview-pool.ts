@@ -34,6 +34,30 @@ export const MOCK_INTERVIEW_TOPICS: MockInterviewTopic[] = [
   },
   { label: 'Next.js', noteTopics: ['Next.js', 'Next.js Rendering'], flashcardSlugs: ['nextjs', 'nextjs-rendering'], problems: [] },
   { label: 'Node.js', noteTopics: ['Node.js'], flashcardSlugs: ['nodejs'], problems: [] },
+  {
+    label: 'Databases',
+    noteTopics: ['PostgreSQL', 'MongoDB', 'Redis', 'DynamoDB'],
+    flashcardSlugs: [],
+    problems: []
+  },
+  {
+    label: 'Testing',
+    noteTopics: [
+      'Testing Fundamentals',
+      'Vitest',
+      'React Testing Library',
+      'Jest',
+      'MSW',
+      'Supertest',
+      'Playwright',
+      'ETL Testing',
+      'Penetration Testing',
+      'Mobile Testing',
+      'Web Testing'
+    ],
+    flashcardSlugs: [],
+    problems: []
+  },
   { label: 'HTML & CSS', noteTopics: ['HTML', 'CSS'], flashcardSlugs: ['html', 'css'], problems: [] },
   {
     label: 'Web Platform',

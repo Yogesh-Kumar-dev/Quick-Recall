@@ -16,6 +16,8 @@ import {
   IconBrandRedux,
   IconBrandTypescript,
   IconBriefcase,
+  IconBug,
+  IconChecklist,
   IconCode,
   IconCpu,
   IconCards,
@@ -26,8 +28,10 @@ import {
   IconMessageQuestion,
   IconMicrophone,
   IconNotes,
+  IconRobot,
   IconServer,
   IconShieldLock,
+  IconTestPipe,
   IconWorld
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
@@ -138,6 +142,16 @@ export const navSections: NavSection[] = [
       { title: 'MongoDB', url: '/databases/mongodb', icon: IconBrandMongodb },
       { title: 'Redis', url: '/databases/redis', icon: IconBolt },
       { title: 'DynamoDB', url: '/databases/dynamodb', icon: IconBrandAws }
+    ]
+  },
+  {
+    id: 'testing',
+    title: 'Testing',
+    icon: IconTestPipe,
+    items: [
+      { title: 'Fundamentals', url: '/testing/fundamentals', icon: IconChecklist },
+      { title: 'Testing Frameworks & Tools', url: '/testing/tools', icon: IconRobot },
+      { title: 'Specialized Testing', url: '/testing/specialized', icon: IconBug }
     ]
   },
   {

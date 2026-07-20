@@ -767,6 +767,120 @@ paths:
       'Adopting a standard like JSON:API (or a simpler house convention with the same spirit , consistent envelope, consistent relationship shape) is the point, more than JSON:API specifically , the goal is that every endpoint in your API "feels" the same to a consumer.'
     ]
   },
+  {
+    id: 'eng-api-statelessness',
+    title: 'Statelessness in REST APIs',
+    summary:
+      'Every request carries everything the server needs to handle it , no server-side memory of previous requests , which is the property that makes REST APIs trivially horizontally scalable.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'Stateless means the server keeps no session/conversation state between requests , each request is self-contained, typically carrying auth (a token) and any context (query params, a resource id) it needs.',
+      'This is WHY horizontal scaling is simple: any request can be routed to any server instance behind a load balancer, since no instance holds state a later request from the same client depends on , no "sticky sessions" required.',
+      "Compare to a stateful design (a traditional server-rendered app with an in-memory session, or a shopping cart held in server memory) , that requires either sticky sessions (routing a client to the same server every time) or a shared session store, both extra infrastructure REST's statelessness avoids.",
+      "Statelessness doesn't mean the SYSTEM has no state , the database very much does. It means the API layer itself holds none between requests; all persistent state lives in the database/cache, not in server memory.",
+      'The trade-off: every request is a bit more verbose (re-sending auth, re-establishing context) than a stateful protocol would need , a deliberate simplicity-for-scalability trade REST makes.'
+    ],
+    gotcha:
+      'A REST endpoint that reads from an in-memory variable set by a PREVIOUS request (a classic accidental global) is a statelessness violation , it will work in local dev with one server instance and break mysteriously in production once traffic is load-balanced across several.'
+  },
+  {
+    id: 'eng-api-put-vs-post',
+    title: 'PUT vs POST',
+    summary:
+      'POST creates a new resource (and is not idempotent , calling it twice makes two); PUT replaces a resource at a known URL (and IS idempotent , calling it twice has the same effect as once).',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-idempotency'],
+    keyPoints: [
+      "POST /users creates a new user , the client doesn't know the id in advance, the server assigns it, and the response typically includes a Location header pointing at the new resource.",
+      'PUT /users/42 replaces the ENTIRE resource at that specific, already-known URL , calling it 5 times with the same body leaves the resource in the same final state as calling it once (idempotent).',
+      'PUT is also technically valid for creation when the client controls the id (PUT /users/42 creating user 42 if it doesn\'t exist) , less common in practice, but a correct answer to "can PUT create something?"',
+      "PATCH is often confused with PUT: PATCH applies a PARTIAL update (only the fields provided change); PUT conceptually replaces the whole resource , sending a PUT with only some fields can wipe out the ones you didn't include, depending on server implementation.",
+      'Interview shorthand: POST = "create, not idempotent, url doesn\'t include the new id"; PUT = "replace/create-at-known-url, idempotent, url includes the id".'
+    ]
+  },
+  {
+    id: 'eng-api-options-method',
+    title: 'The OPTIONS Method',
+    summary:
+      'Asks a server "what can I do here?" without side effects , returns the allowed HTTP methods for a resource, and is the method browsers use automatically for a CORS preflight check.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      "OPTIONS /users asks the server to describe the resource's capabilities , the response's Allow header lists the supported methods (e.g. Allow: GET, POST, OPTIONS) without actually performing any action.",
+      'CORS preflight is the most common real-world encounter with OPTIONS: before a cross-origin request that isn\'t a "simple request" (has custom headers, or uses PUT/PATCH/DELETE), the browser automatically sends an OPTIONS request first to check permission , this happens silently, without any app code calling it directly.',
+      'A server (or its CORS middleware) must respond to OPTIONS with the right Access-Control-Allow-* headers or the browser blocks the REAL request that would have followed , a very common source of "my API works in Postman but not in the browser" confusion.',
+      'Like GET and HEAD, OPTIONS is a SAFE method , it should never cause a side effect, purely descriptive.'
+    ],
+    gotcha:
+      'Forgetting to let OPTIONS requests through auth middleware is a classic bug , the preflight request usually carries no auth token, so if the middleware rejects unauthenticated OPTIONS calls, the browser never gets to send the real (authenticated) request at all.'
+  },
+  {
+    id: 'eng-api-uri-vs-url',
+    title: 'URI vs URL, and URI Templating',
+    summary:
+      'A URL is a URI that also tells you HOW to fetch the resource (a location); every URL is a URI, but a URI can just be an identifier with no fetch mechanism implied.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      "URI (Uniform Resource Identifier) is the umbrella term , anything that identifies a resource. urn:isbn:0451450523 is a valid URI (a URN) that identifies a book but doesn't tell you how to retrieve it.",
+      'URL (Uniform Resource Locator) is a URI that ALSO specifies the access mechanism/location , https://api.example.com/users/42 is a URL: it identifies the resource AND tells you exactly how to fetch it (HTTPS, that host, that path).',
+      'In everyday REST API work "URI" and "URL" are used almost interchangeably, since virtually every REST resource identifier IS also a URL , the distinction is mostly interview trivia, but worth stating precisely once asked.',
+      "URI templating is the {placeholder} syntax used to describe a family of URLs , /users/{id}/orders/{orderId} describes the PATTERN; a real request substitutes actual values (/users/42/orders/7). This is exactly what path parameters are, and it's also the format OpenAPI specs use to document endpoints."
+    ]
+  },
+  {
+    id: 'eng-api-resource-expansion',
+    title: 'Resource Expansion',
+    summary:
+      'A query parameter (commonly ?expand=orders) tells the server to embed a related resource directly in the response , trading a bit of payload size for one fewer round trip.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-filtering-sorting'],
+    keyPoints: [
+      'Without expansion: GET /users/42 returns a user with orderIds: [7, 8, 9] , the client then makes 3 more requests to fetch each order individually (or one batched request, if the API supports that).',
+      'With expansion: GET /users/42?expand=orders returns the user with orders: [{...}, {...}, {...}] embedded directly , one request instead of the follow-up N.',
+      "This is the REST-without-a-query-language answer to the same over-fetching/N+1 problem GraphQL and JSON:API's included key both solve differently , same underlying need (avoid a request-per-related-resource), different mechanisms.",
+      'Should be OPT-IN (a query param the client explicitly requests), not default-on , always embedding every relationship bloats every response for clients that only wanted the top-level resource.',
+      'Nested expansion (?expand=orders.items) for multiple levels deep is a natural extension, but needs a sane depth limit , unbounded nested expansion can turn one request into an accidentally enormous, slow response.'
+    ]
+  },
+  {
+    id: 'eng-api-mobile-multi-client',
+    title: 'Designing REST APIs for Mobile & Multiple Client Types',
+    summary:
+      'A mobile client has different constraints than a browser , limited bandwidth, battery cost per request, and unreliable connectivity , which pushes API design toward fewer, smaller, more resilient requests.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-consumable-design', 'eng-api-resource-expansion'],
+    keyPoints: [
+      'Bandwidth and battery: every request has a real cost on mobile (radio wake-up, data usage) that barely registers on a broadband web client , favor fewer, larger requests (resource expansion, field selection) over many small chatty ones.',
+      'Offline support: mobile apps are expected to work (at least partially) with no connectivity , this usually means the API needs to support incremental sync (return only what changed since a given timestamp/cursor) rather than assuming the client always fetches a fresh full state.',
+      "Unreliable connectivity changes retry behavior expectations too , idempotency (see the idempotency note) matters even more on mobile, since a request can time out from the client's perspective while actually succeeding server-side, and the client WILL retry.",
+      'Serving both web and mobile from one API: a shared core API with either resource expansion / field selection (letting each client request exactly the shape it needs) or a thin BFF (Backend-for-Frontend) layer per client type are the two common patterns , the former keeps one API, the latter tailors the shape per client at the cost of another service to maintain.',
+      "Push notifications, background sync, and versioning discipline matter more here too , a mobile client can't always be forced to update immediately (app store review delays), so an API serving mobile clients needs to support OLDER API versions in production for longer than a web-only API typically would."
+    ]
+  },
+  {
+    id: 'eng-api-http-headers',
+    title: 'The Role of HTTP Headers in REST',
+    summary:
+      'Headers carry metadata ABOUT the request/response , auth, format, caching, CORS , separately from the actual resource data in the body.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      'Request headers worth knowing cold: Authorization (credentials/token), Content-Type (what format the request body is in), Accept (what format(s) the client wants back), Idempotency-Key (client-supplied retry-safety token).',
+      'Response headers worth knowing cold: Content-Type (what format the response body actually is), Location (the URL of a newly created resource, on a 201), Cache-Control / ETag (caching directives), Access-Control-Allow-Origin (CORS).',
+      'Headers vs body: the body carries the actual resource representation; headers carry information ABOUT that representation or about the request/response as a whole , mixing the two (e.g. putting real data only in a custom header) is a design smell.',
+      "Custom headers (commonly prefixed X- historically, though that convention is now deprecated by RFC 6648) are used for anything app-specific that doesn't fit a standard header , a request-tracing id, a client app version, a feature flag.",
+      'This note is the connective tissue for several others in this section , auth headers tie to the API-key and OAuth notes, Content-Type/Accept tie to content negotiation, Cache-Control ties to the caching note, and Access-Control-* ties to CORS.'
+    ]
+  },
 
   // ─── DATABASES ────────────────────────────────────────────────────────────────
   {
@@ -1448,7 +1562,8 @@ import { placeOrder } from '@/modules/orders'; // ✅ via the public interface
       'Sliding window log: store a timestamp per request and count how many fall in the last N seconds. Perfectly accurate, but storing a timestamp per request gets expensive at high volume.',
       'Sliding window counter: approximate the sliding log by weighting the previous fixed window’s count proportionally into the current one , most of the accuracy of the log, close to the memory cost of the fixed counter, the usual production choice.',
       'Token bucket: a bucket refills with tokens at a steady rate up to a cap; each request consumes one token, and requests are rejected when the bucket is empty. Naturally allows short bursts up to the bucket size while enforcing a steady average rate.',
-      'Leaky bucket: requests queue up and are processed (leak out) at a fixed rate, smoothing bursty traffic into a steady stream , good for protecting a downstream system that can’t handle spikes, at the cost of added latency for queued requests.'
+      'Leaky bucket: requests queue up and are processed (leak out) at a fixed rate, smoothing bursty traffic into a steady stream , good for protecting a downstream system that can’t handle spikes, at the cost of added latency for queued requests.',
+      'Terminology worth being precise about: "rate limiting" usually means REJECTING requests over the cap (a 429); "throttling" usually means SLOWING them down instead (queueing/delaying, as leaky bucket does) rather than refusing them outright , the two terms get used loosely and interchangeably in practice, but the distinction (reject vs delay) is what an interviewer is actually listening for if they ask you to define throttling specifically.'
     ],
     gotcha:
       'The fixed window counter’s boundary problem is a classic interview follow-up: a client sending its full quota at 0:59 and again at 1:01 gets through 2x the intended rate within 2 seconds, because each burst lands in a different "fixed" window.',

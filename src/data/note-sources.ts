@@ -1,6 +1,7 @@
-// Every topic's notes array, paired with the page that renders it. This is the single
-// note-id → page-URL mapping, consumed by search-index.ts (deep-linking search results) and by
-// NotesView (resolving a note's `prerequisites` ids into "Builds on" link chips).
+// Every topic's notes array, paired with the page that renders it. Resolves each note-id to a
+// single page-URL (multiple topics may share one url, e.g. the merged Testing pages below — that's
+// fine, since resolution keys off note.id, not topic), consumed by search-index.ts (deep-linking
+// search results) and by NotesView (resolving a note's `prerequisites` ids into "Builds on" chips).
 import type { Note } from '@/types/content';
 import { jsNotes } from './javascript/js-notes';
 import { tsNotes } from './javascript/ts-notes';
@@ -20,6 +21,17 @@ import { postgresqlNotes } from './databases/postgresql-notes';
 import { mongodbNotes } from './databases/mongodb-notes';
 import { redisNotes } from './databases/redis-notes';
 import { dynamodbNotes } from './databases/dynamodb-notes';
+import { testingFundamentalsNotes } from './testing/testing-fundamentals-notes';
+import { vitestNotes } from './testing/vitest-notes';
+import { rtlNotes } from './testing/rtl-notes';
+import { jestNotes } from './testing/jest-notes';
+import { mswNotes } from './testing/msw-notes';
+import { supertestNotes } from './testing/supertest-notes';
+import { playwrightNotes } from './testing/playwright-notes';
+import { etlTestingNotes } from './testing/etl-testing-notes';
+import { pentestNotes } from './testing/pentest-notes';
+import { mobileTestingNotes } from './testing/mobile-testing-notes';
+import { webTestingNotes } from './testing/web-testing-notes';
 import { webSecurityNotes } from './web/web-security-notes';
 import { authNotes } from './web/auth-notes';
 import { accessibilityNotes } from './web/accessibility-notes';
@@ -44,6 +56,17 @@ export const NOTE_SOURCES: { notes: Note[]; url: string; topic: string }[] = [
   { notes: mongodbNotes, url: '/databases/mongodb', topic: 'MongoDB' },
   { notes: redisNotes, url: '/databases/redis', topic: 'Redis' },
   { notes: dynamodbNotes, url: '/databases/dynamodb', topic: 'DynamoDB' },
+  { notes: testingFundamentalsNotes, url: '/testing/fundamentals', topic: 'Testing Fundamentals' },
+  { notes: vitestNotes, url: '/testing/tools', topic: 'Vitest' },
+  { notes: rtlNotes, url: '/testing/tools', topic: 'React Testing Library' },
+  { notes: jestNotes, url: '/testing/tools', topic: 'Jest' },
+  { notes: mswNotes, url: '/testing/tools', topic: 'MSW' },
+  { notes: supertestNotes, url: '/testing/tools', topic: 'Supertest' },
+  { notes: playwrightNotes, url: '/testing/tools', topic: 'Playwright' },
+  { notes: etlTestingNotes, url: '/testing/specialized', topic: 'ETL Testing' },
+  { notes: pentestNotes, url: '/testing/specialized', topic: 'Penetration Testing' },
+  { notes: mobileTestingNotes, url: '/testing/specialized', topic: 'Mobile Testing' },
+  { notes: webTestingNotes, url: '/testing/specialized', topic: 'Web Testing' },
   { notes: webSecurityNotes, url: '/web/security', topic: 'Web Security' },
   { notes: authNotes, url: '/web/auth', topic: 'Auth & Identity' },
   { notes: accessibilityNotes, url: '/web/accessibility', topic: 'Accessibility' },
