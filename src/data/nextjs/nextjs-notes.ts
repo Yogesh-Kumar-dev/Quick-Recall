@@ -142,7 +142,9 @@ export async function generateStaticParams() {
       'Server Components: can await DB queries, use secrets, reduce bundle size. Cannot use hooks or browser APIs.',
       'Client Components: can use useState, useEffect, event handlers, localStorage, window.',
       'RSC Payload: a compact binary representation of the server tree, used by React to reconcile on the client.',
-      'Only NEXT_PUBLIC_ env vars are available in Client Components , others are replaced with empty string.'
+      'Only NEXT_PUBLIC_ env vars are available in Client Components , others are replaced with empty string.',
+      "A Client Component can't directly import a Server Component (it would need to run server code in the browser) , pass the Server Component down as children/props instead.",
+      'Props crossing the server → client boundary must be serializable , no functions, class instances, or Dates as-is (only plain objects, arrays, strings, numbers, and Promises for use()).'
     ],
     gotcha:
       "'use client' does NOT mean client-only , Client Components still run on the server during SSR (for initial HTML). It means the component is hydrated on the client and can use browser APIs after mount.",
@@ -357,6 +359,66 @@ export default function Home() {
 // - app/about/page.tsx  → /about (routing)
 // - app/api/users/route.ts → backend endpoint
 // - <Image>, <Link>, next/font → optimization`
+  },
+  {
+    id: 'whats-new-nextjs-15',
+    title: "What's New in Next.js 15",
+    summary:
+      'Request APIs (cookies, headers, params) became async (breaking), fetch/GET routes are uncached by default, and React 19 + stable Turbopack dev landed.',
+    difficulty: 'intermediate',
+    category: 'fundamentals',
+    prerequisites: ['what-is-nextjs'],
+    keyPoints: [
+      'Async Request APIs (breaking): cookies(), headers(), draftMode(), and params/searchParams are now Promises , must await them. A codemod (next-async-request-api) automates most of the migration.',
+      'Caching flipped to opt-in: GET Route Handlers and the Client Router Cache are no longer cached by default (Page segments now have staleTime: 0).',
+      'React 19 support in the App Router, with experimental React Compiler and improved hydration-error messages; Pages Router can stay on React 18 during the transition.',
+      'Turbopack Dev (next dev --turbo) reached stable , faster local server startup and Fast Refresh.',
+      'New APIs: instrumentation.js promoted to stable, unstable_after() to run code after a response streams, the <Form> component (next/form) for prefetch + client-side form navigation, and next.config.ts support.',
+      'Server Actions hardening: unused actions are dead-code-eliminated from the client bundle, and used ones get unguessable, rotating endpoint IDs.'
+    ],
+    gotcha:
+      "Sync access to cookies()/params still works during the Next.js 15 window (with a dev warning) so upgrades don't break instantly , but it is removed entirely in Next.js 16, so treat the warning as a deadline, not a suggestion.",
+    codeSnippet: `// Before (Next.js 14) → After (Next.js 15, async)
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;        // was: params.id
+  const cookieStore = await cookies(); // was: cookies()
+  return <Product id={id} />;
+}`
+  },
+  {
+    id: 'whats-new-nextjs-16',
+    title: "What's New in Next.js 16",
+    summary:
+      'Cache Components make caching fully opt-in via "use cache" + PPR, Turbopack is now the default bundler, and middleware.ts is renamed to proxy.ts.',
+    difficulty: 'intermediate',
+    category: 'fundamentals',
+    prerequisites: ['whats-new-nextjs-15'],
+    keyPoints: [
+      'Cache Components (cacheComponents: true in next.config.ts) replace the experimental ppr/dynamicIO flags , everything renders dynamically by default, and you opt individual functions/components into caching with "use cache".',
+      'Turbopack is now the default bundler for dev and build (stable) , 2-5x faster builds, up to 10x faster Fast Refresh; add --webpack to opt back out.',
+      'middleware.ts is renamed to proxy.ts (default export renamed to proxy) to make the network-boundary purpose explicit , same runtime behavior, old file still works but is deprecated.',
+      'Caching APIs refined: revalidateTag(tag, profile) now requires a cacheLife profile (e.g. "max") for stale-while-revalidate; updateTag(tag) is new for read-your-writes in Server Actions; refresh() refreshes only uncached data.',
+      'React 19.2 (canary) ships View Transitions, useEffectEvent(), and <Activity> for keeping hidden UI state alive.',
+      'Breaking/removed: Node.js 18 no longer supported (20.9+ required), AMP support removed, next lint command removed (use ESLint/Biome directly), sync cookies()/headers()/params access fully removed (must await).'
+    ],
+    gotcha:
+      'Calling revalidateTag("posts") with only one argument is deprecated , without a cacheLife profile you get no stale-while-revalidate behavior. Use revalidateTag("posts", "max") for background revalidation, or updateTag("posts") inside a Server Action if the user needs to see their own write immediately.',
+    codeSnippet: `// next.config.ts , opt in to the new caching model
+const nextConfig = { cacheComponents: true };
+
+// Renamed: middleware.ts → proxy.ts
+export default function proxy(request: NextRequest) {
+  return NextResponse.redirect(new URL('/home', request.url));
+}
+
+// Caching APIs
+revalidateTag('posts', 'max');      // SWR revalidation (needs a profile now)
+updateTag('user-42');               // Server Action: read-your-writes
+refresh();                          // Server Action: refresh uncached data only`
   },
   {
     id: 'dynamic-import',
@@ -777,6 +839,55 @@ const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-int
 export default function RootLayout({ children }) {
   return <html className={inter.variable}><body>{children}</body></html>;
 }`
+  },
+  {
+    id: 'next-script-optimization',
+    title: 'next/script , Third-Party Script Loading',
+    summary:
+      '<Script strategy="..."> controls WHEN a third-party script loads relative to page interactivity , preventing it from blocking the main thread.',
+    difficulty: 'basic',
+    category: 'optimization',
+    prerequisites: ['what-is-nextjs'],
+    keyPoints: [
+      'beforeInteractive: loads and executes before any page JS is hydrated , reserve for scripts the page cannot work without (bot detection, consent managers).',
+      'afterInteractive (default): loads after the page becomes interactive, equivalent to the defer attribute , the right default for analytics/tag managers.',
+      'lazyOnload: loads during idle time, after everything else , use for low-priority widgets (chat bubbles, social embeds).',
+      "onLoad/onError callbacks fire once the script's ready or fails , useful for gating code that depends on a global the script defines."
+    ],
+    gotcha:
+      'Reaching for beforeInteractive out of caution is the most common mistake , it re-introduces the exact main-thread blocking that next/script exists to avoid. Default to afterInteractive unless the script truly must run first.',
+    codeSnippet: `import Script from 'next/script';
+
+// Analytics: fine to defer , loads after the page is interactive
+<Script src="https://analytics.example.com/script.js" strategy="afterInteractive" />
+
+// Chat widget: lowest priority , loads when the browser is idle
+<Script src="https://chat.example.com/widget.js" strategy="lazyOnload" />`
+  },
+  {
+    id: 'core-web-vitals',
+    title: 'Core Web Vitals in Next.js',
+    summary: 'LCP, INP, and CLS are the three metrics Google scores , Next.js has a built-in feature aimed at each one.',
+    difficulty: 'intermediate',
+    category: 'optimization',
+    prerequisites: ['image-optimization', 'font-optimization'],
+    textbookDef:
+      'Core Web Vitals are field metrics measuring real-user experience: Largest Contentful Paint (loading speed), Interaction to Next Paint (responsiveness), and Cumulative Layout Shift (visual stability).',
+    keyPoints: [
+      'LCP (target < 2.5s): time until the largest visible element paints , usually a hero image or heading. Fix with next/image priority on the above-the-fold image and prefer SSG/ISR over CSR for that content.',
+      'INP (target < 200ms): worst-case delay between a user interaction and the next paint , dominated by main-thread blocking from hydration or heavy JS. Fix by minimizing "use client" boundaries and using progressive/selective hydration for non-critical widgets.',
+      'CLS (target < 0.1): how much visible content shifts unexpectedly during load. Fix with next/image (auto width/height reserves space) and next/font (display:"swap" + matched fallback metrics avoid font-swap jumps).',
+      'next/script strategy also protects INP , a poorly-scheduled third-party script is a common source of long main-thread tasks.',
+      'These are the same three metrics from the streaming/hydration notes , Core Web Vitals is just the standardized way of measuring the tradeoffs each rendering strategy makes.'
+    ],
+    codeSnippet: `// LCP: mark the hero image so it loads eagerly, not lazily
+<Image src={hero} alt="Hero" priority width={1200} height={600} />
+
+// CLS: next/font reserves space with matched fallback metrics
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
+
+// INP: keep this a leaf , not the whole page , 'use client'
+function LikeButton() { 'use client'; /* useState here */ }`
   },
   {
     id: 'isr-deep-dive',
