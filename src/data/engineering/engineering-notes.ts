@@ -517,6 +517,23 @@ paths:
     ]
   },
   {
+    id: 'eng-api-async-logging',
+    title: 'Asynchronous Logging',
+    summary: 'Write log entries to an in-memory, lock-free buffer and return immediately instead of blocking the request on a disk write for every log call.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-scaling'],
+    keyPoints: [
+      'Naive logging writes synchronously to disk (or over the network to a log collector) on every call site , each one blocks the request thread until the I/O completes, which adds up across a hot request path with several log statements.',
+      'Async logging instead pushes the log entry onto an in-memory queue/ring buffer and returns immediately; a separate background thread/process periodically flushes the buffer to disk or ships it out in batches.',
+      'The tradeoff is durability: entries sitting in the buffer are lost if the process crashes before the next flush , acceptable for most application logs, not acceptable for an audit trail or anything you legally must not lose.',
+      'A bounded buffer needs a backpressure policy for when it fills faster than it drains , common choices are drop the oldest entries, drop new entries, or (worst case) block the caller, chosen based on how much log loss vs latency spike is tolerable.',
+      'Most production logging libraries (Log4j2 AsyncAppender, Node’s pino with a worker thread transport) implement this pattern already , reach for the library’s async mode before rolling a custom buffer.'
+    ],
+    gotcha:
+      'Logging synchronously inside a hot loop or a high-throughput endpoint is a classic invisible bottleneck , it looks fine in low-traffic testing and only shows up as elevated p99 latency once real load hits the disk/network I/O on every call.'
+  },
+  {
     id: 'eng-api-sync-async',
     title: 'Synchronous vs Asynchronous API Processing',
     summary:

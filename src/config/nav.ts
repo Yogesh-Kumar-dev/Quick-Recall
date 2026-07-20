@@ -145,6 +145,12 @@ export const navSections: NavSection[] = [
     ]
   },
   {
+    id: 'aws',
+    title: 'AWS',
+    icon: IconBrandAws,
+    items: [{ title: 'Notes', url: '/aws/notes', icon: IconBrandAws }]
+  },
+  {
     id: 'testing',
     title: 'Testing',
     icon: IconTestPipe,

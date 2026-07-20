@@ -315,5 +315,102 @@ import { placeOrder } from '@/modules/orders';        // ✅ public interface
     front: 'Authentication vs authorization',
     back: 'Authentication: who are you? (login, token). Authorization: what are you allowed to do? (runs after authn). 401 = not authenticated. 403 = authenticated, but forbidden , a commonly mixed-up pair.',
     category: 'Q&A'
+  },
+  // ── System Design glossary (gaps not already covered above) ──
+  {
+    id: 'sd-api-gateway',
+    front: 'API Gateway',
+    back: 'A server that sits in front of your APIs/microservices, routing requests and centralising cross-cutting concerns , auth, rate limiting, throttling, logging , so individual services don’t each reimplement them.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-service-mesh',
+    front: 'Service mesh',
+    back: 'A dedicated infra layer (e.g. Istio, Linkerd) that handles service-to-service communication , retries, mTLS, load balancing, observability , via sidecar proxies, out of application code.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-failover',
+    front: 'Failover',
+    back: 'A backup component automatically takes over when the primary fails, keeping the system available. Pairs with redundancy (spare capacity already running) and health checks (to detect the failure).',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-multi-tenancy',
+    front: 'Multi-tenancy',
+    back: 'One instance of an application serves multiple customers ("tenants"), with their data logically isolated , cheaper to operate than one deployment per customer, but a bug can leak across tenants if isolation is sloppy.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-autoscaling',
+    front: 'Autoscaling',
+    back: 'Automatically adds/removes compute resources based on load (CPU, request rate, queue depth) , horizontal scaling driven by a metric instead of a human.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-load-shedding',
+    front: 'Load shedding',
+    back: 'Deliberately rejecting or degrading some requests under extreme load (e.g. return 503 for low-priority traffic) so the system stays healthy for the rest, instead of falling over entirely.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-quorum',
+    front: 'Quorum',
+    back: 'The minimum number of nodes that must agree for a distributed read/write to be considered successful , e.g. W + R > N guarantees a read sees the latest write across N replicas.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-orchestration-vs-choreography',
+    front: 'Orchestration vs choreography',
+    back: 'Orchestration: a central coordinator tells each service what to do and when (easier to reason about, single point of coupling). Choreography: services react to events independently, no coordinator (more decoupled, harder to trace).',
+    category: 'Q&A'
+  },
+  {
+    id: 'sd-service-registry',
+    front: 'Service registry',
+    back: 'A directory (e.g. Consul, Eureka) that tracks which instances of each microservice are currently up and where , lets services find each other dynamically instead of hardcoding addresses.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-data-warehouse-vs-lake',
+    front: 'Data warehouse vs data lake',
+    back: 'Warehouse: structured, schema-on-write, optimised for BI/reporting queries. Lake: raw/native format (files, blobs), schema-on-read, cheaper and more flexible but needs more work to query well.',
+    category: 'Q&A'
+  },
+  {
+    id: 'sd-olap-vs-oltp',
+    front: 'OLAP vs OLTP',
+    back: 'OLTP: many small, fast read/write transactions , the live app database. OLAP: complex analytical queries over large historical datasets , reporting/BI, usually a separate warehouse so it doesn’t compete with live traffic.',
+    category: 'Q&A'
+  },
+  {
+    id: 'sd-big-data',
+    front: 'Big Data (the 3 Vs)',
+    back: 'Datasets too large/fast/varied for conventional single-machine processing , commonly framed as Volume, Velocity, Variety. Handled with distributed processing (Spark, Hadoop) rather than a single database.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-pub-sub',
+    front: 'Pub/Sub model',
+    back: 'Publishers send messages to a topic without knowing who’s listening; subscribers receive messages from topics they’ve subscribed to. Decouples producers from consumers , a generalisation of a message queue for fan-out to many consumers.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-distributed-systems',
+    front: 'Distributed system',
+    back: 'Independent components on different machines that coordinate by passing messages over a network to appear as one coherent system , brings partial failure, network latency, and consistency trade-offs that a single-process app never has to think about.',
+    category: 'Keyword'
+  },
+  {
+    id: 'sd-throughput-vs-latency',
+    front: 'Throughput vs latency',
+    back: 'Latency: time for one request to complete (ms per request). Throughput: how much work the system gets done per unit time (requests/sec). You can improve one at the expense of the other , e.g. batching raises throughput but adds latency per item.',
+    category: 'Q&A'
+  },
+  {
+    id: 'sd-cdn',
+    front: 'CDN (Content Delivery Network)',
+    back: 'A geographically distributed set of edge servers that cache and serve content close to the user, cutting latency and origin-server load , used for static assets and increasingly for cacheable API responses.',
+    category: 'Keyword'
   }
 ];
