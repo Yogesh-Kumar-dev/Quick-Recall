@@ -20,6 +20,21 @@ import { reactNotes } from '@/data/react/react-notes';
 import { nextjsNotes } from '@/data/nextjs/nextjs-notes';
 import { nextjsRenderingNotes } from '@/data/nextjs/nextjs-rendering';
 import { nodejsNotes } from '@/data/nodejs/nodejs-notes';
+import { postgresqlNotes } from '@/data/databases/postgresql-notes';
+import { mongodbNotes } from '@/data/databases/mongodb-notes';
+import { redisNotes } from '@/data/databases/redis-notes';
+import { dynamodbNotes } from '@/data/databases/dynamodb-notes';
+import { testingFundamentalsNotes } from '@/data/testing/testing-fundamentals-notes';
+import { vitestNotes } from '@/data/testing/vitest-notes';
+import { rtlNotes } from '@/data/testing/rtl-notes';
+import { jestNotes } from '@/data/testing/jest-notes';
+import { mswNotes } from '@/data/testing/msw-notes';
+import { supertestNotes } from '@/data/testing/supertest-notes';
+import { playwrightNotes } from '@/data/testing/playwright-notes';
+import { etlTestingNotes } from '@/data/testing/etl-testing-notes';
+import { pentestNotes } from '@/data/testing/pentest-notes';
+import { mobileTestingNotes } from '@/data/testing/mobile-testing-notes';
+import { webTestingNotes } from '@/data/testing/web-testing-notes';
 import { reduxNotes } from '@/data/redux/redux-notes';
 import { reduxToolkitNotes } from '@/data/redux/redux-toolkit-notes';
 import { rtkQueryNotes } from '@/data/redux/rtk-query-notes';
@@ -42,6 +57,21 @@ const ALL_NOTES: Note[] = [
   ...nextjsNotes,
   ...nextjsRenderingNotes,
   ...nodejsNotes,
+  ...postgresqlNotes,
+  ...mongodbNotes,
+  ...redisNotes,
+  ...dynamodbNotes,
+  ...testingFundamentalsNotes,
+  ...vitestNotes,
+  ...rtlNotes,
+  ...jestNotes,
+  ...mswNotes,
+  ...supertestNotes,
+  ...playwrightNotes,
+  ...etlTestingNotes,
+  ...pentestNotes,
+  ...mobileTestingNotes,
+  ...webTestingNotes,
   ...reduxNotes,
   ...reduxToolkitNotes,
   ...rtkQueryNotes,

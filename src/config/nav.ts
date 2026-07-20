@@ -9,22 +9,29 @@ import {
   IconBrandHtml5,
   IconBrandJavascript,
   IconBrandNextjs,
+  IconBrandAws,
+  IconBrandMongodb,
   IconBrandNodejs,
   IconBrandReact,
   IconBrandRedux,
   IconBrandTypescript,
   IconBriefcase,
+  IconBug,
+  IconChecklist,
   IconCode,
   IconCpu,
   IconCards,
+  IconDatabase,
   IconGauge,
   IconInfoCircle,
   IconKey,
   IconMessageQuestion,
   IconMicrophone,
   IconNotes,
+  IconRobot,
   IconServer,
   IconShieldLock,
+  IconTestPipe,
   IconWorld
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
@@ -124,6 +131,33 @@ export const navSections: NavSection[] = [
     items: [
       { title: 'Node.js Notes', url: '/nodejs/notes', icon: IconBrandNodejs },
       { title: 'Quick Recall', url: '/nodejs/quick-recall', icon: IconBolt }
+    ]
+  },
+  {
+    id: 'databases',
+    title: 'Databases',
+    icon: IconDatabase,
+    items: [
+      { title: 'PostgreSQL', url: '/databases/postgresql', icon: IconDatabase },
+      { title: 'MongoDB', url: '/databases/mongodb', icon: IconBrandMongodb },
+      { title: 'Redis', url: '/databases/redis', icon: IconBolt },
+      { title: 'DynamoDB', url: '/databases/dynamodb', icon: IconBrandAws }
+    ]
+  },
+  {
+    id: 'aws',
+    title: 'AWS',
+    icon: IconBrandAws,
+    items: [{ title: 'Notes', url: '/aws/notes', icon: IconBrandAws }]
+  },
+  {
+    id: 'testing',
+    title: 'Testing',
+    icon: IconTestPipe,
+    items: [
+      { title: 'Fundamentals', url: '/testing/fundamentals', icon: IconChecklist },
+      { title: 'Testing Frameworks & Tools', url: '/testing/tools', icon: IconRobot },
+      { title: 'Specialized Testing', url: '/testing/specialized', icon: IconBug }
     ]
   },
   {

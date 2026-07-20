@@ -1,6 +1,6 @@
 import type { Note } from '@/types/content';
 
-// category values: 'metrics' | 'lcp' | 'inp' | 'cls' | 'tooling'
+// category values: 'metrics' | 'lcp' | 'inp' | 'cls' | 'tooling' | 'loading'
 
 export const webPerformanceNotes: Note[] = [
   // ─── METRICS ────────────────────────────────────────────────────────────────
@@ -225,5 +225,72 @@ onLCP(send); onINP(send); onCLS(send);
 
 # Lighthouse CI budget in the pipeline:
 # lighthouserc: assertions: { 'largest-contentful-paint': ['error', { maxNumericValue: 2500 }] }`
+  },
+
+  // ─── LOADING ────────────────────────────────────────────────────────────────
+  {
+    id: 'perf-code-splitting-tree-shaking',
+    title: 'Code Splitting & Tree Shaking',
+    summary: 'Code splitting ships only the JS a route needs, when it needs it; tree shaking strips out the JS that no route ever uses.',
+    difficulty: 'basic',
+    category: 'loading',
+    prerequisites: ['perf-core-web-vitals'],
+    keyPoints: [
+      'Code splitting: instead of one giant bundle, the bundler emits multiple smaller chunks (per route, or per dynamic import) so a page only downloads the code it actually needs.',
+      'Dynamic import() is the standard trigger , bundlers (Webpack, Turbopack, Rollup/Vite) automatically split anything behind an import() into its own chunk, loaded on demand.',
+      'Tree shaking removes dead code at build time by following static ES module import/export graphs , unused exports never make it into the final bundle.',
+      'Tree shaking needs static ESM syntax to work , CommonJS (require()) and code with side effects the bundler can’t prove are safe to drop will defeat it, which is why "sideEffects": false in package.json matters for library authors.',
+      'The two compound: split first (only load what this route needs), then shake each chunk (strip what even this route never calls).'
+    ],
+    gotcha:
+      'A library that re-exports everything from a single barrel file (export * from "./components") often can’t be tree-shaken effectively , the bundler can’t always prove individual exports are unused, so the whole barrel gets pulled in. Import directly from the specific module when bundle size matters.',
+    codeSnippet: `// Code splitting: this chart library only loads when rendered
+const Chart = lazy(() => import('./Chart'));
+
+// Tree shaking: only formatCurrency ends up in the bundle,
+// even though utils.js exports a dozen functions
+import { formatCurrency } from './utils';`
+  },
+  {
+    id: 'perf-list-virtualization',
+    title: 'List Virtualization (Windowing)',
+    summary: 'Render only the rows currently visible in a long list, not all ten thousand of them, and swap DOM nodes in and out as the user scrolls.',
+    difficulty: 'intermediate',
+    category: 'loading',
+    prerequisites: ['perf-core-web-vitals'],
+    keyPoints: [
+      'Rendering a long list (thousands of rows) in full creates thousands of DOM nodes , slow initial render, slow scrolling, high memory use, even if only ~20 rows are ever on screen at once.',
+      'Windowing/virtualization renders only the visible slice (plus a small buffer above/below) and repositions/recycles that small set of DOM nodes as the user scrolls, using absolute positioning or transforms to fake full-list scroll height.',
+      'Libraries: react-window / react-virtual (TanStack Virtual) are the common React picks , react-window for the simple fixed/variable-size-list case, TanStack Virtual for more control.',
+      'Trade-off: virtualized lists complicate things that assume every row is in the DOM , Ctrl+F/browser find, SEO crawling of list content, and measuring row height up front for variable-height rows.'
+    ],
+    gotcha:
+      'Virtualizing a short list (a few dozen items) is pure overhead , the windowing math and recycling logic cost more than just rendering the rows would. Reach for it once a list is long enough (hundreds+) to actually matter for LCP/INP.',
+    codeSnippet: `import { FixedSizeList } from 'react-window';
+
+<FixedSizeList height={600} width={400} itemSize={48} itemCount={items.length}>
+  {({ index, style }) => <div style={style}>{items[index].label}</div>}
+</FixedSizeList>`
+  },
+  {
+    id: 'perf-resource-hints',
+    title: 'Resource Hints: preload, prefetch & priority',
+    summary: '<link rel="preload"> fetches something this page needs right now, urgently; <link rel="prefetch"> fetches something the NEXT page will probably need, low priority.',
+    difficulty: 'intermediate',
+    category: 'loading',
+    prerequisites: ['perf-lcp'],
+    keyPoints: [
+      'preload: "I need this for the current page, and I need it now" , high priority, use for the LCP image/font/critical script the browser wouldn’t otherwise discover early (e.g. a font referenced only from CSS).',
+      'prefetch: "the user will likely go here next" , low priority, fetched during browser idle time and cached, so navigating to that next route/page feels instant. Common on hover-intent for links, or for the next step of a wizard.',
+      'preconnect / dns-prefetch: warm up the connection (DNS + TCP + TLS) to a third-party origin before the first real request to it , shaves round-trip time off the first request to that domain (analytics, a CDN, a payment iframe).',
+      'fetchpriority="high"/"low" on <img>/<link> fine-tunes priority within the browser’s own request scheduling , pairs with preload for the single most important image on the page.',
+      'Priority-based loading in general: give above-the-fold/critical content (hero image, primary CTA, main content) loading priority, and defer everything below the fold (lazy-load images, defer non-critical scripts) , the browser’s default heuristics get this right most of the time, hints correct the cases it doesn’t.'
+    ],
+    gotcha:
+      'Preloading things speculatively "just in case" competes for bandwidth with what the page actually needs right now , preload is a scarce, high-priority signal; overusing it (preloading five fonts, ten scripts) makes the real critical resource wait behind all of them.',
+    codeSnippet: `<link rel="preload" as="font" href="/inter.woff2" type="font/woff2" crossorigin />
+<link rel="prefetch" href="/next-page" as="document" />
+<link rel="preconnect" href="https://analytics.example.com" />
+<img src="/hero.avif" fetchpriority="high" />`
   }
 ];

@@ -1,7 +1,7 @@
-import InterviewSession from '@/components/mock-interview/interview-session';
+import SessionChat from '@/components/mock-interview/session-chat';
 
-// Client-only feature (Dexie/IndexedDB per device) — the session component handles all state.
+// Client-only feature (Dexie/IndexedDB per device) — the chat component handles all state.
 export default async function MockInterviewSessionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <InterviewSession interviewId={id} />;
+  return <SessionChat interviewId={id} />;
 }

@@ -82,6 +82,16 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
     urls: ['/nodejs/notes', '/nodejs/quick-recall']
   },
   {
+    id: 'databases',
+    label: 'Databases',
+    urls: ['/databases/postgresql', '/databases/mongodb', '/databases/redis', '/databases/dynamodb']
+  },
+  {
+    id: 'testing',
+    label: 'Testing',
+    urls: ['/testing/fundamentals', '/testing/tools', '/testing/specialized']
+  },
+  {
     id: 'html-css',
     label: 'HTML & CSS',
     urls: ['/html-css/html', '/html-css/css']

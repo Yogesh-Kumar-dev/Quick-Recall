@@ -216,6 +216,689 @@ export default function robots() {
 }`
   },
 
+  // ─── API DESIGN ─────────────────────────────────────────────────────────────
+  {
+    id: 'eng-api-what-is-an-api',
+    title: 'What is an API?',
+    summary: 'A contract that lets two pieces of software talk to each other without either one needing to know the other’s internals.',
+    difficulty: 'basic',
+    category: 'apis',
+    keyPoints: [
+      'API = Application Programming Interface , a defined set of endpoints, inputs, and outputs a program exposes for others to call.',
+      'It abstracts implementation away: the caller only needs to know the contract (request shape in, response shape out), not the code behind it.',
+      'Purposes: standardization (a common way to interact), decoupling (either side can change internally without breaking the other), reusability (many clients share one backend), security (a controlled surface instead of raw database access), and consolidation (aggregating several systems behind one interface).',
+      'Not limited to HTTP , a library’s public functions, an operating system’s syscalls, and a database driver are all APIs too. In interview context "API" almost always means a web/HTTP API.'
+    ]
+  },
+  {
+    id: 'eng-api-vs-web-service',
+    title: 'API vs Web Service',
+    summary:
+      'Every web service is an API, but not every API is a web service , "web service" implies network access over a standard protocol, "API" is the broader umbrella term.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-what-is-an-api'],
+    keyPoints: [
+      'API: any defined interface for two programs to communicate , can be in-process (a library), OS-level, or over a network.',
+      'Web service: specifically a network-accessible API reachable over a protocol like HTTP , historically associated with SOAP/XML, now commonly REST/JSON too.',
+      'Web services traditionally emphasize formal contracts and interoperability across platforms/languages; modern REST APIs are lighter-weight and less formal by convention.',
+      'In everyday practice the two terms are used almost interchangeably for HTTP APIs , the distinction mostly matters when contrasting REST against older SOAP-style enterprise services.'
+    ]
+  },
+  {
+    id: 'eng-api-soap-vs-rest',
+    title: 'SOAP vs REST',
+    summary:
+      'SOAP is a strict, XML-based protocol with a formal contract; REST is an architectural style that leans on plain HTTP and flexible formats like JSON.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'SOAP (Simple Object Access Protocol): always XML, wrapped in an envelope, with a WSDL file formally describing every operation, input, and output , strict, verbose, self-describing.',
+      'SOAP has built-in extensions for security (WS-Security) and reliable messaging , historically favored in banking, payments, and enterprise systems with strict compliance needs.',
+      'REST: an architectural style, not a protocol , uses standard HTTP verbs and status codes, typically JSON, no mandatory envelope or formal contract (though OpenAPI now fills that gap optionally).',
+      'REST is lighter, easier to consume from a browser or mobile app, and dominates public/consumer APIs; SOAP persists mainly in legacy enterprise and some financial/government integrations.'
+    ],
+    gotcha:
+      'Don’t say "SOAP is just old REST" , they solve different problems. SOAP’s formal contract and built-in security extensions are still a deliberate choice in some regulated industries, not merely a legacy accident.'
+  },
+  {
+    id: 'eng-api-endpoint-anatomy',
+    title: 'What is an API endpoint?',
+    summary: 'A specific URI where an API can be accessed , the combination of a path, an HTTP method, and the data it accepts/returns.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'An endpoint = URI (e.g. /users/42) + HTTP method (GET/POST/…) , the same URI can be multiple endpoints depending on the verb used against it.',
+      'Components: the path (identifies the resource), method (the action), headers (metadata like auth tokens or content type), query parameters (filtering/sorting), and body (payload for writes).',
+      'A well-designed endpoint is predictable: consistent naming, plural nouns for collections (/users not /getUsers), and nesting that mirrors real relationships (/users/42/orders).',
+      'Base URL + version + resource path is the typical full shape: https://api.example.com/v1/users/42.'
+    ]
+  },
+  {
+    id: 'eng-api-versioning',
+    title: 'API Versioning Strategies',
+    summary:
+      'How you signal breaking changes to clients without breaking everyone already depending on the old shape , URI, header, or query-param versioning are the three common approaches.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'URI versioning (/v1/users, /v2/users): the most visible and cacheable option , easy for clients to see and pin, but "pollutes" the URL and can make resource identity feel version-dependent.',
+      'Header versioning (a custom header like Api-Version: 2, or via content negotiation with a versioned Accept/MIME type): keeps URLs clean and resource identity stable, but is less discoverable and harder to test by just visiting a URL in a browser.',
+      'Query parameter versioning (?version=2): simple to add, but easy for clients to forget and easy to treat as "optional" when it should be mandatory.',
+      'Whichever strategy is chosen, pair it with semantic versioning conventions (major.minor.patch) so clients know from the version number alone whether an update is safe to adopt automatically.',
+      'Deprecation needs a real process: announce the timeline, keep the old version running in parallel for a grace period, and monitor traffic on it before switching it off.'
+    ],
+    gotcha:
+      'URI versioning is the most common in interviews and in practice (Stripe, GitHub, Twilio all expose /v1/ style paths) , default to it unless there’s a specific reason to prefer headers.'
+  },
+  {
+    id: 'eng-api-backward-compatibility',
+    title: 'Backward Compatibility Strategies',
+    summary:
+      'The discipline of evolving an API without breaking clients that are already calling it , additive changes are safe, anything that changes existing shape or meaning is not.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-versioning'],
+    keyPoints: [
+      'Safe (non-breaking) changes: adding a new optional field to a response, adding a new endpoint, adding a new optional request parameter , existing clients that ignore unknown fields keep working.',
+      'Breaking changes: removing/renaming a field, changing a field’s type or meaning, making an optional parameter required, changing status codes or error shapes , these need a new major version.',
+      'Handle behavioral changes gracefully: if a default is changing, consider a transition period where the new behavior is opt-in via a flag before it becomes the default.',
+      'Evolve data models additively , prefer adding a new field over repurposing an old one, even if it means some redundancy for a while.',
+      'Keep error response shapes and status code meanings stable across a major version , clients build retry/error-handling logic around them, and silently changing them breaks that logic invisibly.'
+    ],
+    gotcha:
+      'Clients that deserialize strictly (rejecting unknown fields) turn even an "additive" change into a breaking one , document that clients must ignore unrecognized fields, and consider that assumption when picking a serialization format/library.'
+  },
+  {
+    id: 'eng-api-status-codes',
+    title: 'HTTP Status Codes for APIs',
+    summary:
+      'Status codes are the outcome signal a well-designed API relies on , picking the right one lets clients branch on outcome without parsing the response body.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      '2xx success: 200 OK (general success), 201 Created (a POST that made a new resource , include a Location header), 202 Accepted (queued for async processing), 204 No Content (success, empty body , common for DELETE).',
+      '3xx redirection: 301/302 for resource moved, 304 Not Modified (conditional GET with a matching ETag/If-None-Match , tells the client its cache is still valid).',
+      '4xx client error: 400 Bad Request (malformed input), 401 Unauthorized (missing/invalid credentials), 403 Forbidden (authenticated but not allowed), 404 Not Found, 409 Conflict (state conflict, e.g. duplicate creation), 422 Unprocessable Entity (well-formed but semantically invalid), 429 Too Many Requests (rate limited).',
+      '5xx server error: 500 Internal Server Error (generic), 502 Bad Gateway (upstream failure), 503 Service Unavailable (overloaded/down, often paired with a Retry-After header), 504 Gateway Timeout.',
+      'The rule of thumb: 4xx means "the client should change something before retrying as-is"; 5xx means "the server failed, retrying the same request might work later."'
+    ],
+    gotcha:
+      '401 vs 403 is the single most commonly confused pair , 401 means "I don’t know who you are" (no/invalid credentials), 403 means "I know who you are, and you’re not allowed." Returning 403 for missing auth is a common, misleading mistake.'
+  },
+  {
+    id: 'eng-api-consumable-design',
+    title: 'Designing APIs That Are Easy to Consume',
+    summary:
+      'Predictability is the whole game , consistent naming, consistent response shapes, and letting HTTP semantics carry meaning instead of inventing your own conventions.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api', 'eng-api-endpoint-anatomy'],
+    keyPoints: [
+      'Use HTTP methods for the action, not the URL , /users/42/delete as a POST target is a design smell; DELETE /users/42 says the same thing using the protocol itself.',
+      'Predictable, consistent naming across every endpoint: always plural nouns, always the same casing (snake_case or camelCase, pick one), always the same date/id format.',
+      'Consistent response envelope: every list response paginated the same way, every error response shaped the same way, every success response nesting data under the same key (or consistently not nesting it).',
+      'Expose filtering, sorting, and field-selection via query parameters (?status=active&sort=-created_at&fields=id,name) rather than bespoke endpoints per combination.',
+      'Version from day one, even if there’s only ever one version , retrofitting versioning onto a live API with existing clients is far more painful than starting with /v1/.'
+    ]
+  },
+  {
+    id: 'eng-api-documentation',
+    title: 'API Documentation: OpenAPI/Swagger',
+    summary:
+      'OpenAPI (formerly Swagger) describes an API’s endpoints, parameters, and responses in a machine-readable spec , from which docs, client SDKs, and mock servers can all be generated.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      'OpenAPI is a YAML/JSON specification format , every path, method, parameter, request/response schema, and status code is declared once, in one file.',
+      'From that single spec you can generate: interactive docs (Swagger UI, Redoc), client libraries in multiple languages, server stubs, and contract tests , one source of truth instead of hand-maintained docs that drift from the code.',
+      'Alternatives exist (API Blueprint, RAML) but OpenAPI has become the de facto industry standard , most tooling (Postman, API gateways, code generators) assumes it.',
+      'Self-documenting APIs (e.g. exposing the schema itself, or using HATEOAS-style links) reduce the burden further, but a spec file is still the practical baseline most teams rely on.',
+      'The biggest real-world failure mode is drift: docs generated once and never regenerated after the API changes , wiring spec generation into CI (fail the build if the code and spec disagree) is the fix.'
+    ],
+    codeSnippet: `openapi: 3.0.0
+paths:
+  /users/{id}:
+    get:
+      summary: Get a user by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }`
+  },
+  {
+    id: 'eng-api-hateoas',
+    title: 'HATEOAS',
+    summary:
+      'Hypermedia As The Engine Of Application State , responses include links to related/next actions, so clients navigate the API dynamically instead of hardcoding every URL.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'A HATEOAS response doesn’t just return data , it returns data plus the links a client can follow next (e.g. a "cancel" link on an order only appears if cancellation is currently allowed).',
+      'The pitch: clients become more resilient to URL changes since they follow links from the API rather than constructing URLs themselves from hardcoded knowledge.',
+      'The reality: HATEOAS is rarely fully implemented in practice , it adds real complexity (every response needs link metadata) for a benefit most teams don’t end up needing, since most API clients are written against fixed documentation anyway.',
+      'It’s the "H" in the REST maturity model’s highest level (Richardson Maturity Model, level 3) , most production "RESTful" APIs stop at level 2 (proper resources + verbs) without ever adopting hypermedia.'
+    ],
+    gotcha:
+      'Interviewers often ask this specifically to see if you know it exists and why it’s uncommon , a good answer explains the idea AND why most teams skip it, not just a definition.'
+  },
+  {
+    id: 'eng-api-i18n',
+    title: 'Localization & Internationalization in APIs',
+    summary:
+      'i18n is building the API so it CAN support multiple languages/locales; l10n is actually providing the translated content , an API mainly needs to get the plumbing right.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'The Accept-Language request header lets a client state its preferred locale; the API returns a Content-Language header confirming what it actually sent back.',
+      'Store locale-independent data as-is (numbers, raw dates in ISO 8601/UTC) and let the CLIENT format them for display , don’t bake a specific locale’s formatting into the API response.',
+      'Translatable text (error messages, labels) is best served as a translation KEY plus a lookup table, not hardcoded English strings , the client or a localization layer resolves the key to the right language.',
+      'Currency, units, and address formats vary by region , store amounts as an integer minor unit (cents) plus an explicit currency code, never a pre-formatted string like "$12.00".',
+      'For global audiences, IDs and sorting need locale-aware collation in mind (e.g. sorting names correctly across scripts) , usually handled at the database/query layer, not invented in the API.'
+    ]
+  },
+  {
+    id: 'eng-api-error-responses',
+    title: 'Designing Error Responses',
+    summary:
+      'A good error response tells the client exactly what went wrong and how to fix it , in a shape that’s consistent across every endpoint in the API.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-status-codes'],
+    keyPoints: [
+      'Always pair the right HTTP status code with a structured body , the status code is for machines/middleware, the body is for the developer debugging the integration.',
+      'Consistent error shape across the whole API: a machine-readable error code (VALIDATION_FAILED), a human-readable message, and (for validation) which field(s) failed and why.',
+      'Never leak internals in an error response , stack traces, SQL fragments, or file paths in a production error body are both a security risk and unhelpful noise for the client.',
+      'RFC 7807 ("Problem Details for HTTP APIs") standardizes a JSON error shape (type, title, status, detail, instance) , adopting a known standard beats inventing a bespoke one.',
+      'Include a request/trace id in every error response , it’s the single most useful thing for connecting a client-reported bug to your server logs.'
+    ],
+    codeSnippet: `// RFC 7807-style problem details
+{
+  "type": "https://api.example.com/errors/validation-failed",
+  "title": "Validation failed",
+  "status": 422,
+  "detail": "email must be a valid email address",
+  "instance": "/users",
+  "errors": [{ "field": "email", "message": "invalid format" }],
+  "traceId": "a1b2c3"
+}`
+  },
+  {
+    id: 'eng-api-gateway',
+    title: 'API Gateways',
+    summary:
+      'A single entry point that sits in front of one or many backend services, handling cross-cutting concerns , auth, rate limiting, routing, and logging , so individual services don’t each reimplement them.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'Core jobs: request routing (path/host → the right backend service), authentication/authorization enforcement, rate limiting, response caching, and request/response transformation.',
+      'In a microservices architecture, the gateway is often the ONLY service exposed to the public internet , internal services stay unreachable directly, reducing attack surface.',
+      'It can aggregate multiple backend calls into one client-facing response (a form of BFF , backend-for-frontend) so a mobile client makes one round trip instead of five.',
+      'Centralizing cross-cutting concerns at the gateway means individual services can stay simple and focused , but the gateway itself becomes a critical single point of failure and needs its own scaling/HA plan.',
+      'Popular implementations: Kong, AWS API Gateway, Nginx-based gateways, Apigee , most cloud providers offer a managed one so teams don’t build their own.'
+    ]
+  },
+  {
+    id: 'eng-api-file-uploads',
+    title: 'Handling File Uploads in API Design',
+    summary:
+      'Small files can go straight through the API as multipart form data; large files are better uploaded directly to object storage using a pre-signed URL the API hands out.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'Direct upload (multipart/form-data POST to the API): simple, but routes potentially large binary payloads through your application server , fine for small files (avatars, documents under a few MB).',
+      'Pre-signed URL pattern: the client asks the API for a short-lived, permission-scoped URL to a storage bucket (S3/GCS), then uploads DIRECTLY to storage , the API never touches the file bytes, only issues the URL and later records metadata.',
+      'The pre-signed pattern scales far better for large files (video, big datasets) since it avoids doubling bandwidth/memory through your app servers, and it’s the standard approach for production file-upload APIs.',
+      'Always validate file type, size limit, and (for images) dimensions server-side before accepting , client-side validation is a UX nicety, not a security boundary.',
+      'For very large uploads, support chunked/resumable uploads (breaking the file into parts uploaded separately, then assembled) so a dropped connection doesn’t mean starting over.'
+    ]
+  },
+  {
+    id: 'eng-api-caching',
+    title: 'Caching in API Design',
+    summary:
+      'HTTP gives APIs caching for free via headers , ETag and Cache-Control let clients and CDNs skip re-fetching data that hasn’t changed.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-caching', 'eng-api-status-codes'],
+    keyPoints: [
+      'ETag: a hash/version tag for a resource , the client sends it back as If-None-Match on the next request; if unchanged, the server replies 304 Not Modified with no body, saving bandwidth.',
+      'Cache-Control headers (max-age, no-cache, private/public) tell clients and intermediary caches (CDNs, proxies) how long a response can be reused without asking again.',
+      'GET endpoints for data that doesn’t change per-request (public reference data, catalog listings) are prime caching candidates; anything user-specific needs private or no-store.',
+      'Server-side caching (a Redis layer in front of the database) speeds up the API’s own response time; HTTP caching headers additionally let the CLIENT or a CDN skip calling the API at all , they solve different layers of the same problem.',
+      'Cache invalidation on writes is the hard part in both layers , a PUT/PATCH/DELETE on a resource should bust any cache (server-side and via changing the ETag) for that resource and any collection it belongs to.'
+    ]
+  },
+  {
+    id: 'eng-api-scaling',
+    title: 'Scaling APIs for High Traffic',
+    summary:
+      'The standard playbook: stateless servers behind a load balancer, a cache in front of the database, and async processing for anything that doesn’t need to happen inline with the request.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-scaling', 'eng-api-caching'],
+    keyPoints: [
+      'Statelessness first: if any app server can handle any request (no server-local session state), a load balancer can freely add/remove instances to match traffic , this is the precondition for everything else.',
+      'Cache aggressively at every layer that makes sense , CDN for static/cacheable responses, Redis for hot database reads, HTTP caching headers for client/proxy-level savings.',
+      'Move anything slow off the request path: emailing, report generation, image processing , accept the request, queue the work, return 202 Accepted immediately, let a worker process it asynchronously.',
+      'Database is usually the real bottleneck at scale, not the API layer itself , read replicas, connection pooling, and query optimization matter more than adding more API servers once the DB saturates.',
+      'The main ongoing challenges at real scale: keeping p99 latency low (not just average), managing cascading failures (one slow downstream service backing up everything upstream , solved with timeouts, circuit breakers, and bulkheads), and capacity planning for traffic spikes.'
+    ]
+  },
+  {
+    id: 'eng-api-connection-pooling',
+    title: 'Connection Pooling for APIs',
+    summary:
+      'Reusing a small set of already-open connections (to a database, or between services) instead of opening a new one per request , connection setup is expensive, pooling amortizes that cost.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-scaling'],
+    keyPoints: [
+      'Opening a fresh TCP connection (and, for a database, authenticating a new session) on every request adds real latency and resource cost , a pool keeps N connections warm and hands them out on demand.',
+      'API servers pool connections TO their database (and often to downstream services they call); a reverse proxy or gateway can also pool connections FROM many clients into fewer upstream connections.',
+      'Pool size is a real tuning knob: too small and requests queue waiting for a free connection; too large and you can exhaust the database’s own max-connections limit.',
+      'HTTP/1.1 keep-alive and HTTP/2 multiplexing are the client-side analogue , reusing one TCP connection for many requests instead of a new handshake every time.'
+    ]
+  },
+  {
+    id: 'eng-api-async-logging',
+    title: 'Asynchronous Logging',
+    summary: 'Write log entries to an in-memory, lock-free buffer and return immediately instead of blocking the request on a disk write for every log call.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-scaling'],
+    keyPoints: [
+      'Naive logging writes synchronously to disk (or over the network to a log collector) on every call site , each one blocks the request thread until the I/O completes, which adds up across a hot request path with several log statements.',
+      'Async logging instead pushes the log entry onto an in-memory queue/ring buffer and returns immediately; a separate background thread/process periodically flushes the buffer to disk or ships it out in batches.',
+      'The tradeoff is durability: entries sitting in the buffer are lost if the process crashes before the next flush , acceptable for most application logs, not acceptable for an audit trail or anything you legally must not lose.',
+      'A bounded buffer needs a backpressure policy for when it fills faster than it drains , common choices are drop the oldest entries, drop new entries, or (worst case) block the caller, chosen based on how much log loss vs latency spike is tolerable.',
+      'Most production logging libraries (Log4j2 AsyncAppender, Node’s pino with a worker thread transport) implement this pattern already , reach for the library’s async mode before rolling a custom buffer.'
+    ],
+    gotcha:
+      'Logging synchronously inside a hot loop or a high-throughput endpoint is a classic invisible bottleneck , it looks fine in low-traffic testing and only shows up as elevated p99 latency once real load hits the disk/network I/O on every call.'
+  },
+  {
+    id: 'eng-api-sync-async',
+    title: 'Synchronous vs Asynchronous API Processing',
+    summary:
+      'Synchronous: the client waits for the full result in the response. Asynchronous: the API accepts the request, returns immediately, and the client checks back (or gets notified) later.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-status-codes'],
+    keyPoints: [
+      'Synchronous is the default and the right choice whenever the work finishes fast enough to fit inside a normal request timeout (reads, small writes, simple validations).',
+      'Asynchronous is needed when the work is slow or unpredictable in duration , video transcoding, report generation, bulk data processing, anything measured in seconds-to-minutes rather than milliseconds.',
+      'The standard async pattern: client POSTs, server returns 202 Accepted with a job id (and a Location header pointing at a status endpoint), client polls GET /jobs/:id until it’s done , or the server pushes a webhook when finished.',
+      'Long-held HTTP connections (making the client wait 30+ seconds on an open request) are fragile , proxies and load balancers often have their own timeouts shorter than the work, causing spurious failures even when the backend eventually succeeds.',
+      'Webhooks (the server calling back to a client-provided URL when work completes) avoid polling entirely, at the cost of needing the client to expose a reachable endpoint and handle retries/verification on incoming calls.'
+    ]
+  },
+  {
+    id: 'eng-api-security-concerns',
+    title: 'Common API Security Concerns',
+    summary:
+      'Broken authentication/authorization, injection, excessive data exposure, and lack of rate limiting cover most real-world API breaches , the OWASP API Security Top 10 catalogs them.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-what-is-an-api'],
+    keyPoints: [
+      'Broken object-level authorization (BOLA): the #1 API vulnerability , an endpoint checks that the caller is authenticated but not that they own/may access the SPECIFIC object id being requested (/orders/123 works for ANY logged-in user, not just its owner).',
+      'Injection: unsanitized input reaching a database query, shell command, or template , always use parameterized queries and validate/sanitize input at the boundary, never string-concatenate user input into a query.',
+      'Excessive data exposure: returning the full internal object (including fields like password hashes or internal flags) and relying on the CLIENT to hide what it doesn’t show , always shape the response server-side to exactly what’s needed.',
+      'Lack of rate limiting: without it, a single client (malicious or buggy) can exhaust resources or brute-force credentials/tokens , every public endpoint, especially auth ones, needs a limit.',
+      'Mass assignment: blindly binding a whole request body onto a database model lets a client set fields it shouldn’t (e.g. { "isAdmin": true } in a signup payload) , explicitly allowlist which fields a given endpoint accepts.'
+    ],
+    gotcha:
+      'BOLA (broken object-level authorization) is consistently ranked the #1 API security risk and is one of the most common real interview follow-ups , always mention it specifically, not just "check auth."'
+  },
+  {
+    id: 'eng-api-key',
+    title: 'What is the purpose of an API key?',
+    summary:
+      'A simple, static credential a client includes with every request to identify itself , mainly for tracking, rate limiting, and coarse access control, not strong security.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-what-is-an-api'],
+    keyPoints: [
+      'An API key identifies the CALLING APPLICATION (or account), not an individual end user , it answers "which client/project is making this request," useful for billing, quotas, and analytics.',
+      'It’s a much weaker security mechanism than OAuth , a key is a static, long-lived secret with no built-in expiry or scoping, so if it leaks, it’s valid until manually rotated.',
+      'API keys are typically sent as a header (X-API-Key) or query parameter , headers are preferred since query strings end up in logs, browser history, and referrer headers.',
+      'Best used for server-to-server calls or public/low-risk endpoints; for anything acting on behalf of a specific user with real permissions, OAuth tokens are the right tool instead.',
+      'Always allow keys to be rotated/revoked independently, and never embed a secret API key in client-side/browser code where anyone can read it from the network tab.'
+    ]
+  },
+  {
+    id: 'eng-api-authn-authz-implementation',
+    title: 'Implementing Authentication & Authorization in APIs',
+    summary:
+      'Authentication verifies identity on every request (usually via a bearer token); authorization then checks , on every single endpoint , whether that identity may perform this specific action on this specific resource.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-authn-vs-authz', 'auth-oauth2'],
+    keyPoints: [
+      'Common authentication mechanisms for APIs: API keys (client identity), OAuth 2.0 bearer tokens/JWTs (user identity, delegated access), and mutual TLS (service-to-service, high-trust environments).',
+      'Authorization needs to happen on every protected endpoint, not just at login , a valid token proves WHO the caller is, it says nothing about WHAT they’re allowed to touch (that’s the object-level check , see BOLA).',
+      'Role-based access control (RBAC): permissions attached to roles (admin, editor, viewer), users assigned roles , simple and covers most needs. Attribute-based (ABAC) checks finer-grained conditions (e.g. "only if this resource belongs to the caller’s team") when RBAC alone isn’t precise enough.',
+      'Put auth enforcement in shared middleware/a gateway rather than reimplementing checks in every handler , consistency here is a security property, not just DRY code.',
+      'Return 401 for missing/invalid credentials and 403 for valid credentials without permission , correct status codes let clients build correct retry/redirect logic.'
+    ]
+  },
+  {
+    id: 'eng-api-headless',
+    title: 'What is a headless API?',
+    summary:
+      'An API with no bundled frontend/UI at all , it exposes pure data and functionality, and any number of separate clients (web, mobile, kiosk) build their own presentation on top of it.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-what-is-an-api'],
+    keyPoints: [
+      '"Headless" = decoupled from presentation , the classic example is a headless CMS: content is managed and served via API, with no built-in templating/rendering layer of its own.',
+      'This lets one backend serve many different frontends (a web app, an iOS app, a smart TV app) from the same content/data source, each choosing its own presentation.',
+      'It’s the same underlying idea as a well-designed REST/GraphQL API in general , "headless" is mostly a marketing/product term (especially in the CMS/e-commerce space) for an API-first backend with no coupled UI.',
+      'Trade-off: more flexibility for API consumers, but every client now has to build its own rendering/UI layer instead of getting one for free.'
+    ]
+  },
+  {
+    id: 'eng-api-websockets',
+    title: 'WebSockets in API Design',
+    summary:
+      'A persistent, full-duplex connection , unlike request/response HTTP, either side can push a message at any time without the other having to ask first.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'A WebSocket connection starts as an HTTP request (an Upgrade: websocket handshake) and then stays open , after that, both client and server can send messages at any time over the same connection.',
+      'Use it for genuinely real-time, bidirectional needs: chat, live notifications, collaborative editing, live dashboards , anything where polling would be too slow or too wasteful.',
+      'It’s a different tool from REST, not a replacement , most APIs use REST/GraphQL for standard CRUD and add a WebSocket (or SSE) channel specifically for the real-time slice of functionality.',
+      'Server-Sent Events (SSE) is a simpler, one-directional (server → client only) alternative over plain HTTP , reach for it instead of WebSockets when the client never needs to push data back over the same channel.',
+      'WebSocket connections are stateful and held open per client, which changes scaling considerations , load balancers need sticky sessions or a shared pub/sub layer (Redis) so a message can reach a client connected to a different server instance.'
+    ]
+  },
+  {
+    id: 'eng-api-testing-tools',
+    title: 'Tools for Developing & Testing APIs',
+    summary:
+      'Postman/Insomnia for manual exploration, curl for scripting, and a real test suite (unit + integration) wired into CI for anything that has to keep working.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-documentation'],
+    keyPoints: [
+      'Postman/Insomnia: GUI clients for manually exploring and exercising an API , great for exploration and quick debugging, and can import an OpenAPI spec directly to generate a collection.',
+      'curl/httpie: scriptable, terminal-based , the go-to for quick one-off checks and for embedding in shell scripts/CI steps.',
+      'Automated test suites (unit tests for handler logic, integration tests that hit real endpoints against a test database) belong in CI , manual tools are for exploration, not regression protection.',
+      'API gateways and monitoring tools (Datadog, New Relic) round out the toolchain in production , they surface latency, error rate, and traffic patterns after the API ships.'
+    ]
+  },
+  {
+    id: 'eng-api-performance-testing',
+    title: 'API Performance Testing',
+    summary:
+      'Load/stress testing tools (k6, JMeter, Locust) simulate concurrent traffic against an API to find its breaking point before real users do , tracking latency percentiles, error rate, and throughput.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-scaling'],
+    keyPoints: [
+      'Key metrics: latency (p50/p95/p99 , tail latency matters far more than the average, since it’s what your worst-served users actually experience), throughput (requests/sec the system sustains), and error rate under load.',
+      'Load testing: sustained expected traffic, to confirm normal performance. Stress testing: traffic pushed past expected levels, to find the actual breaking point and how the system fails (gracefully, or catastrophically).',
+      'Spike testing (a sudden burst) and soak testing (sustained load over a long duration, to catch memory leaks/resource exhaustion that only show up over time) round out the standard test types.',
+      'Tools: k6 and Locust (code-based, scriptable scenarios), JMeter (GUI-driven, older but still widely used), and cloud load-testing services for very large simulated traffic.',
+      'Always test against a production-like environment (data volume, network topology) , performance characteristics on a tiny local dataset rarely predict real-world behavior.'
+    ]
+  },
+  {
+    id: 'eng-api-contract-testing',
+    title: 'Contract Testing',
+    summary:
+      'Verifies that a producer (the API) and a consumer (a client) agree on the same request/response shape , catching breaking changes at build time instead of in production.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-documentation'],
+    keyPoints: [
+      'The consumer defines a "contract" (expected requests and responses); the producer’s test suite replays that contract against the real API and fails the build if the actual response no longer matches.',
+      'This solves a real gap between unit tests (test one service in isolation) and full end-to-end tests (slow, flaky, need every service running) , contract tests are fast and catch the specific failure mode of "these two services no longer agree."',
+      'Consumer-driven contract testing (tools like Pact) flips the direction: consumers publish what they actually need, producers run those contracts in THEIR CI , a producer can’t merge a change that breaks a consumer without knowing it immediately.',
+      'Especially valuable in a microservices architecture with many independently-deployed services , it replaces "let’s hope staging catches it" with an automated, fast check in CI.'
+    ]
+  },
+  {
+    id: 'eng-api-mocking',
+    title: 'Mocking APIs',
+    summary:
+      'Standing up a fake version of an API (returning canned responses) so frontend/consumer development and testing don’t have to wait on , or depend on the uptime of , the real backend.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-documentation'],
+    keyPoints: [
+      'Purpose: unblock frontend work before the real backend exists, make tests fast and deterministic (no network, no flaky third-party dependency), and simulate error/edge cases hard to trigger on a real system (a 500, a timeout, a rate limit).',
+      'Can be generated automatically from an OpenAPI spec (many tools spin up a mock server directly from the spec) , the mock and the documented contract stay in sync by construction.',
+      'Levels: a hand-written stub in a unit test, a dedicated mock server (Prism, MSW, WireMock) for integration/e2e tests, or a shared "sandbox" environment third-party API consumers can develop against.',
+      'The risk: a mock that drifts from the real API’s actual behavior gives false confidence , pairing mocking with contract tests against the real service closes that gap.'
+    ]
+  },
+  {
+    id: 'eng-api-large-responses',
+    title: 'Handling Large Response Payloads',
+    summary:
+      'Pagination, field selection, and streaming/compression are the three levers , never return an unbounded list or a fully-loaded huge object by default.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-pagination'],
+    keyPoints: [
+      'Pagination is the first line of defense , cap the maximum page size server-side regardless of what the client requests, so no single call can ever return an unbounded amount of data.',
+      'Field selection/sparse fieldsets (?fields=id,name) let clients request only what they need instead of the full object , cuts payload size for clients that only use a fraction of the fields.',
+      'gzip/br compression on responses is close to free bandwidth savings for JSON , should be on by default at the server or CDN/gateway layer.',
+      'For genuinely huge exports (a full data dump), stream the response (chunked transfer encoding, or newline-delimited JSON) rather than building the entire response in memory before sending the first byte , or better, generate the export as a background job and hand back a downloadable file URL.'
+    ]
+  },
+  {
+    id: 'eng-api-content-negotiation',
+    title: 'Content Negotiation & Supporting Multiple Data Formats',
+    summary:
+      'The Accept and Content-Type headers let a client state what format it wants and what it’s sending , so one API can serve JSON, XML, or other formats from the same endpoints.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      'Content-Type on the REQUEST tells the server what format the request body is in (application/json, multipart/form-data, application/xml).',
+      'Accept on the REQUEST tells the server what format(s) the CLIENT can handle in the response; the server picks one and confirms it via Content-Type on the RESPONSE.',
+      'JSON is the default/expected format for the vast majority of modern APIs , supporting additional formats (XML, CSV) is usually driven by a specific enterprise/legacy client requirement, not done by default.',
+      'MIME type versioning (e.g. Accept: application/vnd.example.v2+json) combines content negotiation with API versioning in one header , an alternative to /v2/ URI versioning.'
+    ]
+  },
+  {
+    id: 'eng-api-sensitive-data',
+    title: 'Protecting Sensitive Data in APIs',
+    summary:
+      'Never send more than the client needs, encrypt sensitive fields at rest, and always transmit over TLS , sensitive data protection is a design decision, not a bolt-on.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-security-concerns'],
+    keyPoints: [
+      'Minimize exposure by design: shape every response to include only what the specific client/use case needs , don’t return a full internal user object (password hash, internal flags) and rely on the client to hide fields.',
+      'TLS everywhere, no exceptions , sensitive data (tokens, PII, payment info) must never travel over plain HTTP, including for internal service-to-service calls in many compliance regimes.',
+      'Mask/redact sensitive fields in logs , a request/response logging middleware that dumps full payloads will happily log credit card numbers and passwords unless explicitly told not to.',
+      'Field-level encryption for especially sensitive data (SSNs, payment details) at rest, in addition to disk/database-level encryption , defense in depth in case one layer is compromised.',
+      'Apply data minimization to third parties too , if an endpoint proxies or forwards data to another service, forward only the fields that service actually needs.'
+    ]
+  },
+  {
+    id: 'eng-api-filtering-sorting',
+    title: 'Filtering & Sorting Conventions',
+    summary:
+      'Query parameters are the standard place for filtering, sorting, and searching , consistent naming here is what makes an API feel predictable to consume.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-consumable-design'],
+    keyPoints: [
+      'Filtering: one query param per filterable field (?status=active&category=books) is the simplest, most discoverable convention; complex filter logic sometimes needs a dedicated query language (e.g. ?filter=price>10 AND status:active) , but only reach for that once simple params stop being enough.',
+      'Sorting: a single sort param with a sign or suffix convention for direction , ?sort=-created_at,name (descending by created_at, then ascending by name) is a common pattern.',
+      'Searching: a dedicated ?q= or ?search= param for free-text search, kept separate from structured filters , mixing the two into one param gets ambiguous fast.',
+      'Whatever conventions are chosen, document them once and apply them identically across every list endpoint , an API where /users?sort=name works but /orders?sortBy=date is required is a common source of integration bugs.',
+      'Validate filter/sort field names against an allowlist server-side , never pass a client-supplied sort field directly into a raw SQL ORDER BY clause (SQL injection via the sort parameter is a classic real-world bug).'
+    ]
+  },
+  {
+    id: 'eng-api-transactions',
+    title: 'Transaction Management in API Endpoints',
+    summary:
+      'A single endpoint that touches multiple resources needs either a real database transaction (all-or-nothing within one system) or a saga/compensating-action pattern (across multiple systems/services).',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-idempotency'],
+    keyPoints: [
+      'Single-database case: wrap the multi-step write in a real DB transaction , if step 3 of 4 fails, everything rolls back, and the API can return a clean error without leaving partial state behind.',
+      'Cross-service case (a "place order" endpoint that touches inventory, payment, and shipping services): a single ACID transaction usually isn’t possible across services , the saga pattern instead runs each step and defines a compensating action to undo prior steps if a later one fails.',
+      'Idempotency keys matter doubly here , a client retry on a failed/timed-out multi-step request must not double-charge a payment or double-decrement inventory; the server needs to recognize and de-duplicate the retried request.',
+      'Keep transaction boundaries as short as possible , holding open a long transaction while waiting on a slow external call (like a payment gateway) holds database locks and hurts everyone else’s throughput.',
+      'Return a clear status while a multi-step operation is still settling (e.g. 202 Accepted with a status field like "processing") rather than blocking the response until every downstream step completes.'
+    ]
+  },
+  {
+    id: 'eng-api-json-api-standard',
+    title: 'The JSON:API Standard',
+    summary:
+      'A specification for structuring JSON API responses , consistent resource objects, relationships, and included data, so clients don’t have to learn a bespoke response shape per API.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-consumable-design'],
+    keyPoints: [
+      'Every resource is returned as an object with a standard shape: { type, id, attributes, relationships } , predictable regardless of which resource or endpoint you’re looking at.',
+      'Relationships are expressed as links/references rather than embedding full nested objects by default , keeps payloads smaller and avoids duplicating the same nested data across a list response.',
+      'The included key lets a response optionally bundle related resources alongside the primary data (compound documents) , reduces the classic N+1-requests-from-the-client problem without over-fetching by default.',
+      'Adopting a standard like JSON:API (or a simpler house convention with the same spirit , consistent envelope, consistent relationship shape) is the point, more than JSON:API specifically , the goal is that every endpoint in your API "feels" the same to a consumer.'
+    ]
+  },
+  {
+    id: 'eng-api-statelessness',
+    title: 'Statelessness in REST APIs',
+    summary:
+      'Every request carries everything the server needs to handle it , no server-side memory of previous requests , which is the property that makes REST APIs trivially horizontally scalable.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-rest-api'],
+    keyPoints: [
+      'Stateless means the server keeps no session/conversation state between requests , each request is self-contained, typically carrying auth (a token) and any context (query params, a resource id) it needs.',
+      'This is WHY horizontal scaling is simple: any request can be routed to any server instance behind a load balancer, since no instance holds state a later request from the same client depends on , no "sticky sessions" required.',
+      "Compare to a stateful design (a traditional server-rendered app with an in-memory session, or a shopping cart held in server memory) , that requires either sticky sessions (routing a client to the same server every time) or a shared session store, both extra infrastructure REST's statelessness avoids.",
+      "Statelessness doesn't mean the SYSTEM has no state , the database very much does. It means the API layer itself holds none between requests; all persistent state lives in the database/cache, not in server memory.",
+      'The trade-off: every request is a bit more verbose (re-sending auth, re-establishing context) than a stateful protocol would need , a deliberate simplicity-for-scalability trade REST makes.'
+    ],
+    gotcha:
+      'A REST endpoint that reads from an in-memory variable set by a PREVIOUS request (a classic accidental global) is a statelessness violation , it will work in local dev with one server instance and break mysteriously in production once traffic is load-balanced across several.'
+  },
+  {
+    id: 'eng-api-put-vs-post',
+    title: 'PUT vs POST',
+    summary:
+      'POST creates a new resource (and is not idempotent , calling it twice makes two); PUT replaces a resource at a known URL (and IS idempotent , calling it twice has the same effect as once).',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-idempotency'],
+    keyPoints: [
+      "POST /users creates a new user , the client doesn't know the id in advance, the server assigns it, and the response typically includes a Location header pointing at the new resource.",
+      'PUT /users/42 replaces the ENTIRE resource at that specific, already-known URL , calling it 5 times with the same body leaves the resource in the same final state as calling it once (idempotent).',
+      'PUT is also technically valid for creation when the client controls the id (PUT /users/42 creating user 42 if it doesn\'t exist) , less common in practice, but a correct answer to "can PUT create something?"',
+      "PATCH is often confused with PUT: PATCH applies a PARTIAL update (only the fields provided change); PUT conceptually replaces the whole resource , sending a PUT with only some fields can wipe out the ones you didn't include, depending on server implementation.",
+      'Interview shorthand: POST = "create, not idempotent, url doesn\'t include the new id"; PUT = "replace/create-at-known-url, idempotent, url includes the id".'
+    ]
+  },
+  {
+    id: 'eng-api-options-method',
+    title: 'The OPTIONS Method',
+    summary:
+      'Asks a server "what can I do here?" without side effects , returns the allowed HTTP methods for a resource, and is the method browsers use automatically for a CORS preflight check.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      "OPTIONS /users asks the server to describe the resource's capabilities , the response's Allow header lists the supported methods (e.g. Allow: GET, POST, OPTIONS) without actually performing any action.",
+      'CORS preflight is the most common real-world encounter with OPTIONS: before a cross-origin request that isn\'t a "simple request" (has custom headers, or uses PUT/PATCH/DELETE), the browser automatically sends an OPTIONS request first to check permission , this happens silently, without any app code calling it directly.',
+      'A server (or its CORS middleware) must respond to OPTIONS with the right Access-Control-Allow-* headers or the browser blocks the REAL request that would have followed , a very common source of "my API works in Postman but not in the browser" confusion.',
+      'Like GET and HEAD, OPTIONS is a SAFE method , it should never cause a side effect, purely descriptive.'
+    ],
+    gotcha:
+      'Forgetting to let OPTIONS requests through auth middleware is a classic bug , the preflight request usually carries no auth token, so if the middleware rejects unauthenticated OPTIONS calls, the browser never gets to send the real (authenticated) request at all.'
+  },
+  {
+    id: 'eng-api-uri-vs-url',
+    title: 'URI vs URL, and URI Templating',
+    summary:
+      'A URL is a URI that also tells you HOW to fetch the resource (a location); every URL is a URI, but a URI can just be an identifier with no fetch mechanism implied.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      "URI (Uniform Resource Identifier) is the umbrella term , anything that identifies a resource. urn:isbn:0451450523 is a valid URI (a URN) that identifies a book but doesn't tell you how to retrieve it.",
+      'URL (Uniform Resource Locator) is a URI that ALSO specifies the access mechanism/location , https://api.example.com/users/42 is a URL: it identifies the resource AND tells you exactly how to fetch it (HTTPS, that host, that path).',
+      'In everyday REST API work "URI" and "URL" are used almost interchangeably, since virtually every REST resource identifier IS also a URL , the distinction is mostly interview trivia, but worth stating precisely once asked.',
+      "URI templating is the {placeholder} syntax used to describe a family of URLs , /users/{id}/orders/{orderId} describes the PATTERN; a real request substitutes actual values (/users/42/orders/7). This is exactly what path parameters are, and it's also the format OpenAPI specs use to document endpoints."
+    ]
+  },
+  {
+    id: 'eng-api-resource-expansion',
+    title: 'Resource Expansion',
+    summary:
+      'A query parameter (commonly ?expand=orders) tells the server to embed a related resource directly in the response , trading a bit of payload size for one fewer round trip.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-filtering-sorting'],
+    keyPoints: [
+      'Without expansion: GET /users/42 returns a user with orderIds: [7, 8, 9] , the client then makes 3 more requests to fetch each order individually (or one batched request, if the API supports that).',
+      'With expansion: GET /users/42?expand=orders returns the user with orders: [{...}, {...}, {...}] embedded directly , one request instead of the follow-up N.',
+      "This is the REST-without-a-query-language answer to the same over-fetching/N+1 problem GraphQL and JSON:API's included key both solve differently , same underlying need (avoid a request-per-related-resource), different mechanisms.",
+      'Should be OPT-IN (a query param the client explicitly requests), not default-on , always embedding every relationship bloats every response for clients that only wanted the top-level resource.',
+      'Nested expansion (?expand=orders.items) for multiple levels deep is a natural extension, but needs a sane depth limit , unbounded nested expansion can turn one request into an accidentally enormous, slow response.'
+    ]
+  },
+  {
+    id: 'eng-api-mobile-multi-client',
+    title: 'Designing REST APIs for Mobile & Multiple Client Types',
+    summary:
+      'A mobile client has different constraints than a browser , limited bandwidth, battery cost per request, and unreliable connectivity , which pushes API design toward fewer, smaller, more resilient requests.',
+    difficulty: 'intermediate',
+    category: 'apis',
+    prerequisites: ['eng-api-consumable-design', 'eng-api-resource-expansion'],
+    keyPoints: [
+      'Bandwidth and battery: every request has a real cost on mobile (radio wake-up, data usage) that barely registers on a broadband web client , favor fewer, larger requests (resource expansion, field selection) over many small chatty ones.',
+      'Offline support: mobile apps are expected to work (at least partially) with no connectivity , this usually means the API needs to support incremental sync (return only what changed since a given timestamp/cursor) rather than assuming the client always fetches a fresh full state.',
+      "Unreliable connectivity changes retry behavior expectations too , idempotency (see the idempotency note) matters even more on mobile, since a request can time out from the client's perspective while actually succeeding server-side, and the client WILL retry.",
+      'Serving both web and mobile from one API: a shared core API with either resource expansion / field selection (letting each client request exactly the shape it needs) or a thin BFF (Backend-for-Frontend) layer per client type are the two common patterns , the former keeps one API, the latter tailors the shape per client at the cost of another service to maintain.',
+      "Push notifications, background sync, and versioning discipline matter more here too , a mobile client can't always be forced to update immediately (app store review delays), so an API serving mobile clients needs to support OLDER API versions in production for longer than a web-only API typically would."
+    ]
+  },
+  {
+    id: 'eng-api-http-headers',
+    title: 'The Role of HTTP Headers in REST',
+    summary:
+      'Headers carry metadata ABOUT the request/response , auth, format, caching, CORS , separately from the actual resource data in the body.',
+    difficulty: 'basic',
+    category: 'apis',
+    prerequisites: ['eng-api-endpoint-anatomy'],
+    keyPoints: [
+      'Request headers worth knowing cold: Authorization (credentials/token), Content-Type (what format the request body is in), Accept (what format(s) the client wants back), Idempotency-Key (client-supplied retry-safety token).',
+      'Response headers worth knowing cold: Content-Type (what format the response body actually is), Location (the URL of a newly created resource, on a 201), Cache-Control / ETag (caching directives), Access-Control-Allow-Origin (CORS).',
+      'Headers vs body: the body carries the actual resource representation; headers carry information ABOUT that representation or about the request/response as a whole , mixing the two (e.g. putting real data only in a custom header) is a design smell.',
+      "Custom headers (commonly prefixed X- historically, though that convention is now deprecated by RFC 6648) are used for anything app-specific that doesn't fit a standard header , a request-tracing id, a client app version, a feature flag.",
+      'This note is the connective tissue for several others in this section , auth headers tie to the API-key and OAuth notes, Content-Type/Accept tie to content negotiation, Cache-Control ties to the caching note, and Access-Control-* ties to CORS.'
+    ]
+  },
+
   // ─── DATABASES ────────────────────────────────────────────────────────────────
   {
     id: 'eng-sql-vs-nosql',
@@ -896,7 +1579,8 @@ import { placeOrder } from '@/modules/orders'; // ✅ via the public interface
       'Sliding window log: store a timestamp per request and count how many fall in the last N seconds. Perfectly accurate, but storing a timestamp per request gets expensive at high volume.',
       'Sliding window counter: approximate the sliding log by weighting the previous fixed window’s count proportionally into the current one , most of the accuracy of the log, close to the memory cost of the fixed counter, the usual production choice.',
       'Token bucket: a bucket refills with tokens at a steady rate up to a cap; each request consumes one token, and requests are rejected when the bucket is empty. Naturally allows short bursts up to the bucket size while enforcing a steady average rate.',
-      'Leaky bucket: requests queue up and are processed (leak out) at a fixed rate, smoothing bursty traffic into a steady stream , good for protecting a downstream system that can’t handle spikes, at the cost of added latency for queued requests.'
+      'Leaky bucket: requests queue up and are processed (leak out) at a fixed rate, smoothing bursty traffic into a steady stream , good for protecting a downstream system that can’t handle spikes, at the cost of added latency for queued requests.',
+      'Terminology worth being precise about: "rate limiting" usually means REJECTING requests over the cap (a 429); "throttling" usually means SLOWING them down instead (queueing/delaying, as leaky bucket does) rather than refusing them outright , the two terms get used loosely and interchangeably in practice, but the distinction (reject vs delay) is what an interviewer is actually listening for if they ask you to define throttling specifically.'
     ],
     gotcha:
       'The fixed window counter’s boundary problem is a classic interview follow-up: a client sending its full quota at 0:59 and again at 1:01 gets through 2x the intended rate within 2 seconds, because each burst lands in a different "fixed" window.',

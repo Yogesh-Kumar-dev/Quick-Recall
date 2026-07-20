@@ -164,10 +164,12 @@ export default function Loading() {
       'Everything outside Suspense boundaries is part of the static shell , sent immediately.',
       'Multiple independent Suspense boundaries stream in parallel , one slow request never blocks others.',
       "React's use() hook: pass a server-initiated Promise to a Client Component and let Suspense handle the wait.",
-      "loading.tsx is a shortcut , it's equivalent to wrapping page.tsx in a <Suspense> boundary."
+      "loading.tsx is a shortcut , it's equivalent to wrapping page.tsx in a <Suspense> boundary.",
+      'Under the hood: React uses renderToPipeableStream (Node.js) or renderToReadableStream (edge runtime) to flush HTML in chunks over a single HTTP connection instead of one renderToString() call.',
+      'As each chunk arrives, React hydrates it independently , clicking an already-streamed section works before slower sections below it have even loaded.'
     ],
     gotcha:
-      "Nesting async components without Suspense creates a waterfall , if the parent awaits before rendering the child, the child's fetch can't start until the parent finishes. Wrap each independently-fetching component in its own Suspense.",
+      "Nesting async components without Suspense creates a waterfall , if the parent awaits before rendering the child, the child's fetch can't start until the parent finishes. Wrap each independently-fetching component in its own Suspense. Also: once the first chunk is flushed, the response's status code and headers are locked in , a deep component erroring after that point can't change a 200 into a 500.",
     codeSnippet: `export default function Page() {
   return (
     <>
@@ -272,7 +274,10 @@ export default function ProductPage() {
       'Pre-rendering: Next.js generates HTML ahead of time so content is visible immediately.',
       'Two pre-render modes: SSG (at build time) and SSR (per request).',
       'After HTML arrives, React HYDRATES it , attaching event listeners to make it interactive.',
-      'Pre-rendering improves first contentful paint, SEO, and perceived performance.'
+      'Pre-rendering improves first contentful paint, SEO, and perceived performance.',
+      'CSR tradeoff: fast TTFB (tiny HTML shell) but late FCP/LCP (blocked on JS download + execution) , each 100KB of JS adds noticeable delay on mid-tier devices.',
+      'CSR works well for authenticated dashboards, editors, and long-lived sessions where the bundle cost is paid once and interactivity matters more than first paint.',
+      'CSR falls short for public, SEO-sensitive, quick-bounce content (marketing, blog posts, product pages) , that is exactly what SSR/SSG target.'
     ],
     eli5: 'CSR is handing someone a flat-pack box and the instructions , they build the furniture at home (slow, blank at first). SSR/SSG ships the furniture already assembled , they see it instantly, then just tighten the screws (hydration).',
     codeSnippet: `// CSR: <div id="root"></div> → JS fills it in the browser
@@ -387,6 +392,72 @@ export default function Page({ data }) {
 export async function getStaticProps({ params }) {
   const post = await getPost(params.id);
   return { props: { post } };
+}`
+  },
+
+  // ─── HYDRATION ──────────────────────────────────────────────────────────────
+  {
+    id: 'hydration-basics',
+    title: 'Hydration',
+    summary: 'Hydration attaches React event listeners and state to server-rendered HTML , the step that makes static markup interactive.',
+    difficulty: 'intermediate',
+    category: 'rendering',
+    prerequisites: ['csr-vs-ssr'],
+    textbookDef:
+      'Hydration is the process where React walks the DOM tree the server already sent, reconstructs its internal component/fiber tree in memory, and attaches event listeners , without re-creating or re-painting the existing markup.',
+    keyPoints: [
+      'The server sends HTML that LOOKS interactive but has zero event listeners attached , clicks silently do nothing until hydration finishes.',
+      'The client calls hydrateRoot(container, <App />) instead of createRoot , it reuses the existing DOM nodes rather than rebuilding them.',
+      'Hydration walks and processes the WHOLE tree by default , on a mid-tier device this can block the main thread for 450ms or more.',
+      "That blocking window is exactly what Google's Interaction to Next Paint (INP) metric penalizes , a page that looks ready but can't respond to clicks.",
+      'React Server Components sidestep this entirely for the parts of the tree they cover , server-only components ship no JS and need zero hydration.'
+    ],
+    gotcha:
+      "A hydration mismatch (server HTML differs from what the client would render, e.g. Date.now() or Math.random() used during render) causes React to discard and re-render the mismatched subtree client-side , don't rely on non-deterministic values during render.",
+    codeSnippet: `// Client entry point
+import { hydrateRoot } from 'react-dom/client';
+
+// Reuses the server-rendered DOM , does not repaint it
+hydrateRoot(document.getElementById('root'), <App />);`
+  },
+
+  {
+    id: 'progressive-selective-hydration',
+    title: 'Progressive & Selective Hydration',
+    summary: 'Instead of hydrating the whole page at once, hydrate pieces independently , by arrival, visibility, or user interaction.',
+    difficulty: 'advanced',
+    category: 'streaming',
+    prerequisites: ['hydration-basics', 'streaming-suspense'],
+    textbookDef:
+      'Progressive hydration splits a page into independently-hydratable chunks (one per Suspense boundary / code-split component) so each becomes interactive as soon as its own JS and data are ready, rather than waiting for the entire tree.',
+    keyPoints: [
+      'React 18 gives this automatically: components inside <Suspense> stream and hydrate independently of the rest of the page , no extra setup required.',
+      "Selective hydration prioritization: if a user clicks inside an unhydrated Suspense boundary before it's ready, React bumps its hydration ahead of others still in the queue.",
+      'Visibility-based hydration (manual pattern): wrap below-the-fold widgets in an IntersectionObserver and only mount/hydrate them once scrolled into view , same idea as image lazy-loading, applied to JS.',
+      'Interaction-based hydration (manual pattern): defer loading AND hydrating heavy widgets (modals, charts, rich editors) until the user actually opens/clicks them , keeps the initial JS payload small.',
+      'React Server Components are the most aggressive version of this idea , a server-only component needs no hydration step at all, anywhere.'
+    ],
+    gotcha:
+      'Progressive hydration only pays off for genuinely optional-at-first-paint sections , if nearly every component on the page needs to be interactive immediately, splitting hydration adds complexity without measurable INP improvement.',
+    codeSnippet: `import { Suspense, lazy } from 'react';
+
+const ProductReviews = lazy(() => import('./ProductReviews'));
+const RelatedProducts = lazy(() => import('./RelatedProducts'));
+
+export default function ProductPage({ product }) {
+  return (
+    <>
+      <ProductDetails product={product} />       {/* hydrates with the main bundle */}
+
+      <Suspense fallback={<ReviewsSkeleton />}>
+        <ProductReviews productId={product.id} /> {/* hydrates independently */}
+      </Suspense>
+
+      <Suspense fallback={<RelatedSkeleton />}>
+        <RelatedProducts productId={product.id} /> {/* hydrates independently */}
+      </Suspense>
+    </>
+  );
 }`
   }
 ];
