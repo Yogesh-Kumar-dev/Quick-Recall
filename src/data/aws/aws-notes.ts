@@ -10,7 +10,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-regions-azs',
     title: 'Regions & Availability Zones',
-    summary: 'A Region is a geographic area; each Region contains multiple isolated Availability Zones (AZs) , the unit you spread across for high availability.',
+    summary:
+      'A Region is a geographic area; each Region contains multiple isolated Availability Zones (AZs) , the unit you spread across for high availability.',
     difficulty: 'basic',
     category: 'fundamentals',
     keyPoints: [
@@ -25,7 +26,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-shared-responsibility',
     title: 'The Shared Responsibility Model',
-    summary: 'AWS secures the cloud (hardware, facilities, managed-service internals); you secure what you put in the cloud (your data, configs, access, OS patches).',
+    summary:
+      'AWS secures the cloud (hardware, facilities, managed-service internals); you secure what you put in the cloud (your data, configs, access, OS patches).',
     difficulty: 'basic',
     category: 'fundamentals',
     keyPoints: [
@@ -40,7 +42,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-iaas-paas-saas',
     title: 'IaaS vs PaaS vs SaaS',
-    summary: 'Three levels of "how much does the provider manage" , IaaS gives you raw infrastructure, PaaS a managed platform, SaaS a finished application.',
+    summary:
+      'Three levels of "how much does the provider manage" , IaaS gives you raw infrastructure, PaaS a managed platform, SaaS a finished application.',
     difficulty: 'basic',
     category: 'fundamentals',
     keyPoints: [
@@ -53,7 +56,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-pricing-models',
     title: 'Pay-as-you-go & the Pricing Models',
-    summary: 'The core AWS billing idea is paying only for what you use, with commitment-based discounts (Reserved, Savings Plans) and cheap interruptible capacity (Spot).',
+    summary:
+      'The core AWS billing idea is paying only for what you use, with commitment-based discounts (Reserved, Savings Plans) and cheap interruptible capacity (Spot).',
     difficulty: 'basic',
     category: 'cost',
     keyPoints: [
@@ -70,7 +74,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-iam-basics',
     title: 'IAM: Users, Groups, Roles & Policies',
-    summary: 'IAM controls who can do what to which AWS resources , the foundation of AWS security, built on identities (users/groups/roles) and JSON policies.',
+    summary:
+      'IAM controls who can do what to which AWS resources , the foundation of AWS security, built on identities (users/groups/roles) and JSON policies.',
     difficulty: 'basic',
     category: 'iam',
     keyPoints: [
@@ -85,7 +90,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-iam-roles',
     title: 'IAM Roles & Temporary Credentials',
-    summary: 'A role is an identity you assume to get temporary, auto-rotating credentials , the right way for services (and other accounts) to get access without stored secrets.',
+    summary:
+      'A role is an identity you assume to get temporary, auto-rotating credentials , the right way for services (and other accounts) to get access without stored secrets.',
     difficulty: 'intermediate',
     category: 'iam',
     prerequisites: ['aws-iam-basics'],
@@ -101,7 +107,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-iam-vs-resource-policy',
     title: 'IAM Policy vs Resource-Based Policy',
-    summary: 'IAM (identity) policies attach to a principal (user/role); resource-based policies attach to the resource itself and can grant cross-account access.',
+    summary:
+      'IAM (identity) policies attach to a principal (user/role); resource-based policies attach to the resource itself and can grant cross-account access.',
     difficulty: 'intermediate',
     category: 'iam',
     prerequisites: ['aws-iam-basics'],
@@ -133,7 +140,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-account-security',
     title: 'Account Security Best Practices',
-    summary: 'MFA everywhere, roles over keys, least privilege, and continuous auditing with CloudTrail/GuardDuty/Config , defense in depth for the account itself.',
+    summary:
+      'MFA everywhere, roles over keys, least privilege, and continuous auditing with CloudTrail/GuardDuty/Config , defense in depth for the account itself.',
     difficulty: 'intermediate',
     category: 'security',
     prerequisites: ['aws-iam-basics'],
@@ -148,7 +156,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-security-services',
     title: 'Security Services: Shield, WAF, GuardDuty, Inspector',
-    summary: 'A layered toolkit , Shield for DDoS, WAF for malicious requests, GuardDuty for threat detection, Inspector for vulnerability scanning, Secrets Manager for credentials.',
+    summary:
+      'A layered toolkit , Shield for DDoS, WAF for malicious requests, GuardDuty for threat detection, Inspector for vulnerability scanning, Secrets Manager for credentials.',
     difficulty: 'advanced',
     category: 'security',
     prerequisites: ['aws-account-security'],
@@ -165,7 +174,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-ec2-basics',
     title: 'EC2: Elastic Compute Cloud',
-    summary: 'Resizable virtual servers you launch from an AMI, pick an instance type for, put in security groups, and connect to over SSH/RDP , the core IaaS compute service.',
+    summary:
+      'Resizable virtual servers you launch from an AMI, pick an instance type for, put in security groups, and connect to over SSH/RDP , the core IaaS compute service.',
     difficulty: 'basic',
     category: 'compute',
     keyPoints: [
@@ -180,7 +190,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-scaling-up-vs-out',
     title: 'Scaling Up vs Scaling Out',
-    summary: 'Scaling up (vertical) = a bigger machine; scaling out (horizontal) = more machines , AWS strongly favors scaling out for resilience.',
+    summary:
+      'Scaling up (vertical) = a bigger machine; scaling out (horizontal) = more machines , AWS strongly favors scaling out for resilience.',
     difficulty: 'basic',
     category: 'compute',
     keyPoints: [
@@ -193,7 +204,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-auto-scaling',
     title: 'Auto Scaling Groups',
-    summary: 'Automatically add or remove EC2 instances based on demand (CloudWatch metrics), keeping capacity matched to load across AZs , availability + cost efficiency in one.',
+    summary:
+      'Automatically add or remove EC2 instances based on demand (CloudWatch metrics), keeping capacity matched to load across AZs , availability + cost efficiency in one.',
     difficulty: 'intermediate',
     category: 'compute',
     prerequisites: ['aws-scaling-up-vs-out'],
@@ -207,7 +219,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-ec2-ecs-eks',
     title: 'EC2 vs ECS vs EKS vs Fargate',
-    summary: 'EC2 = raw VMs; ECS = AWS-native container orchestration; EKS = managed Kubernetes; Fargate = serverless container hosting under either ECS or EKS.',
+    summary:
+      'EC2 = raw VMs; ECS = AWS-native container orchestration; EKS = managed Kubernetes; Fargate = serverless container hosting under either ECS or EKS.',
     difficulty: 'intermediate',
     category: 'compute',
     prerequisites: ['aws-ec2-basics'],
@@ -232,14 +245,16 @@ export const awsNotes: Note[] = [
       'Cold starts are a real Lambda cost for latency-sensitive paths , mitigated with provisioned concurrency or keeping runtimes lightweight.',
       'Lambda suits event-driven, bursty, short-lived work (webhooks, image processing, glue code); EC2 suits long-running services, custom networking, or workloads needing more than 15 minutes.'
     ],
-    gotcha: 'Lambda functions are stateless between invocations , anything that needs to persist (files, connections) must go to S3/EFS/a database, not local disk.'
+    gotcha:
+      'Lambda functions are stateless between invocations , anything that needs to persist (files, connections) must go to S3/EFS/a database, not local disk.'
   },
 
   // ─── SERVERLESS ───────────────────────────────────────────────────────────────
   {
     id: 'aws-lambda',
     title: 'AWS Lambda & Serverless',
-    summary: 'Run code in response to events without provisioning servers , AWS handles scaling, patching, and availability; you pay only per invocation and duration.',
+    summary:
+      'Run code in response to events without provisioning servers , AWS handles scaling, patching, and availability; you pay only per invocation and duration.',
     difficulty: 'intermediate',
     category: 'serverless',
     keyPoints: [
@@ -255,7 +270,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-serverless-stack',
     title: 'Serverless Stack: API Gateway + Lambda + DynamoDB',
-    summary: 'The canonical serverless API , API Gateway fronts HTTP requests, Lambda runs the logic, DynamoDB stores the data, all scaling to zero and pay-per-use.',
+    summary:
+      'The canonical serverless API , API Gateway fronts HTTP requests, Lambda runs the logic, DynamoDB stores the data, all scaling to zero and pay-per-use.',
     difficulty: 'advanced',
     category: 'serverless',
     prerequisites: ['aws-lambda'],
@@ -271,7 +287,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-s3',
     title: 'S3: Object Storage',
-    summary: 'Highly durable, virtually unlimited object storage accessed over HTTP , for files, backups, static assets, data lakes, and more. Not a filesystem, an object store.',
+    summary:
+      'Highly durable, virtually unlimited object storage accessed over HTTP , for files, backups, static assets, data lakes, and more. Not a filesystem, an object store.',
     difficulty: 'basic',
     category: 'storage',
     keyPoints: [
@@ -286,7 +303,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-s3-features',
     title: 'S3 Versioning, Lifecycle & Replication',
-    summary: 'The data-protection and cost-control features on top of S3 , versioning guards against overwrites/deletes, lifecycle policies tier data down over time, replication copies across regions.',
+    summary:
+      'The data-protection and cost-control features on top of S3 , versioning guards against overwrites/deletes, lifecycle policies tier data down over time, replication copies across regions.',
     difficulty: 'intermediate',
     category: 'storage',
     prerequisites: ['aws-s3'],
@@ -300,7 +318,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-storage-options',
     title: 'Storage Options: S3 vs EBS vs EFS vs Glacier',
-    summary: 'Object (S3), block attached to one instance (EBS), shared file system across many instances (EFS), and cheap archival (Glacier) , pick by access pattern.',
+    summary:
+      'Object (S3), block attached to one instance (EBS), shared file system across many instances (EFS), and cheap archival (Glacier) , pick by access pattern.',
     difficulty: 'intermediate',
     category: 'storage',
     prerequisites: ['aws-s3'],
@@ -319,7 +338,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-rds-vs-dynamodb',
     title: 'RDS vs DynamoDB',
-    summary: 'RDS is managed relational (SQL, schemas, joins, ACID); DynamoDB is managed NoSQL key-value/document (flexible schema, horizontal scale, single-digit-ms latency).',
+    summary:
+      'RDS is managed relational (SQL, schemas, joins, ACID); DynamoDB is managed NoSQL key-value/document (flexible schema, horizontal scale, single-digit-ms latency).',
     difficulty: 'intermediate',
     category: 'databases',
     keyPoints: [
@@ -334,7 +354,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-rds-management',
     title: 'RDS: Backups, Replicas & Multi-AZ',
-    summary: 'RDS automates the operational database toil , automated backups, read replicas for read scaling, and Multi-AZ standby for high availability.',
+    summary:
+      'RDS automates the operational database toil , automated backups, read replicas for read scaling, and Multi-AZ standby for high availability.',
     difficulty: 'intermediate',
     category: 'databases',
     prerequisites: ['aws-rds-vs-dynamodb'],
@@ -352,7 +373,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-vpc',
     title: 'VPC: Virtual Private Cloud',
-    summary: 'A logically isolated private network in AWS where you control IP ranges, subnets, routing, and gateways , the network foundation everything else runs inside.',
+    summary:
+      'A logically isolated private network in AWS where you control IP ranges, subnets, routing, and gateways , the network foundation everything else runs inside.',
     difficulty: 'intermediate',
     category: 'networking',
     keyPoints: [
@@ -365,7 +387,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-security-groups-nacls',
     title: 'Security Groups vs Network ACLs',
-    summary: 'Security groups are stateful, instance-level firewalls (allow rules only); NACLs are stateless, subnet-level filters (allow AND deny) , two complementary layers.',
+    summary:
+      'Security groups are stateful, instance-level firewalls (allow rules only); NACLs are stateless, subnet-level filters (allow AND deny) , two complementary layers.',
     difficulty: 'intermediate',
     category: 'networking',
     prerequisites: ['aws-vpc'],
@@ -381,7 +404,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-elb-types',
     title: 'Elastic Load Balancing: ALB vs NLB vs CLB',
-    summary: 'Distribute incoming traffic across targets , ALB for HTTP(S) with smart routing, NLB for extreme-performance TCP/UDP, CLB the legacy option.',
+    summary:
+      'Distribute incoming traffic across targets , ALB for HTTP(S) with smart routing, NLB for extreme-performance TCP/UDP, CLB the legacy option.',
     difficulty: 'intermediate',
     category: 'networking',
     keyPoints: [
@@ -394,7 +418,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-route53',
     title: 'Route 53: DNS & Traffic Routing',
-    summary: 'AWS’s managed DNS , resolves domains to resources and routes traffic with policies (latency, geo, weighted, failover) plus health checks for automatic failover.',
+    summary:
+      'AWS’s managed DNS , resolves domains to resources and routes traffic with policies (latency, geo, weighted, failover) plus health checks for automatic failover.',
     difficulty: 'intermediate',
     category: 'networking',
     keyPoints: [
@@ -407,7 +432,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-cloudfront',
     title: 'CloudFront: CDN',
-    summary: 'A content delivery network that caches content at edge locations near users , lower latency, less origin load, plus DDoS/WAF protection at the edge.',
+    summary:
+      'A content delivery network that caches content at edge locations near users , lower latency, less origin load, plus DDoS/WAF protection at the edge.',
     difficulty: 'basic',
     category: 'networking',
     keyPoints: [
@@ -422,7 +448,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-sqs-sns-kinesis',
     title: 'SQS vs SNS vs Kinesis',
-    summary: 'SQS = point-to-point queue (one consumer per message); SNS = pub/sub fan-out (broadcast to many); Kinesis = ordered, replayable streaming for real-time analytics.',
+    summary:
+      'SQS = point-to-point queue (one consumer per message); SNS = pub/sub fan-out (broadcast to many); Kinesis = ordered, replayable streaming for real-time analytics.',
     difficulty: 'intermediate',
     category: 'messaging',
     keyPoints: [
@@ -439,7 +466,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-cloudwatch',
     title: 'CloudWatch: Metrics, Logs, Alarms',
-    summary: 'The observability service , collects metrics and logs, triggers alarms (→ SNS/Auto Scaling), and surfaces it all on dashboards.',
+    summary:
+      'The observability service , collects metrics and logs, triggers alarms (→ SNS/Auto Scaling), and surfaces it all on dashboards.',
     difficulty: 'basic',
     category: 'monitoring',
     keyPoints: [
@@ -452,7 +480,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-cloudtrail-vs-cloudwatch',
     title: 'CloudTrail vs CloudWatch vs X-Ray',
-    summary: 'CloudTrail = who did what (API audit log); CloudWatch = how is it performing (metrics/logs/alarms); X-Ray = where is the latency (distributed request tracing).',
+    summary:
+      'CloudTrail = who did what (API audit log); CloudWatch = how is it performing (metrics/logs/alarms); X-Ray = where is the latency (distributed request tracing).',
     difficulty: 'intermediate',
     category: 'monitoring',
     prerequisites: ['aws-cloudwatch'],
@@ -468,7 +497,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-iac',
     title: 'Infrastructure as Code: CloudFormation, CDK & Terraform',
-    summary: 'Define infrastructure in version-controlled code for repeatable, auditable deployments , CloudFormation (AWS-native templates), CDK (real programming languages), Terraform (multi-cloud).',
+    summary:
+      'Define infrastructure in version-controlled code for repeatable, auditable deployments , CloudFormation (AWS-native templates), CDK (real programming languages), Terraform (multi-cloud).',
     difficulty: 'intermediate',
     category: 'devops',
     keyPoints: [
@@ -483,7 +513,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-cicd',
     title: 'CI/CD on AWS: CodePipeline, CodeBuild, CodeDeploy',
-    summary: 'AWS’s native pipeline trio , CodePipeline orchestrates, CodeBuild compiles/tests, CodeDeploy ships to EC2/ECS/Lambda, with blue-green or rolling strategies.',
+    summary:
+      'AWS’s native pipeline trio , CodePipeline orchestrates, CodeBuild compiles/tests, CodeDeploy ships to EC2/ECS/Lambda, with blue-green or rolling strategies.',
     difficulty: 'intermediate',
     category: 'devops',
     prerequisites: ['aws-iac'],
@@ -499,7 +530,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-ha-architecture',
     title: 'Designing a Highly Available Web App',
-    summary: 'The reference AWS architecture , ELB → Auto Scaling Group across AZs → Multi-AZ RDS, with ElastiCache, S3 + CloudFront, and CloudWatch tying it together.',
+    summary:
+      'The reference AWS architecture , ELB → Auto Scaling Group across AZs → Multi-AZ RDS, with ElastiCache, S3 + CloudFront, and CloudWatch tying it together.',
     difficulty: 'advanced',
     category: 'architecture',
     prerequisites: ['aws-auto-scaling', 'aws-elb-types', 'aws-rds-management'],
@@ -514,7 +546,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-disaster-recovery',
     title: 'Disaster Recovery Strategies',
-    summary: 'Four DR patterns trading cost for recovery speed , Backup & Restore, Pilot Light, Warm Standby, and Active-Active (Multi-Site), chosen by your RTO/RPO.',
+    summary:
+      'Four DR patterns trading cost for recovery speed , Backup & Restore, Pilot Light, Warm Standby, and Active-Active (Multi-Site), chosen by your RTO/RPO.',
     difficulty: 'advanced',
     category: 'architecture',
     prerequisites: ['aws-ha-architecture'],
@@ -530,7 +563,8 @@ export const awsNotes: Note[] = [
   {
     id: 'aws-cost-optimization',
     title: 'Cost Optimization Strategies',
-    summary: 'Right-size, commit for discounts, use Spot for interruptible work, tier storage, auto-scale, and delete the forgotten , the standard AWS cost-cutting playbook.',
+    summary:
+      'Right-size, commit for discounts, use Spot for interruptible work, tier storage, auto-scale, and delete the forgotten , the standard AWS cost-cutting playbook.',
     difficulty: 'intermediate',
     category: 'cost',
     prerequisites: ['aws-pricing-models'],

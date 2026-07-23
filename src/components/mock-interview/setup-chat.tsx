@@ -103,7 +103,11 @@ export default function SetupChat() {
             options={MOCK_INTERVIEW_TOPICS.map((t) => ({ value: t.label, label: t.label }))}
             selected={topics}
             onToggle={toggleTopic}
-            action={topics.length > 0 ? { label: 'Continue', onClick: () => finalizeStep(QUESTIONS.topics, topics.join(', '), 'kinds') } : undefined}
+            action={
+              topics.length > 0
+                ? { label: 'Continue', onClick: () => finalizeStep(QUESTIONS.topics, topics.join(', '), 'kinds') }
+                : undefined
+            }
           />
         </div>
       )}

@@ -254,7 +254,8 @@ import { formatCurrency } from './utils';`
   {
     id: 'perf-list-virtualization',
     title: 'List Virtualization (Windowing)',
-    summary: 'Render only the rows currently visible in a long list, not all ten thousand of them, and swap DOM nodes in and out as the user scrolls.',
+    summary:
+      'Render only the rows currently visible in a long list, not all ten thousand of them, and swap DOM nodes in and out as the user scrolls.',
     difficulty: 'intermediate',
     category: 'loading',
     prerequisites: ['perf-core-web-vitals'],
@@ -275,7 +276,8 @@ import { formatCurrency } from './utils';`
   {
     id: 'perf-resource-hints',
     title: 'Resource Hints: preload, prefetch & priority',
-    summary: '<link rel="preload"> fetches something this page needs right now, urgently; <link rel="prefetch"> fetches something the NEXT page will probably need, low priority.',
+    summary:
+      '<link rel="preload"> fetches something this page needs right now, urgently; <link rel="prefetch"> fetches something the NEXT page will probably need, low priority.',
     difficulty: 'intermediate',
     category: 'loading',
     prerequisites: ['perf-lcp'],
