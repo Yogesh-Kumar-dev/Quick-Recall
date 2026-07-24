@@ -14,13 +14,13 @@ describe('resolveContent', () => {
   it('resolves a note by id', () => {
     const note = jsNotes[0];
     const resolved = resolveContent('note', note.id);
-    expect(resolved).toEqual({ kind: 'note', refId: note.id, note });
+    expect(resolved).toEqual({ kind: 'note', refId: note.id, note, url: expect.any(String) });
   });
 
   it('resolves a flashcard by its namespaced key', () => {
     const [key, indexed] = [...flashcardByKey.entries()][0];
     const resolved = resolveContent('flashcard', key);
-    expect(resolved).toEqual({ kind: 'flashcard', refId: key, card: indexed.card });
+    expect(resolved).toEqual({ kind: 'flashcard', refId: key, card: indexed.card, url: expect.any(String) });
   });
 
   it('resolves a JS problem to a /js/machine-coding/ url', () => {

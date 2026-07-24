@@ -7,6 +7,7 @@ import type { BaseProblemEntry, Flashcard, Note } from '@/types/content';
 import type { BookmarkKind } from '@/types/study';
 
 import { flashcardByKey } from '@/data/flashcards-index';
+import { FLASHCARD_SETS } from '@/data/flashcard-sets';
 
 // Problems
 import { jsProblems } from '@/data/javascript/js-problems';
@@ -47,47 +48,56 @@ import { authNotes } from '@/data/web/auth-notes';
 import { accessibilityNotes } from '@/data/web/accessibility-notes';
 import { webPerformanceNotes } from '@/data/web/web-performance-notes';
 
-// ─── Note lookup (by note.id) ─────────────────────────────────────────────────
+// ─── Note lookup (by note.id) with URL mapping ──────────────────────────────
 // First-write-wins on an id collision across topics (deterministic).
-const ALL_NOTES: Note[] = [
-  ...jsNotes,
-  ...tsNotes,
-  ...tsReactNotes,
-  ...reactNotes,
-  ...nextjsNotes,
-  ...nextjsRenderingNotes,
-  ...nodejsNotes,
-  ...postgresqlNotes,
-  ...mongodbNotes,
-  ...redisNotes,
-  ...dynamodbNotes,
-  ...testingFundamentalsNotes,
-  ...vitestNotes,
-  ...rtlNotes,
-  ...jestNotes,
-  ...mswNotes,
-  ...supertestNotes,
-  ...playwrightNotes,
-  ...etlTestingNotes,
-  ...pentestNotes,
-  ...mobileTestingNotes,
-  ...webTestingNotes,
-  ...reduxNotes,
-  ...reduxToolkitNotes,
-  ...rtkQueryNotes,
-  ...asyncThunkNotes,
-  ...htmlNotes,
-  ...cssNotes,
-  ...engineeringNotes,
-  ...webSecurityNotes,
-  ...authNotes,
-  ...accessibilityNotes,
-  ...webPerformanceNotes
+interface NoteWithUrl {
+  note: Note;
+  url: string;
+}
+
+function noteEntry(notes: Note[], basePath: string): NoteWithUrl[] {
+  return notes.map((n) => ({ note: n, url: `${basePath}?open=${n.id}` }));
+}
+
+const ALL_NOTES_WITH_URL: NoteWithUrl[] = [
+  ...noteEntry(jsNotes, '/js/notes'),
+  ...noteEntry(tsNotes, '/js/typescript'),
+  ...noteEntry(tsReactNotes, '/js/ts-for-react'),
+  ...noteEntry(reactNotes, '/react/notes'),
+  ...noteEntry(nextjsNotes, '/nextjs/notes'),
+  ...noteEntry(nextjsRenderingNotes, '/nextjs/rendering'),
+  ...noteEntry(nodejsNotes, '/nodejs/notes'),
+  ...noteEntry(postgresqlNotes, '/databases/postgresql'),
+  ...noteEntry(mongodbNotes, '/databases/mongodb'),
+  ...noteEntry(redisNotes, '/databases/redis'),
+  ...noteEntry(dynamodbNotes, '/databases/dynamodb'),
+  ...noteEntry(testingFundamentalsNotes, '/testing/fundamentals'),
+  ...noteEntry(vitestNotes, '/testing/tools'),
+  ...noteEntry(rtlNotes, '/testing/tools'),
+  ...noteEntry(jestNotes, '/testing/tools'),
+  ...noteEntry(mswNotes, '/testing/tools'),
+  ...noteEntry(supertestNotes, '/testing/tools'),
+  ...noteEntry(playwrightNotes, '/testing/tools'),
+  ...noteEntry(etlTestingNotes, '/testing/specialized'),
+  ...noteEntry(pentestNotes, '/testing/specialized'),
+  ...noteEntry(mobileTestingNotes, '/testing/specialized'),
+  ...noteEntry(webTestingNotes, '/testing/specialized'),
+  ...noteEntry(reduxNotes, '/redux/notes'),
+  ...noteEntry(reduxToolkitNotes, '/redux/toolkit'),
+  ...noteEntry(rtkQueryNotes, '/redux/rtk-query'),
+  ...noteEntry(asyncThunkNotes, '/redux/async-thunk'),
+  ...noteEntry(htmlNotes, '/html-css/html'),
+  ...noteEntry(cssNotes, '/html-css/css'),
+  ...noteEntry(engineeringNotes, '/engineering/notes'),
+  ...noteEntry(webSecurityNotes, '/web/security'),
+  ...noteEntry(authNotes, '/web/auth'),
+  ...noteEntry(accessibilityNotes, '/web/accessibility'),
+  ...noteEntry(webPerformanceNotes, '/web/performance')
 ];
 
-const noteById = new Map<string, Note>();
-ALL_NOTES.forEach((n) => {
-  if (!noteById.has(n.id)) noteById.set(n.id, n);
+const noteById = new Map<string, NoteWithUrl>();
+ALL_NOTES_WITH_URL.forEach((entry) => {
+  if (!noteById.has(entry.note.id)) noteById.set(entry.note.id, entry);
 });
 
 // ─── Problem lookup (by slug) + its route ─────────────────────────────────────
@@ -104,22 +114,33 @@ reactMcProblems.forEach((p) => {
   problemBySlug.set(p.slug, { problem: p, url: `/react/machine-coding/${p.slug}` });
 });
 
+// ─── Flashcard URL helper ─────────────────────────────────────────────────────
+// Flashcard refId format is "source:cardId" — map source to URL slug + card query param.
+// Derived from FLASHCARD_SETS (slug → source) so the two never drift apart.
+const sourceToSlug: Record<string, string> = Object.fromEntries(Object.entries(FLASHCARD_SETS).map(([slug, set]) => [set.source, slug]));
+
+function getFlashcardUrl(refId: string): string {
+  const [source, cardId] = refId.split(':');
+  const slug = sourceToSlug[source] ?? source;
+  return `/flashcards/${slug}?card=${cardId}`;
+}
+
 // ─── Resolved shapes ──────────────────────────────────────────────────────────
 
-type ResolvedNote = { kind: 'note'; refId: string; note: Note };
-type ResolvedFlashcard = { kind: 'flashcard'; refId: string; card: Flashcard };
+type ResolvedNote = { kind: 'note'; refId: string; note: Note; url: string };
+type ResolvedFlashcard = { kind: 'flashcard'; refId: string; card: Flashcard; url: string };
 type ResolvedProblem = { kind: 'problem'; refId: string; problem: BaseProblemEntry; url: string };
 export type ResolvedContent = ResolvedNote | ResolvedFlashcard | ResolvedProblem;
 
 // Null if the refId no longer resolves (content removed since saved); callers skip nulls.
 export function resolveContent(kind: BookmarkKind, refId: string): ResolvedContent | null {
   if (kind === 'note') {
-    const note = noteById.get(refId);
-    return note ? { kind, refId, note } : null;
+    const entry = noteById.get(refId);
+    return entry ? { kind, refId, note: entry.note, url: entry.url } : null;
   }
   if (kind === 'flashcard') {
     const indexed = flashcardByKey.get(refId);
-    return indexed ? { kind, refId, card: indexed.card } : null;
+    return indexed ? { kind, refId, card: indexed.card, url: getFlashcardUrl(refId) } : null;
   }
   // problem — refId is the problem slug
   const hit = problemBySlug.get(refId);
