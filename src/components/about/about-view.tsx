@@ -1,117 +1,10 @@
-import {
-  IconArrowRight,
-  IconArrowsMaximize,
-  IconBell,
-  IconCloudDownload,
-  IconCode,
-  IconDatabase,
-  IconFileTypePdf,
-  IconLink,
-  IconMail,
-  IconMicrophone,
-  IconPalette,
-  IconSearch
-} from '@tabler/icons-react';
+import { IconArrowRight, IconMail } from '@tabler/icons-react';
 import Image from 'next/image';
-import type { ReactNode } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { FEATURES } from '@/data/about/about-features';
 
 const CONTACT_URL = 'https://yogesh-kumar-portfolio-v2.vercel.app/#contact';
-
-interface Feature {
-  icon: ReactNode;
-  title: string;
-  blurb: string;
-  tech: string;
-  accent: string;
-  span: 1 | 2;
-}
-
-const FEATURES: Feature[] = [
-  {
-    icon: <IconCloudDownload size={24} />,
-    title: 'Installable & Offline-First',
-    blurb:
-      'Install QuickRecall like a native app, then download sections for offline study — pick what you need or grab everything, with live per-section progress. It even detects what is already saved and refreshes after a new release.',
-    tech: 'PWA · Serwist service worker + Cache Storage API',
-    accent: '#5a0fc8',
-    span: 2
-  },
-  {
-    icon: <IconPalette size={24} />,
-    title: 'MongoDB Design System',
-    blurb:
-      'The entire UI follows MongoDB’s LeafyGreen design system — its colors, typography, and components — for a clean, consistent, accessible interface. Real LeafyGreen components are used where they fit, with shadcn/ui + Tailwind for everything else.',
-    tech: '@leafygreen-ui + shadcn/ui + Tailwind',
-    accent: '#00684A',
-    span: 2
-  },
-  {
-    icon: <IconFileTypePdf size={24} />,
-    title: 'Cache-Once PDF Guides',
-    blurb:
-      'Interview tip-sheet PDFs open in a browser-style tabbed reader right inside the app. Each one streams once from blob storage, then is served from cache forever — available offline and easy on bandwidth.',
-    tech: 'EmbedPDF (PDFium/WASM) + Cache Storage API + Vercel Blob',
-    accent: '#e94235',
-    span: 2
-  },
-  {
-    icon: <IconMicrophone size={24} />,
-    title: 'Speak Out Loud',
-    blurb: 'Rehearse interview answers aloud and watch your words transcribe live on screen.',
-    tech: 'Web Speech API',
-    accent: '#f0db4f',
-    span: 1
-  },
-  {
-    icon: <IconBell size={24} />,
-    title: 'Stay-Focused Alerts',
-    blurb: 'Tab away or alt-tab and escalating desktop nudges pull you back on track.',
-    tech: 'Web Notifications + Page Visibility API',
-    accent: '#f44336',
-    span: 1
-  },
-  {
-    icon: <IconDatabase size={24} />,
-    title: 'Offline-First Job Tracker',
-    blurb: 'Job applications live in an in-browser database that persists across reloads and syncs live across open tabs.',
-    tech: 'Dexie + IndexedDB',
-    accent: '#e6529b',
-    span: 1
-  },
-  {
-    icon: <IconCode size={24} />,
-    title: 'Smart Code Display',
-    blurb: 'Lightweight, lazy-loaded syntax highlighting for inline snippets — kept out of the first-load bundle.',
-    tech: '@leafygreen-ui/code',
-    accent: '#9c27b0',
-    span: 1
-  },
-  {
-    icon: <IconSearch size={24} />,
-    title: 'Fuzzy Search',
-    blurb: 'Type into the header search to jump to any problem, custom hook, or page — typo-tolerant, ranked, and keyboard-navigable.',
-    tech: 'fuse.js',
-    accent: '#10b981',
-    span: 1
-  },
-  {
-    icon: <IconLink size={24} />,
-    title: 'Shareable Filters',
-    blurb: 'Difficulty, category, and search live in the URL — every filtered view is bookmarkable.',
-    tech: 'nuqs',
-    accent: '#016bf8',
-    span: 1
-  },
-  {
-    icon: <IconArrowsMaximize size={24} />,
-    title: 'Distraction-Free Fullscreen',
-    blurb: 'One click expands the whole app to full screen for heads-down study sessions.',
-    tech: 'Fullscreen API',
-    accent: '#ff9800',
-    span: 1
-  }
-];
 
 interface StackTech {
   label: string;
@@ -196,9 +89,10 @@ export default function AboutView() {
 
       <div className="grid grid-cols-1 gap-4 [grid-auto-flow:dense] sm:grid-cols-2 md:grid-cols-3">
         {FEATURES.map((f) => (
-          <div
+          <Link
             key={f.title}
-            className={`flex flex-col gap-3 rounded-lg border border-border border-l-[3px] bg-card p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
+            href={`/about/${f.slug}`}
+            className={`group flex flex-col gap-3 rounded-lg border border-border border-l-[3px] bg-card p-5 no-underline transition duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
               f.span === 2 ? 'md:col-span-2' : ''
             }`}
             style={{ borderLeftColor: f.accent }}
@@ -210,10 +104,14 @@ export default function AboutView() {
               {f.icon}
             </div>
 
-            <h3 className="font-heading text-lg font-bold">{f.title}</h3>
+            <h3 className="font-heading text-lg font-bold text-foreground">{f.title}</h3>
             <p className="grow text-sm text-muted-foreground">{f.blurb}</p>
             <p className="mt-1 font-mono text-xs tracking-wide text-muted-foreground">built with: {f.tech}</p>
-          </div>
+            <span className="flex items-center gap-1 text-xs font-semibold text-primary">
+              Deep dive
+              <IconArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+            </span>
+          </Link>
         ))}
       </div>
 

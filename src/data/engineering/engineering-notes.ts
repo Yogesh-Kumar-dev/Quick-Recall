@@ -519,7 +519,8 @@ paths:
   {
     id: 'eng-api-async-logging',
     title: 'Asynchronous Logging',
-    summary: 'Write log entries to an in-memory, lock-free buffer and return immediately instead of blocking the request on a disk write for every log call.',
+    summary:
+      'Write log entries to an in-memory, lock-free buffer and return immediately instead of blocking the request on a disk write for every log call.',
     difficulty: 'intermediate',
     category: 'apis',
     prerequisites: ['eng-api-scaling'],
