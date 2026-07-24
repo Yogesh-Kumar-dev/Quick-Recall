@@ -10,6 +10,8 @@ import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { MessageGroup } from '@/components/ui/message';
+import CodeBlock from '@/components/content/code-block';
+import { quizOptionClasses } from '@/components/quiz/quiz-option-classes';
 import useJobs from '@/components/job-tracker/use-jobs';
 import { resolveContent, type ResolvedContent } from '@/lib/resolve-content';
 import * as mockInterviewsRepository from '@/db/mock-interviews';
@@ -29,7 +31,8 @@ import type { MockInterviewPersona, MockInterviewQuestion, MockInterviewQuestion
 const KIND_OPTIONS: { value: MockInterviewQuestionKind; label: string }[] = [
   { value: 'note', label: 'Notes' },
   { value: 'flashcard', label: 'Flashcards' },
-  { value: 'problem', label: 'Machine Coding' }
+  { value: 'problem', label: 'Machine Coding' },
+  { value: 'quiz', label: 'Quiz (MCQ)' }
 ];
 
 const COUNT_PRESETS = ['5', '10', '15', '20'];
@@ -62,11 +65,13 @@ function resolvedTitle(resolved: ResolvedContent | null): string {
   if (!resolved) return 'Question no longer available';
   if (resolved.kind === 'note') return resolved.note.title;
   if (resolved.kind === 'flashcard') return resolved.card.front;
+  if (resolved.kind === 'quiz') return resolved.question.question;
   return resolved.problem.title;
 }
 
-// Question content renderer. revealAnswer gates the note's summary/keyPoints — withheld while the
-// question is still live so answering it is an actual recall test, not a copy exercise.
+// Question content renderer. revealAnswer gates the note's summary/keyPoints (and, for a quiz
+// question, the graded options) — withheld while the question is still live so answering it is
+// an actual recall test, not a copy exercise.
 function QuestionBubbleContent({ question, revealAnswer = false }: { question: MockInterviewQuestion; revealAnswer?: boolean }) {
   const resolved = resolveContent(question.kind, question.refId);
   if (!resolved) {
@@ -102,6 +107,23 @@ function QuestionBubbleContent({ question, revealAnswer = false }: { question: M
           )}
         </>
       )}
+      {resolved.kind === 'quiz' && resolved.question.code && (
+        <div className="mt-2">
+          <CodeBlock code={resolved.question.code} />
+        </div>
+      )}
+      {resolved.kind === 'quiz' && revealAnswer && (
+        <div className="mt-2 space-y-1 text-xs">
+          {resolved.question.options.map((opt, i) => (
+            <p
+              key={opt}
+              className={`rounded border px-2 py-1 ${quizOptionClasses({ isSelected: question.selectedOptionIndex === i, isCorrect: i === resolved.question.correctIndex, revealed: true })}`}
+            >
+              {opt}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -126,6 +148,24 @@ function RecapBubble({ interviewId, index, question }: { interviewId: string; in
         {index + 1}. {title}
       </p>
       {resolved?.kind === 'flashcard' && <p className="mt-1 text-muted-foreground">{resolved.card.back}</p>}
+      {resolved?.kind === 'quiz' && resolved.question.code && (
+        <div className="mt-2">
+          <CodeBlock code={resolved.question.code} />
+        </div>
+      )}
+      {resolved?.kind === 'quiz' && (
+        <div className="mt-2 space-y-1">
+          {resolved.question.options.map((opt, i) => (
+            <p
+              key={opt}
+              className={`rounded border px-2 py-1 text-xs ${quizOptionClasses({ isSelected: question.selectedOptionIndex === i, isCorrect: i === resolved.question.correctIndex, revealed: true })}`}
+            >
+              {opt}
+            </p>
+          ))}
+          {resolved.question.explanation && <p className="mt-1 text-xs text-muted-foreground">{resolved.question.explanation}</p>}
+        </div>
+      )}
       {resolved?.kind === 'note' && (
         <>
           <p className="mt-1 text-muted-foreground">{resolved.note.summary}</p>
@@ -153,51 +193,59 @@ function RecapBubble({ interviewId, index, question }: { interviewId: string; in
           View problem &amp; reference solution →
         </Link>
       )}
+      {resolved?.kind === 'quiz' && (
+        <Link href={resolved.url} className="mt-1 inline-block text-xs text-primary underline underline-offset-2">
+          Practice more of this quiz →
+        </Link>
+      )}
 
-      <div className="mt-3 flex flex-col gap-1.5">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground">Your reflection</span>
-          {question.reflectionSource === 'speech' && (
-            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <IconMicrophone size={12} /> Auto-captured — check for mis-hearing
-            </span>
-          )}
-          {question.reflectionSource === 'manual' && (
-            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <IconPencil size={12} /> Edited
-            </span>
-          )}
-        </div>
-        {editing ? (
-          <>
-            <Textarea rows={3} value={reflection} onChange={(e) => setReflection(e.target.value)} />
-            <div className="flex gap-2">
-              <Button size="sm" disabled={reflection === question.reflection} onClick={save}>
-                Save
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  setReflection(question.reflection);
-                  setEditing(false);
-                }}
-              >
-                Cancel
+      {/* Quiz questions are graded by selection, not reflected on — nothing to edit here. */}
+      {question.kind !== 'quiz' && (
+        <div className="mt-3 flex flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-muted-foreground">Your reflection</span>
+            {question.reflectionSource === 'speech' && (
+              <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                <IconMicrophone size={12} /> Auto-captured — check for mis-hearing
+              </span>
+            )}
+            {question.reflectionSource === 'manual' && (
+              <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                <IconPencil size={12} /> Edited
+              </span>
+            )}
+          </div>
+          {editing ? (
+            <>
+              <Textarea rows={3} value={reflection} onChange={(e) => setReflection(e.target.value)} />
+              <div className="flex gap-2">
+                <Button size="sm" disabled={reflection === question.reflection} onClick={save}>
+                  Save
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setReflection(question.reflection);
+                    setEditing(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-start justify-between gap-2">
+              <p className="whitespace-pre-wrap">
+                {reflection || <span className="text-muted-foreground italic">No reflection recorded.</span>}
+              </p>
+              <Button size="icon-sm" variant="ghost" onClick={() => setEditing(true)}>
+                <IconPencil className="size-3.5" />
               </Button>
             </div>
-          </>
-        ) : (
-          <div className="flex items-start justify-between gap-2">
-            <p className="whitespace-pre-wrap">
-              {reflection || <span className="text-muted-foreground italic">No reflection recorded.</span>}
-            </p>
-            <Button size="icon-sm" variant="ghost" onClick={() => setEditing(true)}>
-              <IconPencil className="size-3.5" />
-            </Button>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -208,7 +256,7 @@ interface MockInterviewChatProps {
 
 export default function MockInterviewChat({ interviewId: initialInterviewId }: MockInterviewChatProps) {
   const { jobs } = useJobs();
-  const { startInterview, submitAnswer } = useMockInterviews();
+  const { startInterview, submitAnswer, submitQuizAnswer } = useMockInterviews();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Local state for active interview ID (starts from prop, updates after creation)
@@ -241,6 +289,7 @@ export default function MockInterviewChat({ interviewId: initialInterviewId }: M
   // Interview state
   const [answerValue, setAnswerValue] = useState('');
   const [inputEnabled, setInputEnabled] = useState(false);
+  const [quizSelected, setQuizSelected] = useState<number | null>(null);
 
   // Typing state
   const [typingMessageId, setTypingMessageId] = useState<string | null>(null);
@@ -360,7 +409,30 @@ export default function MockInterviewChat({ interviewId: initialInterviewId }: M
     [interview, submitAnswer]
   );
 
+  const selectQuizOption = useCallback(
+    (optionIndex: number) => {
+      if (quizSelected !== null) return; // already answered, feedback showing
+      setQuizSelected(optionIndex);
+    },
+    [quizSelected]
+  );
+
+  const goNextQuiz = useCallback(() => {
+    if (!interview || quizSelected === null) return;
+    const isLast = interview.currentIndex === interview.questions.length - 1;
+    submitQuizAnswer(interview.id, interview.currentIndex, quizSelected, isLast);
+    setQuizSelected(null);
+    setInputEnabled(false);
+  }, [interview, quizSelected, submitQuizAnswer]);
+
   const questionCount = Number(countText);
+  const currentQuestion = interview && interview.currentIndex < interview.questions.length ? interview.questions[interview.currentIndex] : null;
+  // Resolved once per question (not on every render) — the bottom quiz-answer block below reads this
+  // directly instead of re-resolving inline, and reuses the same lookup QuestionBubbleContent needs.
+  const currentResolved = useMemo(
+    () => (currentQuestion ? resolveContent(currentQuestion.kind, currentQuestion.refId) : null),
+    [currentQuestion]
+  );
 
   return (
     <div className="flex h-full flex-col">
@@ -628,7 +700,34 @@ export default function MockInterviewChat({ interviewId: initialInterviewId }: M
       </ScrollArea>
 
       {/* Input at bottom - only for current question in interview phase */}
-      {phase === 'interview' && inputEnabled && interview && (
+      {phase === 'interview' && inputEnabled && interview && currentQuestion?.kind === 'quiz' && currentResolved?.kind === 'quiz' && (
+        <div className="border-t p-4">
+          <div className="mx-auto flex max-w-2xl flex-col gap-2">
+            {currentResolved.question.options.map((opt, i) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => selectQuizOption(i)}
+                disabled={quizSelected !== null}
+                className={`w-full rounded-lg border-2 px-4 py-2.5 text-left text-sm transition-colors disabled:cursor-default ${quizOptionClasses({ isSelected: quizSelected === i, isCorrect: i === currentResolved.question.correctIndex, revealed: quizSelected !== null })}`}
+              >
+                {opt}
+              </button>
+            ))}
+            {quizSelected !== null && currentResolved.question.explanation && (
+              <p className="text-xs text-muted-foreground">{currentResolved.question.explanation}</p>
+            )}
+            {quizSelected !== null && (
+              <div className="flex justify-end">
+                <Button onClick={goNextQuiz} size="sm">
+                  {interview.currentIndex === interview.questions.length - 1 ? 'Finish' : 'Next question'}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {phase === 'interview' && inputEnabled && interview && currentQuestion?.kind !== 'quiz' && (
         <div className="border-t p-4">
           <ChatInput
             key={interview.currentIndex}

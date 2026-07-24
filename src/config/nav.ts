@@ -68,6 +68,7 @@ export const navSections: NavSection[] = [
     icon: IconBookmarks,
     items: [
       { title: 'Flashcards', url: '/flashcards', icon: IconCards },
+      { title: 'Quiz', url: '/quiz', icon: IconChecklist },
       { title: 'Saved', url: '/bookmarks', icon: IconBookmark },
       { title: 'Review', url: '/review', icon: IconBrain }
     ]

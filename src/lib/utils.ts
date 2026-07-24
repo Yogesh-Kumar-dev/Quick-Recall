@@ -14,3 +14,8 @@ export function shuffle<T>(items: readonly T[]): T[] {
   }
   return out;
 }
+
+// Shared "12 Mar 2026"-style date formatting for history/list views (mock interviews, quiz attempts).
+export function formatDate(ts: number): string {
+  return new Date(ts).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+}

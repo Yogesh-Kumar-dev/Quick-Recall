@@ -31,16 +31,31 @@ export async function create(input: MockInterviewInput, questions: MockInterview
 }
 
 // Moves to the next question during the live run, optionally recording the speech-captured
-// transcript as that question's initial reflection, and marking the interview complete on the
-// last question — all in a single read-modify-write (the live "Next" click only ever needs one).
-export async function advanceQuestion(id: string, index: number, transcript: string | null, isLast: boolean): Promise<void> {
+// transcript as that question's initial reflection (or, for a quiz question, the selected
+// option), and marking the interview complete on the last question — all in a single
+// read-modify-write (the live "Next"/option click only ever needs one).
+export async function advanceQuestion(
+  id: string,
+  index: number,
+  transcript: string | null,
+  isLast: boolean,
+  selectedOptionIndex?: number
+): Promise<void> {
   const interview = await db.mockInterviews.get(id);
   if (!interview) return;
-  const questions = transcript
-    ? interview.questions.map((q, i) =>
-        i === index ? { ...q, reflection: transcript, reflectionSource: 'speech' as const, answeredAt: Date.now() } : q
-      )
-    : interview.questions;
+  const questions =
+    transcript || selectedOptionIndex !== undefined
+      ? interview.questions.map((q, i) =>
+          i === index
+            ? {
+                ...q,
+                ...(transcript ? { reflection: transcript, reflectionSource: 'speech' as const } : {}),
+                ...(selectedOptionIndex !== undefined ? { selectedOptionIndex } : {}),
+                answeredAt: Date.now()
+              }
+            : q
+        )
+      : interview.questions;
   await db.mockInterviews.update(id, {
     questions,
     currentIndex: Math.max(interview.currentIndex, index + 1),

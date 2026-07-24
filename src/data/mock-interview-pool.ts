@@ -10,8 +10,10 @@ import type { BaseProblemEntry } from '@/types/content';
 import type { MockInterviewInput, MockInterviewQuestion, MockInterviewQuestionKind } from '@/types/mock-interview';
 import { shuffle } from '@/lib/utils';
 import { flashcardKey } from './flashcards-index';
+import { quizKey } from './quiz-index';
 import { NOTE_SOURCES } from './note-sources';
 import { FLASHCARD_SETS } from './flashcard-sets';
+import { QUIZ_SETS } from './quiz-sets';
 import { jsProblems } from './javascript/js-problems';
 import { reactMcProblems } from './react/react-mc-problems';
 
@@ -19,25 +21,34 @@ export interface MockInterviewTopic {
   label: string;
   noteTopics: string[]; // NOTE_SOURCES `topic` labels merged under this coarse label
   flashcardSlugs: string[]; // FLASHCARD_SETS keys merged under this coarse label
+  quizSlugs: string[]; // QUIZ_SETS keys merged under this coarse label
   problems: BaseProblemEntry[]; // resolveContent() derives each problem's viewer URL, no need to carry it here
 }
 
 export const MOCK_INTERVIEW_TOPICS: MockInterviewTopic[] = [
-  { label: 'JavaScript', noteTopics: ['JavaScript'], flashcardSlugs: ['js'], problems: jsProblems },
-  { label: 'TypeScript', noteTopics: ['TypeScript', 'TS for React'], flashcardSlugs: ['typescript'], problems: [] },
-  { label: 'React', noteTopics: ['React'], flashcardSlugs: ['react'], problems: reactMcProblems },
+  { label: 'JavaScript', noteTopics: ['JavaScript'], flashcardSlugs: ['js'], quizSlugs: ['js'], problems: jsProblems },
+  { label: 'TypeScript', noteTopics: ['TypeScript', 'TS for React'], flashcardSlugs: ['typescript'], quizSlugs: ['typescript'], problems: [] },
+  { label: 'React', noteTopics: ['React'], flashcardSlugs: ['react'], quizSlugs: ['react'], problems: reactMcProblems },
   {
     label: 'Redux',
     noteTopics: ['Redux', 'Redux Toolkit', 'RTK Query', 'createAsyncThunk'],
     flashcardSlugs: ['redux', 'redux-toolkit', 'rtk-query', 'async-thunk'],
+    quizSlugs: ['redux'],
     problems: []
   },
-  { label: 'Next.js', noteTopics: ['Next.js', 'Next.js Rendering'], flashcardSlugs: ['nextjs', 'nextjs-rendering'], problems: [] },
-  { label: 'Node.js', noteTopics: ['Node.js'], flashcardSlugs: ['nodejs'], problems: [] },
+  {
+    label: 'Next.js',
+    noteTopics: ['Next.js', 'Next.js Rendering'],
+    flashcardSlugs: ['nextjs', 'nextjs-rendering'],
+    quizSlugs: ['nextjs'],
+    problems: []
+  },
+  { label: 'Node.js', noteTopics: ['Node.js'], flashcardSlugs: ['nodejs'], quizSlugs: ['nodejs'], problems: [] },
   {
     label: 'Databases',
     noteTopics: ['PostgreSQL', 'MongoDB', 'Redis', 'DynamoDB'],
     flashcardSlugs: [],
+    quizSlugs: ['databases'],
     problems: []
   },
   {
@@ -56,16 +67,18 @@ export const MOCK_INTERVIEW_TOPICS: MockInterviewTopic[] = [
       'Web Testing'
     ],
     flashcardSlugs: [],
+    quizSlugs: ['testing'],
     problems: []
   },
-  { label: 'HTML & CSS', noteTopics: ['HTML', 'CSS'], flashcardSlugs: ['html', 'css'], problems: [] },
+  { label: 'HTML & CSS', noteTopics: ['HTML', 'CSS'], flashcardSlugs: ['html', 'css'], quizSlugs: ['htmlcss'], problems: [] },
   {
     label: 'Web Platform',
     noteTopics: ['Web Security', 'Auth & Identity', 'Accessibility', 'Web Performance'],
     flashcardSlugs: [],
+    quizSlugs: ['web'],
     problems: []
   },
-  { label: 'Engineering', noteTopics: ['Engineering'], flashcardSlugs: ['engineering'], problems: [] }
+  { label: 'Engineering', noteTopics: ['Engineering'], flashcardSlugs: ['engineering'], quizSlugs: ['engineering'], problems: [] }
 ];
 
 type Candidate = Pick<MockInterviewQuestion, 'kind' | 'refId'>;
@@ -87,6 +100,12 @@ function candidatesForTopic(topic: MockInterviewTopic, includeKinds: MockIntervi
   }
   if (includeKinds.includes('problem')) {
     candidates.push(...topic.problems.map((p) => ({ kind: 'problem' as const, refId: p.slug })));
+  }
+  if (includeKinds.includes('quiz')) {
+    for (const slug of topic.quizSlugs) {
+      const set = QUIZ_SETS[slug];
+      candidates.push(...set.questions.map((q) => ({ kind: 'quiz' as const, refId: quizKey(set.source, q.id) })));
+    }
   }
 
   return candidates;

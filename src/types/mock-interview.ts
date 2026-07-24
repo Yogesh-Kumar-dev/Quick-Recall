@@ -4,18 +4,19 @@
 // referenced the same way Bookmarks/Review do) worked through sequentially and self-reflected
 // on afterward — no scoring/evaluation, just practice + a record of what was asked.
 
-import type { BookmarkKind } from './study';
+import type { ResolvableKind } from '@/lib/resolve-content';
 
-export type MockInterviewQuestionKind = BookmarkKind;
+export type MockInterviewQuestionKind = ResolvableKind;
 
 export type ReflectionSource = 'speech' | 'manual';
 
 export interface MockInterviewQuestion {
   kind: MockInterviewQuestionKind;
-  refId: string; // note.id | `${FlashcardSource}:${cardId}` | problem slug — same convention as Bookmark.refId
-  reflection: string; // free-text self-note; '' until answered
+  refId: string; // note.id | `${FlashcardSource}:${cardId}` | problem slug | `${QuizSource}:${questionId}` — same convention as Bookmark.refId
+  reflection: string; // free-text self-note; '' until answered — unused for kind 'quiz'
   reflectionSource?: ReflectionSource; // 'speech' until the recap edit is saved, then 'manual' — lets the UI flag unedited transcripts
   answeredAt?: number; // epoch ms, set when the reflection is saved
+  selectedOptionIndex?: number; // set only for kind 'quiz' — index into the question's options once answered
 }
 
 export interface MockInterviewPersona {

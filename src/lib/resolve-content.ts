@@ -3,11 +3,13 @@
 // Bookmarks/reviews store only a `kind` + namespaced `refId`; this resolves that back to the
 // real content item plus a route-stable URL so the Saved view doesn't re-implement the lookup.
 
-import type { BaseProblemEntry, Flashcard, Note } from '@/types/content';
+import type { BaseProblemEntry, Flashcard, Note, QuizQuestion } from '@/types/content';
 import type { BookmarkKind } from '@/types/study';
 
 import { flashcardByKey } from '@/data/flashcards-index';
 import { FLASHCARD_SETS } from '@/data/flashcard-sets';
+import { quizByKey } from '@/data/quiz-index';
+import { QUIZ_SETS } from '@/data/quiz-sets';
 
 // Problems
 import { jsProblems } from '@/data/javascript/js-problems';
@@ -125,15 +127,32 @@ function getFlashcardUrl(refId: string): string {
   return `/flashcards/${slug}?card=${cardId}`;
 }
 
+// ─── Quiz URL helper ────────────────────────────────────────────────────────
+// Quiz refId format is "source:questionId" — mirrors the flashcard convention above.
+const quizSourceToSlug: Record<string, string> = Object.fromEntries(Object.entries(QUIZ_SETS).map(([slug, set]) => [set.source, slug]));
+
+function getQuizUrl(refId: string): string {
+  const [source] = refId.split(':');
+  const slug = quizSourceToSlug[source] ?? source;
+  // QuizRunner always starts from question 1 — no per-question deep-linking (unlike flashcards).
+  return `/quiz/${slug}`;
+}
+
 // ─── Resolved shapes ──────────────────────────────────────────────────────────
+
+// Bookmarks/Review only ever store BookmarkKind; Mock Interview can additionally reference a
+// quiz question, so resolveContent accepts the wider ResolvableKind without widening BookmarkKind
+// itself (quiz questions are intentionally not bookmarkable/reviewable in this pass).
+export type ResolvableKind = BookmarkKind | 'quiz';
 
 type ResolvedNote = { kind: 'note'; refId: string; note: Note; url: string };
 type ResolvedFlashcard = { kind: 'flashcard'; refId: string; card: Flashcard; url: string };
 type ResolvedProblem = { kind: 'problem'; refId: string; problem: BaseProblemEntry; url: string };
-export type ResolvedContent = ResolvedNote | ResolvedFlashcard | ResolvedProblem;
+type ResolvedQuiz = { kind: 'quiz'; refId: string; question: QuizQuestion; url: string };
+export type ResolvedContent = ResolvedNote | ResolvedFlashcard | ResolvedProblem | ResolvedQuiz;
 
 // Null if the refId no longer resolves (content removed since saved); callers skip nulls.
-export function resolveContent(kind: BookmarkKind, refId: string): ResolvedContent | null {
+export function resolveContent(kind: ResolvableKind, refId: string): ResolvedContent | null {
   if (kind === 'note') {
     const entry = noteById.get(refId);
     return entry ? { kind, refId, note: entry.note, url: entry.url } : null;
@@ -141,6 +160,10 @@ export function resolveContent(kind: BookmarkKind, refId: string): ResolvedConte
   if (kind === 'flashcard') {
     const indexed = flashcardByKey.get(refId);
     return indexed ? { kind, refId, card: indexed.card, url: getFlashcardUrl(refId) } : null;
+  }
+  if (kind === 'quiz') {
+    const indexed = quizByKey.get(refId);
+    return indexed ? { kind, refId, question: indexed.question, url: getQuizUrl(refId) } : null;
   }
   // problem — refId is the problem slug
   const hit = problemBySlug.get(refId);

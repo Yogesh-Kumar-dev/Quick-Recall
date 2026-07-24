@@ -6,15 +6,12 @@ import { IconMessageQuestion, IconPlus } from '@tabler/icons-react';
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { formatDate } from '@/lib/utils';
 
 import useMockInterviews from './use-mock-interviews';
 import type { MockInterview } from '@/types/mock-interview';
 
 // ==============================|| MOCK INTERVIEW ||============================== //
-
-function formatDate(ts: number): string {
-  return new Date(ts).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-}
 
 function InterviewRow({ interview, onOpen }: { interview: MockInterview; onOpen: () => void }) {
   const answered = interview.questions.filter((q) => q.answeredAt).length;

@@ -26,7 +26,7 @@ export default function BookmarksPage() {
       if (!resolved) continue;
       if (resolved.kind === 'note') notesAcc.push(resolved);
       else if (resolved.kind === 'flashcard') flashcardsAcc.push(resolved);
-      else problemsAcc.push(resolved);
+      else if (resolved.kind === 'problem') problemsAcc.push(resolved);
     }
     return { notes: notesAcc, flashcards: flashcardsAcc, problems: problemsAcc };
   }, [bookmarks]);

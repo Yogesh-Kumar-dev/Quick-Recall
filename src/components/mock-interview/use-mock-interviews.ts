@@ -50,5 +50,16 @@ export default function useMockInterviews() {
     }
   }, []);
 
-  return { interviews: interviews ?? [], loading, startInterview, submitAnswer, saveReflection };
+  // Same advance-to-next-question flow as submitAnswer, but records a selected MCQ option
+  // instead of a typed/spoken reflection.
+  const submitQuizAnswer = useCallback(async (id: string, index: number, optionIndex: number, isLast: boolean) => {
+    try {
+      await mockInterviewsRepository.advanceQuestion(id, index, null, isLast, optionIndex);
+      if (isLast) toast.success('Interview completed. Nice work.');
+    } catch {
+      toast.error('Could not save your answer.');
+    }
+  }, []);
+
+  return { interviews: interviews ?? [], loading, startInterview, submitAnswer, saveReflection, submitQuizAnswer };
 }

@@ -6,7 +6,7 @@ import Dexie, { type Table } from 'dexie';
 import type { JobApplication } from '@/types/job-tracker';
 import type { MockInterview } from '@/types/mock-interview';
 import type { SpeakUpQA } from '@/types/speak-up';
-import type { Bookmark, PracticeAttempt, PracticeSessionState, ReviewState } from '@/types/study';
+import type { Bookmark, PracticeAttempt, PracticeSessionState, QuizAttempt, ReviewState } from '@/types/study';
 
 // ==============================|| DEXIE - SHARED CLIENT DATABASE ||============================== //
 
@@ -22,6 +22,7 @@ class QuickRecallDB extends Dexie {
   attempts!: Table<PracticeAttempt, string>;
   practiceSessions!: Table<PracticeSessionState, string>;
   mockInterviews!: Table<MockInterview, string>;
+  quizAttempts!: Table<QuizAttempt, string>;
 
   constructor() {
     super('quickrecall');
@@ -36,6 +37,10 @@ class QuickRecallDB extends Dexie {
       attempts: 'id, refId, startedAt',
       practiceSessions: 'refId',
       mockInterviews: 'id, status, startedAt'
+    });
+    // v2: purely additive table (quizAttempts) — no upgrade() needed, existing stores untouched.
+    this.version(2).stores({
+      quizAttempts: 'id, source, completedAt'
     });
   }
 }

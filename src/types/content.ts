@@ -44,6 +44,19 @@ export interface Flashcard {
 }
 
 // ---------------------------------------------------------------------------
+// Quiz — multiple-choice questions (standalone Quiz feature + Mock Interview)
+// ---------------------------------------------------------------------------
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  code?: string; // optional snippet shown above the options (e.g. "what does this log?")
+  options: string[]; // 4 choices
+  correctIndex: number; // index into options
+  explanation?: string; // shown after the question is answered
+  category?: string; // optional grouping label, same convention as Flashcard.category
+}
+
+// ---------------------------------------------------------------------------
 // Shared difficulty type + base problem entry
 // ---------------------------------------------------------------------------
 export type ProblemDifficulty = 'easy' | 'medium' | 'hard';

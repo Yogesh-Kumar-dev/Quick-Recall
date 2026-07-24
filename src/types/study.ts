@@ -52,3 +52,13 @@ export interface PracticeAttempt {
   gaveUp: boolean; // revealed the solution without submitting
   code: string;
 }
+
+// One completed run through a Quiz set, logged for score history.
+export interface QuizAttempt {
+  id: string; // random uuid
+  source: string; // QuizSource — kept as string here to avoid a data/ -> types/ import
+  mode: 'practice' | 'test';
+  score: number;
+  total: number;
+  completedAt: number; // epoch ms
+}
