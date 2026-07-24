@@ -7,6 +7,7 @@ import InstallButton from '@/components/pwa/install-button';
 import OfflineDownloadButton from '@/components/pwa/offline-download-button';
 import OfflineStatusChip from '@/components/pwa/offline-status-chip';
 import HeaderSearch from '@/components/search/header-search';
+import TourReplayButton from '@/components/layout/tour-replay-button';
 import TimerSection from '@/components/timer/timer-section';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -31,6 +32,7 @@ export function AppHeader() {
         <OfflineStatusChip />
         <InstallButton />
         <OfflineDownloadButton />
+        <TourReplayButton />
         <FullscreenButton />
       </div>
     </header>

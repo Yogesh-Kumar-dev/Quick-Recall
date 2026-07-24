@@ -25,7 +25,12 @@ function isActive(pathname: string, url: string) {
 function NavItem({ item, pathname }: { item: NavLink; pathname: string }) {
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton isActive={isActive(pathname, item.url)} tooltip={item.title} render={<Link href={item.url} />}>
+      <SidebarMenuButton
+        isActive={isActive(pathname, item.url)}
+        tooltip={item.title}
+        data-tour={item.tourKey}
+        render={<Link href={item.url} />}
+      >
         <item.icon />
         <span>{item.title}</span>
       </SidebarMenuButton>

@@ -1,5 +1,7 @@
+import { Suspense } from 'react';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import { ProductTour } from '@/components/layout/product-tour';
 import OfflineSectionGuard from '@/components/pwa/offline-section-guard';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -17,6 +19,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </a>
 
         <AppSidebar />
+        <Suspense fallback={null}>
+          <ProductTour />
+        </Suspense>
 
         <SidebarInset>
           <AppHeader />

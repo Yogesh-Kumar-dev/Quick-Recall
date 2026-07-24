@@ -42,6 +42,8 @@ export interface NavLink {
   title: string;
   url: string;
   icon: IconType;
+  /** Matches a `TourStep.key` in `src/data/product-tour.ts` — only set for nav items covered by the guided tour. */
+  tourKey?: string;
 }
 
 export interface NavSection {
@@ -53,11 +55,11 @@ export interface NavSection {
 
 // Standalone links (rendered together at the top of the sidebar).
 export const primaryNav: NavLink[] = [
-  { title: 'Dashboard', url: '/dashboard', icon: IconBrandChrome },
+  { title: 'Dashboard', url: '/dashboard', icon: IconBrandChrome, tourKey: 'dashboard' },
   { title: 'About', url: '/about', icon: IconInfoCircle },
-  { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase },
-  { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone },
-  { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion }
+  { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase, tourKey: 'job-tracker' },
+  { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone, tourKey: 'speak-up' },
+  { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion, tourKey: 'mock-interview' }
 ];
 
 // Grouped sections (each renders as a labelled sidebar group).
@@ -67,10 +69,10 @@ export const navSections: NavSection[] = [
     title: 'Study & Review',
     icon: IconBookmarks,
     items: [
-      { title: 'Flashcards', url: '/flashcards', icon: IconCards },
-      { title: 'Quiz', url: '/quiz', icon: IconChecklist },
-      { title: 'Saved', url: '/bookmarks', icon: IconBookmark },
-      { title: 'Review', url: '/review', icon: IconBrain }
+      { title: 'Flashcards', url: '/flashcards', icon: IconCards, tourKey: 'flashcards' },
+      { title: 'Quiz', url: '/quiz', icon: IconChecklist, tourKey: 'quiz' },
+      { title: 'Saved', url: '/bookmarks', icon: IconBookmark, tourKey: 'saved' },
+      { title: 'Review', url: '/review', icon: IconBrain, tourKey: 'review' }
     ]
   },
   {
@@ -90,7 +92,7 @@ export const navSections: NavSection[] = [
       { title: 'JS Notes', url: '/js/notes', icon: IconBrandJavascript },
       { title: 'TS Notes', url: '/js/typescript', icon: IconBrandTypescript },
       { title: 'TS for React', url: '/js/ts-for-react', icon: IconBrandTypescript },
-      { title: 'JS Machine Coding', url: '/js/machine-coding', icon: IconCode },
+      { title: 'JS Machine Coding', url: '/js/machine-coding', icon: IconCode, tourKey: 'js-machine-coding' },
       { title: 'Quick Recall', url: '/js/quick-recall', icon: IconBolt }
     ]
   },
@@ -100,8 +102,8 @@ export const navSections: NavSection[] = [
     icon: IconBrandReact,
     items: [
       { title: 'React Notes', url: '/react/notes', icon: IconBrandReact },
-      { title: 'Custom Hooks', url: '/react/custom-hooks', icon: IconCode },
-      { title: 'React Machine Coding', url: '/react/machine-coding', icon: IconCode },
+      { title: 'Custom Hooks', url: '/react/custom-hooks', icon: IconCode, tourKey: 'react-custom-hooks' },
+      { title: 'React Machine Coding', url: '/react/machine-coding', icon: IconCode, tourKey: 'react-machine-coding' },
       { title: 'Quick Recall', url: '/react/quick-recall', icon: IconBolt }
     ]
   },
