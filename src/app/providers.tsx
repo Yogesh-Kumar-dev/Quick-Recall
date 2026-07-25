@@ -5,6 +5,7 @@ import LeafyGreenProvider from '@leafygreen-ui/leafygreen-provider';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
 import { Toaster } from 'sonner';
+import PushForegroundListener from '@/components/settings/push-foreground-listener';
 import NotificationProvider from '@/notifications/notification-provider';
 import EmotionRegistry from './emotion-registry';
 
@@ -18,6 +19,7 @@ export default function Providers({ children }: { children: ReactNode }) {
           <LeafyGreenProvider darkMode>
             <NotificationProvider>{children}</NotificationProvider>
           </LeafyGreenProvider>
+          <PushForegroundListener />
           <Toaster theme="dark" richColors position="bottom-right" />
         </EmotionRegistry>
       </NuqsAdapter>

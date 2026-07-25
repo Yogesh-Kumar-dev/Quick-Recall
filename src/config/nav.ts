@@ -30,6 +30,7 @@ import {
   IconNotes,
   IconRobot,
   IconServer,
+  IconSettings,
   IconShieldLock,
   IconTestPipe,
   IconWorld
@@ -59,7 +60,8 @@ export const primaryNav: NavLink[] = [
   { title: 'About', url: '/about', icon: IconInfoCircle },
   { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase, tourKey: 'job-tracker' },
   { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone, tourKey: 'speak-up' },
-  { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion, tourKey: 'mock-interview' }
+  { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion, tourKey: 'mock-interview' },
+  { title: 'Settings', url: '/settings', icon: IconSettings }
 ];
 
 // Grouped sections (each renders as a labelled sidebar group).

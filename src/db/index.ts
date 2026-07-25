@@ -8,6 +8,11 @@ import type { MockInterview } from '@/types/mock-interview';
 import type { SpeakUpQA } from '@/types/speak-up';
 import type { Bookmark, PracticeAttempt, PracticeSessionState, QuizAttempt, ReviewState } from '@/types/study';
 
+export interface SettingsRow {
+  key: string;
+  value: unknown;
+}
+
 // ==============================|| DEXIE - SHARED CLIENT DATABASE ||============================== //
 
 // One IndexedDB database for the whole app; each feature owns a table, accessed only through
@@ -23,6 +28,7 @@ class QuickRecallDB extends Dexie {
   practiceSessions!: Table<PracticeSessionState, string>;
   mockInterviews!: Table<MockInterview, string>;
   quizAttempts!: Table<QuizAttempt, string>;
+  settings!: Table<SettingsRow, string>;
 
   constructor() {
     super('quickrecall');
@@ -41,6 +47,13 @@ class QuickRecallDB extends Dexie {
     // v2: purely additive table (quizAttempts) — no upgrade() needed, existing stores untouched.
     this.version(2).stores({
       quizAttempts: 'id, source, completedAt'
+    });
+    // v3: generic key/value settings table (src/db/settings.ts) — future device-level settings
+    // reuse this instead of a dedicated table each time. Never shipped with real data, so edited
+    // in place rather than superseded by a v4; clear local IndexedDB if upgrading a dev browser
+    // that already applied an earlier v3 with a `pushSettings` store.
+    this.version(3).stores({
+      settings: 'key'
     });
   }
 }

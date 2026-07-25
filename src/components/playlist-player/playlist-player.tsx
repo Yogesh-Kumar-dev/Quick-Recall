@@ -1,6 +1,7 @@
 'use client';
 
 import { IconBrandYoutube } from '@tabler/icons-react';
+import axios from 'axios';
 import { useMemo, useRef, useState } from 'react';
 import YouTube, { type YouTubeEvent, type YouTubePlayer } from 'react-youtube';
 import { Button } from '@/components/ui/button';
@@ -20,9 +21,7 @@ type Orientation = 'portrait' | 'landscape';
 async function fetchOrientation(videoId: string): Promise<Orientation | null> {
   try {
     const url = `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`;
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const data: { width?: number; height?: number } = await res.json();
+    const { data } = await axios.get<{ width?: number; height?: number }>(url);
     if (!data.width || !data.height) return null;
     return data.height > data.width ? 'portrait' : 'landscape';
   } catch {
