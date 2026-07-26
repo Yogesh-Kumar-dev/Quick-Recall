@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import JsProblemShell from '@/components/machine-coding/js-problem-shell';
-import type { JsProblemMeta, ApproachData } from '@/types/content';
+import type { ApproachData, JsProblemMeta } from '@/types/content';
 
 const BASE = join(process.cwd(), 'src/views/js-machine-coding/JsonStringify');
 

@@ -35,7 +35,7 @@ export const htmlcssQuiz: QuizQuestion[] = [
     code: `<meta name="viewport" content="width=device-width, initial-scale=1" />`,
     options: [
       'It blocks the page from being zoomed at all',
-      'It makes the page use the device\'s real width at 100% zoom — the prerequisite for CSS media queries to work on mobile',
+      "It makes the page use the device's real width at 100% zoom — the prerequisite for CSS media queries to work on mobile",
       'It sets the default font size for the page',
       'It is only needed for iOS devices'
     ],
@@ -50,7 +50,7 @@ export const htmlcssQuiz: QuizQuestion[] = [
       'It is purely optional and has no functional purpose',
       'It describes the image for screen readers and displays if the image fails to load',
       'It is required for the image to be cached by the browser',
-      'It sets the image\'s aspect ratio'
+      "It sets the image's aspect ratio"
     ],
     correctIndex: 1,
     explanation: 'Use a meaningful description for informative images, or `alt=""` for purely decorative ones.',
@@ -61,7 +61,7 @@ export const htmlcssQuiz: QuizQuestion[] = [
     question: 'What is the difference between `<script defer>` and `<script async>`?',
     options: [
       'They behave identically in every browser',
-      'defer downloads in parallel and runs after parsing, in order; async runs as soon as it\'s ready, order not guaranteed',
+      "defer downloads in parallel and runs after parsing, in order; async runs as soon as it's ready, order not guaranteed",
       'async blocks HTML parsing; defer never does',
       'defer only works for external scripts, async only for inline scripts'
     ],
@@ -88,11 +88,12 @@ export const htmlcssQuiz: QuizQuestion[] = [
     options: [
       'width now excludes padding and border (the default, content-box behavior)',
       'width now includes padding and border, making sizing far more predictable',
-      'It removes the element\'s border entirely',
+      "It removes the element's border entirely",
       'It only affects flex/grid children'
     ],
     correctIndex: 1,
-    explanation: 'This is why most resets apply `border-box` globally — it avoids padding/border silently expanding an element beyond its set width.',
+    explanation:
+      'This is why most resets apply `border-box` globally — it avoids padding/border silently expanding an element beyond its set width.',
     category: 'CSS'
   },
   {
@@ -100,7 +101,12 @@ export const htmlcssQuiz: QuizQuestion[] = [
     question: 'Which selector wins when both target the same element (ignoring source order)?',
     code: `#nav .link { color: red; }
 .link { color: blue; }`,
-    options: ['.link (blue) — later rules always win', '#nav .link (red) — id + class outranks class alone', 'Neither applies — conflicting rules cancel out', 'It is undefined behavior'],
+    options: [
+      '.link (blue) — later rules always win',
+      '#nav .link (red) — id + class outranks class alone',
+      'Neither applies — conflicting rules cancel out',
+      'It is undefined behavior'
+    ],
     correctIndex: 1,
     explanation: 'CSS specificity order is inline style > #id > .class/[attr]/:pseudo-class > element; ties break by source order.',
     category: 'CSS'
@@ -133,23 +139,29 @@ export const htmlcssQuiz: QuizQuestion[] = [
   },
   {
     id: 'htmlcss-q-margin-collapse',
-    question: 'What happens when two vertical margins meet, e.g. an element with `margin-bottom: 30px` followed by one with `margin-top: 20px`?',
-    options: ['The gap becomes 50px (sum)', 'The gap becomes 30px (the larger of the two margins collapses into one)', 'The gap becomes 20px (the smaller wins)', 'Margins never interact between siblings'],
+    question:
+      'What happens when two vertical margins meet, e.g. an element with `margin-bottom: 30px` followed by one with `margin-top: 20px`?',
+    options: [
+      'The gap becomes 50px (sum)',
+      'The gap becomes 30px (the larger of the two margins collapses into one)',
+      'The gap becomes 20px (the smaller wins)',
+      'Margins never interact between siblings'
+    ],
     correctIndex: 1,
-    explanation: 'Margin collapsing only applies to adjacent vertical margins of block elements — flex/grid items don\'t collapse.',
+    explanation: "Margin collapsing only applies to adjacent vertical margins of block elements — flex/grid items don't collapse.",
     category: 'CSS'
   },
   {
     id: 'htmlcss-q-em-rem',
     question: 'What is the key difference between `em` and `rem` units?',
     options: [
-      'em is relative to the root font-size; rem is relative to the element\'s own font-size',
-      'em is relative to the element\'s own font-size and compounds when nested; rem is always relative to the root font-size',
+      "em is relative to the root font-size; rem is relative to the element's own font-size",
+      "em is relative to the element's own font-size and compounds when nested; rem is always relative to the root font-size",
       'They are identical in every browser',
       'rem only works inside media queries'
     ],
     correctIndex: 1,
-    explanation: 'rem\'s independence from nesting makes it the more predictable choice for consistent, scalable sizing.',
+    explanation: "rem's independence from nesting makes it the more predictable choice for consistent, scalable sizing.",
     category: 'CSS'
   },
   {
@@ -162,7 +174,7 @@ export const htmlcssQuiz: QuizQuestion[] = [
       'z-index only works on flex/grid children'
     ],
     correctIndex: 1,
-    explanation: 'A child can never escape its parent\'s stacking context no matter how high its z-index is set.',
+    explanation: "A child can never escape its parent's stacking context no matter how high its z-index is set.",
     category: 'CSS'
   },
   {
@@ -212,12 +224,12 @@ export const htmlcssQuiz: QuizQuestion[] = [
       'It requires JavaScript to function'
     ],
     correctIndex: 1,
-    explanation: 'e.g. `.form-group:has(input:invalid)` styles the group when its input is invalid — something CSS couldn\'t do before.',
+    explanation: "e.g. `.form-group:has(input:invalid)` styles the group when its input is invalid — something CSS couldn't do before.",
     category: 'CSS'
   },
   {
     id: 'htmlcss-q-hiding-elements',
-    question: 'Which hiding technique keeps the element\'s layout space AND keeps it clickable?',
+    question: "Which hiding technique keeps the element's layout space AND keeps it clickable?",
     options: ['display: none', 'visibility: hidden', 'opacity: 0', 'All three behave the same way'],
     correctIndex: 2,
     explanation: '`opacity: 0` keeps the element in layout, in the accessibility tree, and still interactive — often an unwanted surprise.',
@@ -229,7 +241,7 @@ export const htmlcssQuiz: QuizQuestion[] = [
     options: [
       'It centers an element horizontally',
       'It reserves box space by ratio before content (like an image) loads, preventing layout shift',
-      'It sets the element\'s z-index automatically',
+      "It sets the element's z-index automatically",
       'It replaces media queries entirely'
     ],
     correctIndex: 1,
@@ -268,12 +280,13 @@ export const htmlcssQuiz: QuizQuestion[] = [
     question: 'What is the "first rule of ARIA"?',
     options: [
       'Always add ARIA attributes to every interactive element',
-      'Don\'t use ARIA if a native HTML element already does the job',
+      "Don't use ARIA if a native HTML element already does the job",
       'ARIA should only be used for images',
       'ARIA roles must always be paired with tabindex="0"'
     ],
     correctIndex: 1,
-    explanation: 'A real `<button>` beats `role="button"` on a div, which additionally needs manual tabindex and key handling to actually work.',
+    explanation:
+      'A real `<button>` beats `role="button"` on a div, which additionally needs manual tabindex and key handling to actually work.',
     category: 'Accessibility'
   }
 ];

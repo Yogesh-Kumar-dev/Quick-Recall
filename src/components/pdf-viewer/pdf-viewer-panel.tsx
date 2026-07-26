@@ -1,5 +1,6 @@
 'use client';
 
+import type { DocumentManagerCapability, PDFViewerConfig, PluginRegistry } from '@embedpdf/react-pdf-viewer';
 import { IconCheck, IconExternalLink, IconLoader2 } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -7,8 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ALL_PDF_GUIDE_URLS, type PdfGuide } from '@/data/pdf-guides';
 import { ensurePdfBuffer, prunePdfCache, requestPersistentStorage } from '@/utils/pdf-cache';
-
-import type { DocumentManagerCapability, PDFViewerConfig, PluginRegistry } from '@embedpdf/react-pdf-viewer';
 
 // EmbedPDF is browser-only (Canvas + WebAssembly) — load client-side so it never runs during SSR.
 const PDFViewer = dynamic(() => import('@embedpdf/react-pdf-viewer').then((m) => m.PDFViewer), { ssr: false });

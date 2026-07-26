@@ -1,19 +1,18 @@
 'use client';
 
+import { useLiveQuery } from 'dexie-react-hooks';
 import { usePathname } from 'next/navigation';
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { toast } from 'sonner';
-
-import { Button } from '@/components/ui/button';
 import CodeBlock from '@/components/content/code-block';
+import type { CodeLang } from '@/components/content/code-highlighted';
+import { Button } from '@/components/ui/button';
+import { jsProblems } from '@/data/javascript/js-problems';
+import { reactMcProblems } from '@/data/react/react-mc-problems';
 import * as attemptsRepository from '@/db/attempts';
 import * as practiceSessionsRepository from '@/db/practice-sessions';
 import * as reviewsRepository from '@/db/reviews';
-import { initialReviewState, review as schedule, formatDuePhrase, formatInterval } from '@/lib/review-scheduler';
-import { jsProblems } from '@/data/javascript/js-problems';
-import { reactMcProblems } from '@/data/react/react-mc-problems';
-import type { CodeLang } from '@/components/content/code-highlighted';
+import { formatDuePhrase, formatInterval, initialReviewState, review as schedule } from '@/lib/review-scheduler';
 import type { ReviewQuality } from '@/types/study';
 import type { PracticeEditorHandle } from './practice-editor';
 import type { PracticeSession } from './use-practice-session';

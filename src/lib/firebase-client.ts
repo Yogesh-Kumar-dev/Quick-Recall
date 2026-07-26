@@ -1,5 +1,5 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage, type Messaging } from 'firebase/messaging';
+import { getMessaging, getToken, type Messaging, onMessage } from 'firebase/messaging';
 
 // ==============================|| FIREBASE - CLIENT SDK ||============================== //
 

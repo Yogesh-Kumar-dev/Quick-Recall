@@ -1,12 +1,12 @@
 import type { Flashcard } from '@/types/content';
+import { engineeringFlashcards } from './engineering/engineering-flashcards';
 import type { FlashcardSource } from './flashcards-index';
+import { cssFlashcards, htmlFlashcards } from './htmlcss/htmlcss-flashcards';
 import { jsFlashcards, tsFlashcards } from './javascript/js-flashcards';
-import { reactFlashcards } from './react/react-flashcards';
 import { nextjsFlashcards, nextjsRenderingFlashcards } from './nextjs/nextjs-flashcards';
 import { nodejsFlashcards } from './nodejs/nodejs-flashcards';
-import { htmlFlashcards, cssFlashcards } from './htmlcss/htmlcss-flashcards';
-import { engineeringFlashcards } from './engineering/engineering-flashcards';
-import { reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from './redux/redux-flashcards';
+import { reactFlashcards } from './react/react-flashcards';
+import { asyncThunkFlashcards, reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards } from './redux/redux-flashcards';
 
 export interface FlashcardSet {
   cards: Flashcard[];

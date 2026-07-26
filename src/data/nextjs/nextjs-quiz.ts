@@ -59,7 +59,8 @@ export const nextjsQuiz: QuizQuestion[] = [
       'They are the same thing under different names'
     ],
     correctIndex: 0,
-    explanation: 'SSG produces one static HTML output at build time (CDN-fast, same for everyone); SSR regenerates HTML per request (fresh, personalized).',
+    explanation:
+      'SSG produces one static HTML output at build time (CDN-fast, same for everyone); SSR regenerates HTML per request (fresh, personalized).',
     category: 'Rendering'
   },
   {
@@ -77,10 +78,10 @@ export const nextjsQuiz: QuizQuestion[] = [
   },
   {
     id: 'nextjs-q-generate-static-params',
-    question: 'In the App Router, which function pre-renders a dynamic route\'s params at build time?',
+    question: "In the App Router, which function pre-renders a dynamic route's params at build time?",
     options: ['getStaticPaths', 'generateStaticParams', 'generateMetadata', 'getServerSideProps'],
     correctIndex: 1,
-    explanation: '`generateStaticParams` is the App Router equivalent of the Pages Router\'s `getStaticPaths`.',
+    explanation: "`generateStaticParams` is the App Router equivalent of the Pages Router's `getStaticPaths`.",
     category: 'Rendering'
   },
   {
@@ -165,7 +166,12 @@ export const nextjsQuiz: QuizQuestion[] = [
   {
     id: 'nextjs-q-env-vars',
     question: 'Which environment variables get exposed to the browser bundle?',
-    options: ['All variables in .env.local', 'None — env vars are always server-only', 'Only variables prefixed with NEXT_PUBLIC_', 'Only variables listed in next.config.js'],
+    options: [
+      'All variables in .env.local',
+      'None — env vars are always server-only',
+      'Only variables prefixed with NEXT_PUBLIC_',
+      'Only variables listed in next.config.js'
+    ],
     correctIndex: 2,
     explanation: 'Everything else stays server-only by default — the `NEXT_PUBLIC_` prefix is required to ship a value to client code.',
     category: 'Config'
@@ -259,7 +265,8 @@ export default async function Page() {
       'It only works inside middleware.ts'
     ],
     correctIndex: 1,
-    explanation: 'Reading cookies()/headers() signals the route needs per-request data, so Next.js renders it dynamically instead of statically.',
+    explanation:
+      'Reading cookies()/headers() signals the route needs per-request data, so Next.js renders it dynamically instead of statically.',
     category: 'Data'
   }
 ];

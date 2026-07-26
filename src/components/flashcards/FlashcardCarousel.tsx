@@ -1,12 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { parseAsString, useQueryState } from 'nuqs';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { parseAsString, useQueryState } from 'nuqs';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
 import CodeBlock from '@/components/content/code-block';
-import { flashcardKey, type FlashcardSource } from '@/data/flashcards-index';
+import { Button } from '@/components/ui/button';
+import { type FlashcardSource, flashcardKey } from '@/data/flashcards-index';
 
 import type { Flashcard } from '@/types/content';
 

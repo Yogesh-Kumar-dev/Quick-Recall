@@ -2,7 +2,7 @@
 
 import { cache } from '@leafygreen-ui/emotion';
 import { useServerInsertedHTML } from 'next/navigation';
-import { useRef, type ReactNode } from 'react';
+import { type ReactNode, useRef } from 'react';
 
 // LeafyGreen's own @emotion/css instance only fills cache.inserted in memory on the server — the
 // <style> never reaches the HTML without this flush, causing an unstyled flash until hydration.

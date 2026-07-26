@@ -7,14 +7,13 @@
 // SRS Review (resolve a due card's content). Mirrors the structure of `search-index.ts`.
 
 import type { Flashcard } from '@/types/content';
-
+import { engineeringFlashcards } from './engineering/engineering-flashcards';
+import { cssFlashcards, htmlFlashcards } from './htmlcss/htmlcss-flashcards';
 import { jsFlashcards, tsFlashcards } from './javascript/js-flashcards';
-import { reactFlashcards } from './react/react-flashcards';
 import { nextjsFlashcards, nextjsRenderingFlashcards } from './nextjs/nextjs-flashcards';
 import { nodejsFlashcards } from './nodejs/nodejs-flashcards';
-import { reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards, asyncThunkFlashcards } from './redux/redux-flashcards';
-import { htmlFlashcards, cssFlashcards } from './htmlcss/htmlcss-flashcards';
-import { engineeringFlashcards } from './engineering/engineering-flashcards';
+import { reactFlashcards } from './react/react-flashcards';
+import { asyncThunkFlashcards, reduxFlashcards, reduxToolkitFlashcards, rtkQueryFlashcards } from './redux/redux-flashcards';
 
 // A short, stable namespace per source. Used as the `key` prefix — changing one of these
 // strings would orphan existing bookmarks/reviews, so treat them as permanent identifiers.

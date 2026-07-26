@@ -6,15 +6,15 @@
 // problems have no equivalent aggregator (search-index.ts imports them directly the same way), so
 // those two arrays are imported as-is.
 
+import { shuffle } from '@/lib/utils';
 import type { BaseProblemEntry } from '@/types/content';
 import type { MockInterviewInput, MockInterviewQuestion, MockInterviewQuestionKind } from '@/types/mock-interview';
-import { shuffle } from '@/lib/utils';
-import { flashcardKey } from './flashcards-index';
-import { quizKey } from './quiz-index';
-import { NOTE_SOURCES } from './note-sources';
 import { FLASHCARD_SETS } from './flashcard-sets';
-import { QUIZ_SETS } from './quiz-sets';
+import { flashcardKey } from './flashcards-index';
 import { jsProblems } from './javascript/js-problems';
+import { NOTE_SOURCES } from './note-sources';
+import { quizKey } from './quiz-index';
+import { QUIZ_SETS } from './quiz-sets';
 import { reactMcProblems } from './react/react-mc-problems';
 
 export interface MockInterviewTopic {
@@ -27,7 +27,13 @@ export interface MockInterviewTopic {
 
 export const MOCK_INTERVIEW_TOPICS: MockInterviewTopic[] = [
   { label: 'JavaScript', noteTopics: ['JavaScript'], flashcardSlugs: ['js'], quizSlugs: ['js'], problems: jsProblems },
-  { label: 'TypeScript', noteTopics: ['TypeScript', 'TS for React'], flashcardSlugs: ['typescript'], quizSlugs: ['typescript'], problems: [] },
+  {
+    label: 'TypeScript',
+    noteTopics: ['TypeScript', 'TS for React'],
+    flashcardSlugs: ['typescript'],
+    quizSlugs: ['typescript'],
+    problems: []
+  },
   { label: 'React', noteTopics: ['React'], flashcardSlugs: ['react'], quizSlugs: ['react'], problems: reactMcProblems },
   {
     label: 'Redux',

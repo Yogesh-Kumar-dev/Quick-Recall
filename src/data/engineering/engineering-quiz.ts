@@ -8,7 +8,7 @@ export const engineeringQuiz: QuizQuestion[] = [
     question: 'What does Big-O notation describe?',
     options: [
       'The exact runtime of an algorithm in milliseconds',
-      'How an algorithm\'s cost grows with input size, ignoring constants',
+      "How an algorithm's cost grows with input size, ignoring constants",
       'How much memory a program uses at startup',
       'The number of lines of code in a function'
     ],
@@ -63,7 +63,8 @@ export const engineeringQuiz: QuizQuestion[] = [
     question: 'Which HTTP methods are idempotent (safe to retry without changing the outcome)?',
     options: ['POST only', 'GET, PUT, DELETE', 'POST and PATCH only', 'None of them'],
     correctIndex: 1,
-    explanation: 'POST is typically NOT idempotent since it usually creates a new resource each time — an idempotency key can make it safe.',
+    explanation:
+      'POST is typically NOT idempotent since it usually creates a new resource each time — an idempotency key can make it safe.',
     category: 'API design'
   },
   {
@@ -108,9 +109,15 @@ export const engineeringQuiz: QuizQuestion[] = [
   {
     id: 'eng-q-caching-invalidation',
     question: 'In the cache-aside pattern, what is generally considered the hardest part to get right?',
-    options: ['Reading from the cache', 'Cache invalidation — avoiding stale data after a write', 'Choosing a cache library', 'Serializing the cached value'],
+    options: [
+      'Reading from the cache',
+      'Cache invalidation — avoiding stale data after a write',
+      'Choosing a cache library',
+      'Serializing the cached value'
+    ],
     correctIndex: 1,
-    explanation: 'The app checks cache first, falls back to the DB on a miss, then stores the result — but keeping it fresh after writes is the classic hard problem.',
+    explanation:
+      'The app checks cache first, falls back to the DB on a miss, then stores the result — but keeping it fresh after writes is the classic hard problem.',
     category: 'Performance'
   },
   {
@@ -144,7 +151,7 @@ export const engineeringQuiz: QuizQuestion[] = [
     question: 'What is a "modular monolith"?',
     options: [
       'A monolith with no internal structure at all',
-      'One deployment, internally split into strict modules with enforced boundaries — most of microservices\' clear ownership without the network/ops cost',
+      "One deployment, internally split into strict modules with enforced boundaries — most of microservices' clear ownership without the network/ops cost",
       'A synonym for microservices',
       'A monolith that only runs one module at a time'
     ],
@@ -168,9 +175,15 @@ export const engineeringQuiz: QuizQuestion[] = [
   {
     id: 'eng-q-cap-theorem',
     question: 'According to the CAP theorem, during a network partition a distributed system must choose between:',
-    options: ['Speed and cost', 'Consistency and Availability (partition tolerance is a given)', 'SQL and NoSQL', 'Scalability and security'],
+    options: [
+      'Speed and cost',
+      'Consistency and Availability (partition tolerance is a given)',
+      'SQL and NoSQL',
+      'Scalability and security'
+    ],
     correctIndex: 1,
-    explanation: 'CP systems refuse to serve rather than return stale data; AP systems stay available and reconcile later (eventual consistency).',
+    explanation:
+      'CP systems refuse to serve rather than return stale data; AP systems stay available and reconcile later (eventual consistency).',
     category: 'Distributed systems'
   },
   {
@@ -243,7 +256,7 @@ export const engineeringQuiz: QuizQuestion[] = [
     question: 'What is the difference between a stub, a mock, and a spy in testing?',
     options: [
       'They are interchangeable terms for the same thing',
-      'A stub returns canned values; a mock is a stub with expectations on how it\'s called; a spy records calls to a real (or fake) function',
+      "A stub returns canned values; a mock is a stub with expectations on how it's called; a spy records calls to a real (or fake) function",
       'A spy always replaces the entire module',
       'A mock can only be used in end-to-end tests'
     ],

@@ -9,7 +9,8 @@ export const databasesQuiz: QuizQuestion[] = [
     question: 'What does `NULL = NULL` evaluate to in SQL?',
     options: ['TRUE', 'FALSE', 'NULL (unknown) — neither true nor false', 'A syntax error'],
     correctIndex: 2,
-    explanation: 'NULL means "unknown," so comparing it with anything (including another NULL) yields NULL — use IS NULL / IS NOT NULL instead.',
+    explanation:
+      'NULL means "unknown," so comparing it with anything (including another NULL) yields NULL — use IS NULL / IS NOT NULL instead.',
     category: 'PostgreSQL'
   },
   {
@@ -22,7 +23,8 @@ export const databasesQuiz: QuizQuestion[] = [
       'WHERE can only be used with JOINs'
     ],
     correctIndex: 1,
-    explanation: 'You cannot filter on an aggregate like COUNT(*) in a WHERE clause — that requires HAVING, since aggregation hasn\'t happened yet.',
+    explanation:
+      "You cannot filter on an aggregate like COUNT(*) in a WHERE clause — that requires HAVING, since aggregation hasn't happened yet.",
     category: 'PostgreSQL'
   },
   {
@@ -48,7 +50,7 @@ FROM employees;`,
       'A running total of salary per department',
       'Every employee ranked by salary within their own department (1 = highest paid in that department)',
       'The average salary per department',
-      'A syntax error — window functions can\'t use PARTITION BY'
+      "A syntax error — window functions can't use PARTITION BY"
     ],
     correctIndex: 1,
     explanation: 'This is the classic "top N per group" pattern — filter WHERE rn <= 3 to get the top 3 earners per department.',
@@ -67,7 +69,7 @@ FROM employees;`,
     question: 'What does the "I" in ACID stand for, and what does it guarantee?',
     options: [
       'Integrity — data types are enforced',
-      'Isolation — concurrent transactions don\'t see each other\'s uncommitted changes',
+      "Isolation — concurrent transactions don't see each other's uncommitted changes",
       'Indexing — every table automatically gets an index',
       'Idempotency — retrying a transaction is always safe'
     ],
@@ -95,7 +97,7 @@ FROM employees;`,
 ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;`,
     options: [
       'It always inserts a new row, ignoring conflicts',
-      'It inserts the row, or updates the existing row\'s email if the id already exists — an atomic upsert',
+      "It inserts the row, or updates the existing row's email if the id already exists — an atomic upsert",
       'It deletes any row with a conflicting id first',
       'It only works inside a transaction block'
     ],
@@ -122,7 +124,8 @@ ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;`,
       'It depends only on which language driver you use'
     ],
     correctIndex: 1,
-    explanation: 'This is THE core MongoDB schema design question — embedding an unbounded array can blow past the 16MB document limit and hurts write performance.',
+    explanation:
+      'This is THE core MongoDB schema design question — embedding an unbounded array can blow past the 16MB document limit and hurts write performance.',
     category: 'MongoDB'
   },
   {
@@ -144,14 +147,10 @@ ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;`,
   {
     id: 'db-q-mongo-esr-rule',
     question: 'For a compound index in MongoDB, the ESR rule recommends ordering fields as:',
-    options: [
-      'Equality → Sort → Range',
-      'Range → Sort → Equality',
-      'Alphabetical order',
-      'Whichever field is largest first'
-    ],
+    options: ['Equality → Sort → Range', 'Range → Sort → Equality', 'Alphabetical order', 'Whichever field is largest first'],
     correctIndex: 0,
-    explanation: 'Putting equality-matched fields first, then sort fields, then range-filtered fields gives the index the best chance to serve the query efficiently.',
+    explanation:
+      'Putting equality-matched fields first, then sort fields, then range-filtered fields gives the index the best chance to serve the query efficiently.',
     category: 'MongoDB'
   },
   {
@@ -164,7 +163,8 @@ ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;`,
       'It automatically backs up the database daily'
     ],
     correctIndex: 1,
-    explanation: 'A `mongos` router directs queries to the correct shard(s) based on the shard key — a poorly chosen shard key can create hot shards.',
+    explanation:
+      'A `mongos` router directs queries to the correct shard(s) based on the shard key — a poorly chosen shard key can create hot shards.',
     category: 'MongoDB'
   },
   {
@@ -185,7 +185,7 @@ ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;`,
     question: 'MongoDB is often described as "schemaless." What does that actually mean in practice?',
     options: [
       'Documents can never have a consistent structure',
-      'A schema isn\'t enforced by default, but collections CAN opt into JSON Schema validation on writes',
+      "A schema isn't enforced by default, but collections CAN opt into JSON Schema validation on writes",
       'Every document in a collection must have identical fields',
       'MongoDB cannot be used with an ORM/ODM'
     ],
@@ -240,12 +240,13 @@ EXPIRE requests:user:42 60`,
       'INCR only works on Redis Cluster'
     ],
     correctIndex: 1,
-    explanation: 'A separate GET then SET would have a race window where two concurrent requests could both read the same value and undercount.',
+    explanation:
+      'A separate GET then SET would have a race window where two concurrent requests could both read the same value and undercount.',
     category: 'Redis'
   },
   {
     id: 'db-q-redis-persistence',
-    question: 'What is the core trade-off between Redis\'s RDB and AOF persistence modes?',
+    question: "What is the core trade-off between Redis's RDB and AOF persistence modes?",
     options: [
       'RDB and AOF are identical in behavior',
       'RDB takes periodic point-in-time snapshots (faster restarts, more potential data loss); AOF logs every write (less data loss, larger files, slower restarts)',
@@ -276,7 +277,7 @@ EXPIRE requests:user:42 60`,
     options: [
       'The order items were inserted',
       'A hash of the partition key value',
-      'The item\'s total size in bytes',
+      "The item's total size in bytes",
       'The AWS region only'
     ],
     correctIndex: 1,
@@ -293,7 +294,8 @@ EXPIRE requests:user:42 60`,
       'Query can only be used with a GSI, never the base table'
     ],
     correctIndex: 1,
-    explanation: 'A Scan with a filter that returns 5 items still bills for reading the entire table — filters don\'t save money, unlike a Query\'s key condition.',
+    explanation:
+      "A Scan with a filter that returns 5 items still bills for reading the entire table — filters don't save money, unlike a Query's key condition.",
     category: 'DynamoDB'
   },
   {
@@ -306,7 +308,8 @@ EXPIRE requests:user:42 60`,
       'Encrypting specific attributes at rest'
     ],
     correctIndex: 1,
-    explanation: 'A GSI has its own partition (and optional sort) key, letting you query access patterns the base table\'s key schema doesn\'t support.',
+    explanation:
+      "A GSI has its own partition (and optional sort) key, letting you query access patterns the base table's key schema doesn't support.",
     category: 'DynamoDB'
   },
   {

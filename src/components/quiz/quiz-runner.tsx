@@ -1,16 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
 import { IconArrowLeft, IconCheck, IconRefresh, IconX } from '@tabler/icons-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import CodeBlock from '@/components/content/code-block';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import CodeBlock from '@/components/content/code-block';
+import type { QuizSource } from '@/data/quiz-index';
 import { shuffle } from '@/lib/utils';
+import type { QuizQuestion } from '@/types/content';
 import { quizOptionClasses as optionClasses } from './quiz-option-classes';
 import useQuizAttempts from './use-quiz-attempts';
-import type { QuizQuestion } from '@/types/content';
-import type { QuizSource } from '@/data/quiz-index';
 
 type Mode = 'practice' | 'test';
 
@@ -31,7 +31,15 @@ function scoreAnswers(questions: QuizQuestion[], answers: (number | null)[]): nu
   return answers.reduce<number>((n, a, i) => (a === questions[i].correctIndex ? n + 1 : n), 0);
 }
 
-export default function QuizRunner({ questions: orderedQuestions, source, title }: { questions: QuizQuestion[]; source: QuizSource; title: string }) {
+export default function QuizRunner({
+  questions: orderedQuestions,
+  source,
+  title
+}: {
+  questions: QuizQuestion[];
+  source: QuizSource;
+  title: string;
+}) {
   const { recordAttempt } = useQuizAttempts();
 
   // Reshuffled on every run (mount + retake) so question order — and each question's option order — never repeats identically.

@@ -25,7 +25,8 @@ export default function SettingsView() {
             <CardTitle>Push notifications</CardTitle>
           </div>
           <CardDescription>
-            Get a daily motivational/study quote sent to this device, even when the app isn&apos;t open. One per day, no personalization yet.
+            Get a daily motivational/study quote sent to this device, even when the app isn&apos;t open. One per day, no personalization
+            yet.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -35,11 +36,7 @@ export default function SettingsView() {
           {isPushSupported && (
             <div className="flex items-center justify-between">
               <span className="text-sm">{enabled ? 'Enabled on this device' : 'Disabled on this device'}</span>
-              <Button
-                variant={enabled ? 'outline' : 'default'}
-                disabled={loading || busy}
-                onClick={() => (enabled ? disable() : enable())}
-              >
+              <Button variant={enabled ? 'outline' : 'default'} disabled={loading || busy} onClick={() => (enabled ? disable() : enable())}>
                 {enabled ? 'Disable' : 'Enable'}
               </Button>
             </div>

@@ -47,7 +47,8 @@ export const reactQuiz: QuizQuestion[] = [
       'Synchronously blocks until the DOM updates'
     ],
     correctIndex: 1,
-    explanation: 'State updates are asynchronous/batched — reading the state variable right after calling its setter still returns the old value.',
+    explanation:
+      'State updates are asynchronous/batched — reading the state variable right after calling its setter still returns the old value.',
     category: 'Hooks'
   },
   {
@@ -94,7 +95,7 @@ export const reactQuiz: QuizQuestion[] = [
     question: 'Why do components sometimes render twice in development under `<StrictMode>`?',
     options: [
       "It's a bug in React",
-      'To help surface side effects that aren\'t pure (impure render logic)',
+      "To help surface side effects that aren't pure (impure render logic)",
       'Because two browser tabs are open',
       'It only happens in production builds'
     ],
@@ -112,7 +113,8 @@ export const reactQuiz: QuizQuestion[] = [
       'A new function on every render, same as writing `fn` inline'
     ],
     correctIndex: 0,
-    explanation: 'It preserves the same function reference across renders unless a dependency changes — useful to avoid breaking memoized children.',
+    explanation:
+      'It preserves the same function reference across renders unless a dependency changes — useful to avoid breaking memoized children.',
     category: 'Hooks'
   },
   {
@@ -133,7 +135,7 @@ export const reactQuiz: QuizQuestion[] = [
     question: 'React decides whether to reuse or replace a DOM element between renders primarily based on:',
     options: ['CSS class names', "The element's type and key", 'The order it was declared in the source file', 'Component file name'],
     correctIndex: 1,
-    explanation: "Reconciliation compares element type + key; a type change (e.g. div → span) unmounts and remounts, regardless of props.",
+    explanation: 'Reconciliation compares element type + key; a type change (e.g. div → span) unmounts and remounts, regardless of props.',
     category: 'Rendering'
   },
   {
@@ -154,12 +156,13 @@ export const reactQuiz: QuizQuestion[] = [
     question: '"Prop drilling" refers to:',
     options: [
       'Validating prop types at build time',
-      'Passing data through many intermediate components that don\'t need it, just to reach a deeply nested child',
+      "Passing data through many intermediate components that don't need it, just to reach a deeply nested child",
       'A performance optimization technique',
       'Using default prop values'
     ],
     correctIndex: 1,
-    explanation: 'Context, composition, or state management libraries are common ways to avoid threading props through layers that only pass them along.',
+    explanation:
+      'Context, composition, or state management libraries are common ways to avoid threading props through layers that only pass them along.',
     category: 'State management'
   },
   {
@@ -172,7 +175,8 @@ export const reactQuiz: QuizQuestion[] = [
       'Never — memo only affects mounting'
     ],
     correctIndex: 0,
-    explanation: 'memo does a shallow prop comparison and bails out of re-rendering if nothing relevant changed — it does not stop the component\'s own state updates from re-rendering it.',
+    explanation:
+      "memo does a shallow prop comparison and bails out of re-rendering if nothing relevant changed — it does not stop the component's own state updates from re-rendering it.",
     category: 'Performance'
   },
   {
@@ -198,7 +202,8 @@ export const reactQuiz: QuizQuestion[] = [
       'Always lift it to a global store'
     ],
     correctIndex: 1,
-    explanation: 'Syncing derived values into their own state via effects is a common anti-pattern — computing it during render keeps a single source of truth.',
+    explanation:
+      'Syncing derived values into their own state via effects is a common anti-pattern — computing it during render keeps a single source of truth.',
     category: 'Patterns'
   },
   {
@@ -211,7 +216,7 @@ export const reactQuiz: QuizQuestion[] = [
       "There's no functional difference, it's just shorter syntax"
     ],
     correctIndex: 1,
-    explanation: "Fragments let a component return multiple elements without an unnecessary wrapper element polluting the DOM/layout.",
+    explanation: 'Fragments let a component return multiple elements without an unnecessary wrapper element polluting the DOM/layout.',
     category: 'Rendering'
   },
   {
@@ -224,7 +229,8 @@ export const reactQuiz: QuizQuestion[] = [
       'Only in class components, never affecting function components below it'
     ],
     correctIndex: 1,
-    explanation: 'Error boundaries catch render/lifecycle errors in their subtree — they do not catch errors in event handlers or async code (use try/catch there).',
+    explanation:
+      'Error boundaries catch render/lifecycle errors in their subtree — they do not catch errors in event handlers or async code (use try/catch there).',
     category: 'Error handling'
   },
   {
@@ -237,7 +243,8 @@ export const reactQuiz: QuizQuestion[] = [
       'A special React component with no JSX'
     ],
     correctIndex: 1,
-    explanation: 'The naming convention matters for the linter, but what makes it a hook is that it composes other hooks to reuse stateful behavior.',
+    explanation:
+      'The naming convention matters for the linter, but what makes it a hook is that it composes other hooks to reuse stateful behavior.',
     category: 'Hooks'
   },
   {
@@ -250,7 +257,8 @@ export const reactQuiz: QuizQuestion[] = [
       'Automatically assigns indexes as keys with no warning'
     ],
     correctIndex: 1,
-    explanation: "It's a dev warning, not a hard error — but reconciliation quality (and correctness of state per item) suffers without keys.",
+    explanation:
+      "It's a dev warning, not a hard error — but reconciliation quality (and correctness of state per item) suffers without keys.",
     category: 'Rendering'
   },
   {
@@ -270,7 +278,8 @@ export const reactQuiz: QuizQuestion[] = [
 }`,
     options: ['1', '0', 'undefined', 'It throws an error'],
     correctIndex: 1,
-    explanation: 'The `setTimeout` closure captured `count` from the render when it was scheduled — that value stays `0` for that closure regardless of the later state update.',
+    explanation:
+      'The `setTimeout` closure captured `count` from the render when it was scheduled — that value stays `0` for that closure regardless of the later state update.',
     category: 'Hooks'
   },
   {
@@ -289,7 +298,8 @@ export const reactQuiz: QuizQuestion[] = [
 }`,
     options: ['3', '1', '0', '2'],
     correctIndex: 1,
-    explanation: 'All three calls read the same `count` from this render\'s closure (still 0), so each schedules "set to 1" — they don\'t compound. Using `setCount(c => c + 1)` three times would give 3.',
+    explanation:
+      'All three calls read the same `count` from this render\'s closure (still 0), so each schedules "set to 1" — they don\'t compound. Using `setCount(c => c + 1)` three times would give 3.',
     category: 'Hooks'
   },
   {
@@ -303,7 +313,8 @@ export const reactQuiz: QuizQuestion[] = [
 }`,
     options: ['1', '2', '0', '3'],
     correctIndex: 1,
-    explanation: 'In dev + StrictMode, React intentionally mounts, unmounts, and remounts once to surface effects that aren\'t cleanup-safe — so a `[]`-dependency effect logs twice.',
+    explanation:
+      "In dev + StrictMode, React intentionally mounts, unmounts, and remounts once to surface effects that aren't cleanup-safe — so a `[]`-dependency effect logs twice.",
     category: 'Hooks'
   },
   {
@@ -324,7 +335,8 @@ function Parent() {
       'It depends on the value of `tick`'
     ],
     correctIndex: 1,
-    explanation: 'Object/array/function literals created inline are new references every render, so memo\'s shallow comparison sees a "changed" prop even though its contents are identical.',
+    explanation:
+      'Object/array/function literals created inline are new references every render, so memo\'s shallow comparison sees a "changed" prop even though its contents are identical.',
     category: 'Performance'
   },
   {
@@ -346,7 +358,8 @@ function Parent() {
       'React requires string keys, so this is a TypeError'
     ],
     correctIndex: 1,
-    explanation: 'Index keys are only safe for static, never-reordered lists — using `todo.id` avoids state/DOM getting attributed to the wrong item after a reorder or deletion.',
+    explanation:
+      'Index keys are only safe for static, never-reordered lists — using `todo.id` avoids state/DOM getting attributed to the wrong item after a reorder or deletion.',
     category: 'Rendering'
   },
   {
@@ -369,7 +382,8 @@ function Parent() {
       'fetchUser must be awaited, not chained with .then'
     ],
     correctIndex: 1,
-    explanation: 'Hooks must run in the same order on every render. Returning before `useState`/`useEffect` means they get skipped whenever `userId` is falsy, breaking React\'s internal hook bookkeeping.',
+    explanation:
+      "Hooks must run in the same order on every render. Returning before `useState`/`useEffect` means they get skipped whenever `userId` is falsy, breaking React's internal hook bookkeeping.",
     category: 'Hooks'
   },
   {
@@ -386,7 +400,8 @@ function Parent() {
       'Only when `theme` changes'
     ],
     correctIndex: 1,
-    explanation: '`useMemo`\'s dependency array is `[items]`, so `theme` changing alone triggers a re-render but does not invalidate the memoized `total`.',
+    explanation:
+      "`useMemo`'s dependency array is `[items]`, so `theme` changing alone triggers a re-render but does not invalidate the memoized `total`.",
     category: 'Performance'
   },
   {
@@ -400,7 +415,8 @@ function Parent() {
       'It automatically adds a backdrop and close button'
     ],
     correctIndex: 0,
-    explanation: 'Portals decouple DOM placement from the React tree — useful for modals/tooltips escaping `overflow:hidden` ancestors — while events still bubble through the React tree, not the DOM tree.',
+    explanation:
+      'Portals decouple DOM placement from the React tree — useful for modals/tooltips escaping `overflow:hidden` ancestors — while events still bubble through the React tree, not the DOM tree.',
     category: 'Patterns'
   },
   {
@@ -413,7 +429,8 @@ function Parent() {
       'Replace useEffect for data fetching entirely on its own'
     ],
     correctIndex: 1,
-    explanation: 'Suspense shows its fallback while descendants below it signal they\'re not ready yet — most commonly `React.lazy()` components, or data sources built to integrate with Suspense.',
+    explanation:
+      "Suspense shows its fallback while descendants below it signal they're not ready yet — most commonly `React.lazy()` components, or data sources built to integrate with Suspense.",
     category: 'Patterns'
   },
   {
@@ -443,7 +460,8 @@ const [state, dispatch] = useReducer(reducer, { count: 0 });`,
       'Await an async data-fetching call in the component body'
     ],
     correctIndex: 1,
-    explanation: 'Server Components render on the server with no client-side interactivity or lifecycle — stateful hooks require a `"use client"` boundary.',
+    explanation:
+      'Server Components render on the server with no client-side interactivity or lifecycle — stateful hooks require a `"use client"` boundary.',
     category: 'Rendering'
   },
   {
@@ -459,7 +477,8 @@ const [state, dispatch] = useReducer(reducer, { count: 0 });`,
       'It only works on class components'
     ],
     correctIndex: 1,
-    explanation: 'A callback ref fires with the node on mount and with `null` on unmount, letting you measure or wire up the DOM node precisely when it exists.',
+    explanation:
+      'A callback ref fires with the node on mount and with `null` on unmount, letting you measure or wire up the DOM node precisely when it exists.',
     category: 'Patterns'
   }
 ];

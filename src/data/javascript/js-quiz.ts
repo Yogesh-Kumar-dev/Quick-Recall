@@ -5,7 +5,7 @@ import type { QuizQuestion } from '@/types/content';
 export const jsQuiz: QuizQuestion[] = [
   {
     id: 'js-q-typeof-null',
-    question: "What does `typeof null` evaluate to?",
+    question: 'What does `typeof null` evaluate to?',
     options: ['"null"', '"object"', '"undefined"', '"boolean"'],
     correctIndex: 1,
     explanation: 'A long-standing JS bug kept for backwards compatibility — `null` is not actually an object.',
@@ -79,7 +79,8 @@ export const jsQuiz: QuizQuestion[] = [
       'It resolves with `undefined` for the rejected one'
     ],
     correctIndex: 1,
-    explanation: '`Promise.all` short-circuits on the first rejection — use `Promise.allSettled` to wait for every promise regardless of outcome.',
+    explanation:
+      '`Promise.all` short-circuits on the first rejection — use `Promise.allSettled` to wait for every promise regardless of outcome.',
     category: 'Async'
   },
   {
@@ -98,7 +99,12 @@ export const jsQuiz: QuizQuestion[] = [
   {
     id: 'js-q-var-scope',
     question: '`var` declared inside a block (e.g. an `if` block) is scoped to:',
-    options: ['The block it was declared in', 'The nearest enclosing function (or global scope)', 'The module', 'Nothing — it throws a SyntaxError'],
+    options: [
+      'The block it was declared in',
+      'The nearest enclosing function (or global scope)',
+      'The module',
+      'Nothing — it throws a SyntaxError'
+    ],
     correctIndex: 1,
     explanation: '`var` is function-scoped (or global-scoped), unlike `let`/`const` which are block-scoped.',
     category: 'Scoping'
@@ -190,7 +196,7 @@ export const jsQuiz: QuizQuestion[] = [
     question: 'Assigning to an undeclared variable in strict mode (`"use strict"`) results in:',
     options: ['A silent global variable creation', 'A ReferenceError', 'undefined', 'It is not allowed to matter — strict mode ignores it'],
     correctIndex: 1,
-    explanation: "Strict mode disallows the implicit-global-creation footgun that sloppy mode allows — it throws instead.",
+    explanation: 'Strict mode disallows the implicit-global-creation footgun that sloppy mode allows — it throws instead.',
     category: 'Core'
   },
   {
@@ -201,7 +207,8 @@ export const jsQuiz: QuizQuestion[] = [
 }`,
     options: ['0 1 2', '3 3 3', '0 0 0', 'undefined undefined undefined'],
     correctIndex: 1,
-    explanation: '`var` is function-scoped, so all three closures share the same `i` — by the time the timeouts fire, the loop has finished and `i` is 3.',
+    explanation:
+      '`var` is function-scoped, so all three closures share the same `i` — by the time the timeouts fire, the loop has finished and `i` is 3.',
     category: 'Closures'
   },
   {
@@ -221,14 +228,10 @@ export const jsQuiz: QuizQuestion[] = [
     code: `console.log([] + []);
 console.log([] + {});
 console.log({} + []);`,
-    options: [
-      '"" then "[object Object]" then "[object Object]"',
-      'TypeError on all three',
-      '0 then NaN then 0',
-      'undefined for all three'
-    ],
+    options: ['"" then "[object Object]" then "[object Object]"', 'TypeError on all three', '0 then NaN then 0', 'undefined for all three'],
     correctIndex: 0,
-    explanation: '`+` coerces both operands to strings/numbers; arrays and objects stringify via `toString()`, giving `""`, `"[object Object]"`, and (in an expression context) `"[object Object]"`.',
+    explanation:
+      '`+` coerces both operands to strings/numbers; arrays and objects stringify via `toString()`, giving `""`, `"[object Object]"`, and (in an expression context) `"[object Object]"`.',
     category: 'Coercion'
   },
   {
@@ -244,7 +247,8 @@ const fn = obj.greet;
 console.log(fn());`,
     options: ['"QuickRecall"', 'undefined (or TypeError in strict mode)', 'null', 'ReferenceError'],
     correctIndex: 1,
-    explanation: 'Detaching `greet` from `obj` loses the binding — called as a bare function, `this` is `undefined` in strict/module code (or the global object in sloppy mode), so `this.name` is `undefined`.',
+    explanation:
+      'Detaching `greet` from `obj` loses the binding — called as a bare function, `this` is `undefined` in strict/module code (or the global object in sloppy mode), so `this.name` is `undefined`.',
     category: 'Functions'
   },
   {
@@ -254,7 +258,8 @@ console.log(fn());`,
 console.log([1, , 3].map((x) => x * 2));`,
     options: ['2, and [2, undefined, 6]', '3, and [2, <1 empty item>, 6]', '3, and [2, NaN, 6]', 'SyntaxError'],
     correctIndex: 1,
-    explanation: 'Elisions create sparse arrays — `.length` still counts the hole, but `.map` skips holes entirely, leaving them empty in the result.',
+    explanation:
+      'Elisions create sparse arrays — `.length` still counts the hole, but `.map` skips holes entirely, leaving them empty in the result.',
     category: 'Arrays'
   },
   {
@@ -296,7 +301,8 @@ obj.nested.value = 2;
 console.log(obj.count, obj.nested.value);`,
     options: ['1 1', '2 2', '1 2', '2 1'],
     correctIndex: 2,
-    explanation: '`Object.freeze` is shallow — it prevents reassigning `count` (silently fails, or throws in strict mode) but does not freeze `nested`, so `nested.value` can still change.',
+    explanation:
+      '`Object.freeze` is shallow — it prevents reassigning `count` (silently fails, or throws in strict mode) but does not freeze `nested`, so `nested.value` can still change.',
     category: 'Objects'
   },
   {
@@ -333,7 +339,8 @@ console.log(obj.count, obj.nested.value);`,
       'To force synchronous execution of async code'
     ],
     correctIndex: 1,
-    explanation: 'IIFEs execute right away and keep their internals out of the enclosing scope — a common pre-module pattern for avoiding global namespace pollution.',
+    explanation:
+      'IIFEs execute right away and keep their internals out of the enclosing scope — a common pre-module pattern for avoiding global namespace pollution.',
     category: 'Patterns'
   },
   {
@@ -357,7 +364,8 @@ console.log(a, b, x, y);`,
       'WeakMap preserves insertion order and Map does not'
     ],
     correctIndex: 1,
-    explanation: 'WeakMap holds its keys weakly — entries are automatically cleaned up once the key object is no longer referenced elsewhere, which a Map (or plain object) would keep alive forever.',
+    explanation:
+      'WeakMap holds its keys weakly — entries are automatically cleaned up once the key object is no longer referenced elsewhere, which a Map (or plain object) would keep alive forever.',
     category: 'Data structures'
   },
   {
@@ -370,7 +378,8 @@ const name = 'JS';
 tag\`Hello \${name}!\`;`,
     options: ['1', '2', '3', '0'],
     correctIndex: 1,
-    explanation: 'A tagged template splits the literal into the static string parts around each interpolation — one value in the middle means 2 string segments ("Hello " and "!").',
+    explanation:
+      'A tagged template splits the literal into the static string parts around each interpolation — one value in the middle means 2 string segments ("Hello " and "!").',
     category: 'Functions'
   },
   {
@@ -392,7 +401,8 @@ tag\`Hello \${name}!\`;`,
       'Improving array iteration performance'
     ],
     correctIndex: 0,
-    explanation: 'Every `Symbol()` call produces a unique value, useful for object keys that should never accidentally collide with string keys.',
+    explanation:
+      'Every `Symbol()` call produces a unique value, useful for object keys that should never accidentally collide with string keys.',
     category: 'Core'
   },
   {
@@ -403,7 +413,8 @@ const add5 = add(5);
 console.log(add5(3));`,
     options: ['8', 'undefined', 'A function definition', 'TypeError'],
     correctIndex: 0,
-    explanation: 'Each arrow returns another function, closing over its argument — `add(5)` returns a function that adds 5, so `add5(3)` is `8`.',
+    explanation:
+      'Each arrow returns another function, closing over its argument — `add(5)` returns a function that adds 5, so `add5(3)` is `8`.',
     category: 'Functions'
   },
   {
@@ -411,7 +422,8 @@ console.log(add5(3));`,
     question: 'Which of these is a microtask (not a macrotask) in the JS event loop?',
     options: ['setTimeout callback', 'A resolved Promise .then() callback', 'setInterval callback', 'A UI event handler'],
     correctIndex: 1,
-    explanation: 'Promise callbacks (and queueMicrotask) are microtasks — they all drain before the next macrotask (timers, I/O, UI events) runs.',
+    explanation:
+      'Promise callbacks (and queueMicrotask) are microtasks — they all drain before the next macrotask (timers, I/O, UI events) runs.',
     category: 'Async'
   },
   {
@@ -424,7 +436,8 @@ console.log(add5(3));`,
 console.log(result);`,
     options: ['{ even: [2, 4], odd: [1, 3] }', '{ even: [1, 3], odd: [2, 4] }', '[2, 4, 1, 3]', 'TypeError'],
     correctIndex: 0,
-    explanation: 'The accumulator starts as `{ even: [], odd: [] }` and each element is pushed into the matching bucket based on its parity.',
+    explanation:
+      'The accumulator starts as `{ even: [], odd: [] }` and each element is pushed into the matching bucket based on its parity.',
     category: 'Arrays'
   }
 ];

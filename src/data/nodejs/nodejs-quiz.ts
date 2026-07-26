@@ -13,7 +13,8 @@ export const nodejsQuiz: QuizQuestion[] = [
       'It depends on whether you use async/await'
     ],
     correctIndex: 1,
-    explanation: 'Network I/O uses the OS kernel directly (no pool), but some blocking APIs are offloaded to libuv\'s thread pool (default size 4).',
+    explanation:
+      "Network I/O uses the OS kernel directly (no pool), but some blocking APIs are offloaded to libuv's thread pool (default size 4).",
     category: 'Core'
   },
   {
@@ -21,7 +22,7 @@ export const nodejsQuiz: QuizQuestion[] = [
     question: 'What is the difference between `npm` and `npx`?',
     options: [
       'They are interchangeable aliases',
-      'npm installs packages into your project; npx executes a package\'s binary directly, installing it temporarily if needed',
+      "npm installs packages into your project; npx executes a package's binary directly, installing it temporarily if needed",
       'npx only works with global packages',
       'npm is for production, npx is for development only'
     ],
@@ -57,7 +58,7 @@ export const nodejsQuiz: QuizQuestion[] = [
   },
   {
     id: 'nodejs-q-eventemitter',
-    question: 'What is Node\'s `EventEmitter` class used for?',
+    question: "What is Node's `EventEmitter` class used for?",
     options: [
       'Making HTTP requests',
       'The emitter/listener pattern — .on(name, cb) registers a listener, .emit(name, ...args) fires it',
@@ -103,7 +104,8 @@ emitter.emit('greet', 'Again');`,
       'It throws immediately'
     ],
     correctIndex: 1,
-    explanation: 'This is backpressure — `.pipe()` handles waiting for drain automatically, which is why it\'s usually preferred over manual writes.',
+    explanation:
+      "This is backpressure — `.pipe()` handles waiting for drain automatically, which is why it's usually preferred over manual writes.",
     category: 'Streams'
   },
   {
@@ -116,7 +118,8 @@ emitter.emit('greet', 'Again');`,
       'An error thrown from inside a callback'
     ],
     correctIndex: 1,
-    explanation: 'Promises and async/await flatten the nesting back into sequential-looking code, which is why they largely replaced this pattern.',
+    explanation:
+      'Promises and async/await flatten the nesting back into sequential-looking code, which is why they largely replaced this pattern.',
     category: 'Async'
   },
   {
@@ -184,7 +187,7 @@ emitter.emit('greet', 'Again');`,
       'It is a database proxy'
     ],
     correctIndex: 1,
-    explanation: 'Centralizing these cross-cutting concerns means individual services don\'t each have to reimplement them.',
+    explanation: "Centralizing these cross-cutting concerns means individual services don't each have to reimplement them.",
     category: 'Architecture'
   },
   {

@@ -6,22 +6,32 @@
 // resolveContent() when a quiz question is asked inside a Mock Interview. Mirrors flashcards-index.ts.
 
 import type { QuizQuestion } from '@/types/content';
-
+import { databasesQuiz } from './databases/databases-quiz';
+import { engineeringQuiz } from './engineering/engineering-quiz';
+import { htmlcssQuiz } from './htmlcss/htmlcss-quiz';
 import { jsQuiz } from './javascript/js-quiz';
 import { tsQuiz } from './javascript/ts-quiz';
-import { reactQuiz } from './react/react-quiz';
 import { nextjsQuiz } from './nextjs/nextjs-quiz';
-import { reduxQuiz } from './redux/redux-quiz';
-import { htmlcssQuiz } from './htmlcss/htmlcss-quiz';
 import { nodejsQuiz } from './nodejs/nodejs-quiz';
-import { engineeringQuiz } from './engineering/engineering-quiz';
-import { databasesQuiz } from './databases/databases-quiz';
+import { reactQuiz } from './react/react-quiz';
+import { reduxQuiz } from './redux/redux-quiz';
 import { testingQuiz } from './testing/testing-quiz';
 import { webQuiz } from './web/web-quiz';
 
 // A short, stable namespace per source. Used as the `key` prefix — changing one of these
 // strings would orphan existing mock interview questions that reference it, so treat as permanent.
-export type QuizSource = 'js' | 'ts' | 'react' | 'nextjs' | 'redux' | 'htmlcss' | 'nodejs' | 'engineering' | 'databases' | 'testing' | 'web';
+export type QuizSource =
+  | 'js'
+  | 'ts'
+  | 'react'
+  | 'nextjs'
+  | 'redux'
+  | 'htmlcss'
+  | 'nodejs'
+  | 'engineering'
+  | 'databases'
+  | 'testing'
+  | 'web';
 
 export interface IndexedQuizQuestion {
   key: string; // `${source}:${question.id}` — the refId used by Mock Interview

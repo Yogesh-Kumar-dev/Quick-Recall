@@ -42,7 +42,7 @@ export const testingQuiz: QuizQuestion[] = [
     question: 'What is the difference between a stub, a mock, and a spy?',
     options: [
       'They are interchangeable',
-      'A stub returns canned values; a mock is a stub with expectations on how it\'s called; a spy records calls to a real (or fake) function',
+      "A stub returns canned values; a mock is a stub with expectations on how it's called; a spy records calls to a real (or fake) function",
       'A spy can only wrap async functions',
       'A mock always replaces the entire module'
     ],
@@ -89,7 +89,8 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
       'A fake timer'
     ],
     correctIndex: 1,
-    explanation: 'Mock functions are central to testing whether callbacks/handlers were invoked correctly, without needing the real implementation.',
+    explanation:
+      'Mock functions are central to testing whether callbacks/handlers were invoked correctly, without needing the real implementation.',
     category: 'Vitest'
   },
   {
@@ -102,7 +103,7 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
       'Jest is no longer maintained'
     ],
     correctIndex: 1,
-    explanation: 'Because Vitest reuses Vite\'s existing transform pipeline, there\'s often no separate Babel/ts-jest config needed.',
+    explanation: "Because Vitest reuses Vite's existing transform pipeline, there's often no separate Babel/ts-jest config needed.",
     category: 'Vitest'
   },
   {
@@ -123,7 +124,8 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
     question: 'React Testing Library recommends preferring which query type first, when possible?',
     options: ['getByTestId', 'getByRole', 'getByClassName', 'querySelector via container'],
     correctIndex: 1,
-    explanation: 'getByRole most closely reflects how assistive technology and real users perceive the page, encouraging accessible markup.',
+    explanation:
+      'getByRole most closely reflects how assistive technology and real users perceive the page, encouraging accessible markup.',
     category: 'RTL'
   },
   {
@@ -133,10 +135,11 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
       'fireEvent is deprecated and no longer works',
       'userEvent simulates the full sequence of real browser events (e.g. focus, keydown, keyup) that a single fireEvent call skips',
       'userEvent is synchronous while fireEvent is not',
-      'They produce identical behavior; it\'s purely a style preference'
+      "They produce identical behavior; it's purely a style preference"
     ],
     correctIndex: 1,
-    explanation: 'A real click involves more than one DOM event — userEvent gets much closer to actual user behavior than a raw fireEvent.click().',
+    explanation:
+      'A real click involves more than one DOM event — userEvent gets much closer to actual user behavior than a raw fireEvent.click().',
     category: 'RTL'
   },
   {
@@ -170,7 +173,7 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
     question: 'What is the Page Object Model (POM) pattern in test automation?',
     options: [
       'A way to serialize page data to JSON',
-      'Encapsulating a page\'s locators and interactions behind a class/object, so tests read at a higher level and don\'t repeat selectors',
+      "Encapsulating a page's locators and interactions behind a class/object, so tests read at a higher level and don't repeat selectors",
       'A built-in Playwright API for taking screenshots',
       'A database schema for storing test results'
     ],
@@ -180,7 +183,7 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
   },
   {
     id: 'testing-q-playwright-storagestate',
-    question: 'What problem does Playwright\'s `storageState` solve?',
+    question: "What problem does Playwright's `storageState` solve?",
     options: [
       'It speeds up screenshot comparisons',
       'It lets you reuse an already-authenticated session (cookies/localStorage) across tests, avoiding a real login flow every time',
@@ -201,7 +204,7 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
       'Load testing an API'
     ],
     correctIndex: 1,
-    explanation: 'It\'s especially useful for diagnosing flaky failures that only happen in CI, not locally.',
+    explanation: "It's especially useful for diagnosing flaky failures that only happen in CI, not locally.",
     category: 'Playwright'
   },
   {
@@ -266,7 +269,8 @@ expect(onSave).toHaveBeenCalledWith({ title: 'Draft' });`,
       'Bundling JavaScript for production'
     ],
     correctIndex: 1,
-    explanation: 'Because it intercepts at the network layer, the same request/mock-handler code can be reused in both tests and local development.',
+    explanation:
+      'Because it intercepts at the network layer, the same request/mock-handler code can be reused in both tests and local development.',
     category: 'Tools'
   },
   {

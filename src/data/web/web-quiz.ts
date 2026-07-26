@@ -14,7 +14,7 @@ export const webQuiz: QuizQuestion[] = [
       'The maximum size of a downloaded file'
     ],
     correctIndex: 1,
-    explanation: 'SOP is the browser\'s foundational security boundary — CORS exists specifically to relax it in controlled ways.',
+    explanation: "SOP is the browser's foundational security boundary — CORS exists specifically to relax it in controlled ways.",
     category: 'Security'
   },
   {
@@ -27,15 +27,16 @@ export const webQuiz: QuizQuestion[] = [
       'Whether the client has a valid SSL certificate'
     ],
     correctIndex: 1,
-    explanation: 'Preflight only fires for "non-simple" requests — e.g. custom headers, or methods other than GET/POST with simple content types.',
+    explanation:
+      'Preflight only fires for "non-simple" requests — e.g. custom headers, or methods other than GET/POST with simple content types.',
     category: 'Security'
   },
   {
     id: 'web-q-xss',
     question: 'What is Cross-Site Scripting (XSS)?',
     options: [
-      'Tricking a user into submitting a request they didn\'t intend to',
-      'Injecting malicious script into a page that then executes in another user\'s browser session',
+      "Tricking a user into submitting a request they didn't intend to",
+      "Injecting malicious script into a page that then executes in another user's browser session",
       'Overwhelming a server with traffic',
       'Intercepting network traffic between client and server'
     ],
@@ -47,13 +48,14 @@ export const webQuiz: QuizQuestion[] = [
     id: 'web-q-csrf',
     question: 'What is Cross-Site Request Forgery (CSRF)?',
     options: [
-      'Stealing a user\'s password via a fake login page',
-      'Tricking a logged-in user\'s browser into submitting an unwanted authenticated request to another site',
+      "Stealing a user's password via a fake login page",
+      "Tricking a logged-in user's browser into submitting an unwanted authenticated request to another site",
       'Injecting a script that steals cookies',
       'Flooding a server with fake requests'
     ],
     correctIndex: 1,
-    explanation: 'It exploits the browser automatically attaching cookies to requests — CSRF tokens and SameSite cookies are the standard defenses.',
+    explanation:
+      'It exploits the browser automatically attaching cookies to requests — CSRF tokens and SameSite cookies are the standard defenses.',
     category: 'Security'
   },
   {
@@ -66,7 +68,8 @@ export const webQuiz: QuizQuestion[] = [
       'A DNS spoofing attack; frame-ancestors validates DNS records'
     ],
     correctIndex: 1,
-    explanation: 'A CSP `frame-ancestors` directive (or the older X-Frame-Options header) prevents your page from being embedded in a malicious wrapper page.',
+    explanation:
+      'A CSP `frame-ancestors` directive (or the older X-Frame-Options header) prevents your page from being embedded in a malicious wrapper page.',
     category: 'Security'
   },
   {
@@ -101,12 +104,13 @@ export const webQuiz: QuizQuestion[] = [
     question: 'What does the `HttpOnly` flag on a cookie do?',
     options: [
       'Forces the cookie to only be sent over HTTPS',
-      'Makes the cookie invisible to JavaScript (document.cookie can\'t read it), blocking XSS-based theft',
+      "Makes the cookie invisible to JavaScript (document.cookie can't read it), blocking XSS-based theft",
       'Restricts the cookie to a single page',
       'Encrypts the cookie value automatically'
     ],
     correctIndex: 1,
-    explanation: 'This is why HttpOnly is recommended for session/auth tokens — even a successful XSS injection can\'t read the cookie directly.',
+    explanation:
+      "This is why HttpOnly is recommended for session/auth tokens — even a successful XSS injection can't read the cookie directly.",
     category: 'Auth'
   },
   {
@@ -114,7 +118,8 @@ export const webQuiz: QuizQuestion[] = [
     question: 'What does the `SameSite=Strict` cookie attribute primarily protect against?',
     options: ['XSS', 'CSRF — the cookie is withheld on cross-site requests', 'SQL injection', 'DNS spoofing'],
     correctIndex: 1,
-    explanation: 'SameSite restricts when a cookie is sent based on whether the request originated from the same site, directly undercutting CSRF.',
+    explanation:
+      'SameSite restricts when a cookie is sent based on whether the request originated from the same site, directly undercutting CSRF.',
     category: 'Auth'
   },
   {
@@ -122,12 +127,13 @@ export const webQuiz: QuizQuestion[] = [
     question: 'What is the main security trade-off between storing a JWT in localStorage vs. an HttpOnly cookie?',
     options: [
       'They are equally safe from all attack vectors',
-      'localStorage is readable by JavaScript (vulnerable to XSS theft) but immune to CSRF; an HttpOnly cookie is hidden from JS (safer from XSS) but needs CSRF protection since it\'s sent automatically',
+      "localStorage is readable by JavaScript (vulnerable to XSS theft) but immune to CSRF; an HttpOnly cookie is hidden from JS (safer from XSS) but needs CSRF protection since it's sent automatically",
       'localStorage tokens expire automatically; cookies never expire',
       'HttpOnly cookies cannot be used for authentication at all'
     ],
     correctIndex: 1,
-    explanation: 'Neither option is a free lunch — it\'s a trade-off between XSS exposure and CSRF exposure, addressed differently in each case.',
+    explanation:
+      "Neither option is a free lunch — it's a trade-off between XSS exposure and CSRF exposure, addressed differently in each case.",
     category: 'Auth'
   },
   {
@@ -153,20 +159,22 @@ export const webQuiz: QuizQuestion[] = [
       'There is no meaningful difference between the two terms'
     ],
     correctIndex: 1,
-    explanation: 'If a password store used encryption, a leaked key would expose every password — hashing (e.g. bcrypt/argon2) has no such key to steal.',
+    explanation:
+      'If a password store used encryption, a leaked key would expose every password — hashing (e.g. bcrypt/argon2) has no such key to steal.',
     category: 'Auth'
   },
   {
     id: 'web-q-oauth-flow',
-    question: 'In OAuth 2.0\'s Authorization Code flow, what does the client exchange for an access token?',
+    question: "In OAuth 2.0's Authorization Code flow, what does the client exchange for an access token?",
     options: [
-      'The user\'s raw password',
+      "The user's raw password",
       'A short-lived authorization code, received via redirect after the user approves access',
-      'The client\'s database credentials',
+      "The client's database credentials",
       'A CAPTCHA response'
     ],
     correctIndex: 1,
-    explanation: 'This code-for-token exchange happens server-to-server, keeping the actual access token off the user\'s browser history/redirect URL.',
+    explanation:
+      "This code-for-token exchange happens server-to-server, keeping the actual access token off the user's browser history/redirect URL.",
     category: 'Auth'
   },
   {
@@ -174,12 +182,13 @@ export const webQuiz: QuizQuestion[] = [
     question: 'What problem does PKCE (Proof Key for Code Exchange) solve in OAuth?',
     options: [
       'It speeds up the token exchange request',
-      'It secures the Authorization Code flow for clients that can\'t safely keep a secret (SPAs, mobile apps), preventing code interception attacks',
+      "It secures the Authorization Code flow for clients that can't safely keep a secret (SPAs, mobile apps), preventing code interception attacks",
       'It replaces passwords with biometrics',
       'It is required only for server-to-server API calls'
     ],
     correctIndex: 1,
-    explanation: 'PKCE adds a dynamically generated secret verified at token exchange time, so an intercepted authorization code alone isn\'t enough.',
+    explanation:
+      "PKCE adds a dynamically generated secret verified at token exchange time, so an intercepted authorization code alone isn't enough.",
     category: 'Auth'
   },
   // ── Accessibility ──
@@ -201,12 +210,13 @@ export const webQuiz: QuizQuestion[] = [
     question: 'What is the "first rule of ARIA"?',
     options: [
       'Add ARIA attributes to every element to be safe',
-      'Don\'t use ARIA if a native HTML element already provides the needed semantics/behavior',
+      "Don't use ARIA if a native HTML element already provides the needed semantics/behavior",
       'ARIA should only be used on form elements',
       'ARIA roles must always include a tabindex'
     ],
     correctIndex: 1,
-    explanation: 'A real `<button>` gets keyboard support and semantics for free — `role="button"` on a div requires you to reimplement all of that manually.',
+    explanation:
+      'A real `<button>` gets keyboard support and semantics for free — `role="button"` on a div requires you to reimplement all of that manually.',
     category: 'Accessibility'
   },
   {
@@ -219,7 +229,7 @@ export const webQuiz: QuizQuestion[] = [
       'To disable all keyboard shortcuts on the page'
     ],
     correctIndex: 1,
-    explanation: 'The native `<dialog>` element\'s `showModal()` handles this automatically, including making the rest of the page inert.',
+    explanation: "The native `<dialog>` element's `showModal()` handles this automatically, including making the rest of the page inert.",
     category: 'Accessibility'
   },
   {
@@ -232,7 +242,8 @@ export const webQuiz: QuizQuestion[] = [
       'It only matters for print stylesheets'
     ],
     correctIndex: 1,
-    explanation: 'Relying on color alone (without sufficient contrast or a secondary indicator) is a common, easily fixed accessibility failure.',
+    explanation:
+      'Relying on color alone (without sufficient contrast or a secondary indicator) is a common, easily fixed accessibility failure.',
     category: 'Accessibility'
   },
   {
@@ -264,10 +275,11 @@ export const webQuiz: QuizQuestion[] = [
   // ── Performance ──
   {
     id: 'web-q-core-web-vitals',
-    question: 'Which three metrics make up Google\'s Core Web Vitals?',
+    question: "Which three metrics make up Google's Core Web Vitals?",
     options: ['TTFB, FCP, TBT', 'LCP, INP, CLS', 'DNS, TCP, TLS', 'HTML, CSS, JS'],
     correctIndex: 1,
-    explanation: 'Largest Contentful Paint (loading), Interaction to Next Paint (responsiveness), Cumulative Layout Shift (visual stability).',
+    explanation:
+      'Largest Contentful Paint (loading), Interaction to Next Paint (responsiveness), Cumulative Layout Shift (visual stability).',
     category: 'Performance'
   },
   {
@@ -301,7 +313,7 @@ export const webQuiz: QuizQuestion[] = [
     question: 'What is the difference between "lab" and "field" performance data?',
     options: [
       'They always report identical numbers',
-      'Lab data (e.g. Lighthouse) is measured in a controlled, simulated environment; field data (e.g. CrUX) is measured from real users\' actual devices/networks',
+      "Lab data (e.g. Lighthouse) is measured in a controlled, simulated environment; field data (e.g. CrUX) is measured from real users' actual devices/networks",
       'Field data can only be collected manually',
       'Lab data is more accurate for every use case'
     ],
@@ -332,7 +344,8 @@ export const webQuiz: QuizQuestion[] = [
       'preload is deprecated in favor of prefetch'
     ],
     correctIndex: 1,
-    explanation: 'Misusing preload for something not actually needed immediately can waste bandwidth and even hurt LCP by competing for priority.',
+    explanation:
+      'Misusing preload for something not actually needed immediately can waste bandwidth and even hurt LCP by competing for priority.',
     category: 'Performance'
   }
 ];

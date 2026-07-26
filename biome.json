@@ -37,6 +37,6 @@
   },
   "assist": {
     "enabled": true,
-    "actions": { "source": { "organizeImports": "off" } }
+    "actions": { "source": { "organizeImports": "on" } }
   }
 }

@@ -38,7 +38,7 @@ export const tsQuiz: QuizQuestion[] = [
 const result = identity('hello');`,
     options: ['any', 'unknown', 'string — T is inferred from the argument', 'T (literally)'],
     correctIndex: 2,
-    explanation: 'TypeScript infers T as string from the call site, so identity(\'hello\') returns a string.',
+    explanation: "TypeScript infers T as string from the call site, so identity('hello') returns a string.",
     category: 'Generics'
   },
   {
@@ -108,7 +108,8 @@ const result = identity('hello');`,
       'It only applies to string literal types'
     ],
     correctIndex: 1,
-    explanation: 'Switching on the shared tag field (e.g. `kind`) lets TypeScript safely narrow to the right member — and catch missing cases with exhaustiveness checks.',
+    explanation:
+      'Switching on the shared tag field (e.g. `kind`) lets TypeScript safely narrow to the right member — and catch missing cases with exhaustiveness checks.',
     category: 'Types'
   },
   {
@@ -120,17 +121,23 @@ const result = identity('hello');`,
   Left,
   Right
 }`,
-    options: ['Random unique numbers', 'Auto-incrementing integers starting at 0 (Up=0, Down=1, ...)', 'undefined until assigned', 'String versions of their names'],
+    options: [
+      'Random unique numbers',
+      'Auto-incrementing integers starting at 0 (Up=0, Down=1, ...)',
+      'undefined until assigned',
+      'String versions of their names'
+    ],
     correctIndex: 1,
-    explanation: 'You can override this by assigning an explicit value to any member, and subsequent members continue incrementing from there.',
+    explanation:
+      'You can override this by assigning an explicit value to any member, and subsequent members continue incrementing from there.',
     category: 'Types'
   },
   {
     id: 'ts-q-keyof',
     question: 'What does `keyof SomeType` produce?',
     options: [
-      'An array of the object\'s values at runtime',
-      'A union type of SomeType\'s property key names, as string/number/symbol literals',
+      "An array of the object's values at runtime",
+      "A union type of SomeType's property key names, as string/number/symbol literals",
       'The number of properties on SomeType',
       'A new type identical to SomeType'
     ],
@@ -148,7 +155,8 @@ const result = identity('hello');`,
       'It requires every variable to have an explicit type annotation'
     ],
     correctIndex: 1,
-    explanation: 'Turning strict on in an existing codebase often surfaces many latent null/undefined bugs — usually best migrated incrementally.',
+    explanation:
+      'Turning strict on in an existing codebase often surfaces many latent null/undefined bugs — usually best migrated incrementally.',
     category: 'Config'
   },
   {
@@ -161,12 +169,13 @@ const result = identity('hello');`,
       'It creates a new copy of the value'
     ],
     correctIndex: 1,
-    explanation: 'Assertions can lie — `("x" as unknown as number)` compiles fine but breaks at runtime; prefer narrowing/type guards where possible.',
+    explanation:
+      'Assertions can lie — `("x" as unknown as number)` compiles fine but breaks at runtime; prefer narrowing/type guards where possible.',
     category: 'Types'
   },
   {
     id: 'ts-q-access-modifiers',
-    question: 'What is true about TypeScript\'s `private` class field modifier?',
+    question: "What is true about TypeScript's `private` class field modifier?",
     options: [
       'It provides true runtime privacy, like JS #private fields',
       'It is a compile-time-only check — the field is still accessible at runtime via bracket notation or plain JS',
@@ -174,7 +183,7 @@ const result = identity('hello');`,
       'It is only valid on methods, not properties'
     ],
     correctIndex: 1,
-    explanation: 'For actual runtime privacy, JavaScript\'s native `#private` fields are the real enforcement mechanism.',
+    explanation: "For actual runtime privacy, JavaScript's native `#private` fields are the real enforcement mechanism.",
     category: 'Classes'
   },
   {
@@ -185,7 +194,7 @@ const result = identity('hello');`,
 }`,
     options: [
       'It is not needed — TypeScript would allow item.length either way',
-      'Without it, T could be any type, and TypeScript can\'t guarantee a .length property exists to access',
+      "Without it, T could be any type, and TypeScript can't guarantee a .length property exists to access",
       'It forces T to be exactly an array',
       'It converts T into a union type'
     ],
@@ -203,7 +212,7 @@ const result = identity('hello');`,
       'It replaces package.json for TypeScript projects'
     ],
     correctIndex: 1,
-    explanation: 'DefinitelyTyped publishes `.d.ts` files under the `@types` scope for JS libraries that don\'t ship their own types.',
+    explanation: "DefinitelyTyped publishes `.d.ts` files under the `@types` scope for JS libraries that don't ship their own types.",
     category: 'Tooling'
   },
   {
@@ -220,7 +229,8 @@ const result = identity('hello');`,
       'It only works on arrays'
     ],
     correctIndex: 1,
-    explanation: 'Unlike a type annotation, `satisfies` keeps the narrower inferred type (e.g. `mode: "dark"` not `mode: string`) while still checking compatibility.',
+    explanation:
+      'Unlike a type annotation, `satisfies` keeps the narrower inferred type (e.g. `mode: "dark"` not `mode: string`) while still checking compatibility.',
     category: 'Types'
   },
   {
@@ -245,7 +255,7 @@ const result = identity('hello');`,
     options: [
       'A type with every property removed',
       'A version of T with every property still present but marked readonly',
-      'A union of T\'s property names',
+      "A union of T's property names",
       'It is invalid syntax'
     ],
     correctIndex: 1,
@@ -302,12 +312,13 @@ const result = identity('hello');`,
       'There is no real difference — tuple is just another name for array'
     ],
     correctIndex: 1,
-    explanation: '`[number, number]` guarantees exactly two elements, both numbers, in that order — useful for things like coordinate pairs.',
+    explanation:
+      '`[number, number]` guarantees exactly two elements, both numbers, in that order — useful for things like coordinate pairs.',
     category: 'Types'
   },
   {
     id: 'ts-q-never-type',
-    question: 'When does a function\'s return type get inferred as `never`?',
+    question: "When does a function's return type get inferred as `never`?",
     options: [
       'When the function has no parameters',
       'When the function never returns normally — it always throws or loops forever',
@@ -315,7 +326,8 @@ const result = identity('hello');`,
       'When the function has an empty body'
     ],
     correctIndex: 1,
-    explanation: '`never` is also useful for exhaustiveness checks — assigning an unreachable branch\'s value to a `never`-typed variable causes a compile error if a case was missed.',
+    explanation:
+      "`never` is also useful for exhaustiveness checks — assigning an unreachable branch's value to a `never`-typed variable causes a compile error if a case was missed.",
     category: 'Types'
   }
 ];
