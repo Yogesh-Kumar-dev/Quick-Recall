@@ -1,7 +1,7 @@
 import NotesView, { type NotesSearchParams } from '@/components/content/notes-view';
 import PdfLauncher from '@/components/pdf-viewer/pdf-launcher';
-import { NEXTJS_NOTES_PDFS } from '@/data/pdf-guides';
 import { nextjsNotes } from '@/data/nextjs/nextjs-notes';
+import { NEXTJS_NOTES_PDFS } from '@/data/pdf-guides';
 
 export const metadata = { title: 'Next.js Notes | QuickRecall' };
 

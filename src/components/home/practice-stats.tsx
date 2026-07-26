@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { IconFlame } from '@tabler/icons-react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import * as attemptsRepository from '@/db/attempts';

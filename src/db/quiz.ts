@@ -1,9 +1,9 @@
 // project imports
-import { db } from './index';
-import { makeId } from '@/lib/id';
 
+import { makeId } from '@/lib/id';
 // types
 import type { QuizAttempt } from '@/types/study';
+import { db } from './index';
 
 // ==============================|| QUIZ - REPOSITORY ||============================== //
 

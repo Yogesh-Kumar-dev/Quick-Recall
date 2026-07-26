@@ -1,14 +1,14 @@
 import type { QuizQuestion } from '@/types/content';
-import type { QuizSource } from './quiz-index';
+import { databasesQuiz } from './databases/databases-quiz';
+import { engineeringQuiz } from './engineering/engineering-quiz';
+import { htmlcssQuiz } from './htmlcss/htmlcss-quiz';
 import { jsQuiz } from './javascript/js-quiz';
 import { tsQuiz } from './javascript/ts-quiz';
-import { reactQuiz } from './react/react-quiz';
 import { nextjsQuiz } from './nextjs/nextjs-quiz';
-import { reduxQuiz } from './redux/redux-quiz';
-import { htmlcssQuiz } from './htmlcss/htmlcss-quiz';
 import { nodejsQuiz } from './nodejs/nodejs-quiz';
-import { engineeringQuiz } from './engineering/engineering-quiz';
-import { databasesQuiz } from './databases/databases-quiz';
+import type { QuizSource } from './quiz-index';
+import { reactQuiz } from './react/react-quiz';
+import { reduxQuiz } from './redux/redux-quiz';
 import { testingQuiz } from './testing/testing-quiz';
 import { webQuiz } from './web/web-quiz';
 

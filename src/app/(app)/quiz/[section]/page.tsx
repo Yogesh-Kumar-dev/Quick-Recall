@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { QUIZ_SETS } from '@/data/quiz-sets';
 import QuizRunner from '@/components/quiz/quiz-runner';
+import { QUIZ_SETS } from '@/data/quiz-sets';
 
 export function generateStaticParams() {
   return Object.keys(QUIZ_SETS).map((section) => ({ section }));

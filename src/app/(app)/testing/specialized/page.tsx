@@ -1,9 +1,9 @@
 import NotesView, { type NotesSearchParams } from '@/components/content/notes-view';
-import type { Note } from '@/types/content';
 import { etlTestingNotes } from '@/data/testing/etl-testing-notes';
-import { pentestNotes } from '@/data/testing/pentest-notes';
 import { mobileTestingNotes } from '@/data/testing/mobile-testing-notes';
+import { pentestNotes } from '@/data/testing/pentest-notes';
 import { webTestingNotes } from '@/data/testing/web-testing-notes';
+import type { Note } from '@/types/content';
 
 export const metadata = { title: 'Specialized Testing | QuickRecall' };
 

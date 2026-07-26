@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js';
 import type { ReactNode } from 'react';
-import type { Note } from '@/types/content';
 import { type NoteLink, resolvePrerequisites } from '@/data/note-sources';
+import type { Note } from '@/types/content';
 import FilterPanel from './filter-panel';
 import NoteCard from './note-card';
 import ScrollToNote from './scroll-to-note';

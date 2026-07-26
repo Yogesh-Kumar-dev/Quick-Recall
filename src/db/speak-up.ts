@@ -1,8 +1,8 @@
 // project imports
-import { db } from './index';
 
 // types
 import type { SpeakUpQA, SpeakUpQAInput } from '@/types/speak-up';
+import { db } from './index';
 
 // ==============================|| SPEAK UP - REPOSITORY ||============================== //
 

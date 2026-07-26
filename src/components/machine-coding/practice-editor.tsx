@@ -1,9 +1,9 @@
 'use client';
 
-import { CodeEditor } from '@leafygreen-ui/code-editor';
 import { autocompletion, closeBrackets, closeBracketsKeymap, completeFromList, completionKeymap, ifNotIn } from '@codemirror/autocomplete';
 import { localCompletionSource, snippets } from '@codemirror/lang-javascript';
 import { keymap } from '@codemirror/view';
+import { CodeEditor } from '@leafygreen-ui/code-editor';
 import type { ComponentRef, Ref } from 'react';
 
 // The editor's own autocomplete wiring doesn't activate in @leafygreen-ui/code-editor 1.0.6

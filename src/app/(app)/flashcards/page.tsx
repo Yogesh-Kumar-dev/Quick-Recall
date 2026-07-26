@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { IconCards, IconChevronRight } from '@tabler/icons-react';
+import Link from 'next/link';
 import { FLASHCARD_SETS } from '@/data/flashcard-sets';
 
 export const metadata = {

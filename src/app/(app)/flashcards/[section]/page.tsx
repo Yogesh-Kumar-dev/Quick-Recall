@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { FLASHCARD_SETS } from '@/data/flashcard-sets';
 import FlashcardCarousel from '@/components/flashcards/FlashcardCarousel';
+import { FLASHCARD_SETS } from '@/data/flashcard-sets';
 
 export function generateStaticParams() {
   return Object.keys(FLASHCARD_SETS).map((section) => ({ section }));

@@ -2,8 +2,8 @@
 
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
-import { Fragment, useState } from 'react';
 import type { ReactNode } from 'react';
+import { Fragment, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { Button } from '@/components/ui/button';
 import type { QuickRecallItem, QuickRecallSection } from '@/types/content';

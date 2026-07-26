@@ -1,11 +1,11 @@
 import NotesView, { type NotesSearchParams } from '@/components/content/notes-view';
-import type { Note } from '@/types/content';
-import { vitestNotes } from '@/data/testing/vitest-notes';
-import { rtlNotes } from '@/data/testing/rtl-notes';
 import { jestNotes } from '@/data/testing/jest-notes';
 import { mswNotes } from '@/data/testing/msw-notes';
-import { supertestNotes } from '@/data/testing/supertest-notes';
 import { playwrightNotes } from '@/data/testing/playwright-notes';
+import { rtlNotes } from '@/data/testing/rtl-notes';
+import { supertestNotes } from '@/data/testing/supertest-notes';
+import { vitestNotes } from '@/data/testing/vitest-notes';
+import type { Note } from '@/types/content';
 
 export const metadata = { title: 'Testing Frameworks & Tools | QuickRecall' };
 

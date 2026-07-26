@@ -1,8 +1,8 @@
 // project imports
-import { db } from './index';
 
 // types
 import type { PracticeAttempt } from '@/types/study';
+import { db } from './index';
 
 // Only module that touches persistence for machine-coding practice attempts.
 

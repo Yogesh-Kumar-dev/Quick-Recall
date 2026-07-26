@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import Segmented from '@/components/machine-coding/segmented';
-import { requestPermission } from '@/notifications/manager';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { requestPermission } from '@/notifications/manager';
 import { useTimerStore } from '@/stores/timer';
 import { COUNTDOWN_PRESETS, POMODORO_DEFAULTS, TIMER_PURPOSE_SUGGESTIONS } from './config';
 

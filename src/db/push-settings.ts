@@ -1,8 +1,8 @@
 // project imports
-import { getSetting, setSetting } from './settings';
 
 // types
 import type { PushSettings } from '@/types/push-settings';
+import { getSetting, setSetting } from './settings';
 
 // ==============================|| DB - PUSH SETTINGS ||============================== //
 

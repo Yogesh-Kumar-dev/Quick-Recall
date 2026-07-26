@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo } from 'react';
-import Link from 'next/link';
 import { IconChecklist, IconChevronRight, IconHistory } from '@tabler/icons-react';
+import Link from 'next/link';
+import { useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { formatDate } from '@/lib/utils';
 import { QUIZ_SETS } from '@/data/quiz-sets';
-import useQuizAttempts from './use-quiz-attempts';
+import { formatDate } from '@/lib/utils';
 import type { QuizAttempt } from '@/types/study';
+import useQuizAttempts from './use-quiz-attempts';
 
 // ==============================|| QUIZ — INDEX + HISTORY ||============================== //
 

@@ -1,8 +1,8 @@
 // project imports
-import { db } from './index';
 
 // types
 import type { PracticeSessionState } from '@/types/study';
+import { db } from './index';
 
 // Only module that touches persistence for in-flight practice sessions. A session row is
 // the resume point for an attempt-in-progress; grading (or discarding) deletes it.

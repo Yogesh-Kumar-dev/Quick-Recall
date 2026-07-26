@@ -1,9 +1,9 @@
 // project imports
-import { db } from './index';
-import { makeId } from '@/lib/id';
 
+import { makeId } from '@/lib/id';
 // types
 import type { MockInterview, MockInterviewInput, ReflectionSource } from '@/types/mock-interview';
+import { db } from './index';
 
 // Only module that touches persistence for mock interviews.
 

@@ -8,27 +8,27 @@ import {
   IconDatabase
 } from '@tabler/icons-react';
 import InstagramLauncher from '@/components/instagram-launcher/instagram-launcher';
-import { jsProblems } from '@/data/javascript/js-problems';
+import { dynamodbNotes } from '@/data/databases/dynamodb-notes';
+import { mongodbNotes } from '@/data/databases/mongodb-notes';
+import { postgresqlNotes } from '@/data/databases/postgresql-notes';
+import { redisNotes } from '@/data/databases/redis-notes';
+import { cssNotes } from '@/data/htmlcss/css-notes';
+import { htmlNotes } from '@/data/htmlcss/html-notes';
 import { jsNotes } from '@/data/javascript/js-notes';
+import { jsProblems } from '@/data/javascript/js-problems';
 import { tsNotes } from '@/data/javascript/ts-notes';
-import { reactNotes } from '@/data/react/react-notes';
-import { reactMcProblems } from '@/data/react/react-mc-problems';
-import { reduxNotes } from '@/data/redux/redux-notes';
-import { reduxToolkitNotes } from '@/data/redux/redux-toolkit-notes';
-import { rtkQueryNotes } from '@/data/redux/rtk-query-notes';
-import { asyncThunkNotes } from '@/data/redux/async-thunk-notes';
 import { nextjsNotes } from '@/data/nextjs/nextjs-notes';
 import { nextjsRenderingNotes } from '@/data/nextjs/nextjs-rendering';
 import { nodejsNotes } from '@/data/nodejs/nodejs-notes';
-import { postgresqlNotes } from '@/data/databases/postgresql-notes';
-import { mongodbNotes } from '@/data/databases/mongodb-notes';
-import { redisNotes } from '@/data/databases/redis-notes';
-import { dynamodbNotes } from '@/data/databases/dynamodb-notes';
-import { htmlNotes } from '@/data/htmlcss/html-notes';
-import { cssNotes } from '@/data/htmlcss/css-notes';
+import { reactMcProblems } from '@/data/react/react-mc-problems';
+import { reactNotes } from '@/data/react/react-notes';
+import { asyncThunkNotes } from '@/data/redux/async-thunk-notes';
+import { reduxNotes } from '@/data/redux/redux-notes';
+import { reduxToolkitNotes } from '@/data/redux/redux-toolkit-notes';
+import { rtkQueryNotes } from '@/data/redux/rtk-query-notes';
 import { DASHBOARD_INSTAGRAM } from '@/data/video-playlists';
-import TopicStatCard from './topic-stat-card';
 import PracticeStats from './practice-stats';
+import TopicStatCard from './topic-stat-card';
 
 // ─── Difficulty tally helper ───────────────────────────────────────────────────
 

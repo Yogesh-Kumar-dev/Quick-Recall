@@ -1,9 +1,9 @@
 // project imports
-import { db } from './index';
-import { initialReviewState } from '@/lib/review-scheduler';
 
+import { initialReviewState } from '@/lib/review-scheduler';
 // types
 import type { BookmarkKind, ReviewState } from '@/types/study';
+import { db } from './index';
 
 // Only module that touches persistence for SRS review state. Covers flashcards
 // (refId = `${source}:${id}`) and machine-coding problems (refId = slug).

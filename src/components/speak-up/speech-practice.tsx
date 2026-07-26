@@ -4,9 +4,9 @@ import { ArrowRight, Lock, Mic, Square, Trash2, Video, VideoOff } from 'lucide-r
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { getSpeechRecognition, type SpeechRecognitionLike } from '@/lib/speech-recognition';
 import { predefinedQuestions } from '@/data/speak-up-questions';
+import { getSpeechRecognition, type SpeechRecognitionLike } from '@/lib/speech-recognition';
+import { cn } from '@/lib/utils';
 
 // ==============================|| SPEECH PRACTICE ||============================== //
 

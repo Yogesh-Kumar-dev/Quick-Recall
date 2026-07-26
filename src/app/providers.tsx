@@ -1,7 +1,7 @@
 'use client';
 
-import { SerwistProvider } from '@serwist/turbopack/react';
 import LeafyGreenProvider from '@leafygreen-ui/leafygreen-provider';
+import { SerwistProvider } from '@serwist/turbopack/react';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
 import { Toaster } from 'sonner';

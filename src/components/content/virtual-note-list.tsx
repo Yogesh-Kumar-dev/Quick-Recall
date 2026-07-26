@@ -1,8 +1,8 @@
 'use client';
 
 import { Virtuoso } from 'react-virtuoso';
-import type { Note } from '@/types/content';
 import type { NoteLink } from '@/data/note-sources';
+import type { Note } from '@/types/content';
 import NoteCard from './note-card';
 
 // Virtualizes the window's scroll (not an inner fixed-height box) so the page keeps scrolling

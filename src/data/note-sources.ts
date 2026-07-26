@@ -3,40 +3,40 @@
 // fine, since resolution keys off note.id, not topic), consumed by search-index.ts (deep-linking
 // search results) and by NotesView (resolving a note's `prerequisites` ids into "Builds on" chips).
 import type { Note } from '@/types/content';
+import { awsNotes } from './aws/aws-notes';
+import { dynamodbNotes } from './databases/dynamodb-notes';
+import { mongodbNotes } from './databases/mongodb-notes';
+import { postgresqlNotes } from './databases/postgresql-notes';
+import { redisNotes } from './databases/redis-notes';
+import { engineeringNotes } from './engineering/engineering-notes';
+import { cssNotes } from './htmlcss/css-notes';
+import { htmlNotes } from './htmlcss/html-notes';
 import { jsNotes } from './javascript/js-notes';
 import { tsNotes } from './javascript/ts-notes';
 import { tsReactNotes } from './javascript/ts-react';
-import { reactNotes } from './react/react-notes';
 import { nextjsNotes } from './nextjs/nextjs-notes';
 import { nextjsRenderingNotes } from './nextjs/nextjs-rendering';
+import { nodejsNotes } from './nodejs/nodejs-notes';
+import { reactNotes } from './react/react-notes';
+import { asyncThunkNotes } from './redux/async-thunk-notes';
 import { reduxNotes } from './redux/redux-notes';
 import { reduxToolkitNotes } from './redux/redux-toolkit-notes';
 import { rtkQueryNotes } from './redux/rtk-query-notes';
-import { asyncThunkNotes } from './redux/async-thunk-notes';
-import { htmlNotes } from './htmlcss/html-notes';
-import { cssNotes } from './htmlcss/css-notes';
-import { engineeringNotes } from './engineering/engineering-notes';
-import { nodejsNotes } from './nodejs/nodejs-notes';
-import { awsNotes } from './aws/aws-notes';
-import { postgresqlNotes } from './databases/postgresql-notes';
-import { mongodbNotes } from './databases/mongodb-notes';
-import { redisNotes } from './databases/redis-notes';
-import { dynamodbNotes } from './databases/dynamodb-notes';
+import { etlTestingNotes } from './testing/etl-testing-notes';
+import { jestNotes } from './testing/jest-notes';
+import { mobileTestingNotes } from './testing/mobile-testing-notes';
+import { mswNotes } from './testing/msw-notes';
+import { pentestNotes } from './testing/pentest-notes';
+import { playwrightNotes } from './testing/playwright-notes';
+import { rtlNotes } from './testing/rtl-notes';
+import { supertestNotes } from './testing/supertest-notes';
 import { testingFundamentalsNotes } from './testing/testing-fundamentals-notes';
 import { vitestNotes } from './testing/vitest-notes';
-import { rtlNotes } from './testing/rtl-notes';
-import { jestNotes } from './testing/jest-notes';
-import { mswNotes } from './testing/msw-notes';
-import { supertestNotes } from './testing/supertest-notes';
-import { playwrightNotes } from './testing/playwright-notes';
-import { etlTestingNotes } from './testing/etl-testing-notes';
-import { pentestNotes } from './testing/pentest-notes';
-import { mobileTestingNotes } from './testing/mobile-testing-notes';
 import { webTestingNotes } from './testing/web-testing-notes';
-import { webSecurityNotes } from './web/web-security-notes';
-import { authNotes } from './web/auth-notes';
 import { accessibilityNotes } from './web/accessibility-notes';
+import { authNotes } from './web/auth-notes';
 import { webPerformanceNotes } from './web/web-performance-notes';
+import { webSecurityNotes } from './web/web-security-notes';
 
 export const NOTE_SOURCES: { notes: Note[]; url: string; topic: string }[] = [
   { notes: jsNotes, url: '/js/notes', topic: 'JavaScript' },

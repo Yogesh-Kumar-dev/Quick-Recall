@@ -1,5 +1,5 @@
-import type { ComponentType } from 'react';
 import { notFound } from 'next/navigation';
+import type { ComponentType } from 'react';
 
 const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   debounce: () => import('@/views/js-machine-coding/Debounce'),

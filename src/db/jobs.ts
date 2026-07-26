@@ -1,8 +1,8 @@
 // project imports
-import { db } from './index';
 
 // types
 import type { JobApplication, JobApplicationInput } from '@/types/job-tracker';
+import { db } from './index';
 
 // Only module that touches persistence for jobs; async-shaped so a future HTTP backend
 // only needs the body of these functions changed.

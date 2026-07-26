@@ -1,7 +1,7 @@
 'use client';
 
-import { IconHome, IconMail, IconRefresh } from '@tabler/icons-react';
 import * as Sentry from '@sentry/nextjs';
+import { IconHome, IconMail, IconRefresh } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
