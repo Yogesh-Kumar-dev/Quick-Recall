@@ -1,17 +1,17 @@
 'use client';
 
-import { useCallback, useState } from 'react';
-import Link from 'next/link';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { IconBrain, IconChecks, IconCode } from '@tabler/icons-react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import Link from 'next/link';
+import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import * as reviewsRepository from '@/db/reviews';
-import { review as schedule, formatInterval, formatDuePhrase } from '@/lib/review-scheduler';
 import { flashcardByKey } from '@/data/flashcards-index';
+import * as reviewsRepository from '@/db/reviews';
 import { resolveContent } from '@/lib/resolve-content';
+import { formatDuePhrase, formatInterval, review as schedule } from '@/lib/review-scheduler';
 import type { ReviewQuality, ReviewState } from '@/types/study';
 
 // ==============================|| SRS REVIEW SESSION ||============================== //
@@ -248,9 +248,9 @@ function CaughtUp({ enrolledCount }: { enrolledCount: number }) {
 // 3D flip card, controlled by the session.
 function FlipCard({ front, back, revealed, onFlip }: { front: string; back: string; revealed: boolean; onFlip: () => void }) {
   return (
-    <button type="button" onClick={onFlip} className="mt-3 block w-full cursor-pointer outline-none [perspective:1200px]">
+    <button type="button" onClick={onFlip} className="mt-3 block w-full cursor-pointer outline-none perspective-distant">
       <div
-        className="relative h-72 w-full transition-transform duration-500 [transform-style:preserve-3d]"
+        className="relative h-72 w-full transition-transform duration-500 transform-3d"
         style={{ transform: revealed ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
       >
         <Face>
@@ -268,7 +268,7 @@ function FlipCard({ front, back, revealed, onFlip }: { front: string; back: stri
 function Face({ children, back = false }: { children: React.ReactNode; back?: boolean }) {
   return (
     <div
-      className="absolute inset-0 flex flex-col items-center justify-center overflow-y-auto rounded-xl border border-border bg-muted/40 p-8 text-center [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
+      className="absolute inset-0 flex flex-col items-center justify-center overflow-y-auto rounded-xl border border-border bg-muted/40 p-8 text-center backface-hidden [-webkit-backface-visibility:hidden]"
       style={back ? { transform: 'rotateY(180deg)' } : undefined}
     >
       {children}
