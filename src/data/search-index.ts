@@ -1,25 +1,23 @@
 import Fuse from 'fuse.js';
-
+// nav config
+import { navSections, primaryNav } from '@/config/nav';
+// articles
+import { ARTICLES } from './articles-index';
+// flashcards
+import { FLASHCARD_SETS } from './flashcard-sets';
 // data sources
 import { jsProblems } from './javascript/js-problems';
-import { reactMcProblems } from './react/react-mc-problems';
-import { reactCustomHooks } from './react/react-custom-hooks';
-
 // notes — every topic's notes array, paired with the page that renders it (see resolve-content.ts
 // for the equivalent by-id lookup used by bookmarks/review; this is a separate by-page-url list
 // since search needs to link to a specific topic page, not just resolve a bare note by id).
 import { NOTE_SOURCES } from './note-sources';
-
-// flashcards
-import { FLASHCARD_SETS } from './flashcard-sets';
-
-// nav config
-import { primaryNav, navSections } from '@/config/nav';
+import { reactCustomHooks } from './react/react-custom-hooks';
+import { reactMcProblems } from './react/react-mc-problems';
 
 // ─── Unified search item ──────────────────────────────────────────────────────
 
-export type SearchSection = 'JavaScript' | 'React' | 'Notes' | 'Flashcards' | 'Navigation';
-export type SearchKind = 'JS Problem' | 'React Problem' | 'Custom Hook' | 'Note' | 'Flashcard' | 'Page';
+export type SearchSection = 'JavaScript' | 'React' | 'Notes' | 'Flashcards' | 'Articles' | 'Navigation';
+export type SearchKind = 'JS Problem' | 'React Problem' | 'Custom Hook' | 'Note' | 'Flashcard' | 'Article' | 'Page';
 
 export interface SearchItem {
   id: string;
@@ -108,6 +106,19 @@ for (const [slug, set] of Object.entries(FLASHCARD_SETS)) {
   }
 }
 
+// Every article — selecting a result links straight to its own /articles/<slug> page.
+const articleItems: SearchItem[] = ARTICLES.map((a) => ({
+  id: `article-${a.id}`,
+  label: a.title,
+  description: a.summary,
+  keywords: a.topics,
+  difficulty: a.difficulty,
+  category: a.topics[0] ?? 'Article',
+  section: 'Articles',
+  kind: 'Article',
+  url: `/articles/${a.slug}`
+}));
+
 // Flat nav config (src/config/nav.ts) — no tree to walk, unlike legacy's NavItemType recursion.
 const navItems: SearchItem[] = [
   ...primaryNav.map((n) => ({
@@ -133,7 +144,9 @@ const navItems: SearchItem[] = [
 // Prefer the richer problem/hook/note entries: drop nav pages whose url is already
 // represented by one of those (note urls carry a ?open= query, so a topic's own bare "/x/notes"
 // nav link is untouched — only exact-url collisions, e.g. a hook's own page, are dropped).
-const richUrls = new Set([...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems].map((i) => i.url));
+const richUrls = new Set(
+  [...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems, ...articleItems].map((i) => i.url)
+);
 const dedupedNavItems = navItems.filter((i) => !richUrls.has(i.url));
 
 export const searchIndex: SearchItem[] = [
@@ -142,6 +155,7 @@ export const searchIndex: SearchItem[] = [
   ...hookItems,
   ...noteItems,
   ...flashcardItems,
+  ...articleItems,
   ...dedupedNavItems
 ];
 

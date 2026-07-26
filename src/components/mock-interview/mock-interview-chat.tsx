@@ -1,27 +1,27 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { IconArrowLeft, IconChecks, IconMicrophone, IconPencil } from '@tabler/icons-react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import Link from 'next/link';
-
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import ArticleRefChips from '@/components/content/article-ref-chips';
+import CodeBlock from '@/components/content/code-block';
+import useJobs from '@/components/job-tracker/use-jobs';
+import { quizOptionClasses } from '@/components/quiz/quiz-option-classes';
 import { Button } from '@/components/ui/button';
+import { MessageGroup } from '@/components/ui/message';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageGroup } from '@/components/ui/message';
-import CodeBlock from '@/components/content/code-block';
-import { quizOptionClasses } from '@/components/quiz/quiz-option-classes';
-import useJobs from '@/components/job-tracker/use-jobs';
-import { resolveContent, type ResolvedContent } from '@/lib/resolve-content';
-import * as mockInterviewsRepository from '@/db/mock-interviews';
 import { MOCK_INTERVIEW_TOPICS } from '@/data/mock-interview-pool';
+import * as mockInterviewsRepository from '@/db/mock-interviews';
+import { type ResolvedContent, resolveContent } from '@/lib/resolve-content';
+import type { MockInterviewPersona, MockInterviewQuestion, MockInterviewQuestionKind } from '@/types/mock-interview';
+import { AnimatedChips } from './chat/animated-chips';
 import { ChatBubble } from './chat/chat-bubble';
 import { ChatInput } from './chat/chat-input';
-import { AnimatedChips } from './chat/animated-chips';
 import { TypingIndicator } from './chat/typing-indicator';
 import useMockInterviews from './use-mock-interviews';
-import type { MockInterviewPersona, MockInterviewQuestion, MockInterviewQuestionKind } from '@/types/mock-interview';
 
 // ==============================|| MOCK INTERVIEW — UNIFIED CHAT ||============================== //
 
@@ -66,6 +66,7 @@ function resolvedTitle(resolved: ResolvedContent | null): string {
   if (resolved.kind === 'note') return resolved.note.title;
   if (resolved.kind === 'flashcard') return resolved.card.front;
   if (resolved.kind === 'quiz') return resolved.question.question;
+  if (resolved.kind === 'article') return resolved.article.title;
   return resolved.problem.title;
 }
 
@@ -178,6 +179,20 @@ function RecapBubble({ interviewId, index, question }: { interviewId: string; in
           )}
         </>
       )}
+      {resolved && (resolved.kind === 'note' || resolved.kind === 'flashcard' || resolved.kind === 'quiz') && (
+        <div className="mt-2">
+          <ArticleRefChips
+            ids={
+              resolved.kind === 'note'
+                ? resolved.note.articleRefs
+                : resolved.kind === 'flashcard'
+                  ? resolved.card.articleRefs
+                  : resolved.question.articleRefs
+            }
+          />
+        </div>
+      )}
+
       {resolved?.kind === 'note' && (
         <Link href={resolved.url} className="mt-1 inline-block text-xs text-primary underline underline-offset-2">
           View this note →
@@ -426,7 +441,8 @@ export default function MockInterviewChat({ interviewId: initialInterviewId }: M
   }, [interview, quizSelected, submitQuizAnswer]);
 
   const questionCount = Number(countText);
-  const currentQuestion = interview && interview.currentIndex < interview.questions.length ? interview.questions[interview.currentIndex] : null;
+  const currentQuestion =
+    interview && interview.currentIndex < interview.questions.length ? interview.questions[interview.currentIndex] : null;
   // Resolved once per question (not on every render) — the bottom quiz-answer block below reads this
   // directly instead of re-resolving inline, and reuses the same lookup QuestionBubbleContent needs.
   const currentResolved = useMemo(

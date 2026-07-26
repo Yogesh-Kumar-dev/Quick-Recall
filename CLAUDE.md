@@ -63,6 +63,22 @@ These two files intentionally diverge in style so each teaches a different inter
 
 Add further conventions to this list as they come up.
 
+### Articles
+
+Long-form, MongoDB-docs style walkthroughs — a standalone content type (`src/types/content.ts`'s `Article`/`ArticleBlock`), never a duplicate of an existing topic's notes/flashcards/quiz content. One file per article under `src/data/articles/`, aggregated in `src/data/articles-index.ts` (`ARTICLES`, `articleBySlug`, `articleById`, `resolveArticleRefs`). Routes: `src/app/(app)/articles/page.tsx` (index) and `src/app/(app)/articles/[slug]/page.tsx` (detail, `generateStaticParams` off `ARTICLES`). The detail page is the one route in the app with a 3-column layout — `src/components/content/article-view.tsx` adds a sticky right-rail "On this page" TOC (`article-toc.tsx`) local to that component, `AppLayout` itself is untouched.
+
+#### Article content style guide
+
+- **Blocks, not markdown.** `ArticleBlock` is a typed union (`heading` | `paragraph` | `code` | `callout` | `list` | `steps` | `filetree` | `table`) rendered via `article-blocks.tsx` using the app's existing `@leafygreen-ui/code`/`@leafygreen-ui/callout`/`@leafygreen-ui/table` — no MDX/markdown dependency.
+- **Headings are real navigation**, not decoration — every `heading` block's `id` becomes a TOC anchor and must be unique within the article (hand-picked by the author, not auto-slugged from text).
+- **`steps` vs `list`**: use `steps` for an ordered procedure where each item has its own explanation (MongoDB-docs "Procedure" style); use `list` for a flat set of related points with no inherent sequence.
+- **`filetree`**: a VS Code Explorer–style folder/file tree (`article-file-tree.tsx`, custom — LeafyGreen has no tree/filesystem component). Prefer it over a code block for walking through a real directory structure (a build's output layout, a scaffolded template); use real, verified paths/filenames where possible rather than invented placeholders.
+- **`table`**: LeafyGreen's `@leafygreen-ui/table`, used plainly (no `useLeafyGreenTable` — articles don't need sorting/pagination). Reach for it only when content is genuinely tabular (a comparison, a symbol/flag reference) — don't force a table where `list`/`steps` reads more naturally.
+- **Code samples**: illustrative and as long as the concept needs — depth beats brevity here, `language` matches the existing `CodeLang` type (`jsx` | `tsx` | `javascript` | `typescript`) — don't invent a new language id per article (shell/JSON snippets use `javascript` or omit `language`, no bash/json lexer exists).
+- **Cross-linking is manual and one-directional.** `articleRefs?: string[]` on `Note`/`Flashcard`/`QuizQuestion` points AT an article's `id`; articles never link back or duplicate what they point at. Add it only where a specific item genuinely benefits from the deeper read — do not blanket-link every item in a topic just because a related article exists.
+- **Depth over brevity, always.** Assume the reader has never seen the topic before — build up from first principles, define jargon on first use, motivate *why* before *how*. Length is not a constraint; a long, thorough, engaging article beats a short summary. Reach for every block type where it adds real value (`callout` for gotchas/tips, `steps` for procedures, `table` for comparisons, `filetree` for real directory structures, extra headings for real TOC navigation) — visually rich and text-only-paragraphs are not the same thing.
+- **Never use an em dash (`—`) anywhere in article text** (or anywhere else in this codebase's content) — rephrase with a period, comma, colon, parentheses, or a connecting word instead.
+
 ### PWA / offline support
 
 The app builds with **Turbopack**, and `@serwist/next`'s webpack-based compilation doesn't support that — so the service worker is compiled via a Route Handler instead (`src/app/serwist/[path]/route.ts`, wired through `@serwist/turbopack`). `withSerwist(nextConfig)` in `next.config.ts` only adds `esbuild`/`esbuild-wasm` to `serverExternalPackages` so that route handler can bundle in the Node runtime. `SerwistProvider` (in `src/app/providers.tsx`) registers the worker at `/serwist/sw.js` and is disabled in dev — its install-time warm-up would otherwise trigger a Turbopack recompile per route on every "download for offline" run. Offline content selection/caching lives in `src/utils/offline-cache.ts` and `src/utils/pdf-cache.ts`, driven by `src/data/offline-content.ts` and the `useOfflineDownload` hook.

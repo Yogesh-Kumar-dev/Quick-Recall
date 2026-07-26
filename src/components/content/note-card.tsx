@@ -2,11 +2,11 @@
 
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
-import Link from 'next/link';
 import { parseAsString, useQueryState } from 'nuqs';
-import type { Note } from '@/types/content';
-import type { NoteLink } from '@/data/note-sources';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
+import type { NoteLink } from '@/data/note-sources';
+import type { Note } from '@/types/content';
+import ArticleRefChips, { LinkChips } from './article-ref-chips';
 import CodeBlock from './code-block';
 
 // these chips stay Tailwind; only ExpandableCard / Callout / Code stay LeafyGreen
@@ -57,21 +57,8 @@ export default function NoteCard({ note, prereqs }: { note: Note; prereqs?: Note
       description={note.summary}
     >
       <div className="space-y-4">
-        {prereqs && prereqs.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Builds on</span>
-            {prereqs.map((p) => (
-              <Link
-                key={p.id}
-                href={p.url}
-                onClick={(e) => e.stopPropagation()}
-                className="rounded-full border border-border px-2 py-0.5 text-xs text-primary transition-colors hover:border-primary/40 hover:bg-primary/10"
-              >
-                {p.title}
-              </Link>
-            ))}
-          </div>
-        )}
+        <LinkChips label="Builds on" links={prereqs ?? []} onLinkClick={(e) => e.stopPropagation()} />
+        <ArticleRefChips ids={note.articleRefs} onLinkClick={(e) => e.stopPropagation()} />
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Key Points</p>
           <ul className="list-disc space-y-0.5 pl-5 text-sm text-muted-foreground">

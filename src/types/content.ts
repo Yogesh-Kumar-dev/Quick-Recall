@@ -13,6 +13,7 @@ export interface Note {
   textbookDef?: string; // formal definition — rendered for intermediate + advanced
   eli5?: string; // casual analogy-driven walkthrough — rendered for intermediate + advanced
   prerequisites?: string[]; // ids of notes (any topic) this one builds on — rendered as deep-link chips
+  articleRefs?: string[]; // ids of Article this item links to — resolved via resolveArticleRefs(), only when genuinely useful
   difficulty: 'basic' | 'intermediate' | 'advanced';
   category: string; // e.g. 'core' | 'async' | 'es6' | 'hooks' | 'generics'
 }
@@ -34,6 +35,10 @@ export interface QuickRecallSection {
 
 // ---------------------------------------------------------------------------
 // Flashcards — keyword/abbreviation definitions + small Q&A (flip carousel)
+// Direction: existing sets stay as-is for now, but new/rewritten cards should trend toward
+// short keyword→definition pairs (front = a term or piece of jargon, back = a quick, plain
+// explanation) rather than long code-behavior questions — flashcards are a fast glossary pass,
+// with `articleRefs` pointing to the deeper read instead of the card trying to explain it all.
 // ---------------------------------------------------------------------------
 export interface Flashcard {
   id: string;
@@ -41,6 +46,7 @@ export interface Flashcard {
   back: string; // definition / answer (kept short, 1–3 sentences)
   code?: string; // optional code snippet to show below the explanation
   category?: string; // optional grouping label (e.g. 'Keyword', 'Q&A')
+  articleRefs?: string[]; // ids of Article this card links to — resolved via resolveArticleRefs(), only when genuinely useful
 }
 
 // ---------------------------------------------------------------------------
@@ -54,6 +60,7 @@ export interface QuizQuestion {
   correctIndex: number; // index into options
   explanation?: string; // shown after the question is answered
   category?: string; // optional grouping label, same convention as Flashcard.category
+  articleRefs?: string[]; // ids of Article this question links to — resolved via resolveArticleRefs(), only when genuinely useful
 }
 
 // ---------------------------------------------------------------------------
@@ -153,4 +160,92 @@ export interface ApproachData {
   cons?: string[];
   code: string; // raw file content (read at build time via readFileSync)
   filename: string; // e.g. 'solution-brute.js' — shown in CodeViewer header
+}
+
+// ---------------------------------------------------------------------------
+// Articles — long-form, MongoDB-docs style walkthroughs, structured as typed blocks
+// (not markdown/MDX) so they render with the app's existing Callout/Code components.
+// Standalone documents — never duplicate topic content, only linked TO from it via
+// `articleRefs` on Note/Flashcard/QuizQuestion.
+// ---------------------------------------------------------------------------
+import type { CodeLang } from '@/components/content/code-highlighted';
+
+export interface ArticleHeadingBlock {
+  type: 'heading';
+  id: string; // author-supplied anchor slug — must be unique within the article
+  level: 2 | 3;
+  text: string;
+}
+
+export interface ArticleParagraphBlock {
+  type: 'paragraph';
+  text: string;
+}
+
+export interface ArticleCodeBlock {
+  type: 'code';
+  code: string;
+  language?: CodeLang;
+}
+
+export interface ArticleCalloutBlock {
+  type: 'callout';
+  variant: 'note' | 'warning' | 'tip';
+  title?: string;
+  text: string;
+}
+
+export interface ArticleListBlock {
+  type: 'list';
+  style: 'ordered' | 'unordered';
+  items: string[];
+}
+
+export interface ArticleStepsBlock {
+  type: 'steps';
+  items: { title: string; text: string }[];
+}
+
+// VS Code Explorer–style folder/file tree — for walking through a project's directory structure
+// (a build's output layout, a scaffolded template, etc.). `comment` renders as a trailing inline
+// note (e.g. "hashed client chunk"), mirroring how such trees are annotated in real docs.
+export interface FileTreeNode {
+  name: string;
+  type: 'file' | 'folder';
+  comment?: string;
+  children?: FileTreeNode[];
+}
+
+export interface ArticleFileTreeBlock {
+  type: 'filetree';
+  root?: string; // optional root label shown above the tree, e.g. "dist/"
+  nodes: FileTreeNode[];
+}
+
+// Simple static table (LeafyGreen's `@leafygreen-ui/table`) — for content that's naturally
+// tabular (comparisons, option/flag references). Every row must have the same length as `columns`.
+export interface ArticleTableBlock {
+  type: 'table';
+  columns: string[];
+  rows: string[][];
+}
+
+export type ArticleBlock =
+  | ArticleHeadingBlock
+  | ArticleParagraphBlock
+  | ArticleCodeBlock
+  | ArticleCalloutBlock
+  | ArticleListBlock
+  | ArticleStepsBlock
+  | ArticleFileTreeBlock
+  | ArticleTableBlock;
+
+export interface Article {
+  id: string;
+  slug: string; // route param + bookmark refId
+  title: string;
+  summary: string;
+  topics: string[]; // freeform browse/filter tags, e.g. ['PWA', 'Web Platform']
+  difficulty?: 'basic' | 'intermediate' | 'advanced';
+  blocks: ArticleBlock[];
 }

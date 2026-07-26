@@ -2696,6 +2696,7 @@ async function search(q) {
     difficulty: 'advanced',
     category: 'web-apis',
     prerequisites: ['webapi-fetch', 'es6-promises'],
+    articleRefs: ['pwa-introduction'],
     keyPoints: [
       'A worker script the browser runs separately from the page , no DOM access, event-driven, and it keeps running after the tab closes.',
       'Acts as a programmable network proxy: it intercepts fetch events and can answer from a cache instead of the network (offline support).',

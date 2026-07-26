@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
+import { ARTICLES } from '@/data/articles-index';
 import { flashcardByKey } from '@/data/flashcards-index';
-import { jsProblems } from '@/data/javascript/js-problems';
 import { jsNotes } from '@/data/javascript/js-notes';
+import { jsProblems } from '@/data/javascript/js-problems';
 import { reactMcProblems } from '@/data/react/react-mc-problems';
 import { resolveContent } from './resolve-content';
 
@@ -36,7 +37,13 @@ describe('resolveContent', () => {
     expect(resolved && 'url' in resolved && resolved.url).toBe(`/react/machine-coding/${slug}`);
   });
 
-  it.each(['note', 'flashcard', 'problem'] as const)('returns null for an unknown %s refId', (kind) => {
+  it('resolves an article by slug', () => {
+    const article = ARTICLES[0];
+    const resolved = resolveContent('article', article.slug);
+    expect(resolved).toEqual({ kind: 'article', refId: article.slug, article, url: `/articles/${article.slug}` });
+  });
+
+  it.each(['note', 'flashcard', 'problem', 'article'] as const)('returns null for an unknown %s refId', (kind) => {
     expect(resolveContent(kind, 'definitely-not-a-real-ref-id')).toBeNull();
   });
 });

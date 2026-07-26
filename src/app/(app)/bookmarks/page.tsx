@@ -1,13 +1,12 @@
 'use client';
 
-import { useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import Link from 'next/link';
-
-import NoteCard from '@/components/content/note-card';
+import { useMemo } from 'react';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
+import NoteCard from '@/components/content/note-card';
 import * as bookmarksRepository from '@/db/bookmarks';
-import { resolveContent, type ResolvedContent } from '@/lib/resolve-content';
+import { type ResolvedContent, resolveContent } from '@/lib/resolve-content';
 
 // ==============================|| SAVED (BOOKMARKS) VIEW ||============================== //
 
@@ -17,21 +16,23 @@ export default function BookmarksPage() {
   const bookmarks = useLiveQuery(() => bookmarksRepository.list());
   const loading = bookmarks === undefined;
 
-  const { notes, flashcards, problems } = useMemo(() => {
+  const { notes, flashcards, problems, articles } = useMemo(() => {
     const notesAcc: Extract<ResolvedContent, { kind: 'note' }>[] = [];
     const flashcardsAcc: Extract<ResolvedContent, { kind: 'flashcard' }>[] = [];
     const problemsAcc: Extract<ResolvedContent, { kind: 'problem' }>[] = [];
+    const articlesAcc: Extract<ResolvedContent, { kind: 'article' }>[] = [];
     for (const b of bookmarks ?? []) {
       const resolved = resolveContent(b.kind, b.refId);
       if (!resolved) continue;
       if (resolved.kind === 'note') notesAcc.push(resolved);
       else if (resolved.kind === 'flashcard') flashcardsAcc.push(resolved);
       else if (resolved.kind === 'problem') problemsAcc.push(resolved);
+      else if (resolved.kind === 'article') articlesAcc.push(resolved);
     }
-    return { notes: notesAcc, flashcards: flashcardsAcc, problems: problemsAcc };
+    return { notes: notesAcc, flashcards: flashcardsAcc, problems: problemsAcc, articles: articlesAcc };
   }, [bookmarks]);
 
-  const total = notes.length + flashcards.length + problems.length;
+  const total = notes.length + flashcards.length + problems.length + articles.length;
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -92,6 +93,23 @@ export default function BookmarksPage() {
               <div className="space-y-2">
                 {notes.map((n) => (
                   <NoteCard key={n.refId} note={n.note} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {articles.length > 0 && (
+            <section>
+              <SectionHeader title="Articles" count={articles.length} />
+              <div className="space-y-2">
+                {articles.map((a) => (
+                  <div key={a.refId} className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2">
+                    <Link href={a.url} className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold hover:text-primary">{a.article.title}</p>
+                      <p className="truncate text-xs uppercase tracking-wide text-muted-foreground">{a.article.topics.join(', ')}</p>
+                    </Link>
+                    <BookmarkButton kind="article" refId={a.refId} />
+                  </div>
                 ))}
               </div>
             </section>

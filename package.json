@@ -35,6 +35,7 @@
     "@leafygreen-ui/guide-cue": "^8.2.0",
     "@leafygreen-ui/leafygreen-provider": "^5.0.4",
     "@leafygreen-ui/segmented-control": "^11.1.0",
+    "@leafygreen-ui/table": "^15.2.3",
     "@leafygreen-ui/tabs": "^17.0.11",
     "@sentry/nextjs": "^10.63.0",
     "@serwist/turbopack": "^9.5.11",

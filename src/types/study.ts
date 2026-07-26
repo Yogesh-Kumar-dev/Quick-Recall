@@ -3,8 +3,8 @@
 // Shared by Bookmarks and Spaced-Repetition Review; both are Dexie-backed and keyed by a
 // stable, namespaced `refId` so the same content item resolves the same way everywhere.
 
-// SRS covers flashcards and machine-coding problems; notes are bookmark-only.
-export type BookmarkKind = 'note' | 'flashcard' | 'problem';
+// SRS covers flashcards and machine-coding problems; notes and articles are bookmark-only.
+export type BookmarkKind = 'note' | 'flashcard' | 'problem' | 'article';
 
 export interface Bookmark {
   id: string; // `${kind}:${refId}` — idempotent composite, so toggling is trivial

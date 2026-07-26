@@ -3,52 +3,50 @@
 // Bookmarks/reviews store only a `kind` + namespaced `refId`; this resolves that back to the
 // real content item plus a route-stable URL so the Saved view doesn't re-implement the lookup.
 
-import type { BaseProblemEntry, Flashcard, Note, QuizQuestion } from '@/types/content';
-import type { BookmarkKind } from '@/types/study';
-
-import { flashcardByKey } from '@/data/flashcards-index';
+import { articleBySlug } from '@/data/articles-index';
+import { dynamodbNotes } from '@/data/databases/dynamodb-notes';
+import { mongodbNotes } from '@/data/databases/mongodb-notes';
+import { postgresqlNotes } from '@/data/databases/postgresql-notes';
+import { redisNotes } from '@/data/databases/redis-notes';
+import { engineeringNotes } from '@/data/engineering/engineering-notes';
 import { FLASHCARD_SETS } from '@/data/flashcard-sets';
-import { quizByKey } from '@/data/quiz-index';
-import { QUIZ_SETS } from '@/data/quiz-sets';
-
-// Problems
-import { jsProblems } from '@/data/javascript/js-problems';
-import { reactMcProblems } from '@/data/react/react-mc-problems';
-
+import { flashcardByKey } from '@/data/flashcards-index';
+import { cssNotes } from '@/data/htmlcss/css-notes';
+import { htmlNotes } from '@/data/htmlcss/html-notes';
 // Notes
 import { jsNotes } from '@/data/javascript/js-notes';
+// Problems
+import { jsProblems } from '@/data/javascript/js-problems';
 import { tsNotes } from '@/data/javascript/ts-notes';
 import { tsReactNotes } from '@/data/javascript/ts-react';
-import { reactNotes } from '@/data/react/react-notes';
 import { nextjsNotes } from '@/data/nextjs/nextjs-notes';
 import { nextjsRenderingNotes } from '@/data/nextjs/nextjs-rendering';
 import { nodejsNotes } from '@/data/nodejs/nodejs-notes';
-import { postgresqlNotes } from '@/data/databases/postgresql-notes';
-import { mongodbNotes } from '@/data/databases/mongodb-notes';
-import { redisNotes } from '@/data/databases/redis-notes';
-import { dynamodbNotes } from '@/data/databases/dynamodb-notes';
-import { testingFundamentalsNotes } from '@/data/testing/testing-fundamentals-notes';
-import { vitestNotes } from '@/data/testing/vitest-notes';
-import { rtlNotes } from '@/data/testing/rtl-notes';
-import { jestNotes } from '@/data/testing/jest-notes';
-import { mswNotes } from '@/data/testing/msw-notes';
-import { supertestNotes } from '@/data/testing/supertest-notes';
-import { playwrightNotes } from '@/data/testing/playwright-notes';
-import { etlTestingNotes } from '@/data/testing/etl-testing-notes';
-import { pentestNotes } from '@/data/testing/pentest-notes';
-import { mobileTestingNotes } from '@/data/testing/mobile-testing-notes';
-import { webTestingNotes } from '@/data/testing/web-testing-notes';
+import { quizByKey } from '@/data/quiz-index';
+import { QUIZ_SETS } from '@/data/quiz-sets';
+import { reactMcProblems } from '@/data/react/react-mc-problems';
+import { reactNotes } from '@/data/react/react-notes';
+import { asyncThunkNotes } from '@/data/redux/async-thunk-notes';
 import { reduxNotes } from '@/data/redux/redux-notes';
 import { reduxToolkitNotes } from '@/data/redux/redux-toolkit-notes';
 import { rtkQueryNotes } from '@/data/redux/rtk-query-notes';
-import { asyncThunkNotes } from '@/data/redux/async-thunk-notes';
-import { htmlNotes } from '@/data/htmlcss/html-notes';
-import { cssNotes } from '@/data/htmlcss/css-notes';
-import { engineeringNotes } from '@/data/engineering/engineering-notes';
-import { webSecurityNotes } from '@/data/web/web-security-notes';
-import { authNotes } from '@/data/web/auth-notes';
+import { etlTestingNotes } from '@/data/testing/etl-testing-notes';
+import { jestNotes } from '@/data/testing/jest-notes';
+import { mobileTestingNotes } from '@/data/testing/mobile-testing-notes';
+import { mswNotes } from '@/data/testing/msw-notes';
+import { pentestNotes } from '@/data/testing/pentest-notes';
+import { playwrightNotes } from '@/data/testing/playwright-notes';
+import { rtlNotes } from '@/data/testing/rtl-notes';
+import { supertestNotes } from '@/data/testing/supertest-notes';
+import { testingFundamentalsNotes } from '@/data/testing/testing-fundamentals-notes';
+import { vitestNotes } from '@/data/testing/vitest-notes';
+import { webTestingNotes } from '@/data/testing/web-testing-notes';
 import { accessibilityNotes } from '@/data/web/accessibility-notes';
+import { authNotes } from '@/data/web/auth-notes';
 import { webPerformanceNotes } from '@/data/web/web-performance-notes';
+import { webSecurityNotes } from '@/data/web/web-security-notes';
+import type { Article, BaseProblemEntry, Flashcard, Note, QuizQuestion } from '@/types/content';
+import type { BookmarkKind } from '@/types/study';
 
 // ─── Note lookup (by note.id) with URL mapping ──────────────────────────────
 // First-write-wins on an id collision across topics (deterministic).
@@ -149,7 +147,8 @@ type ResolvedNote = { kind: 'note'; refId: string; note: Note; url: string };
 type ResolvedFlashcard = { kind: 'flashcard'; refId: string; card: Flashcard; url: string };
 type ResolvedProblem = { kind: 'problem'; refId: string; problem: BaseProblemEntry; url: string };
 type ResolvedQuiz = { kind: 'quiz'; refId: string; question: QuizQuestion; url: string };
-export type ResolvedContent = ResolvedNote | ResolvedFlashcard | ResolvedProblem | ResolvedQuiz;
+type ResolvedArticle = { kind: 'article'; refId: string; article: Article; url: string };
+export type ResolvedContent = ResolvedNote | ResolvedFlashcard | ResolvedProblem | ResolvedQuiz | ResolvedArticle;
 
 // Null if the refId no longer resolves (content removed since saved); callers skip nulls.
 export function resolveContent(kind: ResolvableKind, refId: string): ResolvedContent | null {
@@ -164,6 +163,10 @@ export function resolveContent(kind: ResolvableKind, refId: string): ResolvedCon
   if (kind === 'quiz') {
     const indexed = quizByKey.get(refId);
     return indexed ? { kind, refId, question: indexed.question, url: getQuizUrl(refId) } : null;
+  }
+  if (kind === 'article') {
+    const article = articleBySlug.get(refId);
+    return article ? { kind, refId, article, url: `/articles/${article.slug}` } : null;
   }
   // problem — refId is the problem slug
   const hit = problemBySlug.get(refId);
