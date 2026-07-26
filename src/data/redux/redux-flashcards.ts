@@ -1,21 +1,21 @@
 import type { Flashcard } from '@/types/content';
 
-// ─── Redux flashcards — keyword/abbreviation defs + small Q&A ─────────────────
+// ─── Redux flashcards — short keyword/terminology defs, same style as js-flashcards.ts ───────
 // One export per topic (redux, redux-toolkit, rtk-query, async-thunk), all wired into
 // flashcard-sets.ts. An empty array here hides that set's card on the /flashcards index.
 
 export const reduxFlashcards: Flashcard[] = [
   {
     id: 'redux-what-is',
-    front: 'What is Redux?',
+    front: 'Redux',
     back: 'A predictable state container for JS apps , a centralized global store holding all app state, updated only by dispatching actions to pure reducers. Library-agnostic (commonly used with React via react-redux).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-three-principles',
     front: 'The 3 principles of Redux',
     back: '1) Single source of truth (one state tree). 2) State is read-only (change only by dispatching actions). 3) Changes are made with pure functions (reducers).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-store',
@@ -45,25 +45,25 @@ export const reduxFlashcards: Flashcard[] = [
     id: 'redux-single-source',
     front: 'Single source of truth',
     back: 'The entire app state lives in one immutable tree in the store , making state predictable, easy to debug, and consistent across all components.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-state-read-only',
-    front: 'Why is Redux state “read-only”?',
+    front: 'Redux state read-only (why)',
     back: 'You never mutate state directly; you dispatch actions describing the change. This gives a controlled mutation path, predictability, and time-travel debugging.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-immutable-state',
-    front: 'Why immutable state?',
+    front: 'Immutable state (why)',
     back: 'Enables reference-equality checks (skip re-renders when state is unchanged), state history / undo-redo, and predictable updates. Ensure it with the spread operator, Immer, or Immutable.js.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-data-flow',
     front: 'Redux data flow',
     back: 'Unidirectional: UI dispatches an action → store passes it to reducers → reducers return new state → subscribed components re-render. Never the reverse.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-dispatch',
@@ -75,7 +75,7 @@ export const reduxFlashcards: Flashcard[] = [
     id: 'redux-createstore',
     front: 'createStore vs configureStore',
     back: 'createStore(reducer, preloadedState?, enhancer) is classic Redux. Modern Redux Toolkit prefers configureStore, which wires DevTools and thunk by default.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-combinereducers',
@@ -87,7 +87,7 @@ export const reduxFlashcards: Flashcard[] = [
     id: 'redux-pure-side-effects',
     front: 'Pure functions vs side effects in Redux',
     back: 'Reducers must be PURE , output depends only on input, no I/O or external mutation. Side effects (API calls, timers) live in middleware like redux-thunk or redux-saga.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-thunk',
@@ -103,9 +103,9 @@ export const reduxFlashcards: Flashcard[] = [
   },
   {
     id: 'redux-async-actions',
-    front: 'How do you handle async in Redux?',
+    front: 'Async in Redux , handling',
     back: 'Plain Redux only does synchronous updates. Use middleware (redux-thunk most commonly) so action creators can run async work and dispatch request/success/failure actions around it.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-selector',
@@ -123,7 +123,7 @@ export const reduxFlashcards: Flashcard[] = [
     id: 'redux-vs-local-state',
     front: 'Redux vs local component state',
     back: 'Local state: simple, scoped, best for small/UI-only state. Redux: centralized, shareable across the tree without prop drilling, predictable , worth it for larger apps with shared, multi-level state.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
 
   // ─── Focused subset (topics 16–60 from the question bank) ───────────────────
@@ -155,13 +155,13 @@ export const reduxFlashcards: Flashcard[] = [
     id: 'redux-mapstate-mapdispatch',
     front: 'mapStateToProps / mapDispatchToProps',
     back: 'connect’s two arguments: mapStateToProps(state) injects derived state as props; mapDispatchToProps wraps action creators as props that auto-dispatch.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-container-presentational',
     front: 'Container vs presentational component',
     back: 'Container (“smart”): connects to the store, supplies data/handlers. Presentational (“dumb”): just renders props. With hooks the split is now usually a custom hook, not a wrapper.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-subscribe',
@@ -179,7 +179,7 @@ export const reduxFlashcards: Flashcard[] = [
     id: 'redux-reducer-composition',
     front: 'Reducer composition',
     back: 'Splitting state handling into small slice reducers and combining them with combineReducers. Each reducer manages its own subtree , modular, testable, scalable.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-ducks',
@@ -195,9 +195,9 @@ export const reduxFlashcards: Flashcard[] = [
   },
   {
     id: 'redux-reset-state',
-    front: 'How do you reset the whole Redux store?',
+    front: 'Resetting the Redux store',
     back: 'Wrap the root reducer: if the action is a RESET type, ignore state and call the reducer with undefined so each slice falls back to its initialState.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-higher-order-reducer',
@@ -206,7 +206,7 @@ export const reduxFlashcards: Flashcard[] = [
     category: 'Keyword'
   },
   {
-    id: 'redux-reselect',
+    id: 'redux-reselect-lib',
     front: 'reselect',
     back: 'The library providing createSelector , memoized selectors that recompute only when their inputs change by reference, avoiding wasted recalculation and re-renders.',
     category: 'Keyword'
@@ -219,9 +219,9 @@ export const reduxFlashcards: Flashcard[] = [
   },
   {
     id: 'redux-normalization-why',
-    front: 'Why normalize state?',
+    front: 'Normalizing state (why)',
     back: 'Storing entities as { ids: [], entities: {} } gives O(1) lookups/updates by id, removes duplication, and keeps slices independently updatable. RTK’s createEntityAdapter automates it.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'redux-toolkit',
@@ -237,7 +237,7 @@ export const reduxToolkitFlashcards: Flashcard[] = [
     front: 'configureStore',
     back: "RTK's store factory , auto-combines your reducer map, includes redux-thunk and dev-mode checks (serializability, immutability) by default, and wires up Redux DevTools without any extra setup.",
     code: `const store = configureStore({ reducer: { counter: counterReducer } });`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtk-create-slice',
@@ -247,9 +247,9 @@ export const reduxToolkitFlashcards: Flashcard[] = [
   },
   {
     id: 'rtk-immer',
-    front: 'How does createSlice let you "mutate" state?',
+    front: 'createSlice "mutation" (Immer)',
     back: 'It wraps each reducer with Immer, which gives you a draft proxy , write state.value++ and Immer produces a real immutable update behind the scenes. Return a new value OR mutate the draft, never both in the same reducer.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtk-extra-reducers',
@@ -260,7 +260,7 @@ export const reduxToolkitFlashcards: Flashcard[] = [
     state.list = action.payload;
   });
 }`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtk-entity-adapter',
@@ -272,7 +272,7 @@ export const reduxToolkitFlashcards: Flashcard[] = [
     id: 'rtk-typed-hooks',
     front: 'Typed useAppSelector / useAppDispatch',
     back: 'Infer RootState = ReturnType<typeof store.getState> and AppDispatch = typeof store.dispatch, then wrap useSelector/useDispatch with those types once , every component gets full autocomplete with zero repeated generics.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtk-listener-middleware',
@@ -287,13 +287,13 @@ export const rtkQueryFlashcards: Flashcard[] = [
     id: 'rtkq-create-api',
     front: 'createApi & fetchBaseQuery',
     back: 'createApi defines your whole API surface (endpoints, base URL, tag types) in one place; fetchBaseQuery is a thin fetch wrapper for it. You must add both api.reducer and api.middleware to the store , easy to forget the middleware.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtkq-query-hooks',
     front: 'Auto-generated query hooks',
     back: 'Each query endpoint gets a use + PascalCase(name) + Query hook. isLoading is true only on the very first load; isFetching is true on ANY in-flight request (including background re-fetches) , data persists from the last success meanwhile.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtkq-mutation-hooks',
@@ -301,13 +301,13 @@ export const rtkQueryFlashcards: Flashcard[] = [
     back: "A mutation endpoint's hook returns [triggerFn, status] instead of auto-fetching , call triggerFn(args). triggerFn returns a promise; .unwrap() on it gives the payload or throws, letting you await/try-catch like a normal async call.",
     code: `const [addPost, { isLoading }] = useAddPostMutation();
 await addPost(data).unwrap();`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtkq-cache-tags',
     front: 'providesTags & invalidatesTags',
     back: "Queries declare what data they represent (providesTags); mutations declare what they make stale (invalidatesTags). Any overlap triggers an automatic refetch of just the affected queries , RTK Query's cache-invalidation mechanism.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtkq-cache-lifecycle',
@@ -319,7 +319,7 @@ await addPost(data).unwrap();`,
     id: 'rtkq-optimistic-updates',
     front: 'Optimistic updates',
     back: "Inside a mutation's onQueryStarted, dispatch api.util.updateQueryData(...) to patch the cache immediately, before the server responds. If the real request fails, call the returned patchResult.undo() to roll the UI back.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'rtkq-polling',
@@ -331,7 +331,7 @@ await addPost(data).unwrap();`,
     id: 'rtkq-lazy-queries',
     front: 'Lazy queries',
     back: 'useLazyGetXQuery() returns [trigger, result] and does NOT fetch on mount , you call trigger(arg) manually. Built for search-as-you-type or fetch-on-click flows where an automatic useQuery would fire too eagerly.',
-    category: 'Q&A'
+    category: 'Keyword'
   }
 ];
 
@@ -346,7 +346,7 @@ export const asyncThunkFlashcards: Flashcard[] = [
     id: 'thunk-lifecycle-actions',
     front: 'Handling thunk lifecycle actions',
     back: 'pending/fulfilled/rejected are handled in extraReducers via builder.addCase , the standard pattern sets a status field ("idle"|"loading"|"succeeded"|"failed") on pending and stores the payload or error on the other two.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'thunk-api-object',
@@ -358,7 +358,7 @@ export const asyncThunkFlashcards: Flashcard[] = [
     id: 'thunk-reject-with-value',
     front: 'rejectWithValue',
     back: "return rejectWithValue(data) attaches a custom error payload to the rejected action (action.payload), instead of RTK's default action.error.message from a thrown Error , needed to preserve structured API error shapes like field-level validation.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'thunk-unwrap',
@@ -368,12 +368,12 @@ export const asyncThunkFlashcards: Flashcard[] = [
   await dispatch(loginUser(creds)).unwrap();
   navigate('/dashboard');
 } catch (err) { setError(err.message); }`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'thunk-cancellation',
     front: 'Cancelling a thunk',
     back: "dispatch(thunk()) returns a promise with an .abort() method. Pass thunkAPI's signal into fetch() so the browser actually cancels the in-flight request , common in a useEffect cleanup to prevent state updates after unmount.",
-    category: 'Q&A'
+    category: 'Keyword'
   }
 ];

@@ -1,6 +1,7 @@
 import type { Flashcard } from '@/types/content';
 
-// ─── Node.js flashcards — keyword/abbreviation defs + small Q&A ───────────────
+// ─── Node.js flashcards — short keyword/terminology defs. Front is always a term or short
+// phrase (not a full question); back is a quick, plain-English explanation.
 // Distilled from the "Top 90+ Node.js Backend Interview Questions" deck.
 
 export const nodejsFlashcards: Flashcard[] = [
@@ -8,13 +9,13 @@ export const nodejsFlashcards: Flashcard[] = [
     id: 'node-npm-vs-npx',
     front: 'npm vs npx',
     back: "npm installs packages into your project. npx executes a package's binary directly (installing it temporarily if needed) , useful for one-off CLI tools without adding them as a dependency.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-commonjs-vs-esm',
     front: 'CommonJS vs ES Modules',
     back: 'CommonJS uses require() and loads synchronously. ES Modules use import and load asynchronously , the modern standard, but the two have different resolution/interop rules in Node.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-callback-hell',
@@ -56,13 +57,13 @@ export const nodejsFlashcards: Flashcard[] = [
     id: 'node-deps-vs-devdeps',
     front: 'dependencies vs devDependencies',
     back: 'dependencies are needed at runtime in production. devDependencies are dev-only tooling (jest, eslint, ...) that never ships to production.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-route-vs-query-params',
     front: 'Route params vs query params',
     back: 'Route param identifies a specific resource: /users/10. Query param modifies how a collection is fetched: /users?page=2 , filtering, sorting, pagination.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-http-status-codes',
@@ -92,25 +93,25 @@ export const nodejsFlashcards: Flashcard[] = [
     id: 'node-ssr-vs-csr',
     front: 'SSR vs CSR (Node ecosystem)',
     back: 'SSR: the server renders HTML , better for SEO. CSR: the browser renders the page after JS loads , faster subsequent client interactions once loaded.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-kafka-use-cases',
-    front: 'What is Kafka used for?',
+    front: 'Kafka , use cases',
     back: 'High-throughput event streaming, log aggregation, and real-time analytics (e.g. tracking user activity events) , built for ordered event logs, not just simple job queues.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-blue-green-vs-canary',
     front: 'Blue-green vs canary deployment',
     back: "Blue-green: two full environments, switch all traffic at once after testing the new one. Canary: release to a small % of users first, monitor, then roll out fully , lower blast radius if something's wrong.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-api-gateway-role',
-    front: 'What does an API Gateway do?',
+    front: 'API Gateway',
     back: 'Acts as the single entry point for a microservices architecture , handles auth verification, rate limiting, routing, and response aggregation (Kong, NGINX, AWS API Gateway).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-eventemitter',
@@ -132,9 +133,9 @@ export const nodejsFlashcards: Flashcard[] = [
   },
   {
     id: 'node-is-single-threaded',
-    front: 'Is Node.js single-threaded?',
+    front: 'Node.js single-threaded model',
     back: 'Your JavaScript runs on one thread, yes , but libuv backs it with a thread pool (default 4, UV_THREADPOOL_SIZE) for fs, dns.lookup, and some crypto/zlib calls. Network I/O uses the OS kernel directly, no pool involved.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'node-stream-backpressure',

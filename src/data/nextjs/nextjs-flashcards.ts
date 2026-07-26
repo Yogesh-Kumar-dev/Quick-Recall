@@ -1,31 +1,31 @@
 import type { Flashcard } from '@/types/content';
 
-// ─── Next.js flashcards — keyword/abbreviation defs + small Q&A ───────────────
+// ─── Next.js flashcards — short keyword/terminology defs ──────────────────────
 
 export const nextjsFlashcards: Flashcard[] = [
   {
     id: 'next-what-is',
-    front: 'What is Next.js?',
+    front: 'Next.js',
     back: 'A React framework for production , adds file-based routing, SSR/SSG/ISR, API routes, image/font optimization, and code splitting on top of React, with minimal config.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-vs-react',
     front: 'Next.js vs React (CRA)',
     back: 'React is a client-side UI library (CSR only by default, no routing). Next.js adds SSR/SSG/ISR, built-in file-based routing, API routes, image optimization, and code splitting out of the box , better SEO and performance.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-create-app',
-    front: 'How do you create a Next.js app?',
+    front: 'create-next-app',
     back: 'npx create-next-app@latest , scaffolds the project (App or Pages Router, TypeScript, ESLint, Tailwind options).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-pages-vs-app-dir',
     front: 'pages/ vs app/ directory',
     back: 'pages/ = the older Pages Router (getStaticProps/getServerSideProps). app/ = the modern App Router with React Server Components, layouts, and streaming. Both can coexist.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-file-routing',
@@ -49,7 +49,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-push-vs-replace',
     front: 'router.push vs router.replace',
     back: 'push adds a new entry to the history stack (back button returns). replace swaps the current entry (no new history) , good after login redirects.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-image',
@@ -79,13 +79,13 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-ssr-false',
     front: 'ssr: false in dynamic import',
     back: 'Tells next/dynamic to skip server rendering and load the component only on the client , for components that depend on browser-only APIs (window, document).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-env-vars',
     front: 'Environment variables',
     back: 'Defined in .env.local, read via process.env. Only NEXT_PUBLIC_-prefixed vars are exposed to the browser; all others stay server-only.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-config',
@@ -109,7 +109,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-head',
     front: 'next/head vs Metadata API',
     back: 'Pages Router uses <Head> from next/head for <title>/<meta>. App Router replaces it with the Metadata API (export const metadata or generateMetadata).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-use-client',
@@ -131,9 +131,9 @@ export const nextjsFlashcards: Flashcard[] = [
   },
   {
     id: 'next-redirects',
-    front: 'How do you handle redirects?',
+    front: 'Redirects , handling',
     back: 'redirect() from next/navigation (Server Components/Actions), the redirects() config in next.config.js, or NextResponse.redirect in middleware.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-fonts',
@@ -145,7 +145,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-i18n',
     front: 'Internationalization (i18n)',
     back: 'Pages Router has built-in i18n routing (locale subpaths). App Router handles it via [lang] dynamic segments + a middleware locale detector, often with next-intl/next-i18next.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
 
   // ─── App Router deep dive + remaining Common topics ─────────────────────────
@@ -153,13 +153,13 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-app-router',
     front: 'App Router vs Pages Router',
     back: 'App Router (app/, Next 13+): React Server Components, nested layouts, streaming, server actions. Pages Router (pages/): flatter routing, getStaticProps/getServerSideProps, no RSC. Both can coexist.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-route-handlers',
     front: 'Route Handlers vs API Routes',
     back: 'App Router renames API routes to Route Handlers: app/api/x/route.ts exporting GET/POST/etc. built on Web Request/Response , vs Pages Router pages/api/x.js with handler(req, res).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-parallel-routes',
@@ -177,7 +177,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-template-vs-layout',
     front: 'template.tsx vs layout.tsx',
     back: 'layout persists across navigation (state kept, no remount). template creates a new instance per navigation (state reset, effects re-run) , for animations or per-route effects.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-error-file',
@@ -195,7 +195,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-nested-layouts',
     front: 'Nested layouts',
     back: 'Each segment can have a layout.tsx; they nest automatically by folder structure. Visiting /dashboard/settings renders root → dashboard → settings layouts wrapping the page.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-route-groups',
@@ -207,7 +207,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-server-actions-tradeoffs',
     front: 'Server Actions , benefits & problems',
     back: 'Benefits: no separate API route, secrets stay server-side, smaller bundle, simpler data flow. Problems: server round-trip latency, harder debugging, less instant interactivity.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-form-action',
@@ -219,19 +219,19 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-app-global-state',
     front: 'Global state in the App Router',
     back: 'Context/Redux/Zustand providers must be Client Components ("use client"), wrapped once in the root layout , placed as deep as possible to keep Server Components above them server-rendered.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-app-vs-pages-coexist',
-    front: 'Can app/ and pages/ coexist?',
+    front: 'app/ and pages/ coexistence',
     back: 'Yes , a project can use both routers at once, enabling incremental migration. App Router takes precedence for matching routes.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-app-file',
     front: '_app.js vs _document.js (Pages Router)',
     back: '_app.js wraps every page (global CSS, providers, persistent layout). _document.js customizes the server-rendered <html>/<body> shell (runs once, no event handlers).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-script',
@@ -241,21 +241,21 @@ export const nextjsFlashcards: Flashcard[] = [
   },
   {
     id: 'next-cors',
-    front: 'How do you handle CORS in Next.js?',
+    front: 'CORS , handling',
     back: 'Set Access-Control-Allow-Origin/-Methods/-Headers on the Response in a Route Handler, and answer the preflight by exporting an OPTIONS handler (204). For app-wide rules use middleware or next.config headers().',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-shallow-routing',
     front: 'Shallow routing (Pages Router)',
     back: 'router.push(url, undefined, { shallow: true }) changes the URL without re-running getServerSideProps/getStaticProps , useful for updating query params (filters, tabs) without a data refetch.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-get-initial-props',
-    front: 'getInitialProps , why avoid it?',
+    front: 'getInitialProps',
     back: 'A legacy Pages Router data method that runs on both server and client and disables Automatic Static Optimization (forces SSR for the whole app). Prefer getStaticProps/getServerSideProps, or the App Router.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
 
   // ─── ADDED: from the Next.js Interview Mastery (80 Q) deck ─────────────────
@@ -263,7 +263,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-image-priority',
     front: 'priority prop on next/image',
     back: 'Loads the image eagerly instead of lazily and adds a preload hint , use only on the LCP (above-the-fold) image, since it directly affects Largest Contentful Paint.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-image-fill',
@@ -275,19 +275,19 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-font-display-swap',
     front: 'next/font display: "swap"',
     back: 'Shows a fallback font immediately and swaps in the web font once loaded, avoiding invisible text and layout shift , fonts are self-hosted at build time, no external request.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-revalidate-path-tag',
     front: 'revalidatePath vs revalidateTag',
     back: 'revalidatePath("/blog") invalidates the cache for a specific route. revalidateTag("posts") invalidates every fetch tagged with that string, wherever it was called , more precise for CMS webhooks.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-stale-while-revalidate',
     front: 'Stale-while-revalidate (ISR)',
     back: 'When a page becomes stale after its revalidate window, the current visitor still gets the old cached HTML instantly while Next.js regenerates it in the background , the next visitor gets the fresh version.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-use-hook',
@@ -317,7 +317,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-httponly-cookie',
     front: 'httpOnly cookies',
     back: "Cookies set with httpOnly: true are invisible to JavaScript (document.cookie can't read them) , always use this for auth tokens to block XSS-based theft.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-nextauth',
@@ -329,7 +329,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-auth-server-vs-client',
     front: 'auth() vs useSession()',
     back: 'auth() (server) reads the session directly in Server Components with zero client JS. useSession() (client) is reactive but requires wrapping the tree in a Client Component SessionProvider.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-react-cache',
@@ -353,7 +353,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-jsonld',
     front: 'JSON-LD structured data',
     back: 'A <script type="application/ld+json"> block with schema.org markup (Article, Product) embedded in a page , enables Google rich results like author, date, or price in search listings.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-output-standalone',
@@ -365,7 +365,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-output-export',
     front: 'output: "export"',
     back: 'Produces a fully static site (plain HTML/CSS/JS in out/) hostable on any static host , but drops SSR, Route Handlers, middleware, and ISR entirely.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-turborepo',
@@ -383,7 +383,7 @@ export const nextjsFlashcards: Flashcard[] = [
     id: 'next-draft-mode',
     front: 'Draft Mode',
     back: 'A cookie set via draftMode().enable() in a Route Handler that bypasses the fetch cache, "use cache", and ISR for that visitor only , lets a CMS editor preview unpublished content while everyone else sees the cached page.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-after',
@@ -392,7 +392,7 @@ export const nextjsFlashcards: Flashcard[] = [
     code: `after(async () => {
   logUserAction({ ua: (await headers()).get('user-agent') });
 });`,
-    category: 'Q&A'
+    category: 'Keyword'
   }
 ];
 
@@ -401,7 +401,7 @@ export const nextjsRenderingFlashcards: Flashcard[] = [
     id: 'next-csr-vs-ssr',
     front: 'CSR vs SSR',
     back: 'CSR: the browser downloads JS and renders the page client-side. SSR: the server generates HTML per request and sends it ready-to-display , better first paint and SEO.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-ssr',
@@ -425,19 +425,19 @@ export const nextjsRenderingFlashcards: Flashcard[] = [
     id: 'next-ssg-vs-ssr',
     front: 'SSG vs SSR',
     back: 'SSG renders at BUILD time (one HTML for everyone, CDN-fast). SSR renders per REQUEST (fresh/personalized, server latency). ISR is the middle ground.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-prerendering',
     front: 'Pre-rendering',
     back: 'Next.js generates HTML ahead of time (SSG at build, or SSR per request) instead of an empty div filled by client JS , improving first paint and SEO. The two forms are SSG and SSR.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-auto-static-opt',
     front: 'Automatic Static Optimization',
     back: 'Pages Router: if a page has no getServerSideProps/getInitialProps, Next.js auto-prerenders it to static HTML at build , no server render needed at runtime.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-getstaticprops',
@@ -455,7 +455,7 @@ export const nextjsRenderingFlashcards: Flashcard[] = [
     id: 'next-getstaticprops-vs-gssp',
     front: 'getStaticProps vs getServerSideProps',
     back: 'getStaticProps runs once at build time (static, fast). getServerSideProps runs on each request (dynamic, fresh). Choose based on data freshness needs.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-getstaticpaths',
@@ -467,7 +467,7 @@ export const nextjsRenderingFlashcards: Flashcard[] = [
     id: 'next-fallback',
     front: 'fallback in getStaticPaths',
     back: 'false: un-listed paths 404. true: serve a fallback then generate in the background. "blocking": SSR the page on first request, then cache it.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-generate-static-params',
@@ -497,7 +497,7 @@ export const nextjsRenderingFlashcards: Flashcard[] = [
     id: 'next-fetch-cache',
     front: 'fetch caching in the App Router',
     back: 'In Next.js 15 fetch is NOT cached by default. Control it with cache: "force-cache" / "no-store" or next: { revalidate: n }; the modern model is the "use cache" directive.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'next-dynamic-export',

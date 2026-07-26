@@ -1,13 +1,15 @@
 import type { Flashcard } from '@/types/content';
 
-// ─── JavaScript flashcards — keyword/abbreviation defs + small Q&A ────────────
+// ─── JavaScript flashcards — short keyword/terminology defs. Front is always a term or short
+// phrase (not a full question); back is a quick, plain-English explanation. When a card's topic
+// has a deeper walkthrough, it points there via articleRefs instead of trying to explain it all. ───
 
 export const jsFlashcards: Flashcard[] = [
   {
     id: 'js-const-init',
-    front: "What is the requirement for initializing a 'const' variable?",
+    front: 'const initialization',
     back: 'It must be given a value on the same line it is declared , const x; on its own is a syntax error, because you could never assign it later.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-tdz',
@@ -63,21 +65,21 @@ counter.getCount();  // 2 — count is still accessible`,
   },
   {
     id: 'js-microtask',
-    front: 'What runs first: a Promise callback or a setTimeout callback?',
-    back: 'The Promise callback. Promises go in the microtask queue, which is fully emptied before the next macrotask (setTimeout) gets a turn , even setTimeout(fn, 0) waits.',
-    category: 'Q&A'
+    front: 'Microtask vs. macrotask (ordering)',
+    back: 'A Promise callback runs before a setTimeout callback. Promises go in the microtask queue, which is fully emptied before the next macrotask (setTimeout) gets a turn , even setTimeout(fn, 0) waits.',
+    category: 'Keyword'
   },
   {
     id: 'js-let-vs-var',
     front: 'let vs var',
     back: 'let lives only inside its { } block and errors if used before its line (TDZ). var belongs to the whole function, ignores blocks, and reads as undefined before its line.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-eq-vs-eqeq',
     front: '== vs ===',
     back: '=== compares value AND type, no conversion , different types means not equal. == converts the values toward a common type first, which is why 1 == "1" is true. Prefer === to avoid the surprises.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-iife',
@@ -92,8 +94,8 @@ counter.getCount();  // 2 — count is still accessible`,
   },
   {
     id: 'js-this',
-    front: "What determines the value of 'this' in a regular function?",
-    back: 'How the function is CALLED, not where it was written , obj.method() makes this obj, a plain call makes it the global object (or undefined in strict mode). Arrow functions are the exception: they just borrow this from the surrounding code.',
+    front: 'this (regular function)',
+    back: 'Set by HOW the function is CALLED, not where it was written , obj.method() makes this obj, a plain call makes it the global object (or undefined in strict mode). Arrow functions are the exception: they just borrow this from the surrounding code.',
     code: `const obj = {
   name: 'Alice',
   greet() { console.log(this.name); },
@@ -101,12 +103,12 @@ counter.getCount();  // 2 — count is still accessible`,
 obj.greet();       // "Alice" — this === obj
 const fn = obj.greet;
 fn();              // undefined — this === global (or strict mode)`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-arrow-this',
-    front: 'Do arrow functions have their own `this`?',
-    back: 'No , they use the `this` of the code around them, and nothing can rebind it. They also lack their own `arguments` and cannot be called with `new`.',
+    front: 'this (arrow function)',
+    back: 'Arrow functions have no `this` of their own , they use the `this` of the code around them, and nothing can rebind it. They also lack their own `arguments` and cannot be called with `new`.',
     code: `const obj = {
   name: 'Alice',
   greet: () => console.log(this.name), // undefined — this is global, not obj
@@ -115,7 +117,7 @@ fn();              // undefined — this === global (or strict mode)`,
   },
 };
 obj.delayed();`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-prototype',
@@ -144,7 +146,7 @@ Object.getPrototypeOf(dog) === animal; // true`,
 0 ?? 'default';  // 0 — only null/undefined trigger ??\n
 '' || 'default'; // "default" — empty string is falsy
 '' ?? 'default'; // "" — empty string is not null/undefined`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-optional-chaining',
@@ -202,13 +204,13 @@ original.nested.x; // 99 — shared reference!\n
 const deep = structuredClone(original);
 deep.nested.x = 0;
 original.nested.x; // 99 — fully independent`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-promise-all',
     front: 'Promise.all vs Promise.allSettled',
     back: 'Promise.all is all-or-nothing: the first rejection fails the whole batch. Promise.allSettled waits for everything and gives you a per-promise report of {status, value|reason} , it never rejects.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-spread-rest',
@@ -223,7 +225,7 @@ function sum(...nums) { return nums.reduce((a, b) => a + b, 0); }
 sum(1, 2, 3);            // 6\n
 const { id, ...rest } = { id: 1, name: 'A', age: 20 };
 // rest = { name: 'A', age: 20 }`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-pure-function',
@@ -251,31 +253,31 @@ add(1, 2); // 3 (cached)`,
   // ─── From GreatFrontEnd interview question bank ─────────────────────────────
   {
     id: 'js-data-types',
-    front: 'What are the data types in JavaScript?',
+    front: 'JS data types',
     back: 'Seven primitives , string, number, boolean, null, undefined, symbol, bigint , plus one compound type: object (covering arrays, functions, dates, plain objects). Watch out: typeof null wrongly says "object".',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-typeof-null',
-    front: 'What does typeof null return?',
+    front: 'typeof null',
     back: '"object" , a bug from JavaScript\'s first version, kept forever for backward compatibility. To actually test for null, write value === null.',
     code: `typeof null; // "object" , historical bug\n
 // Correct ways to check:
 value === null;
 value == null; // also catches undefined`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-null-vs-undefined',
     front: 'null vs undefined vs undeclared',
     back: 'undefined: declared but never given a value , the engine\'s default. null: a developer deliberately assigned "no value". undeclared: the variable doesn\'t exist at all , reading it throws a ReferenceError.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-string-to-number',
-    front: 'How do you convert a string to a number?',
+    front: 'String → Number conversion',
     back: 'Number(str) (strict , any junk gives NaN), parseInt(str, 10) / parseFloat(str) (lenient , they read digits until the first non-numeric character), or the unary plus: +str.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-call-vs-apply',
@@ -285,7 +287,7 @@ value == null; // also catches undefined`,
 const user = { name: 'Alice' };\n
 greet.call(user, 'Hello');    // "Hello, Alice"
 greet.apply(user, ['Hello']); // "Hello, Alice" — args as array`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-bind',
@@ -299,27 +301,27 @@ sayHello(); // "Hello, Alice" — this + arg locked in`,
   },
   {
     id: 'js-this-rules',
-    front: 'What determines `this` (the 4 rules)?',
+    front: 'this — the 4 rules',
     back: 'In precedence order: new Foo() → the new instance; call/apply/bind → the object you passed; obj.method() → obj; a plain fn() → the global object (undefined in strict mode). Arrow functions ignore all four and inherit `this` from their surroundings.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-new-keyword',
-    front: 'What does the `new` keyword do?',
+    front: 'new keyword',
     back: "Four steps: creates a fresh object, links its prototype to the constructor's .prototype, runs the constructor with `this` bound to the new object, and returns it (unless the constructor explicitly returns a different object).",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-func-decl-vs-expr',
     front: 'Function declaration vs function expression',
     back: 'A declaration (function foo(){}) is hoisted whole , callable before its line. An expression (const foo = function(){}) is just a variable holding a function, so calling it early throws.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-class-vs-constructor',
     front: 'ES2015 class vs ES5 function constructor',
     back: 'Same prototype machinery, nicer syntax. class adds extends/super for inheritance (vs manual prototype wiring), non-enumerable methods, automatic strict mode , and unlike function constructors, classes cannot be used before their line.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-higher-order-fn',
@@ -335,9 +337,9 @@ sayHello(); // "Hello, Alice" — this + arg locked in`,
   },
   {
     id: 'js-anonymous-fn',
-    front: 'Anonymous function , typical use?',
+    front: 'Anonymous function',
     back: "A function with no name, written where it's needed: inline callbacks to map/setTimeout/addEventListener, or wrapped as an IIFE to create a private scope.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-recursion',
@@ -362,13 +364,13 @@ add(2)(4); // 6`,
     id: 'js-partial-application',
     front: 'Currying vs partial application',
     back: 'Currying is strict: always one argument per call, f(a)(b)(c). Partial application is casual: fix ANY number of arguments now (f.bind(null, a, b)) and take the rest later.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-event-bubbling',
     front: 'Event bubbling vs capturing',
     back: 'Bubbling (the default): the event fires on the clicked element, then climbs UP through its ancestors to the root. Capturing is the reverse trip , root DOWN to the target , and needs {capture: true} to opt in.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-event-delegation',
@@ -386,61 +388,61 @@ add(2)(4); // 6`,
     id: 'js-prevent-vs-stop',
     front: 'preventDefault vs stopPropagation',
     back: "Two independent brakes: preventDefault() cancels the browser's built-in reaction (form submit, link navigation); stopPropagation() stops the event travelling on to ancestor elements' handlers.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-mouseenter-vs-mouseover',
     front: 'mouseenter vs mouseover',
     back: "mouseenter fires once, when the pointer enters the element itself, and doesn't bubble. mouseover bubbles and fires again every time the pointer moves onto a child inside the element , noisier.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-script-async-defer',
     front: 'script vs async vs defer',
     back: "A plain <script> halts HTML parsing while it downloads and runs. defer downloads in parallel and runs after parsing, preserving order. async downloads in parallel and runs the instant it's ready , order not guaranteed.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-cookie-storage',
     front: 'cookie vs localStorage vs sessionStorage',
     back: "Cookies (~4KB) travel to the server with every request , that's their point and their cost. localStorage (~5MB) stays in the browser and survives restarts. sessionStorage is the same but per-tab, wiped when the tab closes.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-innerhtml-vs-textcontent',
     front: 'innerHTML vs textContent',
     back: 'innerHTML parses the string as real HTML , powerful, and an XSS hole if the string came from a user. textContent treats everything as literal text , safe and faster. (innerText is textContent that respects CSS visibility.)',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-queryselector-vs-getbyid',
     front: 'querySelector vs getElementById',
     back: 'querySelector accepts any CSS selector ("#id", ".class", "ul > li") and returns the first match , flexible. getElementById does one thing , lookup by id , and is the fastest way to do it.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-promise-states',
     front: 'States of a Promise',
     back: 'Pending (still working) → fulfilled (succeeded with a value) OR rejected (failed with a reason). Once it settles either way, it is frozen , the state and value can never change again.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-promise-vs-callback',
-    front: 'Promises vs callbacks , why prefer Promises?',
+    front: 'Promises vs callbacks',
     back: 'Flat .then chains instead of nested "callback hell"; ONE .catch that handles a failure from any step; and built-in composition (all/allSettled/race/any) for running things in parallel.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-promise-all-use',
-    front: 'Promise.all , what does it do?',
+    front: 'Promise.all',
     back: "Runs promises in parallel and resolves with an array of all their results , but it's all-or-nothing: the first rejection makes the whole thing reject immediately (fail-fast).",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-promise-any-race',
     front: 'Promise.race vs Promise.any',
     back: 'race takes the FIRST promise to settle either way , a fast failure wins the race (useful for timeouts). any waits for the first SUCCESS, and only fails if every promise fails (AggregateError).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-async-await',
@@ -456,7 +458,7 @@ add(2)(4); // 6`,
   },
   {
     id: 'js-prototype-chain',
-    front: 'Prototype chain',
+    front: 'Prototype chain (lookup path)',
     back: "The lookup path for properties: object → its prototype → that one's prototype → ... → Object.prototype → null. It's how JavaScript implements inheritance , by delegating lookups, not copying methods.",
     category: 'Keyword'
   },
@@ -464,23 +466,23 @@ add(2)(4); // 6`,
     id: 'js-classical-vs-prototypal',
     front: 'Classical vs prototypal inheritance',
     back: 'Classical (Java/C++): classes are blueprints and instances are stamped-out copies. Prototypal (JavaScript): objects link directly to other objects and forward failed lookups to them at runtime , delegation, not copying.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-static-members',
-    front: 'Why use static class members?',
+    front: 'Static class members',
     back: 'For things that belong to the concept, not to any single instance , utility methods, constants, factory functions, an instances-created counter. Accessed as ClassName.member; invisible on instances.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-symbol',
-    front: 'What are Symbols used for?',
+    front: 'Symbol',
     back: "Property keys that can never collide with anyone else's , each Symbol() is unique. Also the language's extension hooks: well-known symbols like Symbol.iterator let your objects plug into for...of and other built-in behaviour.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-proxy',
-    front: 'What are Proxies used for?',
+    front: 'Proxy',
     back: 'Wrapping an object so every read, write, or check can be intercepted by your "trap" functions , enabling validation, logging, access control, and reactivity (Vue 3\'s entire reactivity system is Proxies).',
     code: `const handler = {
   get(obj, prop) {
@@ -490,61 +492,61 @@ add(2)(4); // 6`,
 const proxy = new Proxy({ name: 'Alice' }, handler);
 proxy.name;    // "Alice"
 proxy.age;     // "not found" — fallback instead of undefined`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-map-vs-object',
     front: 'Map vs plain object',
     back: 'Map: keys of any type, guaranteed order, a .size, directly iterable, faster for constant adding/removing. Object: string/symbol keys only, but JSON-serialisable and the natural choice for fixed-shape data.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-weakmap',
     front: 'Map/Set vs WeakMap/WeakSet',
     back: 'Weak versions hold their object keys loosely: if nothing else uses the key, the garbage collector may reclaim it, entry and all. The price: no iteration, no size. Great for caches and per-object metadata that should die with the object.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-set-equality',
-    front: 'How do Set/Map compare object keys?',
+    front: 'Set/Map key equality',
     back: 'By reference , "is it literally the same object?" , never by contents. So a Set happily holds two separate {a: 1} literals; they look identical but are different objects.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-mutable-immutable',
     front: 'Mutable vs immutable',
     back: 'Mutable values can be changed in place (objects, arrays). Immutable values cannot , primitives like strings and numbers never change; "modifying" them creates new values. Object.freeze makes an object immutable, but only one level deep.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-freeze-seal',
     front: 'Object.freeze vs Object.seal',
     back: 'freeze: fully read-only , no adding, deleting, or changing properties. seal: the shape is locked (no add/delete) but existing values can still be reassigned. Both stop at the first level , nested objects stay mutable.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-shallow-deep-copy-methods',
-    front: 'How do you deep-copy an object?',
+    front: 'Deep copy methods',
     back: 'structuredClone(obj) is the modern answer , handles nesting, Dates, Maps. The old JSON.parse(JSON.stringify(obj)) trick works but silently drops functions, undefined, and mangles Dates. Spread and Object.assign are shallow only.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-object-empty',
-    front: 'How do you check if an object is empty?',
+    front: 'Check empty object',
     back: 'Object.keys(obj).length === 0 covers the usual case. If symbol keys could exist too, Reflect.ownKeys(obj).length === 0 catches everything.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-has-property',
-    front: 'How do you check if an object has a property?',
+    front: 'Check object has a property',
     back: 'Object.hasOwn(obj, key) , the modern, reliable way to check the object\'s OWN properties. "key" in obj also answers yes for inherited properties from the prototype chain , sometimes what you want, often not.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-commonjs-vs-esm',
     front: 'CommonJS vs ES Modules',
     back: "CommonJS (require/module.exports): Node's original system, loads synchronously, resolved at runtime. ESM (import/export): the official standard , static and analysable at build time, which is what makes tree shaking possible.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-tree-shaking',
@@ -564,7 +566,7 @@ gen.next(); // { value: 1, done: false }
 gen.next(); // { value: 2, done: false }
 gen.next(); // { value: 3, done: false }
 gen.next(); // { value: undefined, done: true }`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-strict-mode',
@@ -582,7 +584,7 @@ gen.next(); // { value: undefined, done: true }`,
     id: 'js-fetch-vs-xhr',
     front: 'fetch vs XMLHttpRequest',
     back: 'fetch is the modern, promise-based API , cleaner and stream-friendly, with one trap: it does NOT reject on HTTP errors like 404, so check res.ok yourself. XHR is the older, callback-and-event-based predecessor.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-abortcontroller',
@@ -604,45 +606,49 @@ gen.next(); // { value: undefined, done: true }`,
   },
   {
     id: 'js-debugging-tools',
-    front: 'How do you debug JavaScript?',
+    front: 'Debugging tools',
     back: 'Browser DevTools first: breakpoints and step-through, the Network and Performance tabs. Plus console methods (table, trace, time), the debugger statement to break from code, source maps to debug original files, and linters to catch bugs before runtime.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-garbage-collection',
-    front: 'How does GC work in JS?',
+    front: 'Garbage collection (mark-and-sweep)',
     back: 'Automatically, by mark-and-sweep: starting from the "roots" (globals, the current stack), everything reachable gets marked; whatever isn\'t reachable gets reclaimed. Leaks happen when forgotten references , closures, listeners, globals , keep dead things reachable.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-extend-builtins',
-    front: 'Why not extend built-in objects?',
+    front: 'Extending built-in objects',
     back: 'Adding your own methods to Array.prototype and friends invites collisions , with other libraries doing the same, and with future language versions claiming that name (it has happened). The one legitimate case: a spec-compliant polyfill.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-xss',
     front: 'XSS (Cross-Site Scripting)',
     back: "An attacker's script running in your users' browsers, injected through input your site rendered as HTML. Defences: escape/sanitise output, use textContent instead of innerHTML for user data, and set a Content Security Policy.",
-    category: 'Keyword'
+    category: 'Keyword',
+    articleRefs: ['web-security-deep-dive']
   },
   {
     id: 'js-csrf',
     front: 'CSRF (Cross-Site Request Forgery)',
     back: "A malicious page making the user's browser fire authenticated requests at your site , the session cookie tags along automatically. Defences: anti-CSRF tokens, SameSite cookies, and Origin-header checks.",
-    category: 'Keyword'
+    category: 'Keyword',
+    articleRefs: ['web-security-deep-dive']
   },
   {
     id: 'js-csp',
     front: 'Content Security Policy (CSP)',
     back: "An HTTP header listing where scripts, styles, and images are allowed to come from , anything else refuses to run. The strongest browser-side backstop against XSS. Example: Content-Security-Policy: script-src 'self'.",
-    category: 'Keyword'
+    category: 'Keyword',
+    articleRefs: ['web-security-deep-dive']
   },
   {
     id: 'js-same-origin',
     front: 'Same-origin policy',
     back: 'The browser rule that a page may only read responses from its own origin (scheme + host + port) , stopping any random site from reading your logged-in accounts elsewhere. Servers relax it deliberately with CORS headers.',
-    category: 'Keyword'
+    category: 'Keyword',
+    articleRefs: ['web-security-deep-dive']
   },
   {
     id: 'js-singleton',
@@ -686,21 +692,21 @@ Counter.value();     // 1
   },
   {
     id: 'js-private-vars-closure',
-    front: 'How do closures create private variables?',
+    front: 'Closures — private variables',
     back: "Declare a variable inside an outer function and return inner functions that use it: outside code can't reach the variable directly, but the returned functions can , they're the only doorway to it.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-iife-fix',
-    front: 'Why does `function foo(){}();` fail as an IIFE?',
-    back: 'The parser reads it as a function DECLARATION followed by a stray, empty () , a syntax error. Wrapping it in parentheses , (function foo(){})() , forces it to be parsed as an expression, which can be called.',
-    category: 'Q&A'
+    front: 'IIFE syntax pitfall',
+    back: 'function foo(){}(); fails because the parser reads it as a function DECLARATION followed by a stray, empty () , a syntax error. Wrapping it in parentheses , (function foo(){})() , forces it to be parsed as an expression, which can be called.',
+    category: 'Keyword'
   },
   {
     id: 'js-load-vs-domcontentloaded',
     front: 'load vs DOMContentLoaded',
     back: 'DOMContentLoaded fires as soon as the HTML is parsed , the DOM is ready to work with. load fires later, once EVERYTHING (images, stylesheets, iframes) has finished downloading.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-intl',
@@ -712,43 +718,44 @@ Counter.value();     // 1
     id: 'js-passive-listener',
     front: 'Passive event listeners',
     back: 'addEventListener(type, fn, { passive: true }) is a promise to the browser: "I won\'t call preventDefault". Freed from waiting to find out, the browser scrolls immediately , fixing touch/wheel scroll jank.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-custom-events',
     front: 'Custom events',
     back: 'Make your own events: new CustomEvent("cart:add", { detail }) carries your payload, el.dispatchEvent(ev) fires it, and any addEventListener("cart:add") handler receives it. Lets separate parts of an app talk through the DOM.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-keyboard-events',
     front: 'Keyboard event handling',
     back: 'Listen for keydown/keyup and read e.key , a readable name like "Enter", "a", or "ArrowUp" , plus e.ctrlKey/e.shiftKey for modifiers. e.keyCode is deprecated; e.key replaced it.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-listener-leak',
-    front: 'How do event listeners cause memory leaks?',
+    front: 'Event listener memory leaks',
     back: 'A registered listener keeps its handler , and everything the handler\'s closure references , alive, even after the element is "gone". Clean up with removeEventListener, passing the SAME function reference you added (inline arrows can never be removed).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-race-condition',
     front: 'Race condition (async)',
     back: 'When the outcome depends on which async operation happens to finish first , classically, a slow OLD request resolving after a newer one and overwriting fresh results with stale ones. Fix: abort the previous request (AbortController) or discard out-of-date responses.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-realtime-updates',
     front: 'WebSockets vs SSE vs polling',
     back: 'Polling: ask the server again on a timer , simple, wasteful. SSE: the server streams to the client over HTTP, one-way, auto-reconnecting. WebSockets: a persistent two-way channel , the choice when the client also pushes (chat, games).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-service-worker',
     front: 'Service Worker',
     back: 'A background script that sits between your page and the network, intercepting requests , so it can answer from a cache (offline support) and power PWA features like push and background sync. HTTPS-only, no DOM access.',
-    category: 'Keyword'
+    category: 'Keyword',
+    articleRefs: ['pwa-introduction']
   },
   {
     id: 'js-web-components',
@@ -766,19 +773,19 @@ Counter.value();     // 1
     id: 'js-critical-rendering-path',
     front: 'Critical Rendering Path',
     back: "The browser's pipeline from code to pixels: HTML → DOM, CSS → CSSOM, combined into the render tree, then layout → paint → composite. CSS blocks rendering and a plain <script> blocks parsing , hence critical CSS and defer/async.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-script-defer-async',
-    front: 'script vs defer vs async',
+    front: 'script vs defer vs async (loading)',
     back: 'Plain <script>: parsing stops while it loads and runs. defer: loads in parallel, runs after parsing, keeps order , right for app code. async: loads in parallel, runs whenever ready, any order , right for independent scripts like analytics.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'js-progressive-enhancement',
     front: 'Progressive enhancement vs graceful degradation',
     back: 'Two directions to the same goal. Progressive enhancement: start with working HTML, layer CSS/JS on top. Graceful degradation: build the rich version, then add fallbacks. Either way, detect features ("IntersectionObserver" in window) , never sniff user agents.',
-    category: 'Q&A'
+    category: 'Keyword'
   }
 ];
 
@@ -787,13 +794,13 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-interface-vs-type',
     front: 'interface vs type',
     back: 'Both describe object shapes. interface can be reopened and extended (declaration merging) , the usual pick for object/class contracts. type can name ANY type: unions, tuples, mapped and conditional types.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-unknown-vs-any',
     front: 'unknown vs any',
     back: 'any switches type checking OFF for that value , anything goes, errors included. unknown is the safe version: the compiler forces you to narrow it (typeof checks etc.) before you can use it. Prefer unknown.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-generics',
@@ -825,19 +832,19 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-vs-js',
     front: 'TypeScript vs JavaScript',
     back: 'TypeScript is JavaScript plus a static type layer, compiled down to plain JS. Types, interfaces, generics, and access modifiers are checked at compile time and then completely erased , nothing type-related exists at runtime.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-superset',
-    front: 'Why is TS a “superset” of JS?',
+    front: 'TS as a superset of JS',
     back: "Every valid JavaScript file is already valid TypeScript , TS only ADDS optional features (mainly types) on top. That's why a codebase can adopt it file by file, gradually.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-basic-types',
     front: 'TypeScript basic types',
     back: "The JS primitives (boolean, number, string, null, undefined), arrays (T[]), plus TS's own: tuple (fixed-shape array), enum, any (unchecked), unknown (checked), void (returns nothing), never (never returns), and object/function types.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-tuple',
@@ -849,13 +856,13 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-void',
     front: 'void vs never',
     back: 'void: the function finishes but hands back nothing useful (returns undefined). never: the function never finishes normally at all , it always throws or loops forever.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-any',
-    front: 'Why avoid `any`?',
+    front: 'any (why avoid it)',
     back: 'Because it turns the type checker off for that value , and everything it flows into. Typos and wrong calls sail through to runtime. Use unknown instead (it forces narrowing) and keep any for genuine escape hatches.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-type-inference',
@@ -865,21 +872,21 @@ export const tsFlashcards: Flashcard[] = [
   },
   {
     id: 'ts-interface',
-    front: 'What is an interface?',
+    front: 'interface',
     back: 'A named contract for a shape: which properties and methods something must have. Supports optional members (?), readonly, call signatures, and index signatures , and classes can `implements` it.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-enum-when',
-    front: 'When use an enum?',
+    front: 'enum , when to use',
     back: 'When a value must be one of a fixed set of named constants , HTTP methods, weekdays, states , instead of magic strings/numbers. String enums log readable values; union literals ("GET" | "POST") do the same job with no runtime output.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-function-types',
-    front: 'How do you type a function?',
+    front: 'Typing a function',
     back: 'Annotate the parameters and the return: function f(a: number): string. The parameter list also supports optional (a?), defaults (a = 1), and rest (...a: number[]) , plus overloads for input-dependent signatures.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-overloads',
@@ -891,13 +898,13 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-classes-vs-es6',
     front: 'TS classes vs ES6 classes',
     back: 'Same classes, more compile-time tools: access modifiers (public/private/protected), readonly fields, abstract classes, parameter properties (declare + assign in the constructor signature), and typed accessors.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-access-modifiers',
     front: 'public / private / protected',
     back: 'Who may access a class member: public (the default) , anyone; private , only code inside the declaring class; protected , the class plus its subclasses. All enforced at compile time only (erased at runtime, unlike JS #fields).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-abstract-class',
@@ -919,9 +926,9 @@ export const tsFlashcards: Flashcard[] = [
   },
   {
     id: 'ts-inheritance',
-    front: 'How do you implement inheritance?',
+    front: 'Implementing inheritance',
     back: "class Child extends Parent, with super(...) called first in the child constructor. Override a method by redeclaring it , and call super.method() inside when you want to build on the parent's version rather than replace it.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-tsconfig',
@@ -931,15 +938,15 @@ export const tsFlashcards: Flashcard[] = [
   },
   {
     id: 'ts-strict',
-    front: 'What does "strict": true enable?',
+    front: '"strict": true',
     back: 'The whole family of strict checks at once , noImplicitAny (no silent any), strictNullChecks (null/undefined must be handled explicitly), strictFunctionTypes, noImplicitThis, and more. The recommended baseline for any new project.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-readonly-vs-const',
     front: 'const vs readonly',
     back: "They lock different things: const locks a VARIABLE (can't point it elsewhere); readonly locks a PROPERTY on a class or interface (can't reassign after init). Neither freezes the contents of the object itself.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
 
   // ─── Focused subset (topics 16–39 from the question bank) ───────────────────
@@ -953,7 +960,7 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-assertion-vs-casting',
     front: 'Type assertion vs type casting',
     back: 'An assertion (as) only changes what the COMPILER believes , no code is emitted, the value is untouched. Real casting , Number(x), String(x) , actually converts the value at runtime. Same word in other languages, very different things here.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-as-const',
@@ -977,7 +984,7 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-type-alias-vs-interface',
     front: 'Type alias vs interface (again)',
     back: 'type can name anything , unions, tuples, primitives, mapped/conditional types. interface is specialised for object/class shapes, and only interfaces can be reopened (declaration merging) , which is why libraries expose interfaces for augmentation.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-generic-constraint',
@@ -989,7 +996,7 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-keyof-constraint',
     front: '<T, K extends keyof T>',
     back: "The typed-lookup pattern: K must be a real key of T, so get(obj, key) returns exactly T[K] , and a typo'd key is a compile error, not a runtime undefined.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-decorator',
@@ -1001,13 +1008,13 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-decorator-kinds',
     front: 'Kinds of decorators',
     back: 'Five targets: class, method, accessor, property, and parameter decorators. They run once, when the class is defined (not per instance), and can observe or replace what they decorate , logging, validation, DI registration.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-modules-vs-namespaces',
     front: 'Modules vs namespaces',
     back: "ES modules , one file, import/export , are the standard; use them. namespace X {} is TypeScript's legacy way of grouping code in a shared global scope, from before modules were universal , avoid in new code.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-module-resolution',
@@ -1025,7 +1032,7 @@ export const tsFlashcards: Flashcard[] = [
     id: 'ts-definitelytyped',
     front: 'DefinitelyTyped / @types',
     back: "The community's giant collection of .d.ts files for JS libraries that don't ship their own types, published as @types packages (npm i -D @types/lodash). The compiler picks them up automatically.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-static-keyword',
@@ -1051,7 +1058,7 @@ export const tsFlashcards: Flashcard[] = [
     back: 'expr satisfies Type checks expr against Type without widening it , unlike `:` (which widens) or `as` (which skips checking entirely). You get validation AND the narrowest inferred type.',
     code: `const palette = { red: [255, 0, 0], green: '#0f0' } satisfies Record<string, string | number[]>;
 palette.green.toUpperCase(); // still known as string, not the union`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-template-literal-types',
@@ -1079,7 +1086,7 @@ type Setter<in T> = (value: T) => void;`,
     back: "Explicitly marks an import/export as type-only, guaranteeing it's fully erased with zero runtime trace , needed by single-file transpilers (esbuild, SWC, isolatedModules) that can't always tell type from value imports.",
     code: `import type { Component } from 'react';
 import { type ReactNode, useState } from 'react'; // mixed`,
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'ts-awaited',

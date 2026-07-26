@@ -1,6 +1,7 @@
 import type { Flashcard } from '@/types/content';
 
-// ─── React flashcards — keyword/abbreviation defs + small Q&A ─────────────────
+// ─── React flashcards — short keyword/terminology defs. Front is always a term or short
+// phrase (not a full question); back is a quick, plain-English explanation. ───
 
 export const reactFlashcards: Flashcard[] = [
   {
@@ -23,21 +24,21 @@ export const reactFlashcards: Flashcard[] = [
   },
   {
     id: 'react-key',
-    front: 'Why do lists need a `key`?',
+    front: 'key prop (lists)',
     back: 'A key tells React "this item is the same one as last render, just maybe moved" , so it keeps each item\'s DOM and state where they belong. Avoid the array index when the list can reorder.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-state-vs-props',
     front: 'state vs props',
     back: "Props come from the parent and are read-only , the child can't change them. State belongs to the component itself, and updating it (via setState/useState) triggers a re-render.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-useeffect-deps',
-    front: 'What does the useEffect dependency array control?',
+    front: 'useEffect dependency array',
     back: 'How often the effect re-runs. [] means once after mount; [a, b] means whenever a or b changes; leaving it off means after every single render.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-usememo',
@@ -61,7 +62,7 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-controlled',
     front: 'Controlled vs uncontrolled component',
     back: "Controlled: React state drives the input's value on every keystroke. Uncontrolled: the browser keeps the value, and you read it when needed through a ref.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-lifting-state',
@@ -71,9 +72,9 @@ export const reactFlashcards: Flashcard[] = [
   },
   {
     id: 'react-context',
-    front: 'When should you use Context?',
+    front: 'Context , when to use',
     back: 'For values that many components at different depths need , theme, logged-in user, locale , so you don\'t pass props through every level ("prop drilling"). It\'s a delivery mechanism, not a full state manager.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-useref',
@@ -85,7 +86,7 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-keys-rules',
     front: 'Rules of Hooks',
     back: 'Call hooks only at the top level (never inside ifs or loops) and only from React components or custom hooks. React tracks hooks by call order, so the order must be identical every render.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-fragment',
@@ -103,45 +104,45 @@ export const reactFlashcards: Flashcard[] = [
   // ─── From GreatFrontEnd React interview question bank ───────────────────────
   {
     id: 'react-what-is',
-    front: 'What is React?',
+    front: 'React',
     back: 'A JavaScript library for building UIs out of reusable components. Its key traits: declarative (describe the UI, React updates the DOM), component-based, virtual DOM, JSX, and one-way data flow.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-node-element-component',
     front: 'React Node vs Element vs Component',
     back: 'Component: the function (the recipe). Element: the frozen object JSX produces describing one piece of UI (one order from the recipe). Node: anything renderable at all , elements, strings, numbers, null…',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-jsx-compiles',
-    front: 'What does JSX compile to?',
+    front: 'JSX compilation',
     back: 'Plain function calls. <div>Hi</div> becomes React.createElement("div", null, "Hi") , the transform is done at build time by Babel or SWC.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-index-key-consequence',
-    front: 'Consequence of using array index as key?',
+    front: 'Array index as key (consequence)',
     back: 'When items reorder, insert, or delete, the indexes shift , so React matches old items to the wrong new ones. Input text, checkboxes, and focus visibly stick to the wrong rows. Only safe for lists that never change order.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-key-reset-state',
-    front: 'How does changing a `key` reset state?',
+    front: 'key change (state reset)',
     back: 'A new key tells React "this is a different component now" , it unmounts the old instance and mounts a fresh one with clean state. It\'s the official way to fully reset a component (e.g. <Form key={userId} />).',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-useeffect-vs-uselayouteffect',
     front: 'useEffect vs useLayoutEffect',
     back: 'useEffect runs after the browser paints , non-blocking, right for almost everything. useLayoutEffect runs before paint, blocking it , use it only to measure the DOM and adjust it so the user never sees a flicker.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-functional-setstate',
-    front: 'When use the updater form setState(prev => …)?',
+    front: 'Updater form of setState',
     back: 'Whenever the next state depends on the previous one , especially with multiple updates in one handler, or updates after an await/timeout. The function always receives the latest value; the plain form may read a stale one captured by the closure.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-usereducer',
@@ -157,21 +158,21 @@ export const reactFlashcards: Flashcard[] = [
   },
   {
     id: 'react-re-rendering',
-    front: 'What does re-rendering mean?',
+    front: 'Re-rendering',
     back: 'React calls your component function again (because state or props changed) to get a fresh description of the UI, compares it with the old one, and applies only the actual differences to the DOM.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-forwardref',
-    front: 'forwardRef , still needed?',
+    front: 'forwardRef',
     back: 'Not in React 19 , function components now accept `ref` like any other prop. Before that, forwardRef was the required wrapper for letting a parent attach a ref to something inside a child.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-no-mutate-state',
-    front: 'Why not mutate state directly?',
+    front: 'Mutating state directly (why avoid)',
     back: 'React detects changes by comparing references (Object.is). Mutating in place keeps the same reference, so React thinks nothing changed , re-renders get skipped, memo and effect deps break. Always create a new object or array.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-error-boundary',
@@ -213,7 +214,7 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-one-way-flow',
     front: 'One-way data flow',
     back: 'Data goes down (parent to child via props); requests to change it go up (child calls a callback). Unlike two-way binding, every value has one owner and one path of change , which is what makes React apps predictable.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-render-props',
@@ -237,7 +238,7 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-presentational-container',
     front: 'Presentational vs container components',
     back: '"Dumb" presentational components decide how things look (props in, JSX out); "smart" containers handle data and state. Dan Abramov, who named the pattern, now says: just use custom hooks instead.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-fiber',
@@ -265,39 +266,39 @@ export const reactFlashcards: Flashcard[] = [
   },
   {
     id: 'react-data-fetching',
-    front: 'How should you load async data in modern React?',
+    front: 'Async data loading (modern React)',
     back: "Use a data library (TanStack Query, SWR, RTK Query), Server Components, or route loaders , they handle caching, races, and retries for you. Hand-rolled useEffect+fetch is the last resort. React 19's use() reads a promise and suspends.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-fetch-pitfalls',
     front: 'Common data-fetching pitfalls',
     back: 'Missing loading/error states; requests that outlive the component (no abort on unmount); race conditions where an old, slow response overwrites a newer one; fetching during render (infinite loop); and sequential "waterfall" fetches that should run in parallel.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-state-context-store',
-    front: 'state vs context vs external store , how to choose?',
+    front: 'state vs context vs external store',
     back: 'Match the tool to the kind of state: useState/useReducer for local UI state; Context for slow-changing shared values (theme, auth); Zustand/Redux for frequently-changing shared state; TanStack Query/SWR for anything fetched from a server.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-context-perf',
-    front: 'How to reduce context re-renders?',
+    front: 'Context re-renders (reducing)',
     back: 'Split state and dispatch into separate contexts; memoize the value passed to the Provider (an inline object is "new" every render); wrap consumers in React.memo; or use use-context-selector to subscribe to a slice. The React Compiler automates much of this.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-anti-patterns',
     front: 'Common React anti-patterns',
     back: 'Mutating state in place; copying props into state; using useEffect to compute derived data (just compute it in render); index keys on dynamic lists; stale-closure effects from missing deps; forgetting cleanup; and blanket useMemo/useCallback without profiling.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-testing',
-    front: 'How do you test React apps?',
+    front: 'Testing React apps',
     back: 'Jest or Vitest as the runner, React Testing Library to test what the user sees (not implementation details), user-event for realistic interactions, MSW to mock the network, and Playwright/Cypress for full end-to-end flows.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-compiler',
@@ -325,27 +326,27 @@ export const reactFlashcards: Flashcard[] = [
   },
   {
     id: 'react-module-bundler',
-    front: 'What does a bundler (Webpack/Vite) do?',
+    front: 'Bundler (Webpack/Vite)',
     back: 'Follows your import graph from the entry file and packages all modules into optimised files the browser can load , compiling JSX/TS along the way, plus code splitting, tree shaking, minification, and cache-busting file names.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-create-react-app',
-    front: 'create-react-app , still recommended?',
+    front: 'create-react-app',
     back: 'No. CRA was the classic zero-config starter but is deprecated and unmaintained. Start SPAs with Vite, or use a framework like Next.js for production apps.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-a11y-essentials',
     front: 'a11y essentials in React',
     back: 'Use semantic HTML (<button>, <label>) , it gives keyboard support for free. Connect every label to its input, manage focus when modals open or routes change, and lint with eslint-plugin-jsx-a11y. In JSX: htmlFor/className, but aria-* and role written as-is.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-cicd',
-    front: 'CI/CD for a React app , typical pipeline?',
+    front: 'CI/CD pipeline (React app)',
     back: 'On every push, CI (continuous integration) runs lint, type-check, tests, and a build; on merge, CD (continuous deployment) ships the built bundle to a host or CDN , Vercel, Netlify, S3+CloudFront. Common tools: GitHub Actions, GitLab CI.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
 
   // ─── ADDED: gaps surfaced from the "React interview questions" PDF sweep ────
@@ -353,25 +354,25 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-proptypes',
     front: 'PropTypes',
     back: 'The prop-types package checks prop shapes at runtime in plain-JS codebases, logging a dev-only console warning on mismatch. Unlike TypeScript, it only catches problems on code paths that actually run , and never in production.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-shadow-vs-virtual-dom',
     front: 'Shadow DOM vs Virtual DOM',
     back: "Completely unrelated despite the names. Shadow DOM is a browser feature that isolates a Web Component's DOM and CSS from the page (encapsulation). Virtual DOM is React's in-memory diffing technique for efficient updates.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-vs-reactdom',
     front: 'react vs react-dom packages',
     back: 'react is the platform-agnostic core (createElement, hooks, Component) , the same core React Native uses. react-dom is the web renderer (createRoot); react-dom/server adds renderToString for SSR. The split lets one React target many platforms.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-key-source',
-    front: 'Where should a key value come from?',
+    front: 'key value (source)',
     back: "From the data itself: a database row's id is ideal. For items created on the client (new todo rows), generate an id once at creation , a counter or crypto.randomUUID() , and keep it with the item. Never re-derive keys from the array index each render.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-lifting-state-up',
@@ -383,7 +384,7 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-force-update',
     front: 'forceUpdate()',
     back: "A class-component escape hatch that forces a re-render without any state change, skipping shouldComponentUpdate. There's deliberately no hook equivalent , needing it is a sign the state isn't modelled right.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-synthetic-events',
@@ -395,13 +396,13 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-prop-drilling',
     front: 'Prop Drilling',
     back: "Passing data down through components that don't use it themselves, just to reach a deeply nested child. Fixes: Context, a state library, or composition , pass the finished component down as children instead of the raw data.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-dangerously-set-innerhtml',
     front: 'dangerouslySetInnerHTML',
     back: "The escape hatch for injecting a raw HTML string ({ __html: string }), skipping React's automatic escaping. The name is a warning: unsanitized content here is a direct XSS (script-injection) hole , run it through DOMPurify first.",
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-purecomponent',
@@ -413,24 +414,24 @@ export const reactFlashcards: Flashcard[] = [
     id: 'react-devtools-profiler',
     front: 'React DevTools Profiler',
     back: 'The Profiler tab in React DevTools records which components rendered, why, and how long each took , flame graphs per commit. It\'s the practical answer to "how do you find unnecessary or slow re-renders?"',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-vs-react-native',
     front: 'React vs React Native',
     back: 'Same component-and-hooks model, different output. React renders HTML into the browser DOM; React Native uses a different renderer that produces real native mobile UI elements , not HTML, and not a WebView.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-effect-deps-objectis',
-    front: 'How does useEffect compare dependencies?',
+    front: 'useEffect dependency comparison',
     back: 'Each dependency is compared with Object.is (like === but handles NaN correctly). Objects, arrays, and functions compare by reference , so an inline literal in the deps array counts as "changed" on every render and re-fires the effect.',
-    category: 'Q&A'
+    category: 'Keyword'
   },
   {
     id: 'react-render-vs-commit-phase',
     front: 'Render phase vs Commit phase',
     back: 'Trigger → Render → Commit. Render: React calls your components and computes the diff , this work can be paused or thrown away. Commit: React applies the changes to the real DOM and runs layout effects , then the browser paints.',
-    category: 'Q&A'
+    category: 'Keyword'
   }
 ];
