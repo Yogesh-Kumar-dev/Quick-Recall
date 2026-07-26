@@ -1,14 +1,17 @@
 'use client';
 
+import { SegmentedControl, SegmentedControlOption } from '@leafygreen-ui/segmented-control';
 import { Activity, type ReactNode, useEffect, useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
 import CodeBlock from '@/components/content/code-block';
-import Segmented from './segmented';
-import ProblemStatement from './problem-statement';
-import PracticePanel from './practice-panel';
-import usePracticeSession from './use-practice-session';
+import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import type { ProblemMeta } from '@/types/content';
+import PracticePanel from './practice-panel';
+import ProblemStatement from './problem-statement';
+import usePracticeSession from './use-practice-session';
+
+// leafygreen's polymorphic component type isn't a valid JSX.ElementType under React 19's stricter types.
+const Option = SegmentedControlOption as unknown as (props: { value: string; disabled?: boolean; children?: ReactNode }) => ReactNode;
 
 interface VersionData {
   component: ReactNode;
@@ -23,6 +26,12 @@ interface Props {
 const VERSIONS = [
   { value: 'jsx' as const, label: 'JSX' },
   { value: 'tsx' as const, label: 'TSX' }
+];
+
+const VIEW_TABS = [
+  { value: 'preview', label: 'Preview' },
+  { value: 'code', label: 'Code' },
+  { value: 'practice', label: 'Practice' }
 ];
 
 export default function ProblemShell({ problem, versions }: Props) {
@@ -53,34 +62,42 @@ export default function ProblemShell({ problem, versions }: Props) {
         />
       </div>
 
-      <Tabs value={tab} onValueChange={(v) => setTab(v as string)} className="w-full gap-0">
+      <div className="w-full">
         <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
-          <TabsList>
-            <TabsTrigger value="preview">Preview</TabsTrigger>
-            <TabsTrigger value="code" disabled={locked}>
-              Code
-            </TabsTrigger>
-            <TabsTrigger value="practice">Practice</TabsTrigger>
-          </TabsList>
-          <Segmented options={VERSIONS} value={active} onChange={(v) => setActive(v as 'jsx' | 'tsx')} />
+          <SegmentedControl size="small" value={tab} onChange={setTab}>
+            {VIEW_TABS.map((t) => (
+              <Option key={t.value} value={t.value} disabled={t.value === 'code' && locked}>
+                {t.label}
+              </Option>
+            ))}
+          </SegmentedControl>
+          <SegmentedControl size="small" value={active} onChange={(v) => setActive(v as 'jsx' | 'tsx')}>
+            {VERSIONS.map((v) => (
+              <Option key={v.value} value={v.value}>
+                {v.label}
+              </Option>
+            ))}
+          </SegmentedControl>
         </div>
 
-        {/* keepMounted lets base-ui render both panels; <Activity> prerenders the
-            hidden one at low priority and defers its effects until it's shown. */}
-        <TabsContent value="preview" keepMounted className="max-h-[80vh] overflow-auto p-4">
+        {/* Preview/Code stay mounted (via `hidden`) so <Activity> can prerender the
+            inactive one at low priority and defer its effects until it's shown. */}
+        <div className={cn('max-h-[80vh] overflow-auto p-4', tab !== 'preview' && 'hidden')}>
           <Activity mode={tab === 'preview' ? 'visible' : 'hidden'}>{current.component}</Activity>
-        </TabsContent>
-        <TabsContent value="code" keepMounted className="max-h-[80vh] overflow-auto p-4">
+        </div>
+        <div className={cn('max-h-[80vh] overflow-auto p-4', tab !== 'code' && 'hidden')}>
           <Activity mode={tab === 'code' ? 'visible' : 'hidden'}>
             <div className="mc-code">
               <CodeBlock code={current.code} language={active} />
             </div>
           </Activity>
-        </TabsContent>
-        <TabsContent value="practice" className="max-h-[80vh] overflow-auto p-4">
-          <PracticePanel session={session} solutionCode={current.code} language={active} />
-        </TabsContent>
-      </Tabs>
+        </div>
+        {tab === 'practice' && (
+          <div className="max-h-[80vh] overflow-auto p-4">
+            <PracticePanel session={session} solutionCode={current.code} language={active} />
+          </div>
+        )}
+      </div>
     </Card>
   );
 }

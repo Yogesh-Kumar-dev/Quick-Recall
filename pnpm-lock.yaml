@@ -53,6 +53,12 @@ importers:
       '@leafygreen-ui/leafygreen-provider':
         specifier: ^5.0.4
         version: 5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@leafygreen-ui/segmented-control':
+        specifier: ^11.1.0
+        version: 11.1.0(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/tabs':
+        specifier: ^17.0.11
+        version: 17.0.11(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
       '@sentry/nextjs':
         specifier: ^10.63.0
         version: 10.63.0(@opentelemetry/core@2.9.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.9.0(@opentelemetry/api@1.9.1))(next@16.2.9(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(webpack@5.108.4(esbuild@0.28.1)(lightningcss@1.32.0))
@@ -1835,6 +1841,11 @@ packages:
   '@leafygreen-ui/ripple@2.0.7':
     resolution: {integrity: sha512-+Ixyb5deA5S+tbLQl4Iad/JWVQhYLeET6tstzYmE/sk6YfJWDyWH8CYVJ3Q9wdZXBJlXoZAi1Vy4ff4x9GSXGA==}
 
+  '@leafygreen-ui/segmented-control@11.1.0':
+    resolution: {integrity: sha512-TbMFGY3Lt8lEETuiA/CyaBxhcEos1xxyUzoEaImnvrS2Os0RL4WA03CWjeTvuPJ7z2RfBJ7kEte2jeNDgn+E+Q==}
+    peerDependencies:
+      '@leafygreen-ui/leafygreen-provider': ^5.0.0 || ^4.0.0 || ^3.2.0
+
   '@leafygreen-ui/select@17.0.3':
     resolution: {integrity: sha512-cIKJvT+LM90NK+yh6+ob5zfU/ber+1mACenLXvuiFXaAmH7yOe7frnYSh1QlhCizcPqC81x+m5T8W0qUk7Dqvw==}
     peerDependencies:
@@ -1842,6 +1853,11 @@ packages:
 
   '@leafygreen-ui/skeleton-loader@3.0.11':
     resolution: {integrity: sha512-jJYdlrQRZDqwBFMIbHTSr5q1h7K9MdS7u4RDrkWoVk5StKGX9brXFLGGSVFWogGMby4vIqRFoeLZLlO/YLO1NA==}
+    peerDependencies:
+      '@leafygreen-ui/leafygreen-provider': ^5.0.0 || ^4.0.0 || ^3.2.0
+
+  '@leafygreen-ui/tabs@17.0.11':
+    resolution: {integrity: sha512-dC+RMjkJh66Y4w00Y00g+1Bl3oT7m+paJSd1KwhvBVz0zus0vNAAz5XkJcCQvL8+WesPVjrX22ZdBlkaKQGvYA==}
     peerDependencies:
       '@leafygreen-ui/leafygreen-provider': ^5.0.0 || ^4.0.0 || ^3.2.0
 
@@ -9223,6 +9239,24 @@ snapshots:
       - react
       - supports-color
 
+  '@leafygreen-ui/segmented-control@11.1.0(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)':
+    dependencies:
+      '@leafygreen-ui/emotion': 5.2.0(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/hooks': 9.3.1(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/icon': 14.9.0(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/leafygreen-provider': 5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@leafygreen-ui/lib': 15.7.0(react@19.2.4)
+      '@leafygreen-ui/palette': 5.0.2
+      '@leafygreen-ui/polymorphic': 3.1.0(react@19.2.4)
+      '@leafygreen-ui/tokens': 4.2.2(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/typography': 22.2.4(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
+      lodash: 4.18.1
+      polished: 4.3.1
+    transitivePeerDependencies:
+      - '@types/react'
+      - react
+      - supports-color
+
   '@leafygreen-ui/select@17.0.3(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@leafygreen-ui/button': 25.2.1(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
@@ -9260,6 +9294,24 @@ snapshots:
       '@leafygreen-ui/tokens': 4.2.2(@types/react@19.2.17)(react@19.2.4)
       '@leafygreen-ui/typography': 22.2.4(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
       lodash: 4.18.1
+    transitivePeerDependencies:
+      - '@types/react'
+      - react
+      - supports-color
+
+  '@leafygreen-ui/tabs@17.0.11(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)':
+    dependencies:
+      '@leafygreen-ui/a11y': 3.0.5(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/descendants': 3.1.0(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/emotion': 5.2.0(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/hooks': 9.3.1(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/leafygreen-provider': 5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@leafygreen-ui/lib': 15.7.0(react@19.2.4)
+      '@leafygreen-ui/palette': 5.0.2
+      '@leafygreen-ui/polymorphic': 3.1.0(react@19.2.4)
+      '@leafygreen-ui/tokens': 4.2.2(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/typography': 22.2.4(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
+      '@lg-tools/test-harnesses': 0.3.4
     transitivePeerDependencies:
       - '@types/react'
       - react

@@ -1,20 +1,29 @@
 'use client';
 
-import { Activity, useEffect, useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
+import { SegmentedControl, SegmentedControlOption } from '@leafygreen-ui/segmented-control';
+import { Activity, type ReactNode, useEffect, useState } from 'react';
 import CodeBlock from '@/components/content/code-block';
-import Segmented from './segmented';
-import JsProblemStatement from './js-problem-statement';
+import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import type { ApproachData, JsProblemMeta } from '@/types/content';
 import ApproachDetails from './approach-details';
+import JsProblemStatement from './js-problem-statement';
 import PracticePanel from './practice-panel';
 import usePracticeSession from './use-practice-session';
-import type { JsProblemMeta, ApproachData } from '@/types/content';
+
+// leafygreen's polymorphic component type isn't a valid JSX.ElementType under React 19's stricter types.
+const Option = SegmentedControlOption as unknown as (props: { value: string; disabled?: boolean; children?: ReactNode }) => ReactNode;
 
 interface Props {
   problem: JsProblemMeta;
   approaches: ApproachData[];
 }
+
+const VIEW_TABS = [
+  { value: 'details', label: 'Details' },
+  { value: 'code', label: 'Code' },
+  { value: 'practice', label: 'Practice' }
+];
 
 export default function JsProblemShell({ problem, approaches }: Props) {
   const [idx, setIdx] = useState(0);
@@ -44,48 +53,50 @@ export default function JsProblemShell({ problem, approaches }: Props) {
         />
       </div>
 
-      <Tabs value={tab} onValueChange={(v) => setTab(v as string)} className="w-full gap-0">
+      <div className="w-full">
         <div className="flex items-center gap-2 border-b border-border px-4 py-2">
-          <TabsList>
-            <TabsTrigger value="details" disabled={locked}>
-              Details
-            </TabsTrigger>
-            <TabsTrigger value="code" disabled={locked}>
-              Code
-            </TabsTrigger>
-            <TabsTrigger value="practice">Practice</TabsTrigger>
-          </TabsList>
+          <SegmentedControl size="small" value={tab} onChange={setTab}>
+            {VIEW_TABS.map((t) => (
+              <Option key={t.value} value={t.value} disabled={t.value !== 'practice' && locked}>
+                {t.label}
+              </Option>
+            ))}
+          </SegmentedControl>
           {locked && <span className="text-xs text-muted-foreground">Solution locked during practice</span>}
         </div>
 
-        {/* keepMounted lets base-ui render both panels; <Activity> prerenders the
-            hidden one at low priority and defers its effects until it's shown. The approach
-            picker only shows under Code — Details always describes whichever approach was last
-            picked there (matches legacy's JsProblemLayout). */}
-        <TabsContent value="details" keepMounted className="max-h-[75vh] overflow-auto p-4">
+        {/* Details/Code stay mounted (via `hidden`) so <Activity> can prerender the inactive
+            one at low priority and defer its effects until it's shown. The approach picker only
+            shows under Code — Details always describes whichever approach was last picked there
+            (matches legacy's JsProblemLayout). */}
+        <div className={cn('max-h-[75vh] overflow-auto p-4', tab !== 'details' && 'hidden')}>
           <Activity mode={tab === 'details' ? 'visible' : 'hidden'}>
             <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Approach: {current.label}</p>
             <ApproachDetails approach={current} />
           </Activity>
-        </TabsContent>
-        <TabsContent value="code" keepMounted className="max-h-[75vh] overflow-auto p-4">
+        </div>
+        <div className={cn('max-h-[75vh] overflow-auto p-4', tab !== 'code' && 'hidden')}>
           <Activity mode={tab === 'code' ? 'visible' : 'hidden'}>
-            <div className="mb-3 flex items-center gap-2 overflow-x-auto">
-              <Segmented
-                options={approaches.map((a, i) => ({ label: a.label, value: String(i) }))}
-                value={String(idx)}
-                onChange={(v) => setIdx(Number(v))}
-              />
+            <div className="mb-3 overflow-x-auto">
+              <SegmentedControl size="small" value={String(idx)} onChange={(v) => setIdx(Number(v))}>
+                {approaches.map((a, i) => (
+                  <Option key={a.label} value={String(i)}>
+                    {a.label}
+                  </Option>
+                ))}
+              </SegmentedControl>
             </div>
             <div className="mc-code">
               <CodeBlock code={current.code} language="javascript" />
             </div>
           </Activity>
-        </TabsContent>
-        <TabsContent value="practice" className="max-h-[75vh] overflow-auto p-4">
-          <PracticePanel session={session} solutionCode={current.code} language="javascript" />
-        </TabsContent>
-      </Tabs>
+        </div>
+        {tab === 'practice' && (
+          <div className="max-h-[75vh] overflow-auto p-4">
+            <PracticePanel session={session} solutionCode={current.code} language="javascript" />
+          </div>
+        )}
+      </div>
     </Card>
   );
 }
