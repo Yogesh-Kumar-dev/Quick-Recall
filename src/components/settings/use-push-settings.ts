@@ -11,6 +11,31 @@ import { requestPermission } from '@/notifications/manager';
 
 // ==============================|| SETTINGS - usePushSettings HOOK ||============================== //
 
+// Full error detail (name, code, message, response body) crammed into the toast itself — this
+// flow fails almost exclusively on mobile PWAs where there's no console to check, so the toast
+// IS the debug tool.
+function describeError(err: unknown): string {
+  const parts: string[] = [];
+  if (axios.isAxiosError(err)) {
+    parts.push(`axios ${err.code ?? ''} status=${err.response?.status ?? 'none'}`.trim());
+    if (err.response?.data) parts.push(`response=${JSON.stringify(err.response.data)}`);
+    parts.push(err.message);
+  } else if (err instanceof Error) {
+    const code = (err as { code?: string }).code;
+    if (code) parts.push(`code=${code}`);
+    parts.push(`${err.name}: ${err.message}`);
+  } else {
+    parts.push(String(err));
+  }
+  return parts.join('\n');
+}
+
+// Sticks around (no auto-dismiss) so the full detail can be read/screenshotted on a phone.
+function reportError(action: string, err: unknown): void {
+  console.error(`[push] ${action} failed:`, err);
+  toast.error(`Could not ${action} push notifications`, { description: describeError(err), duration: Number.POSITIVE_INFINITY });
+}
+
 export default function usePushSettings() {
   const settings = useLiveQuery(() => pushSettingsRepository.get());
   const loading = settings === undefined;
@@ -50,8 +75,8 @@ export default function usePushSettings() {
 
       await pushSettingsRepository.save({ deviceId, fcmToken, enabled: true });
       toast.success('Push notifications enabled.');
-    } catch {
-      toast.error('Could not enable push notifications.');
+    } catch (err) {
+      reportError('enable', err);
     } finally {
       setBusy(false);
     }
@@ -64,8 +89,8 @@ export default function usePushSettings() {
       await axios.post('/api/notifications/unregister', { deviceId: settings.deviceId });
       await pushSettingsRepository.save({ enabled: false });
       toast.success('Push notifications disabled.');
-    } catch {
-      toast.error('Could not disable push notifications.');
+    } catch (err) {
+      reportError('disable', err);
     } finally {
       setBusy(false);
     }
