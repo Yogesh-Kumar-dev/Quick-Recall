@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import Breadcrumbs from '@/components/layout/breadcrumbs';
 import { ProductTour } from '@/components/layout/product-tour';
 import OfflineSectionGuard from '@/components/pwa/offline-section-guard';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -26,6 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarInset>
           <AppHeader />
           <div id="main-content" tabIndex={-1} className="flex flex-1 flex-col p-4 focus:outline-none md:p-6">
+            <Breadcrumbs />
             <OfflineSectionGuard>{children}</OfflineSectionGuard>
           </div>
         </SidebarInset>
