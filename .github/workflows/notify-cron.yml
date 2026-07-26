@@ -1,0 +1,18 @@
+name: Push notification cron
+
+# Hits the deployed /api/cron/send-quote route directly. Bypasses Vercel's own Cron feature
+# (Hobby plan caps that at once/day) — GH Actions calling the route isn't subject to that limit.
+on:
+  schedule:
+    - cron: '30 1,4,7,10,13,16 * * *' # 7am/10am/1pm/4pm/7pm/10pm IST
+  workflow_dispatch: {}
+
+jobs:
+  send-quote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger send-quote
+        run: |
+          curl -fsS -o /dev/null -w "send-quote responded %{http_code}\n" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://quickrecall.vercel.app/api/cron/send-quote
