@@ -1,8 +1,8 @@
 'use client';
 
 import { GuideCue } from '@leafygreen-ui/guide-cue';
-import { useQueryState } from 'nuqs';
 import { usePathname, useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSidebar } from '@/components/ui/sidebar';
 import { TOUR_STEPS } from '@/data/product-tour';
@@ -10,8 +10,8 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 
 const TOUR_SEEN_KEY = 'quickrecall-tour-seen';
 
-// Mounted once in the (app) layout. Spotlights sidebar nav items on the Dashboard route —
-// see docs/superpowers/specs/2026-07-24-product-tour-design.md for the full design.
+// Mounted once in the (app) layout. Spotlights sidebar nav items on the Dashboard route.
+// Full design: docs/superpowers/specs/2026-07-24-product-tour-design.md
 export function ProductTour() {
   const pathname = usePathname();
   const router = useRouter();
@@ -61,20 +61,33 @@ export function ProductTour() {
     void setTourParam(null);
   }, [tourParam, pathname, router, start, setTourParam]);
 
-  // Locate the target nav item for the current step; skip defensively if it's missing.
+  // Locate the target nav item for the current step, polling by wall-clock time (not frame
+  // count) since the mobile sidebar Sheet can take a while to mount on slower devices. Skips
+  // to the next step if the target never shows up.
   useEffect(() => {
     if (!active) return;
     const step = TOUR_STEPS[stepIndex];
-    const node = document.querySelector<HTMLElement>(`[data-tour="${step.key}"]`);
-    if (!node) {
+    let rafId: number;
+    const deadline = performance.now() + 3000;
+
+    const tryFind = () => {
+      const node = document.querySelector<HTMLElement>(`[data-tour="${step.key}"]`);
+      if (node) {
+        // Instant scroll: an in-progress smooth scroll would race the tooltip's position calc.
+        node.scrollIntoView({ block: 'center', behavior: 'instant' });
+        setTargetNode(node);
+        return;
+      }
+      if (performance.now() < deadline) {
+        rafId = requestAnimationFrame(tryFind);
+        return;
+      }
       if (stepIndex < TOUR_STEPS.length - 1) setStepIndex((i) => i + 1);
       else finish();
-      return;
-    }
-    // Scroll instantly (no smooth animation) so the tooltip's position calc, done at mount,
-    // isn't racing an in-progress scroll for nav items nested deep in a collapsible section.
-    node.scrollIntoView({ block: 'center', behavior: 'instant' });
-    setTargetNode(node);
+    };
+
+    tryFind();
+    return () => cancelAnimationFrame(rafId);
   }, [active, stepIndex, finish]);
 
   if (!active || !targetNode) return null;
@@ -87,10 +100,8 @@ export function ProductTour() {
     <GuideCue
       key={step.key}
       open={active}
-      setOpen={() => {
-        // no-op: visibility is driven by `active`, not GuideCue's internal step-transition close/reopen.
-        // Real end-of-tour signals come from onDismiss (X/Esc) and onPrimaryButtonClick (last step).
-      }}
+      // No-op: visibility is driven by `active`, not GuideCue's internal open state.
+      setOpen={() => {}}
       refEl={refEl}
       numberOfSteps={TOUR_STEPS.length}
       currentStep={stepIndex + 1}
