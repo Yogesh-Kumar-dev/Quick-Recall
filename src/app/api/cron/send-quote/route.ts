@@ -17,8 +17,10 @@ export async function GET(req: Request) {
 
     await connectMongo();
 
-    const [[template], devices] = await Promise.all([
-      NotificationTemplate.aggregate([{ $match: { active: true } }, { $sample: { size: 1 } }]),
+    // Round-robin, not random: always pick the active template that's least recently been sent
+    // (unset lastSentAt sorts first), so every template cycles through once before any repeat.
+    const [template, devices] = await Promise.all([
+      NotificationTemplate.findOneAndUpdate({ active: true }, { lastSentAt: new Date() }, { sort: { lastSentAt: 1 } }),
       Device.find({ enabled: true })
     ]);
 

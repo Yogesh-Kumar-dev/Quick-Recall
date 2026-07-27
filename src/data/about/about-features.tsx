@@ -1,6 +1,7 @@
 import {
   IconArrowsMaximize,
   IconBell,
+  IconBellRinging,
   IconCloudDownload,
   IconCode,
   IconDatabase,
@@ -455,6 +456,88 @@ osc.onended = () => ctx.close();`,
       ],
       gotcha:
         'The manager never imports React. The provider injects a getter for the live policy context instead, which keeps the notification logic testable and callable from anywhere — including non-component code like the timer tick.'
+    }
+  },
+  {
+    slug: 'push-notifications',
+    icon: <IconBellRinging size={24} />,
+    title: 'Firebase Push Notifications',
+    blurb:
+      'A daily motivational quote lands as a real OS-level push notification, even with the PWA fully closed, powered by a Firebase Cloud Messaging pipeline with its own service worker, a GitHub Actions cron, and a round-robin queue that sends every quote once before any repeat.',
+    tech: 'Firebase Cloud Messaging + MongoDB + GitHub Actions cron',
+    accent: '#0ea5e9',
+    span: 2,
+    deepDive: {
+      tagline:
+        'Two Firebase SDKs, a service worker that cannot read env vars, a cron job standing in for Vercel Cron, and a MongoDB queue that never repeats a quote early.',
+      sections: [
+        {
+          heading: 'Two SDKs, two trust boundaries',
+          body: [
+            "`firebase-client.ts` and `firebase-admin.ts` look similar (both call `initializeApp`) but never overlap in what they hold. The client file carries only `NEXT_PUBLIC_*` config, which is public by design, it ends up in the browser bundle regardless. The admin file carries a service-account private key and is imported exclusively from Route Handlers, where it never reaches the client bundle.",
+            'Client-side, `registerAndGetFcmToken()` asks the browser for a device token and hands it to `/api/notifications/register`, which upserts it into the `Device` collection by `deviceId` (not `fcmToken`), so re-registering the same device after a permission re-grant or token refresh updates the existing row instead of creating a duplicate.'
+          ],
+          code: `// src/lib/firebase-admin.ts
+function adminApp() {
+  if (getApps().length) return getApps()[0];
+  return initializeApp({
+    credential: cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      // Vercel env vars store literal "\\n" — real newlines are required by the SDK.
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\\\n/g, '\\n')
+    })
+  });
+}`,
+          codeLang: 'typescript'
+        },
+        {
+          heading: 'A service worker that cannot read env vars',
+          body: [
+            'FCM needs its own service worker, registered at its own scope (`/firebase-cloud-messaging-push-scope`), separate from the Serwist worker that handles offline caching. Static files served straight out of `public/` never go through Next.js, so `firebase-messaging-sw.js` cannot read `process.env` at all, and its Firebase config is hardcoded as literals instead. That is safe here only because every one of those values is the same `NEXT_PUBLIC_*` config already shipped to the client bundle; nothing secret lives in that file.',
+            'The payload itself is sent data-only, never as an FCM `notification` payload. The messaging SDK auto-displays any `notification` field on top of this worker’s own `showNotification()` call, which produced a visible duplicate during testing before the payload shape was locked down to `data` only.'
+          ],
+          code: `// public/firebase-messaging-sw.js
+messaging.onBackgroundMessage((payload) => {
+  const { title, body } = payload.data || {};
+  self.registration.showNotification(title || 'QuickRecall', { body });
+});`,
+          codeLang: 'javascript'
+        },
+        {
+          heading: 'Round-robin, not random',
+          body: [
+            'The cron route originally picked a quote with a MongoDB `$sample`, which is uniformly random and can hand out the same quote twice before the rest of the pool has ever been sent. `NotificationTemplate` now carries a `lastSentAt`, and the cron always claims the active template with the oldest (or still-unset) value via a single atomic `findOneAndUpdate`, so the full set cycles through once before anything repeats.',
+            'Seeding is a separate idempotent script, not a migration: `bulkWrite` upserts by `body` with `$setOnInsert`, so re-running it after adding new quotes only inserts what is new. New quotes naturally get picked first, since their `lastSentAt` is unset and sorts before every quote that has already gone out once.'
+          ],
+          code: `// src/app/api/cron/send-quote/route.ts
+const [template, devices] = await Promise.all([
+  NotificationTemplate.findOneAndUpdate({ active: true }, { lastSentAt: new Date() }, { sort: { lastSentAt: 1 } }),
+  Device.find({ enabled: true })
+]);`,
+          codeLang: 'typescript'
+        },
+        {
+          heading: 'A GitHub Actions cron standing in for Vercel Cron',
+          body: [
+            "Vercel's Hobby plan caps Cron Jobs at once a day, too coarse for a quote that should land several times across the day. `.github/workflows/notify-cron.yml` runs on GitHub's own schedule instead and just calls the deployed route over HTTPS with a bearer token, which sidesteps the plan limit entirely since the schedule lives outside Vercel.",
+            "The route itself stays a plain authenticated HTTP endpoint. Anything capable of firing a scheduled request, GitHub Actions here, could call it, which kept the cron logic decoupled from any one scheduler."
+          ]
+        }
+      ],
+      files: [
+        'src/lib/firebase-client.ts',
+        'src/lib/firebase-admin.ts',
+        'public/firebase-messaging-sw.js',
+        'src/app/api/notifications/register/route.ts',
+        'src/app/api/cron/send-quote/route.ts',
+        'src/models/Device.ts',
+        'src/models/NotificationTemplate.ts',
+        'scripts/seed-notification-templates.mjs',
+        '.github/workflows/notify-cron.yml'
+      ],
+      gotcha:
+        'NEXT_PUBLIC_* values are inlined into the client bundle at build time, not read at request time, so marking them "Sensitive" in Vercel breaks the pipeline silently: vercel pull cannot read a Sensitive value back out even for its own build, and the bundle quietly ships an empty config instead of failing loudly. Separately, MongoDB Atlas rejects Vercel serverless functions by default since their outbound IP is not static, that needs 0.0.0.0/0 (or Vercel’s published ranges) on the cluster’s IP access list before either the register route or the cron route can reach the database at all.'
     }
   },
   {
