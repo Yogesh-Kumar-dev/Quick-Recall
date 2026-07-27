@@ -474,7 +474,7 @@ osc.onended = () => ctx.close();`,
         {
           heading: 'Two SDKs, two trust boundaries',
           body: [
-            "`firebase-client.ts` and `firebase-admin.ts` look similar (both call `initializeApp`) but never overlap in what they hold. The client file carries only `NEXT_PUBLIC_*` config, which is public by design, it ends up in the browser bundle regardless. The admin file carries a service-account private key and is imported exclusively from Route Handlers, where it never reaches the client bundle.",
+            '`firebase-client.ts` and `firebase-admin.ts` look similar (both call `initializeApp`) but never overlap in what they hold. The client file carries only `NEXT_PUBLIC_*` config, which is public by design, it ends up in the browser bundle regardless. The admin file carries a service-account private key and is imported exclusively from Route Handlers, where it never reaches the client bundle.',
             'Client-side, `registerAndGetFcmToken()` asks the browser for a device token and hands it to `/api/notifications/register`, which upserts it into the `Device` collection by `deviceId` (not `fcmToken`), so re-registering the same device after a permission re-grant or token refresh updates the existing row instead of creating a duplicate.'
           ],
           code: `// src/lib/firebase-admin.ts
@@ -521,7 +521,7 @@ const [template, devices] = await Promise.all([
           heading: 'A GitHub Actions cron standing in for Vercel Cron',
           body: [
             "Vercel's Hobby plan caps Cron Jobs at once a day, too coarse for a quote that should land several times across the day. `.github/workflows/notify-cron.yml` runs on GitHub's own schedule instead and just calls the deployed route over HTTPS with a bearer token, which sidesteps the plan limit entirely since the schedule lives outside Vercel.",
-            "The route itself stays a plain authenticated HTTP endpoint. Anything capable of firing a scheduled request, GitHub Actions here, could call it, which kept the cron logic decoupled from any one scheduler."
+            'The route itself stays a plain authenticated HTTP endpoint. Anything capable of firing a scheduled request, GitHub Actions here, could call it, which kept the cron logic decoupled from any one scheduler.'
           ]
         }
       ],

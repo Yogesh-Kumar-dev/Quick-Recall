@@ -1,6 +1,6 @@
 import { withSentryConfig } from '@sentry/nextjs';
-import type { NextConfig } from 'next';
 import { withSerwist } from '@serwist/turbopack';
+import type { NextConfig } from 'next';
 
 // PWA: this project builds with Turbopack, and @serwist/next's webpack-based compilation is
 // incompatible with it — @serwist/turbopack works around the lack of a Turbopack plugin API by
@@ -31,6 +31,45 @@ const nextConfig: NextConfig = {
         pathname: '/icons/**'
       }
     ]
+  },
+  async headers() {
+    // Static CSP (no nonce/middleware): 'unsafe-inline' is required for Next's hydration
+    // bootstrap scripts and for Emotion's runtime-injected styles (LeafyGreen/EmotionRegistry).
+    // connect-src lists the only third parties this app actually talks to from the browser:
+    // Sentry error/replay ingest and Firebase Cloud Messaging (push notifications).
+    // Turbopack's dev-mode HMR relies on eval() for fast refresh, which a strict script-src blocks —
+    // scope 'unsafe-eval' to development only so production stays locked down.
+    const scriptSrc = `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'production' ? '' : " 'unsafe-eval'"}`;
+
+    const csp = [
+      "default-src 'self'",
+      scriptSrc,
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https://thesvg.org",
+      "font-src 'self' data:",
+      "connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://firebasemessaging.googleapis.com https://fcm.googleapis.com",
+      "worker-src 'self'",
+      "manifest-src 'self'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "object-src 'none'"
+    ].join('; ');
+
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'Content-Security-Policy', value: csp },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' }
+        ]
+      }
+    ];
   }
 };
 
