@@ -39,7 +39,10 @@ const nextConfig: NextConfig = {
     // Sentry error/replay ingest and Firebase Cloud Messaging (push notifications).
     // Turbopack's dev-mode HMR relies on eval() for fast refresh, which a strict script-src blocks —
     // scope 'unsafe-eval' to development only so production stays locked down.
-    const scriptSrc = `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'production' ? '' : " 'unsafe-eval'"}`;
+    // gstatic.com: public/firebase-messaging-sw.js importScripts() the firebase compat SDK from
+    // there — a worker inherits the CSP of its own response, so without this the SW fails to
+    // install and pushes fall back to Chrome's generic "site updated in the background" notice.
+    const scriptSrc = `script-src 'self' 'unsafe-inline' https://www.gstatic.com${process.env.NODE_ENV === 'production' ? '' : " 'unsafe-eval'"}`;
 
     const csp = [
       "default-src 'self'",

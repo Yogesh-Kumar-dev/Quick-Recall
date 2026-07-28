@@ -1,6 +1,6 @@
 'use client';
 
-import { IconBellRinging } from '@tabler/icons-react';
+import { IconBellRinging, IconLoader2 } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import usePushSettings from './use-push-settings';
@@ -37,6 +37,7 @@ export default function SettingsView() {
             <div className="flex items-center justify-between">
               <span className="text-sm">{enabled ? 'Enabled on this device' : 'Disabled on this device'}</span>
               <Button variant={enabled ? 'outline' : 'default'} disabled={loading || busy} onClick={() => (enabled ? disable() : enable())}>
+                {busy && <IconLoader2 size={16} className="animate-spin" />}
                 {enabled ? 'Disable' : 'Enable'}
               </Button>
             </div>
