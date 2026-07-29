@@ -93,6 +93,10 @@ Everything else in the app is client-only, but the recurring "daily quote" push 
 
 The app is **dark-mode only** (forced `dark` class on the root `<html>`, MongoDB-style design) — there's no theme toggle or `next-themes`. Two UI systems intentionally coexist: shadcn/ui + Tailwind v4 (`src/components/ui/`) for most of the app, and `@leafygreen-ui/*` for a handful of MongoDB-styled components (callout, code, expandable-card). Check which pattern a given surface already uses before introducing a third.
 
+### Brand identity
+
+LeafyGreen is the borrowed design system; the identity layer on top of it is QuickRecall's own and is specified in `docs/brand.md` — read it before touching the mark, the wordmark lockup, or anything that uses the accent green. The mark's geometry has one source of truth (`src/components/brand/mark-paths.ts`), consumed by `<Logo>`, `src/app/opengraph-image.tsx` and `scripts/icon-source.html`; render it in-app only via `src/components/brand/logo.tsx`. The core rule: `#00ed64` marks retrieval and progress (mark tail, review grades, streaks, primary action), never decoration.
+
 ### Search & navigation
 
 Global search (`src/components/search/header-search.tsx`) is a `cmdk` command palette over `fuse.js`, indexed from `src/data/search-index.ts`. Sidebar navigation is a flat config in `src/config/nav.ts` (not a component tree), rendered by `src/components/layout/app-sidebar.tsx`.
