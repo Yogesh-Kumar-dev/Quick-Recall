@@ -3,6 +3,35 @@ import type { Note } from '@/types/content';
 // category values: 'box-model' | 'layout' | 'positioning' | 'selectors' | 'responsive' | 'visual' | 'architecture' | 'performance'
 
 export const cssNotes: Note[] = [
+  {
+    id: 'css-vs-css3',
+    title: 'CSS vs CSS3',
+    summary:
+      'CSS3 was not one release , it was the point where the single monolithic spec was split into independently-versioned modules. That is why there is no "CSS4".',
+    difficulty: 'basic',
+    category: 'architecture',
+    keyPoints: [
+      'CSS1 and CSS2 were single documents covering the whole language, so everything shipped (and stalled) together. CSS3 broke it into MODULES , Selectors, Backgrounds & Borders, Flexbox, Grid, Colour , each levelling on its own schedule.',
+      'So the correct answer to "what is CSS4" is that it does not exist. Individual modules have levels instead: Selectors Level 4, Grid Level 2, Colour Level 5. There is no next big version number coming.',
+      'What people mean by CSS3 in practice: border-radius, box-shadow, gradients, rgba/opacity, transitions, @keyframes animations, transforms, media queries, web fonts via @font-face, and multi-column layout.',
+      'Flexbox, Grid, custom properties, :has() and container queries all landed AFTER the CSS3 era as separate modules , calling them "CSS3" is common but technically wrong, which is exactly the distinction an interviewer is probing.',
+      'Vendor prefixes (-webkit-, -moz-) belong to that transition period, when modules shipped experimentally. They are largely historical now, and autoprefixer in the build step handles the few that remain.'
+    ],
+    gotcha:
+      '"Is this CSS3?" is the wrong question to ask about a feature , the version tells you nothing about whether you can ship it. Ask "is this Baseline / supported in my target browsers?" and check caniuse or @supports instead.',
+    codeSnippet: `/* Feature support is a per-feature question, not a version question */
+@supports (container-type: inline-size) {
+  .card { container-type: inline-size; }
+}
+
+/* CSS2 could not do any of this; CSS3 modules made each of them possible */
+.box {
+  border-radius: 8px;                       /* Backgrounds & Borders module */
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);   /* Backgrounds & Borders module */
+  transition: transform 0.2s;                /* Transitions module */
+}`
+  },
+
   // ─── BOX MODEL ────────────────────────────────────────────────────────────────
   {
     id: 'css-box-model',
@@ -272,6 +301,37 @@ h1   { font-size: 2rem; }   /* 32px, root-relative */
   * { animation: none; transition: none; }
 }`
   },
+  {
+    id: 'css-transform',
+    title: 'CSS transform (translate, scale, rotate, skew)',
+    summary:
+      'Moves, resizes, rotates or slants an element visually , without touching layout, which is why it is the cheapest thing you can animate.',
+    difficulty: 'intermediate',
+    category: 'visual',
+    prerequisites: ['css-transitions-animations'],
+    articleRefs: ['browser-rendering'],
+    keyPoints: [
+      'transform vs transition: transform CHANGES the shape/position, transition ANIMATES a change over time. They are unrelated properties that are almost always used together , transition: transform .2s says "animate any change to transform".',
+      'The four 2D functions: translate(x, y) moves it, scale(x, y) resizes it, rotate(deg) spins it, skew(ax, ay) slants it. You can chain several in one value, and they apply RIGHT TO LEFT , transform: translateX(50px) rotate(45deg) rotates first, then moves.',
+      'skew(ax, ay) tilts the element’s axes rather than rotating it, so it shears into a parallelogram. Angles are in deg; skewX() and skewY() are the single-axis shorthands. Typical use is a slanted banner or button edge, usually with the text un-skewed by an opposite skew on a child.',
+      'transform-origin sets the pivot point (default 50% 50%, the centre). rotate around a corner by setting transform-origin: top left.',
+      'Transforms do NOT affect layout , siblings do not move, the element still occupies its original box, and scaling it will overlap neighbours rather than push them. That isolation is exactly what makes it compositor-only and cheap.',
+      'There are 3D equivalents too (translateZ, rotateX/Y, perspective) , adding any of them promotes the element to its own compositor layer, which is where the old translateZ(0) "GPU hack" came from.'
+    ],
+    gotcha:
+      'transform on an element creates a new stacking context AND becomes the containing block for any position: fixed descendant , so a fixed-position modal inside a transformed parent will scroll with the parent instead of sticking to the viewport. Also note skew visually distorts text (it shears the glyphs), which is why banners skew the wrapper and un-skew the inner text.',
+    codeSnippet: `.btn:hover  { transform: scale(1.05); }
+.icon       { transform: rotate(45deg); transform-origin: top left; }
+.banner     { transform: skewY(-3deg); }        /* slanted section */
+.banner > * { transform: skewY(3deg); }         /* un-skew the content */
+
+/* Chained: applied right to left (rotate first, then translate) */
+.chip { transform: translateX(50px) rotate(15deg); }
+
+/* Animate transform, never width/left — compositor-only, no layout or paint */
+.card { transition: transform 0.2s ease; }
+.card:hover { transform: translateY(-4px); }`
+  },
 
   // ─── ARCHITECTURE ──────────────────────────────────────────────────────────
   {
@@ -442,6 +502,7 @@ import s from './Card.module.css';
     difficulty: 'advanced',
     category: 'performance',
     prerequisites: ['css-specificity'],
+    articleRefs: ['browser-rendering'],
     keyPoints: [
       'HTML parses incrementally into the DOM as bytes arrive; CSS parses into the CSSOM, but CSSOM construction is NOT incremental , a later rule can override an earlier one, so nothing can paint until the whole CSSOM is built. That’s why CSS is render-blocking by default.',
       'DOM + CSSOM merge into the render tree, which holds only what will actually be visible , the <head> and any display: none elements are excluded entirely.',

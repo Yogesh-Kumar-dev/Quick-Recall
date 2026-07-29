@@ -5,6 +5,35 @@ import type { Note } from '@/types/content';
 export const htmlNotes: Note[] = [
   // ─── DOCUMENT ───────────────────────────────────────────────────────────────
   {
+    id: 'html-vs-html5',
+    title: 'HTML vs HTML5',
+    summary:
+      'HTML5 was the 2014 version that added semantics, native media and a pile of Web APIs. Since 2019 HTML has no version numbers at all , it is a living standard, so "HTML6" is not coming.',
+    difficulty: 'basic',
+    category: 'document',
+    keyPoints: [
+      'HTML4 (1997) and XHTML came with long, unmemorable doctypes and a strict/transitional split. HTML5 (W3C Recommendation, 2014) replaced all of it with one line: <!DOCTYPE html>.',
+      'Markup HTML5 added: semantic sectioning elements (header, nav, main, section, article, aside, footer), native <audio>/<video> so Flash was no longer needed, <canvas> and inline <svg>, and a big set of form input types (email, date, number, range) with built-in validation.',
+      'A lot of what people call "HTML5" is not markup at all , localStorage/sessionStorage, Web Workers, Geolocation, WebSockets, History API, drag-and-drop and offline support are JavaScript Web APIs that arrived in the same era and got bundled under the name.',
+      'The versioning is over. WHATWG took stewardship and HTML is now a LIVING STANDARD: features are added continuously and browsers ship them continuously, so there is no numbered release to target.',
+      'On a job description, "HTML5" is shorthand for "modern, semantic HTML plus the associated Web APIs", not a specific spec version. Answer it that way and mention the living-standard point , that is the part most candidates miss.'
+    ],
+    gotcha:
+      'HTML5 is also more forgiving than XHTML was, not less , unclosed tags and misnested elements have a specified error-recovery algorithm rather than failing the document. Valid markup still matters for accessibility and predictability, but the browser will not stop you.',
+    codeSnippet: `<!-- HTML4 Strict: nobody ever typed this from memory -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+
+<!-- HTML5: the whole doctype -->
+<!DOCTYPE html>
+
+<!-- Pre-HTML5 structure: divs and class names carry all the meaning -->
+<div class="header"></div><div class="nav"></div><div class="footer"></div>
+
+<!-- HTML5: the elements themselves carry it (screen readers understand these) -->
+<header></header><nav></nav><main></main><footer></footer>`
+  },
+  {
     id: 'html-doctype',
     title: 'The <!DOCTYPE html> Declaration',
     summary: 'Tells the browser to render in standards mode rather than legacy "quirks" mode.',

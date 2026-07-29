@@ -82,6 +82,39 @@ function foo() {}`,
     ]
   },
   {
+    title: 'Engine & Rendering',
+    items: [
+      {
+        concept: 'JS engine pipeline',
+        bullets: [
+          'source → AST (parse) → bytecode (Ignition interpreter, starts running immediately) → hot functions JIT-compiled to machine code (TurboFan).',
+          'JIT optimisation is speculative on the types it has seen , change the type and it deoptimises back to bytecode.',
+          'Engine ≠ runtime: V8 only implements ECMAScript. document/fetch come from the browser, fs from Node. The event loop lives in the host too.',
+          'V8 = Chrome/Edge/Node, SpiderMonkey = Firefox, JavaScriptCore = Safari (and every browser on iOS). Same spec, so semantics match.'
+        ],
+        warning:
+          'Differences between browsers are performance, Web API availability and how fast new syntax ships , NOT language behaviour. Cross-browser bugs are almost always Web APIs, not JavaScript.'
+      },
+      {
+        concept: 'Critical rendering path',
+        bullets: [
+          'DOM (HTML, built incrementally) + CSSOM (CSS, NOT incremental) → render tree → layout → paint → composite.',
+          'CSS is render-blocking: nothing paints until every stylesheet is parsed, because a later rule can override an earlier one.',
+          'A bare <script> is parser-blocking , it stops DOM construction. defer runs after parsing in order; async runs whenever it lands.',
+          'Cost tiers: geometry (width/top/font-size) = layout+paint+composite; colour/shadow = paint+composite; transform/opacity = composite only.'
+        ],
+        codeSnippet: `// Layout thrashing — forces a sync layout every iteration
+for (const el of els) el.style.width = el.offsetWidth + 10 + 'px';
+
+// Batched — read all, then write all
+const w = els.map((el) => el.offsetWidth);
+els.forEach((el, i) => { el.style.width = w[i] + 10 + 'px'; });`,
+        warning:
+          'Reading offsetHeight / getBoundingClientRect / getComputedStyle forces the browser to flush pending style changes and run layout right now , that is why alternating reads and writes in a loop tanks frame rate.'
+      }
+    ]
+  },
+  {
     title: 'Event Loop',
     items: [
       {

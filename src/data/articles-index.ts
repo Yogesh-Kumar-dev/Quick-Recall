@@ -1,6 +1,7 @@
 // Every article, plus lookup maps and the resolver notes/flashcards/quiz questions use to turn
 // their `articleRefs` ids into deep-link chips. Mirrors note-sources.ts's shape.
 import type { Article } from '@/types/content';
+import { browserRenderingArticle } from './articles/browser-rendering';
 import { coreWebVitalsArticle } from './articles/core-web-vitals';
 import { dynamodb101Article } from './articles/dynamodb-101';
 import { iaasPaasSaasArticle } from './articles/iaas-paas-saas';
@@ -32,7 +33,8 @@ export const ARTICLES: Article[] = [
   webSecurityDeepDiveArticle,
   webAccessibilityDeepDiveArticle,
   coreWebVitalsArticle,
-  iaasPaasSaasArticle
+  iaasPaasSaasArticle,
+  browserRenderingArticle
 ];
 
 // Keyed by slug — the route param and the bookmark/resolve-content refId.

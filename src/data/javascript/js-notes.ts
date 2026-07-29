@@ -1702,6 +1702,37 @@ new RegExp(safe); // exact literal match`
   // ─── CORE CONCEPTS ───────────────────────────────────────────────────────────
 
   {
+    id: 'core-js-engines',
+    title: 'JavaScript Engines: V8, SpiderMonkey & JavaScriptCore',
+    summary:
+      'The engine is the program that actually runs your JavaScript , V8 in Chrome/Edge/Node, SpiderMonkey in Firefox, JavaScriptCore in Safari. They all implement the same spec, so your code behaves the same in each.',
+    difficulty: 'intermediate',
+    category: 'core-concepts',
+    articleRefs: ['browser-rendering'],
+    keyPoints: [
+      'V8 is Google’s open-source JS engine, written in C++. It powers Chrome, Edge, Node.js, Deno and Electron , which is why the same language runs in the browser and on the server.',
+      'The pipeline: source → AST (parse) → bytecode run by the Ignition interpreter → hot functions re-compiled to machine code by the TurboFan optimising compiler (JIT). Execution starts almost immediately instead of waiting for a full ahead-of-time compile.',
+      'JIT optimisation is speculative: TurboFan compiles a function using the types it has ACTUALLY seen so far. Feed it a different type later and the assumption fails, the optimised code is thrown away, and it "deoptimises" back to bytecode.',
+      'The engine is NOT the runtime. V8 only implements ECMAScript , it has never heard of document, window, fetch or fs. The browser supplies the DOM and Web APIs; Node supplies its own. The event loop itself lives in the host, not the engine.',
+      'Different browser, different engine: Blink+V8 (Chrome/Edge), Gecko+SpiderMonkey (Firefox), WebKit+JavaScriptCore (Safari, and every browser on iOS). All follow the same ECMAScript spec, so language semantics match everywhere.',
+      'What actually differs between them is performance characteristics, Web API availability and timing (those are W3C/WHATWG specs, not TC39), and how quickly brand-new syntax ships , not how closures or the event loop behave.'
+    ],
+    gotcha:
+      'Micro-benchmarks across browsers usually measure one engine’s JIT warm-up rather than anything about the language , the same snippet can look 10x faster in one browser purely because TurboFan optimised it and the other engine did not.',
+    codeSnippet: `// Type-stable: TurboFan can specialise this to integer math
+function sum(arr) {
+  let total = 0;
+  for (const n of arr) total += n;
+  return total;
+}
+sum([1, 2, 3]);        // optimised after enough calls
+sum([1, '2', 3]);      // assumption broken → deoptimised back to bytecode
+
+// Engine vs runtime
+typeof Promise;   // 'function' — ECMAScript, so every engine has it
+typeof document;  // 'object' in a browser, 'undefined' in Node — host, not engine`
+  },
+  {
     id: 'core-hoisting',
     title: 'Hoisting',
     summary:
@@ -2013,6 +2044,48 @@ names.map((n) => n.toUpperCase()); // ['IRISH', 'DAISY']
 const multiplier = (factor) => (n) => n * factor;
 const triple = multiplier(3);
 triple(5); // 15`
+  },
+  {
+    id: 'fn-debounce-throttle',
+    title: 'Debouncing & Throttling',
+    summary:
+      'Two ways to stop an event that fires far too often from doing expensive work every time. Debounce waits for the noise to stop; throttle lets one call through per time window.',
+    difficulty: 'intermediate',
+    category: 'functions-this',
+    prerequisites: ['core-closures', 'fn-higher-order'],
+    keyPoints: [
+      'Debounce , "wait until it goes quiet". Every call resets a timer; the wrapped function only runs once, N ms after the LAST call. Typing 10 characters fires the search once, not ten times.',
+      'Throttle , "at most once per N ms". The first call runs immediately, then further calls are ignored until the window expires. Dragging for 3 seconds with a 100ms throttle gives you ~30 evenly-spaced calls instead of hundreds.',
+      'Pick by intent: debounce when only the FINAL value matters (search-as-you-type, autosave, resize, form validation). Throttle when you need steady updates along the way (scroll position, mousemove, infinite-scroll checks, analytics pings).',
+      'Leading vs trailing edge: trailing (the default) runs after the pause; leading runs immediately on the first call and then swallows the rest. Some implementations offer both , a leading debounce is what you want for a "prevent double-submit" button.',
+      'Both are higher-order functions built on a closure over a timer id , they take a function, return a wrapped function, and that wrapper remembers its timer between calls. This is exactly why debounce is such a common closure interview question.',
+      'A cancel() escape hatch matters in real code: on unmount or route change you need to drop a pending trailing call so it does not fire against a component that no longer exists.'
+    ],
+    gotcha:
+      'In React, calling debounce(fn, 300) directly inside the component body creates a BRAND NEW debounced function on every render, so the timer is never the same one twice and nothing is ever actually debounced. Wrap it in useMemo/useRef , or debounce the value instead of the callback with a useDebounce hook.',
+    codeSnippet: `function debounce(fn, delay) {
+  let timer;                       // closure keeps this between calls
+  const wrapped = (...args) => {
+    clearTimeout(timer);           // every call cancels the pending one
+    timer = setTimeout(() => fn(...args), delay);
+  };
+  wrapped.cancel = () => clearTimeout(timer);
+  return wrapped;
+}
+
+function throttle(fn, limit) {
+  let waiting = false;
+  return (...args) => {
+    if (waiting) return;           // inside the window → drop it
+    fn(...args);
+    waiting = true;
+    setTimeout(() => { waiting = false; }, limit);
+  };
+}
+
+// Search-as-you-type: one request after the user pauses, not one per keystroke
+const search = debounce((q) => fetch('/api/search?q=' + q), 300);
+input.addEventListener('input', (e) => search(e.target.value));`
   },
   {
     id: 'fn-currying',
@@ -2750,6 +2823,7 @@ customElements.define('my-card', MyCard);
     summary: 'The steps the browser takes to turn HTML, CSS, and JS into pixels , optimise it to render faster.',
     difficulty: 'advanced',
     category: 'web-apis',
+    articleRefs: ['browser-rendering'],
     keyPoints: [
       'Pipeline: HTML → DOM tree, CSS → CSSOM tree, combine into the render tree → layout (positions/sizes) → paint → composite.',
       'CSS is render-blocking: the browser won’t paint until the CSSOM is ready, so ship critical CSS small and early.',
@@ -2774,6 +2848,7 @@ customElements.define('my-card', MyCard);
     summary: 'Start with a working baseline that runs everywhere, then layer richer features on top for capable browsers.',
     difficulty: 'intermediate',
     category: 'web-apis',
+    articleRefs: ['browser-rendering'],
     keyPoints: [
       'Progressive enhancement: build the core experience with plain HTML first, then add CSS and JS as enhancements.',
       'Graceful degradation is the inverse: build the rich version, then add fallbacks so it still mostly works when features are missing.',

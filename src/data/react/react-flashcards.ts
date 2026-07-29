@@ -433,5 +433,11 @@ export const reactFlashcards: Flashcard[] = [
     front: 'Render phase vs Commit phase',
     back: 'Trigger → Render → Commit. Render: React calls your components and computes the diff , this work can be paused or thrown away. Commit: React applies the changes to the real DOM and runs layout effects , then the browser paints.',
     category: 'Keyword'
+  },
+  {
+    id: 'react-no-hooks-in-server-components',
+    front: 'Why can Server Components not use hooks?',
+    back: 'A Server Component runs once per request to produce a serialised description of UI, then it is gone , it never re-renders and has no instance living in the browser. useState has nowhere to store state between renders that will never happen, and useEffect fires after paint, which the server never does. Anything needing state or effects must be a Client Component.',
+    category: 'Keyword'
   }
 ];
