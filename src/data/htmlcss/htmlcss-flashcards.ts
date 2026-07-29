@@ -382,5 +382,21 @@ font-size: min(5vw, 2rem);`,
     back: 'filter affects the element and its own content. backdrop-filter affects only what’s visually behind it , needs a transparent element to show, and is blocked by any ancestor that’s itself a "backdrop root" (opacity<1, filter, etc.).',
     code: `.glass { background: rgb(255 255 255 / .2); backdrop-filter: blur(10px); }`,
     category: 'Keyword'
+  },
+  {
+    id: 'css-skew',
+    front: 'skew()',
+    back: 'A transform function that SHEARS an element by tilting its axes, turning a rectangle into a parallelogram , not the same as rotating it. skew(ax, ay) takes angles in deg; skewX()/skewY() do one axis. Classic use is a slanted banner, with the inner content skewed back the other way so the text is not distorted.',
+    code: `.banner   { transform: skewY(-3deg); }
+.banner > * { transform: skewY(3deg); } /* un-skew the text */`,
+    category: 'Keyword'
+  },
+  {
+    id: 'css-transform-vs-transition',
+    front: 'transform vs transition',
+    back: 'Unrelated properties that are usually used together. transform changes an element visually right now (move, scale, rotate, skew) with no effect on layout. transition animates a change to a property over time. transition: transform .2s means "animate any change to transform over 200ms".',
+    code: `.card { transform: none; transition: transform .2s ease; }
+.card:hover { transform: translateY(-4px); }`,
+    category: 'Keyword'
   }
 ];

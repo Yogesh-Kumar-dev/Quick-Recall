@@ -1094,5 +1094,21 @@ import { type ReactNode, useState } from 'react'; // mixed`,
     back: 'Mirrors what await does at the type level , recursively unwraps nested Promises. Awaited<Promise<Promise<number>>> is number, matching what repeated awaits would actually produce at runtime.',
     code: `type A = Awaited<Promise<Promise<number>>>; // number`,
     category: 'Keyword'
+  },
+  {
+    id: 'js-v8',
+    front: 'V8',
+    back: "Google's JavaScript engine (C++), powering Chrome, Edge, Node.js and Deno. Parses to an AST, runs it as bytecode via the Ignition interpreter, then JIT-compiles hot functions to machine code with TurboFan. It implements ECMAScript only , document, fetch and fs come from the host, not the engine.",
+    category: 'Keyword',
+    articleRefs: ['browser-rendering']
+  },
+  {
+    id: 'js-feature-detection',
+    front: 'Feature detection vs UA sniffing',
+    back: 'Feature detection asks what the browser CAN DO ("IntersectionObserver" in window) and stays correct as browsers change. UA sniffing asks WHO it is via navigator.userAgent, which lies by design , every Chrome UA string also claims to be Mozilla, AppleWebKit and Safari. Detect features, not browsers.',
+    code: `if ('IntersectionObserver' in window) lazyLoad();
+navigator.userAgent.includes('Safari'); // true in Chrome too!`,
+    category: 'Keyword',
+    articleRefs: ['browser-rendering']
   }
 ];

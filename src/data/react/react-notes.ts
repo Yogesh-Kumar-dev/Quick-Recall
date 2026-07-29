@@ -412,6 +412,44 @@ export function Counter() { ... }`
 <Welcome name="Ada" />`
   },
   {
+    id: 'why-react-over-vanilla',
+    title: 'Why React instead of plain HTML, CSS & JS?',
+    summary:
+      'Not because React is faster , it is not. Because keeping the DOM manually in sync with your data is where the bugs live, and React makes that step disappear.',
+    difficulty: 'basic',
+    category: 'core',
+    prerequisites: ['what-is-react'],
+    keyPoints: [
+      'The real cost of vanilla is SYNCHRONISATION. Every piece of state has to be manually written into the DOM at every place it appears , and every one of those places is a spot you can forget to update. Add a fourth thing that depends on `count` and you must remember all four.',
+      'React inverts it: you describe what the UI should look like FOR THIS DATA, set the data, and React works out the DOM changes. The "did I update everywhere?" bug class stops existing, because there is only one description.',
+      'Reuse and colocation: a component keeps its markup, styling, state and behaviour in one file you can drop in twice. The vanilla equivalent is a template somewhere, a stylesheet somewhere else, and a query selector in a third file quietly coupling them together.',
+      'Structured composition scales: props down and events up gives a big app a predictable data flow. Vanilla gives you no opinion, so large codebases drift into ad-hoc global state and selectors that break when someone renames a class.',
+      'Ecosystem and hiring are real engineering arguments, not just fashion , routing, forms, data fetching, testing and component libraries are solved problems with React, and most front-end developers already know it.',
+      'The honest counterpoint: a static marketing page, a blog, or a form with two fields does NOT need React. Plain HTML plus a little JS ships less bytes, loads faster and has no build step. Reach for React when UI state is genuinely complex, not by default.'
+    ],
+    gotcha:
+      '"React is faster than vanilla JS" is backwards. Hand-written DOM updates are always faster than React doing the same update, because React runs a reconciliation pass first and ships a runtime you must download. React trades a little speed for a lot of maintainability , say that in an interview rather than claiming a performance win.',
+    codeSnippet: `// Vanilla: state and DOM are two separate things you must keep in step
+let count = 0;
+document.querySelector('#btn').addEventListener('click', () => {
+  count++;
+  document.querySelector('#label').textContent = count;   // easy to forget
+  document.querySelector('#badge').textContent = count;   // ...and this one
+});
+
+// React: one source of truth, both readers update automatically
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+      <span>{count}</span>
+      <Badge value={count} />
+    </>
+  );
+}`
+  },
+  {
     id: 'node-element-component',
     title: 'React Node vs Element vs Component',
     summary:
