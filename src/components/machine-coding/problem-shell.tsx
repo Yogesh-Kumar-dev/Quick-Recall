@@ -6,9 +6,8 @@ import CodeBlock from '@/components/content/code-block';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { ProblemMeta } from '@/types/content';
-import PracticePanel from './practice-panel';
+import SandboxPanel from './sandbox-panel';
 import ProblemStatement from './problem-statement';
-import usePracticeSession from './use-practice-session';
 
 // leafygreen's polymorphic component type isn't a valid JSX.ElementType under React 19's stricter types.
 const Option = SegmentedControlOption as unknown as (props: { value: string; disabled?: boolean; children?: ReactNode }) => ReactNode;
@@ -37,16 +36,11 @@ const VIEW_TABS = [
 export default function ProblemShell({ problem, versions }: Props) {
   const [active, setActive] = useState<'jsx' | 'tsx'>('jsx');
   const [tab, setTab] = useState('preview');
-  const session = usePracticeSession();
 
-  // ?practice=1 deep-links (from /review, dashboard) open straight onto the Practice tab.
-  // Read post-mount instead of via nuqs — these pages are SSG'd and useSearchParams would
-  // force a Suspense boundary into every problem view.
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('practice') === '1') setTab('practice');
   }, []);
-  // Preview stays open (it IS the spec you're building against); only Code is locked mid-attempt.
-  const locked = session.status === 'active';
+
   const current = versions[active];
 
   return (
@@ -66,7 +60,7 @@ export default function ProblemShell({ problem, versions }: Props) {
         <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
           <SegmentedControl size="small" value={tab} onChange={setTab}>
             {VIEW_TABS.map((t) => (
-              <Option key={t.value} value={t.value} disabled={t.value === 'code' && locked}>
+              <Option key={t.value} value={t.value}>
                 {t.label}
               </Option>
             ))}
@@ -94,7 +88,7 @@ export default function ProblemShell({ problem, versions }: Props) {
         </div>
         {tab === 'practice' && (
           <div className="max-h-[80vh] overflow-auto p-4">
-            <PracticePanel session={session} solutionCode={current.code} language={active} />
+            <SandboxPanel problemTitle={problem.title} kind="react" />
           </div>
         )}
       </div>

@@ -8,8 +8,7 @@ import { cn } from '@/lib/utils';
 import type { ApproachData, JsProblemMeta } from '@/types/content';
 import ApproachDetails from './approach-details';
 import JsProblemStatement from './js-problem-statement';
-import PracticePanel from './practice-panel';
-import usePracticeSession from './use-practice-session';
+import SandboxPanel from './sandbox-panel';
 
 // leafygreen's polymorphic component type isn't a valid JSX.ElementType under React 19's stricter types.
 const Option = SegmentedControlOption as unknown as (props: { value: string; disabled?: boolean; children?: ReactNode }) => ReactNode;
@@ -28,16 +27,11 @@ const VIEW_TABS = [
 export default function JsProblemShell({ problem, approaches }: Props) {
   const [idx, setIdx] = useState(0);
   const [tab, setTab] = useState('details');
-  const session = usePracticeSession();
 
-  // ?practice=1 deep-links (from /review, dashboard) open straight onto the Practice tab.
-  // Read post-mount instead of via nuqs — these pages are SSG'd and useSearchParams would
-  // force a Suspense boundary into every problem view.
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('practice') === '1') setTab('practice');
   }, []);
-  // Details/Code give away the approach — locked while a timed attempt is running.
-  const locked = session.status === 'active';
+
   const current = approaches[idx];
 
   return (
@@ -57,12 +51,11 @@ export default function JsProblemShell({ problem, approaches }: Props) {
         <div className="flex items-center gap-2 border-b border-border px-4 py-2">
           <SegmentedControl size="small" value={tab} onChange={setTab}>
             {VIEW_TABS.map((t) => (
-              <Option key={t.value} value={t.value} disabled={t.value !== 'practice' && locked}>
+              <Option key={t.value} value={t.value}>
                 {t.label}
               </Option>
             ))}
           </SegmentedControl>
-          {locked && <span className="text-xs text-muted-foreground">Solution locked during practice</span>}
         </div>
 
         {/* Details/Code stay mounted (via `hidden`) so <Activity> can prerender the inactive
@@ -93,7 +86,7 @@ export default function JsProblemShell({ problem, approaches }: Props) {
         </div>
         {tab === 'practice' && (
           <div className="max-h-[75vh] overflow-auto p-4">
-            <PracticePanel session={session} solutionCode={current.code} language="javascript" />
+            <SandboxPanel problemTitle={problem.title} kind="js" />
           </div>
         )}
       </div>
