@@ -1,8 +1,9 @@
 'use client';
 
-import { IconBolt } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import Logo from '@/components/brand/logo';
 
 import {
   Sidebar,
@@ -48,9 +49,8 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/" className="flex items-center gap-2 px-2 py-1.5">
-          <IconBolt className="size-5 text-primary" />
-          <span className="font-heading text-lg font-semibold">QuickRecall</span>
+        <Link href="/" className="px-2 py-1.5">
+          <Logo size={20} withWordmark />
         </Link>
       </SidebarHeader>
 

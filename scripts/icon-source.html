@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>QuickRecall icon source</title>
+    <!--
+      Raster source for public/icons/*.png. The app has no image toolchain (no sharp), so the PNGs
+      are produced by loading this file in a headless browser at an exact viewport and screenshotting.
+
+      To regenerate after changing the mark in src/components/brand/mark-paths.ts, mirror the two
+      path strings below, then for each icon open this file with the matching query and capture a
+      full-page screenshot at that viewport size:
+
+        ?size=192            -> public/icons/icon-192.png
+        ?size=512            -> public/icons/icon-512.png
+        ?size=512&maskable=1 -> public/icons/icon-maskable-512.png
+
+      Maskable drops the rounded corners (Android crops to its own shape) and shrinks the mark to
+      52% so it clears the 80% safe zone.
+    -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #plate {
+        background: #001e2b;
+        display: grid;
+        place-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="plate">
+      <svg id="mark" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+        <path d="M15.75 18.5A7.5 7.5 0 1 1 18.8 15.17" stroke="#e8edeb" />
+        <path d="M14.23 14.01L20.55 19.69" stroke="#00ed64" />
+      </svg>
+    </div>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const size = Number(params.get('size') || 512);
+      const maskable = params.get('maskable') === '1';
+
+      const plate = document.getElementById('plate');
+      plate.style.width = `${size}px`;
+      plate.style.height = `${size}px`;
+      plate.style.borderRadius = maskable ? '0' : `${size * 0.22}px`;
+
+      const markSize = size * (maskable ? 0.52 : 0.66);
+      const mark = document.getElementById('mark');
+      mark.setAttribute('width', markSize);
+      mark.setAttribute('height', markSize);
+    </script>
+  </body>
+</html>

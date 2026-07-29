@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: 'QuickRecall', statusBarStyle: 'default' }
 };
 
-export const viewport: Viewport = { themeColor: '#00684a' };
+export const viewport: Viewport = { themeColor: '#001e2b' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

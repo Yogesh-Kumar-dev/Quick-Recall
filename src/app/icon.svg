@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="QuickRecall">
+  <rect width="64" height="64" rx="14" fill="#001e2b" />
+  <g transform="translate(14 14) scale(1.5)" fill="none" stroke-width="2" stroke-linecap="round">
+    <path d="M15.75 18.5A7.5 7.5 0 1 1 18.8 15.17" stroke="#e8edeb" />
+    <path d="M14.23 14.01L20.55 19.69" stroke="#00ed64" />
+  </g>
+</svg>

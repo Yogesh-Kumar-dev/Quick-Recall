@@ -1,6 +1,7 @@
-import { IconArrowRight, IconBook2, IconCode, IconLeafFilled, IconTrendingUp } from '@tabler/icons-react';
+import { IconArrowRight, IconBook2, IconCode, IconTrendingUp } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Logo from '@/components/brand/logo';
 import { Button } from '@/components/ui/button';
 
 const FEATURES = [
@@ -27,7 +28,7 @@ export default function Home() {
       />
 
       <div className="@container relative mx-auto w-full min-w-0 max-w-xl text-center lg:mx-0 lg:text-left">
-        <IconLeafFilled size={32} className="text-primary" />
+        <Logo size={32} />
 
         <h1 className="mt-4 font-heading text-4xl font-bold text-primary sm:text-5xl">QuickRecall</h1>
 
