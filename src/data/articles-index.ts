@@ -6,6 +6,7 @@ import { coreWebVitalsArticle } from './articles/core-web-vitals';
 import { dynamodb101Article } from './articles/dynamodb-101';
 import { iaasPaasSaasArticle } from './articles/iaas-paas-saas';
 import { nextjsBuildArticle } from './articles/nextjs-build';
+import { nuqsUrlStateArticle } from './articles/nuqs-url-state';
 import { pwaIntroductionArticle } from './articles/pwa-introduction';
 import { pwaWithNextjsArticle } from './articles/pwa-with-nextjs';
 import { pwaWithReactArticle } from './articles/pwa-with-react';
@@ -29,6 +30,7 @@ export const ARTICLES: Article[] = [
   pwaWithReactArticle,
   pwaWithNextjsArticle,
   reactQueryOverviewArticle,
+  nuqsUrlStateArticle,
   zustandOverviewArticle,
   webSecurityDeepDiveArticle,
   webAccessibilityDeepDiveArticle,

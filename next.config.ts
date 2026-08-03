@@ -36,7 +36,10 @@ const nextConfig: NextConfig = {
     // Static CSP (no nonce/middleware): 'unsafe-inline' is required for Next's hydration
     // bootstrap scripts and for Emotion's runtime-injected styles (LeafyGreen/EmotionRegistry).
     // connect-src lists the only third parties this app actually talks to from the browser:
-    // Sentry error/replay ingest and Firebase Cloud Messaging (push notifications).
+    // Sentry error/replay ingest, Firebase Cloud Messaging (push notifications), and Vercel Blob
+    // (the PDF guide fetches in src/utils/pdf-cache.ts).
+    // worker-src needs `blob:` because EmbedPDF's PDFium engine is spawned as a Blob URL module
+    // worker (new Worker(URL.createObjectURL(new Blob([...])), { type: 'module' })).
     // Turbopack's dev-mode HMR relies on eval() for fast refresh, which a strict script-src blocks —
     // scope 'unsafe-eval' to development only so production stays locked down.
     // gstatic.com: public/firebase-messaging-sw.js importScripts() the firebase compat SDK from
@@ -50,8 +53,8 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline' https://codesandbox.io https://*.codesandbox.io https://fonts.googleapis.com",
       "img-src 'self' data: blob: https://thesvg.org https://codesandbox.io https://*.codesandbox.io https://screenshots.codesandbox.io",
       "font-src 'self' data: https://fonts.gstatic.com https://codesandbox.io https://*.codesandbox.io",
-      "connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://firebasemessaging.googleapis.com https://fcm.googleapis.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com",
-      "worker-src 'self' https://codesandbox.io https://*.codesandbox.io",
+      "connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://firebasemessaging.googleapis.com https://fcm.googleapis.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com https://*.blob.vercel-storage.com",
+      "worker-src 'self' blob: https://codesandbox.io https://*.codesandbox.io",
       "frame-src 'self' https://onecompiler.com https://codesandbox.io https://*.codesandbox.io",
       "manifest-src 'self'",
       "frame-ancestors 'none'",
