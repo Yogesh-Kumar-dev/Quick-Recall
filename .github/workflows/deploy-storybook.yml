@@ -1,0 +1,45 @@
+name: Deploy Storybook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.storybook/**'
+      - 'src/**/*.stories.tsx'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-storybook:
+    name: Deploy Storybook
+    runs-on: ubuntu-latest
+    environment:
+      name: storybook
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_STORYBOOK_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Pull Vercel environment (production)
+        run: pnpm exec vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Storybook
+        run: pnpm build-storybook
+
+      - name: Deploy prebuilt to Vercel (production)
+        run: |
+          url=$(pnpm exec vercel deploy --prebuilt --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }})
+          echo "Storybook deployment: $url"
+          echo "### 📚 Storybook deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "$url" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Live at:** https://storybook-quickrecall.vercel.app" >> "$GITHUB_STEP_SUMMARY"

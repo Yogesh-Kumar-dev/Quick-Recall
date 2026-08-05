@@ -1,6 +1,5 @@
 'use client';
 
-import { ExternalLink } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 // ==============================|| SANDBOX PANEL (embedded code editor) ||============================== //
@@ -28,7 +27,7 @@ const EMBEDS = {
   }
 } as const;
 
-export default function SandboxPanel({ problemTitle, kind }: Props) {
+export default function SandboxPanel({ problemTitle, kind }: Readonly<Props>) {
   const embed = EMBEDS[kind];
 
   return (
