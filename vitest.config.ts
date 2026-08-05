@@ -7,6 +7,8 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
+const isCI = process.env.CI === 'true';
+
 export default defineConfig({
   resolve: {
     // Mirror the tsconfig `@/* -> src/*` alias so imports like `@/data/...` resolve in tests.
@@ -15,31 +17,50 @@ export default defineConfig({
     }
   },
   test: {
-    projects: [{
-      extends: true,
-      test: {
-        environment: 'node',
-        include: ['src/**/*.test.ts']
-      }
-    }, {
-      extends: true,
-      plugins: [
-      // The plugin will run tests for the stories defined in your Storybook config
-      // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-      storybookTest({
-        configDir: path.join(dirname, '.storybook')
-      })],
-      test: {
-        name: 'storybook',
-        browser: {
-          enabled: true,
-          headless: true,
-          provider: 'playwright',
-          instances: [{
-            browser: 'chromium'
-          }]
+    projects: [
+      {
+        extends: true,
+        test: {
+          environment: 'node',
+          include: ['src/**/*.test.ts']
         }
-      }
-    }]
+      },
+      // Storybook tests require Playwright browsers — skip in CI until browser install is added.
+      ...(!isCI
+        ? [
+            {
+              extends: true as const,
+              plugins: [
+                storybookTest({
+                  configDir: path.join(dirname, '.storybook')
+                })
+              ],
+              optimizeDeps: {
+                include: [
+                  'lucide-react',
+                  'class-variance-authority',
+                  '@base-ui/react/avatar',
+                  '@base-ui/react/button',
+                  '@base-ui/react/dialog',
+                  '@base-ui/react/input',
+                  '@base-ui/react/menu',
+                  '@base-ui/react/select',
+                  '@base-ui/react/tooltip',
+                  'storybook/theming'
+                ]
+              },
+              test: {
+                name: 'storybook',
+                browser: {
+                  enabled: true,
+                  headless: true,
+                  provider: 'playwright',
+                  instances: [{ browser: 'chromium' }]
+                }
+              }
+            }
+          ]
+        : [])
+    ]
   }
 });
