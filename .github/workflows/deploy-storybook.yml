@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/deploy-storybook.yml'
+      - '.github/actions/setup/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
       - '.storybook/**'
       - 'src/**/*.stories.tsx'
 
