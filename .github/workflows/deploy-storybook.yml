@@ -36,9 +36,15 @@ jobs:
       - name: Build Storybook
         run: pnpm build-storybook
 
+      - name: Prepare Vercel prebuilt output
+        run: |
+          mkdir -p .vercel/output/static
+          cp -R storybook-static/. .vercel/output/static/
+          echo '{"version":3}' > .vercel/output/config.json
+
       - name: Deploy to Vercel (production)
         run: |
-          url=$(pnpm exec vercel deploy --prod ./storybook-static --token=${{ secrets.VERCEL_TOKEN }})
+          url=$(pnpm exec vercel deploy --prod --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
           echo "Storybook deployment: $url"
           echo "### 📚 Storybook deployment" >> "$GITHUB_STEP_SUMMARY"
           echo "$url" >> "$GITHUB_STEP_SUMMARY"
