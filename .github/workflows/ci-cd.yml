@@ -1,9 +1,14 @@
 name: CI/CD for QuickRecall
 
 on:
-  pull_request:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/ci-cd.yml'
+      - '.github/actions/setup/**'
+      - 'src/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
 
 # Cancel superseded runs on the same ref (e.g. new push to an open PR).
 concurrency:

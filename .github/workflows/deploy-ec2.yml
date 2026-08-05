@@ -6,6 +6,12 @@ name: Deploy to EC2
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/ci-cd.yml'
+      - '.github/actions/setup/**'
+      - 'src/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
   workflow_dispatch: {}
 
 concurrency:
