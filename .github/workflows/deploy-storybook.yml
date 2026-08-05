@@ -29,9 +29,6 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Pull Vercel environment (production)
-        run: pnpm exec vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
       - name: Build Storybook
         run: pnpm build-storybook
 
