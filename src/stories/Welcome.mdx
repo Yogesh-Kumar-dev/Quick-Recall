@@ -1,59 +1,93 @@
 import { Meta } from '@storybook/addon-docs/blocks'
+import Logo from '../components/brand/logo'
 
 <Meta title="Introduction" />
 
-# Welcome to QuickRecall's Storybook
+<div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+  <Logo size={36} />
+  <span
+    style={{
+      fontFamily: 'Lora, serif',
+      fontSize: '28px',
+      fontWeight: 600,
+      color: '#fff',
+    }}
+  >
+    QuickRecall
+  </span>
+</div>
 
-QuickRecall is a personal full-stack developer interview-prep knowledge base. It covers JavaScript, TypeScript, React, Next.js, Redux, HTML/CSS, Node.js, and databases through notes, quick-recall cheat sheets, flashcards, and machine-coding problems with a side-by-side live demo and code viewer.
+<p style={{ fontSize: '16px', color: '#a0a0a0', maxWidth: '640px', lineHeight: 1.6 }}>
+  Answer, then know why.
+</p>
 
-This Storybook is the workspace for its UI components. Storybook runs separately from the app, so stories are written, viewed, and tested here without touching the app's routes.
+---
 
-## Running Storybook
+## About QuickRecall
 
-```bash
-pnpm storybook          # start the dev server on http://localhost:6006
-pnpm build-storybook    # static build to storybook-static/
-```
+QuickRecall is a personal interview preparation platform built to help developers strengthen their understanding through active recall rather than memorization.
 
-The app is dark-mode only. The global preview decorator in `.storybook/preview.tsx` imports `src/app/globals.css` and wraps every story in a `.dark` container on the app's real background, so components render exactly as they do in the app. No per-story setup is needed.
+Beyond interview questions, the platform focuses on helping users understand the reasoning behind concepts with explanations, quizzes, and interactive learning experiences.
 
-## Writing stories
+---
 
-Stories are colocated next to their component as `*.stories.tsx`, for example `src/components/ui/avatar.stories.tsx`. The framework is `@storybook/nextjs-vite`, so the `@/` path alias and Tailwind classes work out of the box.
+## Why Storybook?
 
-Each story set uses the standard `Meta` and `StoryObj` exports:
+As the application grows, maintaining a consistent user experience becomes increasingly important.
 
-```tsx
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { Button } from './button'
+This Storybook serves as the component library for QuickRecall. Components are built, reviewed, documented, and tested in isolation before being integrated into the application. This approach makes it easier to iterate on the UI, catch regressions early, and maintain consistency across the product.
 
-const meta = {
-  component: Button,
-  tags: ['autodocs']
-} satisfies Meta<typeof Button>
+---
 
-export default meta
-type Story = StoryObj<typeof meta>
+## Foundations
 
-export const Default: Story = {
-  args: { children: 'Button' }
-}
-```
+QuickRecall's components are built on top of excellent open-source projects:
 
-The `@storybook/addon-docs` Autodocs entry is generated from the component's props when a story set carries the `autodocs` tag.
+- **shadcn/ui** for accessible, copy-and-own UI primitives
+- **MongoDB LeafyGreen** for selected components such as Callout and Code
+- **Storybook** for documenting and validating the application's reusable components
 
-## Testing stories
+This Storybook focuses on how these building blocks are composed and customized for QuickRecall rather than documenting the underlying libraries themselves.
 
-Stories double as tests. `@storybook/addon-vitest` is wired into `vitest.config.ts` as a second `storybook` project, so `pnpm test` runs every story in a real browser (Playwright, Chromium) alongside the existing node unit tests. Interactions in `play` functions are executed and asserted during that run.
+---
 
-## Addons
+## Explore the component library
 
-The following addons are enabled in `.storybook/main.ts`:
+Use the navigation sidebar to browse the reusable components that power QuickRecall, including:
 
-| Addon | Purpose |
-| --- | --- |
-| `@storybook/addon-docs` | Autodocs and MDX documentation |
-| `@storybook/addon-a11y` | Accessibility checks, surfaced as test todos |
-| `@storybook/addon-vitest` | Runs stories as browser tests via Vitest |
-| `@chromatic-com/storybook` | Chromatic integration for visual review |
-| `@storybook/addon-mcp` | MCP server at `/mcp` for agent-driven story authoring |
+- Buttons
+- Inputs and forms
+- Cards
+- Dialogs and sheets
+- Navigation components
+- Feedback components
+- Progress indicators
+- Utility components
+
+Each story demonstrates a component's supported variants, states, and interactions exactly as they appear within the application.
+
+---
+
+## Technology stack
+
+The component library is built with:
+
+- **Storybook** for isolated component development and documentation
+- **shadcn/ui** as the primary component foundation
+- **Tailwind CSS v4** for styling
+- **MongoDB LeafyGreen** components where they best fit the user experience
+- **Vitest + Playwright** for component interaction testing
+
+---
+
+## Development workflow
+
+Building components independently before integrating them into the application helps:
+
+- Keep the interface consistent
+- Improve maintainability
+- Simplify debugging
+- Reduce unintended regressions
+- Encourage reusable UI patterns
+
+As QuickRecall evolves, this Storybook grows alongside it, providing a single place to develop, review, and document the application's UI.

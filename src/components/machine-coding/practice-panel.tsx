@@ -50,7 +50,7 @@ interface Props {
   language: CodeLang;
 }
 
-export default function PracticePanel({ session, solutionCode, language }: Props) {
+export default function PracticePanel({ session, solutionCode, language }: Readonly<Props>) {
   // Route shape is /js/machine-coding/<slug> or /react/machine-coding/<slug>; breaks silently
   // if these routes ever move — update the regex with them.
   const pathname = usePathname();
@@ -124,7 +124,7 @@ export default function PracticePanel({ session, solutionCode, language }: Props
       action: {
         label: 'Open OneCompiler',
         onClick: () =>
-          window.open(kind === 'js' ? 'https://onecompiler.com/javascript' : 'https://onecompiler.com/react', '_blank', 'noopener')
+          window.open(kind === 'js' ? 'https://onecompiler.com/typescript' : 'https://onecompiler.com/react', '_blank', 'noopener')
       }
     });
   };

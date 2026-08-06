@@ -14,8 +14,8 @@ interface Props {
 
 const EMBEDS = {
   js: {
-    src: 'https://onecompiler.com/embed/javascript?theme=dark&hideLanguageSelection=true',
-    href: 'https://onecompiler.com/javascript',
+    src: 'https://onecompiler.com/embed/typescript?theme=dark&hideLanguageSelection=true',
+    href: 'https://onecompiler.com/typescript',
     label: 'Open in OneCompiler',
     titleSuffix: 'OneCompiler'
   },

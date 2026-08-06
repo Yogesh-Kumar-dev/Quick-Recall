@@ -1,17 +1,14 @@
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
-// Minimal Vitest setup: pure-logic unit tests only (no jsdom, no React rendering).
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
-// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 const isCI = process.env.CI === 'true';
 
 export default defineConfig({
   resolve: {
-    // Mirror the tsconfig `@/* -> src/*` alias so imports like `@/data/...` resolve in tests.
     alias: {
       '@': path.resolve(__dirname, './src')
     }
@@ -22,10 +19,19 @@ export default defineConfig({
         extends: true,
         test: {
           environment: 'node',
+          name: 'unit',
           include: ['src/**/*.test.ts']
         }
       },
-      // Storybook tests require Playwright browsers — skip in CI until browser install is added.
+      {
+        extends: true,
+        test: {
+          environment: 'jsdom',
+          name: 'component',
+          include: ['src/**/*.test.tsx'],
+          setupFiles: ['./vitest.setup.ts']
+        }
+      },
       ...(!isCI
         ? [
             {

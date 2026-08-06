@@ -10,7 +10,7 @@ import { type FlashcardSource, flashcardKey } from '@/data/flashcards-index';
 
 import type { Flashcard } from '@/types/content';
 
-export default function FlashcardCarousel({ cards, source, title }: { cards: Flashcard[]; source: FlashcardSource; title?: string }) {
+export default function FlashcardCarousel({ cards, source, title }: Readonly<{ cards: Flashcard[]; source: FlashcardSource; title?: string }>) {
   const [cardId, setCardId] = useQueryState('card', parseAsString);
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -95,30 +95,30 @@ export default function FlashcardCarousel({ cards, source, title }: { cards: Fla
         </div>
 
         {/* ponytail: CSS-based flip animation; no framer-motion dependency.
-            div[role="button"] instead of a native <button> because the back face can render
-            a CodeBlock, whose copy control is itself a <button> — nesting a <button> inside a
-            <button> is invalid HTML and triggers a hydration error. */}
-        {/* biome-ignore lint/a11y/useSemanticElements: must be a div, not a button — see comment above */}
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard flip/navigate is a document-level listener above, not a per-element handler */}
+            Must use div[role="button"] instead of a native <button> because the back face
+            renders a CodeBlock whose LeafyGreen <Code> copy control is itself a <button> —
+            nesting <button> inside <button> is invalid HTML and triggers a hydration error. */}
+        {/* biome-ignore lint/a11y/useSemanticElements: button nesting constraint — see comment above */}
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard flip/navigate is a document-level listener, not per-element */}
         <div
           role="button"
           tabIndex={0}
-          className="h-full w-full cursor-pointer [perspective:1000px]"
+          className="h-full w-full cursor-pointer perspective-[1000px]"
           onClick={() => setIsFlipped((f) => !f)}
           aria-label={`Flashcard ${currentIndex + 1}: ${current.front}. Press Space to flip, arrow keys to navigate.`}
         >
           <div
-            className="relative h-full w-full transition-transform duration-300 [transform-style:preserve-3d]"
+            className="relative h-full w-full transition-transform duration-300 transform-3d"
             style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
           >
-            <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden]">
+            <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 backface-hidden">
               <div className="text-center">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">Question</p>
                 <p className="mt-4 text-lg font-medium">{current.front}</p>
               </div>
             </div>
 
-            <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            <div className="absolute flex h-full w-full items-center justify-center rounded-lg border-2 border-border bg-card p-6 backface-hidden transform-[rotateY(180deg)]">
               <div className="text-center">
                 <p className="text-xs font-semibold uppercase text-muted-foreground">Answer</p>
                 <p className="mt-4 text-base text-foreground">{current.back}</p>

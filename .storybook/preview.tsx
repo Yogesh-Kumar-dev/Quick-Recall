@@ -1,3 +1,4 @@
+import { NuqsAdapter } from 'nuqs/adapters/react'
 import type { Preview } from '@storybook/nextjs-vite'
 import { themes } from 'storybook/theming'
 import '../src/app/globals.css'
@@ -8,9 +9,11 @@ import '../src/app/globals.css'
 // do in the app.
 const decorators: Preview['decorators'] = [
   (Story) => (
-    <div className="dark min-h-full bg-background p-10 text-foreground">
-      <Story />
-    </div>
+    <NuqsAdapter>
+      <div className="dark min-h-full bg-background p-10 text-foreground">
+        <Story />
+      </div>
+    </NuqsAdapter>
   )
 ]
 

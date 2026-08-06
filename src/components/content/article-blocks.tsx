@@ -20,7 +20,7 @@ const HeaderCell = LGHeaderCell as ComponentType<{ children?: ReactNode }>;
 const Row = LGRow as ComponentType<{ children?: ReactNode }>;
 const Cell = LGCell as ComponentType<{ children?: ReactNode }>;
 
-export default function ArticleBlocks({ blocks }: { blocks: ArticleBlock[] }) {
+export default function ArticleBlocks({ blocks }: Readonly<{ blocks: ArticleBlock[] }>) {
   return (
     <div className="space-y-4">
       {blocks.map((block, i) => {
@@ -101,8 +101,7 @@ export default function ArticleBlocks({ blocks }: { blocks: ArticleBlock[] }) {
                     {block.rows.map((row) => (
                       <Row key={row.join('|')}>
                         {row.map((value, cellIndex) => (
-                          // biome-ignore lint/suspicious/noArrayIndexKey: cell values aren't unique within a row
-                          <Cell key={cellIndex}>{value}</Cell>
+                          <Cell key={`${value}-${cellIndex}`}>{value}</Cell>
                         ))}
                       </Row>
                     ))}

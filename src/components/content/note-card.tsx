@@ -1,11 +1,11 @@
 'use client';
 
-import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
-import { ExpandableCard } from '@leafygreen-ui/expandable-card';
-import { parseAsString, useQueryState } from 'nuqs';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
 import type { NoteLink } from '@/data/note-sources';
 import type { Note } from '@/types/content';
+import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
+import { ExpandableCard } from '@leafygreen-ui/expandable-card';
+import { parseAsString, useQueryState } from 'nuqs';
 import ArticleRefChips, { LinkChips } from './article-ref-chips';
 import CodeBlock from './code-block';
 
@@ -23,18 +23,18 @@ const DIFFICULTY_BORDER: Record<Note['difficulty'], string> = {
   advanced: 'border-l-4! border-l-destructive!'
 };
 
-function Badge({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function Badge({ children, className = '' }: Readonly<{ children: React.ReactNode; className?: string }>) {
   return <span className={`rounded-full border px-2 py-0.5 text-xs ${className}`}>{children}</span>;
 }
 
-export default function NoteCard({ note, prereqs }: { note: Note; prereqs?: NoteLink[] }) {
+export default function NoteCard({ note, prereqs }: Readonly<{ note: Note; prereqs?: NoteLink[] }>) {
   const showDeepDive = note.difficulty !== 'basic';
 
   // shared `open` URL param via nuqs — opening one card closes any other, and makes a note
   // deep-linkable via ?open=<note.id>
   const [openId, setOpenId] = useQueryState('open', parseAsString);
   const isOpen = openId === note.id;
-  const handleClick = () => void setOpenId(isOpen ? null : note.id);
+  const handleClick = () => setOpenId(isOpen ? null : note.id);
 
   const title = (
     <span className="flex w-full flex-wrap items-center justify-between gap-2">
