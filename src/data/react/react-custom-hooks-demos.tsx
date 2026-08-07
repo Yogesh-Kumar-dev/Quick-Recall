@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,9 +14,10 @@ import usePrevious from '@/hooks/usePrevious';
 import useThrottle from '@/hooks/useThrottle';
 import useToggle from '@/hooks/useToggle';
 import useWindowSize from '@/hooks/useWindowSize';
+import { useState } from 'react';
 
 // Small live, interactive demos for each custom hook. Each imports the real hook from src/hooks/ so
-// the showcase exercises the actual code. Ported from legacy MUI to shadcn + Tailwind.
+// the showcase exercises the actual code.
 
 export function ToggleDemo() {
   const { value, toggle } = useToggle();
@@ -33,7 +33,7 @@ export function ToggleDemo() {
 
 export function ClipboardDemo() {
   const { copied, copy } = useCopyToClipboard();
-  const text = 'npm install react-virtuoso';
+  const text = 'pnpm add @tanstack/react-virtual';
   return (
     <div className="flex items-center gap-3">
       <code className="rounded bg-muted px-2 py-1 font-mono text-[13px]">{text}</code>
@@ -48,7 +48,7 @@ export function LocalStorageDemo() {
   const [name, setName] = useLocalStorage<string>('custom-hooks-demo-name', '');
   return (
     <div className="space-y-1">
-      <Input placeholder="Your name (persisted)" value={name} onChange={(e) => setName(e.target.value)} className="max-w-[280px]" />
+      <Input placeholder="Your name (persisted)" value={name} onChange={(e) => setName(e.target.value)} className="max-w-70" />
       <p className="text-xs text-muted-foreground">
         Reload the page or open another tab, the value sticks. Stored under <code className="font-mono">custom-hooks-demo-name</code>.
       </p>
@@ -61,7 +61,7 @@ export function DebounceDemo() {
   const debounced = useDebounce(text, 500);
   return (
     <div className="space-y-1">
-      <Input placeholder="Type fast…" value={text} onChange={(e) => setText(e.target.value)} className="max-w-[280px]" />
+      <Input placeholder="Type fast…" value={text} onChange={(e) => setText(e.target.value)} className="max-w-70" />
       <p className="text-sm">
         Live: <strong className="font-mono">{text || ','}</strong>
       </p>
@@ -128,7 +128,7 @@ export function ClickOutsideDemo() {
         {open ? 'Menu open' : 'Open menu'}
       </Button>
       {open && (
-        <div ref={ref} className="absolute z-10 mt-1 w-[200px] rounded-md border border-border bg-card p-3 shadow-lg">
+        <div ref={ref} className="absolute z-10 mt-1 w-50 rounded-md border border-border bg-card p-3 shadow-lg">
           <p className="text-sm">Click anywhere outside this box to close it.</p>
         </div>
       )}
@@ -153,12 +153,12 @@ export function IntersectionDemo() {
       <div className="mb-1 flex items-center gap-2 text-sm">
         Status: <Badge variant={isIntersecting ? 'default' : 'secondary'}>{isIntersecting ? 'visible' : 'scrolled away'}</Badge>
       </div>
-      <div className="h-[120px] overflow-y-auto rounded-md border border-border p-1">
-        <div className="h-[160px]" />
+      <div className="h-30 overflow-y-auto rounded-md border border-border p-1">
+        <div className="h-40" />
         <div ref={ref} className={`rounded-md p-4 text-center transition-colors ${isIntersecting ? 'bg-primary/20' : 'bg-muted'}`}>
           <p className="text-sm">Scroll me into / out of view</p>
         </div>
-        <div className="h-[160px]" />
+        <div className="h-40" />
       </div>
     </div>
   );

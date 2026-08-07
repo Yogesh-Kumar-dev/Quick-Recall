@@ -191,7 +191,7 @@ export const reactMcProblems: ReactMcProblem[] = [
     slug: 'virtualized-list',
     difficulty: 'hard',
     category: 'performance',
-    tags: ['IntersectionObserver', 'react-virtuoso', 'virtualization', 'useRef']
+    tags: ['IntersectionObserver', '@tanstack/react-virtual', 'virtualization', 'useRef']
   },
   {
     id: 'stopwatch',

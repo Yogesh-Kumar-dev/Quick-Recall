@@ -1,11 +1,11 @@
 'use client';
 
-import BookmarkButton from '@/components/bookmarks/BookmarkButton';
-import type { NoteLink } from '@/data/note-sources';
-import type { Note } from '@/types/content';
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
 import { parseAsString, useQueryState } from 'nuqs';
+import BookmarkButton from '@/components/bookmarks/BookmarkButton';
+import type { NoteLink } from '@/data/note-sources';
+import type { Note } from '@/types/content';
 import ArticleRefChips, { LinkChips } from './article-ref-chips';
 import CodeBlock from './code-block';
 

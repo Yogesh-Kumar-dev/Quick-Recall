@@ -1,18 +1,20 @@
 'use client';
 
-import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
-import { ExpandableCard } from '@leafygreen-ui/expandable-card';
-import type { ReactNode } from 'react';
-import { Fragment, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
 import { Button } from '@/components/ui/button';
 import type { QuickRecallItem, QuickRecallSection } from '@/types/content';
+import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
+import { ExpandableCard } from '@leafygreen-ui/expandable-card';
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import type { ReactNode } from 'react';
+import { Fragment, useState } from 'react';
 import CodeBlock from './code-block';
+import { VirtualizerContext } from './virtual-note-list';
+import VirtualizerDebugPanel from './virtualizer-debug-panel';
 
 // above this count, virtualize so hundreds of ExpandableCard instances don't all mount at once
 const VIRTUALIZE_THRESHOLD = 50;
 
-function QRItem({ concept, bullets, codeSnippet, warning }: QuickRecallItem) {
+function QRItem({ concept, bullets, codeSnippet, warning }: Readonly<QuickRecallItem>) {
   return (
     <div className="space-y-2 border-t border-border pt-3 first:border-t-0 first:pt-0">
       <p className="font-medium text-primary">{concept}</p>
@@ -36,12 +38,12 @@ export default function QuickRecallView({
   intro,
   sections,
   headerAction
-}: {
+}: Readonly<{
   title: string;
   intro?: string;
   sections: QuickRecallSection[];
   headerAction?: ReactNode;
-}) {
+}>) {
   const [open, setOpen] = useState<Record<string, boolean>>(() => Object.fromEntries(sections.map((s) => [s.title, true])));
   const setAll = (v: boolean) => setOpen(Object.fromEntries(sections.map((s) => [s.title, v])));
 
@@ -60,6 +62,19 @@ export default function QuickRecallView({
       </div>
     </ExpandableCard>
   );
+
+  const OVERSCAN = 4;
+  const isVirtualized = sections.length > VIRTUALIZE_THRESHOLD;
+
+  const virtualizer = useWindowVirtualizer({
+    count: isVirtualized ? sections.length : 0,
+    estimateSize: () => 300,
+    overscan: OVERSCAN,
+    getItemKey: (index) => sections[index].title,
+    enabled: isVirtualized
+  });
+
+  const items = isVirtualized ? virtualizer.getVirtualItems() : [];
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-4">
@@ -80,13 +95,36 @@ export default function QuickRecallView({
       </div>
       {intro && <p className="text-sm text-muted-foreground">{intro}</p>}
 
-      {sections.length > VIRTUALIZE_THRESHOLD ? (
-        <Virtuoso
-          useWindowScroll
-          data={sections}
-          computeItemKey={(_, section) => section.title}
-          itemContent={(_, section) => renderSection(section)}
-        />
+      {isVirtualized ? (
+        <VirtualizerContext.Provider value={virtualizer}>
+          <div className="space-y-2">
+            <VirtualizerDebugPanel overscan={OVERSCAN} />
+            <div
+              style={{
+                height: `${virtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative'
+              }}
+            >
+              {items.map((virtualRow) => (
+                <div
+                  key={virtualRow.key}
+                  data-index={virtualRow.index}
+                  ref={virtualizer.measureElement}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualRow.start}px)`
+                  }}
+                >
+                  {renderSection(sections[virtualRow.index])}
+                </div>
+              ))}
+            </div>
+          </div>
+        </VirtualizerContext.Provider>
       ) : (
         sections.map(renderSection)
       )}

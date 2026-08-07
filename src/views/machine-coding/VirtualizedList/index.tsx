@@ -22,7 +22,7 @@ const PROBLEM: ProblemMeta = {
   ],
   keyPatterns: ['IntersectionObserver', 'sentinel ref', 'batch reveal'],
   interviewTip:
-    'Be clear on the tradeoff: this observer "reveal" approach still MOUNTS every revealed node, so the DOM keeps growing — fine for 100 items. True virtualization (react-window / react-virtuoso) keeps a roughly constant number of nodes in the DOM regardless of list size by only rendering the rows in (and just around) the viewport — mention it as the answer for thousands of items.'
+    'Be clear on the tradeoff: this observer "reveal" approach still MOUNTS every revealed node, so the DOM keeps growing — fine for 100 items. True virtualization (react-window / @tanstack/react-virtual) keeps a roughly constant number of nodes in the DOM regardless of list size by only rendering the rows in (and just around) the viewport — mention it as the answer for thousands of items.'
 };
 
 export default function VirtualizedListApp() {
