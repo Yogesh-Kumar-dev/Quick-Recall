@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { IconFilter } from '@tabler/icons-react';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import NoteFilters, { type FilterConfig, type FilterCounts } from './note-filters';
 
 export function MobileFilterButton({ categories, counts }: Readonly<{ categories: string[]; counts: FilterCounts }>) {
@@ -35,10 +35,10 @@ export function MobileFilterButton({ categories, counts }: Readonly<{ categories
 // desktop: sticky filter rail. mobile: a "Filters" button that opens the same controls in a slide-over
 export default function FilterPanel({ categories, counts, ...config }: { categories: string[]; counts: FilterCounts } & FilterConfig) {
   return (
-      <aside className="hidden lg:block lg:w-64 lg:shrink-0">
-        <div className="lg:sticky lg:top-29">
-          <NoteFilters categories={categories} counts={counts} {...config} />
-        </div>
-      </aside>
+    <aside className="hidden lg:block lg:w-64 lg:shrink-0">
+      <div className="lg:sticky lg:top-29">
+        <NoteFilters categories={categories} counts={counts} {...config} />
+      </div>
+    </aside>
   );
 }

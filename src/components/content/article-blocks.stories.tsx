@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import ArticleBlocks from '@/components/content/article-blocks'
-import type { ArticleBlock } from '@/types/content'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import ArticleBlocks from '@/components/content/article-blocks';
+import type { ArticleBlock } from '@/types/content';
 
 const sampleBlocks: ArticleBlock[] = [
   {
@@ -39,11 +39,7 @@ const sampleBlocks: ArticleBlock[] = [
   {
     type: 'list',
     style: 'unordered',
-    items: [
-      'Closures enable data privacy',
-      'They are used in module patterns',
-      'Common in callbacks and event handlers'
-    ]
+    items: ['Closures enable data privacy', 'They are used in module patterns', 'Common in callbacks and event handlers']
   },
   {
     type: 'steps',
@@ -57,10 +53,14 @@ const sampleBlocks: ArticleBlock[] = [
     type: 'filetree',
     root: 'src/',
     nodes: [
-      { name: 'utils/', type: 'folder', children: [
-        { name: 'counter.ts', type: 'file', comment: 'closure example' },
-        { name: 'helpers.ts', type: 'file' }
-      ]},
+      {
+        name: 'utils/',
+        type: 'folder',
+        children: [
+          { name: 'counter.ts', type: 'file', comment: 'closure example' },
+          { name: 'helpers.ts', type: 'file' }
+        ]
+      },
       { name: 'index.ts', type: 'file' }
     ]
   },
@@ -73,21 +73,21 @@ const sampleBlocks: ArticleBlock[] = [
       ['const', 'Block', 'TDZ']
     ]
   }
-]
+];
 
 const meta = {
   title: 'Content/ArticleBlocks',
   component: ArticleBlocks,
   parameters: { layout: 'padded' },
   tags: ['autodocs']
-} satisfies Meta<typeof ArticleBlocks>
+} satisfies Meta<typeof ArticleBlocks>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const AllBlockTypes: Story = {
   args: { blocks: sampleBlocks }
-}
+};
 
 export const HeadingsOnly: Story = {
   args: {
@@ -96,7 +96,7 @@ export const HeadingsOnly: Story = {
       { type: 'heading', id: 'h2', level: 3, text: 'Subsection' }
     ]
   }
-}
+};
 
 export const ParagraphsOnly: Story = {
   args: {
@@ -105,15 +105,13 @@ export const ParagraphsOnly: Story = {
       { type: 'paragraph', text: 'Another paragraph with more content to read.' }
     ]
   }
-}
+};
 
 export const CodeOnly: Story = {
   args: {
-    blocks: [
-      { type: 'code', code: 'const greeting = "Hello, World!";\nconsole.log(greeting);', language: 'typescript' }
-    ]
+    blocks: [{ type: 'code', code: 'const greeting = "Hello, World!";\nconsole.log(greeting);', language: 'typescript' }]
   }
-}
+};
 
 export const ListTypes: Story = {
   args: {
@@ -122,8 +120,8 @@ export const ListTypes: Story = {
       { type: 'list', style: 'ordered', items: ['Step one', 'Step two', 'Step three'] }
     ]
   }
-}
+};
 
 export const Empty: Story = {
   args: { blocks: [] }
-}
+};

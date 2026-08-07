@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { ChipFilter } from '@/components/job-tracker/chip-filter'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { ChipFilter } from '@/components/job-tracker/chip-filter';
 
 const meta = {
   title: 'JobTracker/ChipFilter',
@@ -9,10 +9,10 @@ const meta = {
   args: {
     onClick: () => {}
   }
-} satisfies Meta<typeof ChipFilter>
+} satisfies Meta<typeof ChipFilter>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Inactive: Story = {
   args: {
@@ -20,7 +20,7 @@ export const Inactive: Story = {
     label: 'Applied',
     count: 12
   }
-}
+};
 
 export const Active: Story = {
   args: {
@@ -28,21 +28,21 @@ export const Active: Story = {
     label: 'Applied',
     count: 12
   }
-}
+};
 
 export const WithoutCount: Story = {
   args: {
     active: false,
     label: 'All'
   }
-}
+};
 
 export const ActiveWithoutCount: Story = {
   args: {
     active: true,
     label: 'All'
   }
-}
+};
 
 export const CustomColor: Story = {
   args: {
@@ -50,4 +50,4 @@ export const CustomColor: Story = {
     label: 'Remote',
     colorClass: 'border-blue-500/40 text-blue-400 hover:bg-blue-500/10'
   }
-}
+};

@@ -1,12 +1,12 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import type { QuickRecallItem, QuickRecallSection } from '@/types/content';
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { ExpandableCard } from '@leafygreen-ui/expandable-card';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import type { ReactNode } from 'react';
 import { Fragment, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import type { QuickRecallItem, QuickRecallSection } from '@/types/content';
 import CodeBlock from './code-block';
 import { VirtualizerContext } from './virtual-note-list';
 import VirtualizerDebugPanel from './virtualizer-debug-panel';

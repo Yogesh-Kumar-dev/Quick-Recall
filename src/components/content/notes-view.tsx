@@ -1,7 +1,7 @@
-import { type NoteLink, resolvePrerequisites } from '@/data/note-sources';
-import type { Note } from '@/types/content';
 import Fuse from 'fuse.js';
 import type { ReactNode } from 'react';
+import { type NoteLink, resolvePrerequisites } from '@/data/note-sources';
+import type { Note } from '@/types/content';
 import FilterPanel, { MobileFilterButton } from './filter-panel';
 import NoteCard from './note-card';
 import ScrollToNote from './scroll-to-note';
@@ -95,12 +95,7 @@ export default function NotesView({
         <FilterPanel categories={categories} counts={counts} />
 
         <main className="min-w-0 flex-1">
-          <VirtualNoteList
-            notes={filtered}
-            openId={params.open}
-            prereqLinks={prereqLinks}
-            header={header(<VirtualizerStats />)}
-          />
+          <VirtualNoteList notes={filtered} openId={params.open} prereqLinks={prereqLinks} header={header(<VirtualizerStats />)} />
           <ScrollToNote id={params.open} />
         </main>
       </div>

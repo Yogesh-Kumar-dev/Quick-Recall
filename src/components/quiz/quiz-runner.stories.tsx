@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import QuizRunner from '@/components/quiz/quiz-runner'
-import type { QuizQuestion } from '@/types/content'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import QuizRunner from '@/components/quiz/quiz-runner';
+import type { QuizQuestion } from '@/types/content';
 
 const sampleQuestions: QuizQuestion[] = [
   {
@@ -37,7 +37,7 @@ const sampleQuestions: QuizQuestion[] = [
     correctIndex: 2,
     explanation: 'reduce() executes a reducer function on each element, resulting in a single output value.'
   }
-]
+];
 
 const meta = {
   title: 'Quiz/QuizRunner',
@@ -51,10 +51,10 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof QuizRunner>
+} satisfies Meta<typeof QuizRunner>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const PracticeMode: Story = {
   args: {
@@ -62,7 +62,7 @@ export const PracticeMode: Story = {
     source: 'js',
     title: 'JavaScript Basics'
   }
-}
+};
 
 export const WithCodeQuestion: Story = {
   args: {
@@ -70,7 +70,7 @@ export const WithCodeQuestion: Story = {
     source: 'js',
     title: 'JavaScript Code Quiz'
   }
-}
+};
 
 export const FewQuestions: Story = {
   args: {
@@ -78,4 +78,4 @@ export const FewQuestions: Story = {
     source: 'js',
     title: 'Quick Quiz'
   }
-}
+};

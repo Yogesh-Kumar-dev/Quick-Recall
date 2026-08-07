@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { useState } from 'react'
-import { QuickReplyChips } from '@/components/mock-interview/chat/quick-reply-chips'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { useState } from 'react';
+import { QuickReplyChips } from '@/components/mock-interview/chat/quick-reply-chips';
 
 function QuickReplyChipsWrapper<T extends string>(props: React.ComponentProps<typeof QuickReplyChips<T>>) {
-  const [selected, setSelected] = useState<T[]>(props.selected ?? [])
+  const [selected, setSelected] = useState<T[]>(props.selected ?? []);
   return (
     <QuickReplyChips
       {...props}
       selected={selected}
       onToggle={(v) => setSelected((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]))}
     />
-  )
+  );
 }
 
 const meta = {
@@ -25,10 +25,10 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof QuickReplyChips>
+} satisfies Meta<typeof QuickReplyChips>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const SingleSelect: Story = {
   args: {
@@ -41,7 +41,7 @@ export const SingleSelect: Story = {
     selected: [],
     onToggle: () => {}
   }
-}
+};
 
 export const MultiSelect: Story = {
   args: {
@@ -55,7 +55,7 @@ export const MultiSelect: Story = {
     selected: ['javascript', 'react'],
     onToggle: () => {}
   }
-}
+};
 
 export const WithAction: Story = {
   args: {
@@ -68,4 +68,4 @@ export const WithAction: Story = {
     onToggle: () => {},
     action: { label: 'Continue', onClick: () => {} }
   }
-}
+};

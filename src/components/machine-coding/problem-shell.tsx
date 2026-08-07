@@ -6,8 +6,8 @@ import CodeBlock from '@/components/content/code-block';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { ProblemMeta } from '@/types/content';
-import SandboxPanel from './sandbox-panel';
 import ProblemStatement from './problem-statement';
+import SandboxPanel from './sandbox-panel';
 
 // leafygreen's polymorphic component type isn't a valid JSX.ElementType under React 19's stricter types.
 const Option = SegmentedControlOption as unknown as (props: { value: string; disabled?: boolean; children?: ReactNode }) => ReactNode;

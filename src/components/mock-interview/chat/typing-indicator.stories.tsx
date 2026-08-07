@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { TypingIndicator } from '@/components/mock-interview/chat/typing-indicator'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { TypingIndicator } from '@/components/mock-interview/chat/typing-indicator';
 
 const meta = {
   title: 'MockInterview/TypingIndicator',
@@ -13,9 +13,9 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof TypingIndicator>
+} satisfies Meta<typeof TypingIndicator>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {}
+export const Default: Story = {};

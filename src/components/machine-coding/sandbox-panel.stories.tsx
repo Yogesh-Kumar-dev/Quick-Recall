@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import SandboxPanel from '@/components/machine-coding/sandbox-panel'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import SandboxPanel from '@/components/machine-coding/sandbox-panel';
 
 const meta = {
   title: 'MachineCoding/SandboxPanel',
   component: SandboxPanel,
   parameters: { layout: 'padded' },
   tags: ['autodocs']
-} satisfies Meta<typeof SandboxPanel>
+} satisfies Meta<typeof SandboxPanel>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const JsProblem: Story = {
   args: {
@@ -23,7 +23,7 @@ export const JsProblem: Story = {
       </div>
     )
   ]
-}
+};
 
 export const ReactProblem: Story = {
   args: {
@@ -37,4 +37,4 @@ export const ReactProblem: Story = {
       </div>
     )
   ]
-}
+};

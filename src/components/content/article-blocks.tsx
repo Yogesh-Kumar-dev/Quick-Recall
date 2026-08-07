@@ -100,8 +100,8 @@ export default function ArticleBlocks({ blocks }: Readonly<{ blocks: ArticleBloc
                   <TableBody>
                     {block.rows.map((row) => (
                       <Row key={row.join('|')}>
-                        {row.map((value, cellIndex) => (
-                          <Cell key={`${value}-${cellIndex}`}>{value}</Cell>
+                        {row.map((value) => (
+                          <Cell key={value}>{value}</Cell>
                         ))}
                       </Row>
                     ))}

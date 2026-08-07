@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import NoteCard from '@/components/content/note-card'
-import type { Note } from '@/types/content'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import NoteCard from '@/components/content/note-card';
+import type { Note } from '@/types/content';
 
 const baseNote: Note = {
   id: 'closures',
@@ -13,17 +13,17 @@ const baseNote: Note = {
   ],
   difficulty: 'intermediate',
   category: 'core'
-}
+};
 
 const meta = {
   title: 'Content/NoteCard',
   component: NoteCard,
   parameters: { layout: 'padded' },
   tags: ['autodocs']
-} satisfies Meta<typeof NoteCard>
+} satisfies Meta<typeof NoteCard>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
   args: {
@@ -37,11 +37,11 @@ export const Basic: Story = {
       category: 'core'
     }
   }
-}
+};
 
 export const Intermediate: Story = {
   args: { note: baseNote }
-}
+};
 
 export const Advanced: Story = {
   args: {
@@ -57,12 +57,13 @@ export const Advanced: Story = {
       ],
       difficulty: 'advanced',
       category: 'core',
-      textbookDef: 'Prototypal inheritance is a feature in JavaScript where objects can inherit properties and methods from other objects through the prototype chain.',
+      textbookDef:
+        'Prototypal inheritance is a feature in JavaScript where objects can inherit properties and methods from other objects through the prototype chain.',
       eli5: 'Think of it like a family tree. If you ask grandpa for money and he says "ask your dad," and your dad says "ask me," that\'s the prototype chain — you keep looking up until you find it.',
       gotcha: 'for...in loops iterate over inherited properties too — use Object.hasOwn() or hasOwnProperty() to filter.'
     }
   }
-}
+};
 
 export const WithCodeSnippet: Story = {
   args: {
@@ -81,16 +82,17 @@ counter.increment(); // 1
 counter.getCount();  // 1`
     }
   }
-}
+};
 
 export const WithGotcha: Story = {
   args: {
     note: {
       ...baseNote,
-      gotcha: 'Closures can cause memory leaks if large objects are held in scope longer than needed. Clean up event listeners and timers in useEffect return functions.'
+      gotcha:
+        'Closures can cause memory leaks if large objects are held in scope longer than needed. Clean up event listeners and timers in useEffect return functions.'
     }
   }
-}
+};
 
 export const WithPrerequisites: Story = {
   args: {
@@ -100,4 +102,4 @@ export const WithPrerequisites: Story = {
       { id: 'scope', title: 'Scope', url: '/js/notes?open=scope' }
     ]
   }
-}
+};

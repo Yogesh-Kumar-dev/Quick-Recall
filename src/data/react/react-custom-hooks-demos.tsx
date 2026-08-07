@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +15,6 @@ import usePrevious from '@/hooks/usePrevious';
 import useThrottle from '@/hooks/useThrottle';
 import useToggle from '@/hooks/useToggle';
 import useWindowSize from '@/hooks/useWindowSize';
-import { useState } from 'react';
 
 // Small live, interactive demos for each custom hook. Each imports the real hook from src/hooks/ so
 // the showcase exercises the actual code.

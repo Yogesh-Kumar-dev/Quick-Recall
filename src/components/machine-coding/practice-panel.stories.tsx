@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import PracticePanel from '@/components/machine-coding/practice-panel'
-import type { PracticeSession } from '@/components/machine-coding/use-practice-session'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import PracticePanel from '@/components/machine-coding/practice-panel';
+import type { PracticeSession } from '@/components/machine-coding/use-practice-session';
 
 const idleSession: PracticeSession = {
   status: 'idle',
@@ -10,7 +10,7 @@ const idleSession: PracticeSession = {
   submit: () => {},
   reset: () => {},
   markGraded: () => {}
-}
+};
 
 const activeSession: PracticeSession = {
   status: 'active',
@@ -20,7 +20,7 @@ const activeSession: PracticeSession = {
   submit: () => {},
   reset: () => {},
   markGraded: () => {}
-}
+};
 
 const submittedSession: PracticeSession = {
   status: 'submitted',
@@ -30,7 +30,7 @@ const submittedSession: PracticeSession = {
   submit: () => {},
   reset: () => {},
   markGraded: () => {}
-}
+};
 
 const gradedSession: PracticeSession = {
   status: 'graded',
@@ -40,7 +40,7 @@ const gradedSession: PracticeSession = {
   submit: () => {},
   reset: () => {},
   markGraded: () => {}
-}
+};
 
 const sampleSolution = `function debounce(fn, delay) {
   let timer;
@@ -48,7 +48,7 @@ const sampleSolution = `function debounce(fn, delay) {
     clearTimeout(timer);
     timer = setTimeout(() => fn(...args), delay);
   };
-}`
+}`;
 
 const meta = {
   title: 'MachineCoding/PracticePanel',
@@ -62,10 +62,10 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof PracticePanel>
+} satisfies Meta<typeof PracticePanel>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Idle: Story = {
   args: {
@@ -73,7 +73,7 @@ export const Idle: Story = {
     solutionCode: sampleSolution,
     language: 'javascript'
   }
-}
+};
 
 export const Active: Story = {
   args: {
@@ -81,7 +81,7 @@ export const Active: Story = {
     solutionCode: sampleSolution,
     language: 'javascript'
   }
-}
+};
 
 export const Submitted: Story = {
   args: {
@@ -89,7 +89,7 @@ export const Submitted: Story = {
     solutionCode: sampleSolution,
     language: 'javascript'
   }
-}
+};
 
 export const Graded: Story = {
   args: {
@@ -97,4 +97,4 @@ export const Graded: Story = {
     solutionCode: sampleSolution,
     language: 'javascript'
   }
-}
+};

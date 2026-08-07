@@ -10,7 +10,11 @@ import { type FlashcardSource, flashcardKey } from '@/data/flashcards-index';
 
 import type { Flashcard } from '@/types/content';
 
-export default function FlashcardCarousel({ cards, source, title }: Readonly<{ cards: Flashcard[]; source: FlashcardSource; title?: string }>) {
+export default function FlashcardCarousel({
+  cards,
+  source,
+  title
+}: Readonly<{ cards: Flashcard[]; source: FlashcardSource; title?: string }>) {
   const [cardId, setCardId] = useQueryState('card', parseAsString);
   const [isFlipped, setIsFlipped] = useState(false);
 

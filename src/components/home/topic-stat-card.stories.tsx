@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import TopicStatCard from '@/components/home/topic-stat-card'
-import { Code, BookOpen, Layers, Zap } from 'lucide-react'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { BookOpen, Code, Layers, Zap } from 'lucide-react';
+import TopicStatCard from '@/components/home/topic-stat-card';
 
 const meta = {
   title: 'Home/TopicStatCard',
@@ -14,10 +14,10 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof TopicStatCard>
+} satisfies Meta<typeof TopicStatCard>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const JavaScript: Story = {
   args: {
@@ -38,7 +38,7 @@ export const JavaScript: Story = {
     ],
     primaryHref: '/js'
   }
-}
+};
 
 export const React: Story = {
   args: {
@@ -58,7 +58,7 @@ export const React: Story = {
     ],
     primaryHref: '/react'
   }
-}
+};
 
 export const WithoutDifficulty: Story = {
   args: {
@@ -70,12 +70,10 @@ export const WithoutDifficulty: Story = {
       { label: 'Published', value: 8 },
       { label: 'Drafts', value: 3 }
     ],
-    quickLinks: [
-      { label: 'All Articles', href: '/articles' }
-    ],
+    quickLinks: [{ label: 'All Articles', href: '/articles' }],
     primaryHref: '/articles'
   }
-}
+};
 
 export const Minimal: Story = {
   args: {
@@ -87,4 +85,4 @@ export const Minimal: Story = {
     quickLinks: [],
     primaryHref: '/engineering'
   }
-}
+};

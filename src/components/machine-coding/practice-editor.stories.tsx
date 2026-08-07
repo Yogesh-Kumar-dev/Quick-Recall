@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { useRef } from 'react'
-import PracticeEditor, { type PracticeEditorHandle } from '@/components/machine-coding/practice-editor'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { useRef } from 'react';
+import PracticeEditor, { type PracticeEditorHandle } from '@/components/machine-coding/practice-editor';
 
 function PracticeEditorWrapper(props: Omit<React.ComponentProps<typeof PracticeEditor>, 'ref'>) {
-  const ref = useRef<PracticeEditorHandle>(null)
-  return <PracticeEditor {...props} ref={ref} />
+  const ref = useRef<PracticeEditorHandle>(null);
+  return <PracticeEditor {...props} ref={ref} />;
 }
 
 const SAMPLE_CODE = `function twoSum(nums: number[], target: number): number[] {
@@ -15,7 +15,7 @@ const SAMPLE_CODE = `function twoSum(nums: number[], target: number): number[] {
     map.set(nums[i], i);
   }
   return [];
-}`
+}`;
 
 const meta = {
   title: 'MachineCoding/PracticeEditor',
@@ -34,14 +34,14 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof PracticeEditorWrapper>
+} satisfies Meta<typeof PracticeEditorWrapper>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const JavaScript: Story = {
   args: { language: 'javascript' }
-}
+};
 
 export const Jsx: Story = {
   args: {
@@ -55,11 +55,11 @@ export const Jsx: Story = {
   );
 }`
   }
-}
+};
 
 export const Empty: Story = {
   args: {
     defaultValue: '',
     language: 'javascript'
   }
-}
+};

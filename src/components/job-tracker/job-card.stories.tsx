@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import JobCard from '@/components/job-tracker/job-card'
-import type { JobApplication } from '@/types/job-tracker'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import JobCard from '@/components/job-tracker/job-card';
+import type { JobApplication } from '@/types/job-tracker';
 
 const baseJob: JobApplication = {
   id: '1',
@@ -22,7 +22,7 @@ const baseJob: JobApplication = {
   notes: [],
   createdAt: Date.now(),
   updatedAt: Date.now()
-}
+};
 
 const meta = {
   title: 'JobTracker/JobCard',
@@ -42,14 +42,14 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof JobCard>
+} satisfies Meta<typeof JobCard>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Applied: Story = {
   args: { job: baseJob }
-}
+};
 
 export const Interviewing: Story = {
   args: {
@@ -62,7 +62,7 @@ export const Interviewing: Story = {
       ]
     }
   }
-}
+};
 
 export const WithContacts: Story = {
   args: {
@@ -75,7 +75,7 @@ export const WithContacts: Story = {
       ]
     }
   }
-}
+};
 
 export const Offer: Story = {
   args: {
@@ -90,7 +90,7 @@ export const Offer: Story = {
       ]
     }
   }
-}
+};
 
 export const Rejected: Story = {
   args: {
@@ -103,7 +103,7 @@ export const Rejected: Story = {
       ]
     }
   }
-}
+};
 
 export const Ghosted: Story = {
   args: {
@@ -113,13 +113,13 @@ export const Ghosted: Story = {
       appliedAt: '2025-06-01T10:00:00Z'
     }
   }
-}
+};
 
 export const Favorite: Story = {
   args: {
     job: { ...baseJob, favorite: true }
   }
-}
+};
 
 export const WithDocuments: Story = {
   args: {
@@ -131,4 +131,4 @@ export const WithDocuments: Story = {
       ]
     }
   }
-}
+};

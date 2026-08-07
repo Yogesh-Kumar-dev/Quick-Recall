@@ -12,9 +12,9 @@ export default function VirtualizerStats() {
     let raf: number | null = null;
     const update = () => {
       raf ??= requestAnimationFrame(() => {
-          raf = null;
-          forceUpdate();
-        });
+        raf = null;
+        forceUpdate();
+      });
     };
     // Trigger an immediate tick so stats show on mount and filter reset
     update();

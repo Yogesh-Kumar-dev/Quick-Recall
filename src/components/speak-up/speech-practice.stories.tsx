@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import SpeechPractice from '@/components/speak-up/speech-practice'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import SpeechPractice from '@/components/speak-up/speech-practice';
 
 const meta = {
   title: 'SpeakUp/SpeechPractice',
@@ -17,16 +17,16 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof SpeechPractice>
+} satisfies Meta<typeof SpeechPractice>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 
 export const QuestionTwo: Story = {
   args: {
     questionIndex: 1,
     onNextQuestion: () => {}
   }
-}
+};

@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { useState } from 'react'
-import { ChatInput } from '@/components/mock-interview/chat/chat-input'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { useState } from 'react';
+import { ChatInput } from '@/components/mock-interview/chat/chat-input';
 
-type ChatInputArgs = Omit<React.ComponentProps<typeof ChatInput>, 'value' | 'onChange'>
+type ChatInputArgs = Omit<React.ComponentProps<typeof ChatInput>, 'value' | 'onChange'>;
 
 function ChatInputWrapper(props: ChatInputArgs) {
-  const [value, setValue] = useState('')
-  return <ChatInput {...props} value={value} onChange={setValue} />
+  const [value, setValue] = useState('');
+  return <ChatInput {...props} value={value} onChange={setValue} />;
 }
 
 const meta = {
@@ -21,17 +21,17 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof ChatInputWrapper>
+} satisfies Meta<typeof ChatInputWrapper>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
     onSubmit: () => {},
     placeholder: 'Type your answer…'
   }
-}
+};
 
 export const WithMic: Story = {
   args: {
@@ -39,7 +39,7 @@ export const WithMic: Story = {
     placeholder: 'Type or speak your answer…',
     mic: true
   }
-}
+};
 
 export const AllowEmpty: Story = {
   args: {
@@ -47,7 +47,7 @@ export const AllowEmpty: Story = {
     placeholder: 'Press send with empty input…',
     allowEmpty: true
   }
-}
+};
 
 export const NoAutoFocus: Story = {
   args: {
@@ -55,4 +55,4 @@ export const NoAutoFocus: Story = {
     placeholder: 'Not auto-focused',
     autoFocus: false
   }
-}
+};
