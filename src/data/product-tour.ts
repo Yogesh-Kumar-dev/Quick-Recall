@@ -14,9 +14,19 @@ export const TOUR_STEPS: TourStep[] = [
     description: 'Your home base — see streaks, review stats, and jump back into recent topics.'
   },
   {
+    key: 'articles',
+    title: 'Articles',
+    description: 'In-depth guides on web topics, from HTML basics to advanced concepts.'
+  },
+  {
     key: 'job-tracker',
     title: 'Job Tracker',
     description: 'A kanban board for tracking applications as they move through your pipeline.'
+  },
+  {
+    key: 'planner',
+    title: 'Planner',
+    description: 'A calendar for organizing study sessions, interviews, and job-search activities.'
   },
   {
     key: 'speak-up',

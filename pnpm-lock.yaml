@@ -16,7 +16,7 @@ importers:
     dependencies:
       '@base-ui/react':
         specifier: ^1.6.0
-        version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 1.6.0(@types/react@19.2.17)(date-fns@2.30.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@codemirror/autocomplete':
         specifier: ^6.20.3
         version: 6.20.3
@@ -29,6 +29,9 @@ importers:
       '@embedpdf/react-pdf-viewer':
         specifier: ^2.14.4
         version: 2.14.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(svelte@5.56.4)(vue@3.5.39(typescript@5.9.3))
+      '@fullcalendar/react':
+        specifier: ^7.0.2
+        version: 7.0.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(temporal-polyfill@1.0.3)
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.80.0(react@19.2.4))
@@ -41,6 +44,9 @@ importers:
       '@leafygreen-ui/code-editor':
         specifier: ^1.0.6
         version: 1.0.6(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@lezer/common@1.5.2)(@lezer/lr@1.4.10)(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@leafygreen-ui/date-picker':
+        specifier: ^4.1.2
+        version: 4.1.2(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@leafygreen-ui/emotion':
         specifier: 5.2.0
         version: 5.2.0(@types/react@19.2.17)(react@19.2.4)
@@ -137,6 +143,9 @@ importers:
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
+      temporal-polyfill:
+        specifier: ^1.0.3
+        version: 1.0.3
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -1630,6 +1639,24 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
+  '@full-ui/headless-calendar@7.0.2':
+    resolution: {integrity: sha512-i6UlTNjBVuiBca5Sq6OoLxFqK6eaQ/v1XOLObjRkzXLuSuNn+qs9/dUvlzrbeesn7QbRH7+u7lyvlQyq8WvmGA==}
+    peerDependencies:
+      temporal-polyfill: ^1.0.1
+
+  '@fullcalendar/core@7.0.2':
+    resolution: {integrity: sha512-EkhE1wkPttp5kKNmUNLsMwl8nUuQmLdj30SPKagOEWMJUE4AHETAu/F/SbYoRq+nksm2GWPe9cQs1kbQP2H9pA==}
+    peerDependencies:
+      '@full-ui/headless-calendar': 7.0.2
+      temporal-polyfill: ^1.0.1
+
+  '@fullcalendar/react@7.0.2':
+    resolution: {integrity: sha512-+etsJS6UsS1asxpEJt2h/vH/OCC/lqb8OCO/Xv7Mwb7GeJnR25iwBDEZmMKKmxNjJ2o8eU3uNGl/e7551eAt3A==}
+    peerDependencies:
+      react: 19.2.4
+      react-dom: 19.2.4
+      temporal-polyfill: ^1.0.1
+
   '@google-cloud/firestore@8.7.0':
     resolution: {integrity: sha512-EvMpZQUXkTRdweSvOu6VL6EEQwHjHAgWz2UYZR+Mj6Ao52S+TWieHbSn15jiNnEw8F8RhbZj7IGXZ1PFB1eA+A==}
     engines: {node: '>=18'}
@@ -1920,6 +1947,14 @@ packages:
     resolution: {integrity: sha512-KkX1A7m6bTD/WYSsKu//xqt7UyxhyMacKOCL7w3gmAQYoxUtZ2/iORtDAUXC4vfgK5ObDS6vQwm4Voyoe4hGog==}
     peerDependencies:
       '@leafygreen-ui/leafygreen-provider': ^5.0.0 || ^4.0.0 || ^3.2.0
+
+  '@leafygreen-ui/date-picker@4.1.2':
+    resolution: {integrity: sha512-3ZYzwuNWBhZOYYdKY4mnlaHQqFU4vXvknQkCGqDaT7WEh10+VUHKX11e5DFMx7v7hpOdQyVneA4jbNqHgRTK9w==}
+    peerDependencies:
+      '@leafygreen-ui/leafygreen-provider': ^5.0.0 || ^4.0.0 || ^3.2.0
+
+  '@leafygreen-ui/date-utils@0.3.5':
+    resolution: {integrity: sha512-Qu75/niLiw+vlpWIEx/a1AgpMfzYXuYk8Icv++SpTaFb8V09isCSNQrLgb5p2VQA/XkjqErLDTR7j3fgDElRjQ==}
 
   '@leafygreen-ui/descendants@3.1.0':
     resolution: {integrity: sha512-XPkUWKxzYymXfijKS6C0zupRMgWB4oFdHP3g16zIWM+9APep+n1iJOBRguinsMWe9DnjHqhoPSL1LC0kf4ucbA==}
@@ -4993,6 +5028,15 @@ packages:
     resolution: {integrity: sha512-23XHcCF+coGYevirZceTVD7NdJOqVn+49IHyxgszm+JIiHLoB2TkmPtsYkNWT1pvRSGkc35L6NHs0yHkN2SumA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
+  date-fns-tz@2.0.1:
+    resolution: {integrity: sha512-fJCG3Pwx8HUoLhkepdsP7Z5RsucUi+ZBOxyM5d0ZZ6c4SdYustq0VMmOu6Wf7bli+yS/Jwp91TOCqn9jMcVrUA==}
+    peerDependencies:
+      date-fns: 2.x
+
+  date-fns@2.30.0:
+    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
+    engines: {node: '>=0.11'}
+
   debounce-fn@4.0.0:
     resolution: {integrity: sha512-8pYCQiL9Xdcg0UPSD3d+0KMlOjp+KGU5EPwYddgzQ7DATsg4fuUDjQtsYLmWjnk2obnNHgV3vE2Y4jejSOJVBQ==}
     engines: {node: '>=10'}
@@ -7861,6 +7905,15 @@ packages:
     resolution: {integrity: sha512-resvxdc6Mgb7YEThw6G6bExlXKkv6+YbuzGg9xuXxSgxJF7Ozs+o8Y9+2R3sArdWdW8nOokoQb1yrpFB0pQK2g==}
     engines: {node: '>=14'}
 
+  temporal-polyfill@1.0.3:
+    resolution: {integrity: sha512-U8vuzZBc+dfMIfl8wXWcedfI7AJCxJjjVBIRpJUvIz5+UAp555UJDHguKsfZqHWaHRSdVUThm7mqqIWhN/xPBQ==}
+
+  temporal-spec@1.0.1:
+    resolution: {integrity: sha512-wxVoanmDeavXie1vu2JaQ3WIc3JZnWAOYFBsJyATaVsXsycKYUflGsyBmrRSnoCpZJpwPyr38VpgSUlQ8CbFxg==}
+
+  temporal-utils@1.0.1:
+    resolution: {integrity: sha512-HAixuesxFQIUaQk3ptX2jhfO/FsOkgVkDDMawvp6n/fkB1q6BKfs3lURw9I+pK/2e2e/q/vrLrxmeqauBoyGMQ==}
+
   terser@5.48.0:
     resolution: {integrity: sha512-J/9An6vs9Us6wKRriSFXBWdRZapREHqFzdNUKk0pmu804EMR6dr6winwo7e5JDxN4xahxQsuysyYFwlwj4XN/Q==}
     engines: {node: '>=10'}
@@ -7890,6 +7943,9 @@ packages:
   timers-browserify@2.0.12:
     resolution: {integrity: sha512-9phl76Cqm6FhSX9Xe1ZUAMLtm1BLkKj2Qd5ApyWkXzsMRaA7dgr81kf4wJmQf/hAvg8EEyJxDo3du/0KlhPiKQ==}
     engines: {node: '>=0.6.0'}
+
+  timezone-mock@1.4.3:
+    resolution: {integrity: sha512-sO5xj1j5bXgKPgUzbM/t0l2O3hZ2F22cczYRo7Kj2Pm8wfbMMw3ohyAunBBP0Vltkd4X3tF0rFu0WAlGvAClGg==}
 
   tiny-emitter@2.1.0:
     resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
@@ -8367,6 +8423,9 @@ packages:
     resolution: {integrity: sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==}
     engines: {node: '>=0.8.0'}
 
+  weekstart@2.0.0:
+    resolution: {integrity: sha512-HjYc14IQUwDcnGICuc8tVtqAd6EFpoAQMqgrqcNtWWZB+F1b7iTq44GzwM1qvnH4upFgbhJsaNHuK93NOFheSg==}
+
   whatwg-mimetype@5.0.0:
     resolution: {integrity: sha512-sXcNcHOC51uPGF0P/D4NVtrkjSU2fNsm9iog4ZvZJsL3rjoDAzXZhkm2MWt1y+PUdggKAYVoMAIYcs78wJ51Cw==}
     engines: {node: '>=20'}
@@ -8802,7 +8861,7 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@base-ui/react@1.6.0(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@base-ui/react@1.6.0(@types/react@19.2.17)(date-fns@2.30.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@babel/runtime': 7.29.7
       '@base-ui/utils': 0.3.1(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -8813,6 +8872,7 @@ snapshots:
       use-sync-external-store: 1.6.0(react@19.2.4)
     optionalDependencies:
       '@types/react': 19.2.17
+      date-fns: 2.30.0
 
   '@base-ui/utils@0.3.1(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
@@ -10127,6 +10187,23 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
+  '@full-ui/headless-calendar@7.0.2(temporal-polyfill@1.0.3)':
+    dependencies:
+      temporal-polyfill: 1.0.3
+
+  '@fullcalendar/core@7.0.2(@full-ui/headless-calendar@7.0.2(temporal-polyfill@1.0.3))(temporal-polyfill@1.0.3)':
+    dependencies:
+      '@full-ui/headless-calendar': 7.0.2(temporal-polyfill@1.0.3)
+      temporal-polyfill: 1.0.3
+
+  '@fullcalendar/react@7.0.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(temporal-polyfill@1.0.3)':
+    dependencies:
+      '@full-ui/headless-calendar': 7.0.2(temporal-polyfill@1.0.3)
+      '@fullcalendar/core': 7.0.2(@full-ui/headless-calendar@7.0.2(temporal-polyfill@1.0.3))(temporal-polyfill@1.0.3)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      temporal-polyfill: 1.0.3
+
   '@google-cloud/firestore@8.7.0':
     dependencies:
       '@opentelemetry/api': 1.9.1
@@ -10527,6 +10604,43 @@ snapshots:
       - react
       - react-dom
       - supports-color
+
+  '@leafygreen-ui/date-picker@4.1.2(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@leafygreen-ui/a11y': 3.0.5(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/date-utils': 0.3.5(react@19.2.4)
+      '@leafygreen-ui/emotion': 5.2.0(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/form-field': 4.0.9(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/hooks': 9.3.1(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/icon': 14.9.0(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/icon-button': 17.1.5(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/leafygreen-provider': 5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@leafygreen-ui/lib': 15.7.0(react@19.2.4)
+      '@leafygreen-ui/palette': 5.0.2
+      '@leafygreen-ui/popover': 14.3.2(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@leafygreen-ui/select': 17.0.3(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@leafygreen-ui/tokens': 4.2.2(@types/react@19.2.17)(react@19.2.4)
+      '@leafygreen-ui/typography': 22.2.4(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)
+      date-fns: 2.30.0
+      lodash: 4.18.1
+      polished: 4.3.1
+      weekstart: 2.0.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react
+      - react-dom
+      - supports-color
+
+  '@leafygreen-ui/date-utils@0.3.5(react@19.2.4)':
+    dependencies:
+      '@leafygreen-ui/lib': 15.7.0(react@19.2.4)
+      date-fns: 2.30.0
+      date-fns-tz: 2.0.1(date-fns@2.30.0)
+      lodash: 4.18.1
+      timezone-mock: 1.4.3
+      weekstart: 2.0.0
+    transitivePeerDependencies:
+      - react
 
   '@leafygreen-ui/descendants@3.1.0(@leafygreen-ui/leafygreen-provider@5.0.4(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.2.17)(react@19.2.4)':
     dependencies:
@@ -13794,6 +13908,14 @@ snapshots:
     transitivePeerDependencies:
       - '@noble/hashes'
 
+  date-fns-tz@2.0.1(date-fns@2.30.0):
+    dependencies:
+      date-fns: 2.30.0
+
+  date-fns@2.30.0:
+    dependencies:
+      '@babel/runtime': 7.29.7
+
   debounce-fn@4.0.0:
     dependencies:
       mimic-fn: 3.1.0
@@ -17034,6 +17156,15 @@ snapshots:
       - supports-color
     optional: true
 
+  temporal-polyfill@1.0.3:
+    dependencies:
+      temporal-spec: 1.0.1
+      temporal-utils: 1.0.1
+
+  temporal-spec@1.0.1: {}
+
+  temporal-utils@1.0.1: {}
+
   terser@5.48.0:
     dependencies:
       '@jridgewell/source-map': 0.3.11
@@ -17069,6 +17200,8 @@ snapshots:
   timers-browserify@2.0.12:
     dependencies:
       setimmediate: 1.0.5
+
+  timezone-mock@1.4.3: {}
 
   tiny-emitter@2.1.0: {}
 
@@ -17578,6 +17711,8 @@ snapshots:
       websocket-extensions: 0.1.4
 
   websocket-extensions@0.1.4: {}
+
+  weekstart@2.0.0: {}
 
   whatwg-mimetype@5.0.0: {}
 

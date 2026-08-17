@@ -5,6 +5,7 @@ import Dexie, { type Table } from 'dexie';
 // types
 import type { JobApplication } from '@/types/job-tracker';
 import type { MockInterview } from '@/types/mock-interview';
+import type { CalendarEvent } from '@/types/planner';
 import type { SpeakUpQA } from '@/types/speak-up';
 import type { Bookmark, PracticeAttempt, PracticeSessionState, QuizAttempt, ReviewState } from '@/types/study';
 
@@ -29,6 +30,7 @@ class QuickRecallDB extends Dexie {
   mockInterviews!: Table<MockInterview, string>;
   quizAttempts!: Table<QuizAttempt, string>;
   settings!: Table<SettingsRow, string>;
+  calendarEvents!: Table<CalendarEvent, string>;
 
   constructor() {
     super('quickrecall');
@@ -54,6 +56,11 @@ class QuickRecallDB extends Dexie {
     // that already applied an earlier v3 with a `pushSettings` store.
     this.version(3).stores({
       settings: 'key'
+    });
+    // v4: calendar events for the Planner feature — manual events + derived job-tracker interviews
+    // (interviews are derived at render time, not stored, so only manual events live here).
+    this.version(4).stores({
+      calendarEvents: 'id, start, end, type, source, createdAt'
     });
   }
 }

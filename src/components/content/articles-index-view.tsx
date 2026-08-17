@@ -8,7 +8,7 @@ const DIFFICULTY_BADGE: Record<NonNullable<Article['difficulty']>, string> = {
   advanced: 'border-destructive/40 text-destructive'
 };
 
-export default function ArticlesIndexView({ articles }: { articles: Article[] }) {
+export default function ArticlesIndexView({ articles }: Readonly<{ articles: Article[] }>) {
   return (
     <div className="mx-auto w-full max-w-4xl">
       <div className="mb-6">

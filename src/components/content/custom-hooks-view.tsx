@@ -140,9 +140,9 @@ export default function CustomHooksView() {
       </div>
 
       <p className="text-sm leading-relaxed text-muted-foreground">
-        Battle-tested reusable hooks asked about in frontend interviews. Each one ships a live demo, the full TypeScript implementation,
-        real usage, and the gotcha interviewers probe for. The source mirrors importable hooks under{' '}
-        <code className="font-mono">src/hooks/</code>.
+        Custom hooks are the building blocks of reusable logic in React. They let you extract component logic into testable, composable
+        functions that keep components lean and focused on rendering. Each hook here ships a live demo, the full TypeScript implementation,
+        real usage, and the gotcha interviewers probe for.
       </p>
 
       <div className="flex flex-wrap items-center gap-1.5">

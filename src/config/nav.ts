@@ -18,6 +18,7 @@ import {
   IconBrandTypescript,
   IconBriefcase,
   IconBug,
+  IconCalendar,
   IconCards,
   IconChecklist,
   IconCode,
@@ -59,8 +60,9 @@ export interface NavSection {
 export const primaryNav: NavLink[] = [
   { title: 'Dashboard', url: '/dashboard', icon: IconBrandChrome, tourKey: 'dashboard' },
   { title: 'About', url: '/about', icon: IconInfoCircle },
-  { title: 'Articles', url: '/articles', icon: IconArticle },
+  { title: 'Articles', url: '/articles', icon: IconArticle, tourKey: 'articles' },
   { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase, tourKey: 'job-tracker' },
+  { title: 'Planner', url: '/planner', icon: IconCalendar, tourKey: 'planner' },
   { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone, tourKey: 'speak-up' },
   { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion, tourKey: 'mock-interview' },
   { title: 'Settings', url: '/settings', icon: IconSettings }

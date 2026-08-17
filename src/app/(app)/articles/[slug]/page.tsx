@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: article ? `${article.title} | QuickRecall` : 'Article | QuickRecall' };
 }
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+export default async function Page({ params }: Readonly<{ params: Promise<{ slug: string }> }>) {
   const { slug } = await params;
   const article = articleBySlug.get(slug);
   if (!article) notFound();
