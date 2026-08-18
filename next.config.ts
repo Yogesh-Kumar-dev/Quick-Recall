@@ -1,3 +1,4 @@
+import { codeInspectorPlugin } from 'code-inspector-plugin';
 import { withSentryConfig } from '@sentry/nextjs';
 import { withSerwist } from '@serwist/turbopack';
 import type { NextConfig } from 'next';
@@ -47,13 +48,18 @@ const nextConfig: NextConfig = {
     // install and pushes fall back to Chrome's generic "site updated in the background" notice.
     const scriptSrc = `script-src 'self' 'unsafe-inline' https://www.gstatic.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com${process.env.NODE_ENV === 'production' ? '' : " 'unsafe-eval'"}`;
 
+    // Dev-only: code-inspector-plugin's click-to-source XHRs its local server (default port 5678)
+    // to open the editor. Without this host in connect-src the browser kills the request and
+    // clicking a component never opens VS Code.
+    const connectSrc = `connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://firebasemessaging.googleapis.com https://fcm.googleapis.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com https://*.blob.vercel-storage.com${process.env.NODE_ENV === 'development' ? ' http://localhost:5678' : ''}`;
+
     const csp = [
       "default-src 'self'",
       scriptSrc,
       "style-src 'self' 'unsafe-inline' https://codesandbox.io https://*.codesandbox.io https://fonts.googleapis.com",
       "img-src 'self' data: blob: https://thesvg.org https://codesandbox.io https://*.codesandbox.io https://screenshots.codesandbox.io",
       "font-src 'self' data: https://fonts.gstatic.com https://codesandbox.io https://*.codesandbox.io",
-      "connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://firebasemessaging.googleapis.com https://fcm.googleapis.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com https://*.blob.vercel-storage.com",
+      connectSrc,
       "worker-src 'self' blob: https://codesandbox.io https://*.codesandbox.io",
       "frame-src 'self' https://onecompiler.com https://codesandbox.io https://*.codesandbox.io",
       "manifest-src 'self'",
@@ -77,6 +83,14 @@ const nextConfig: NextConfig = {
         ]
       }
     ];
+  },
+  turbopack: {
+    rules: codeInspectorPlugin({
+      bundler: 'turbopack',
+      showSwitch: true,
+      editor: 'code',
+      port: 5678
+    })
   }
 };
 

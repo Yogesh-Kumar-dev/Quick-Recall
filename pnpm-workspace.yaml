@@ -3,9 +3,16 @@ allowBuilds:
   '@sentry/cli': true
   '@swc/core': true
   esbuild: true
+  node-pty: set this to true or false
   protobufjs: true
   sharp: true
   unrs-resolver: true
+
+# code-inspector-plugin pulls @code-inspector/core, which lists node-pty as an optional dependency
+# (only used by its AI-terminal feature). We never use it, and its node-gyp build is a fragile
+# Windows step — so let pnpm skip unapproved builds instead of failing every `pnpm run` (install
+# runs before scripts and was erroring with ERR_PNPM_IGNORED_BUILDS).
+strictDepBuilds: false
 
 # Sentry's Node auto-instrumentation (require-in-the-middle / import-in-the-middle) patches
 # modules by walking node_modules at the top level. pnpm's default layout nests packages under

@@ -32,6 +32,7 @@ pnpm test           # vitest run (unit + component + storybook tests)
 - **No em dashes (`—`)** anywhere in article text or content.
 - **Dark-mode only** — no theme toggle exists.
 - **Two UI systems coexist**: shadcn/ui + Tailwind v4 for most surfaces; `@leafygreen-ui/*` for MongoDB-styled components. Check which a surface uses before adding a third.
+- **Code inspector** (`code-inspector-plugin`, dev-only, wired in `next.config.ts`): click-to-source opens VS Code via its local server on **fixed port 5678** (independent of the app's random portless port). The client hardcodes `http://localhost:5678/?file=...`, so if you touch the CSP `connect-src` in `next.config.ts`, keep `http://localhost:5678` in it (dev-only) or the click XHR gets blocked. Works from `https://quickrecall.localhost` too (localhost is a potentially-trustworthy origin, so no mixed-content block). The switch button renders inside the plugin's shadow DOM (`code-inspector-component`); default hotkey is Windows `Alt+Shift`. `node-pty` (optional dep of `@code-inspector/core`) is skipped via `strictDepBuilds: false` in `pnpm-workspace.yaml` — don't add it back to `allowBuilds`.
 
 ## Style
 
