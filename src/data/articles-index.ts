@@ -2,17 +2,23 @@
 // their `articleRefs` ids into deep-link chips. Mirrors note-sources.ts's shape.
 import type { Article } from '@/types/content';
 import { browserRenderingArticle } from './articles/browser-rendering';
+import { cachingLayersArticle } from './articles/caching-layers';
 import { coreWebVitalsArticle } from './articles/core-web-vitals';
 import { dynamodb101Article } from './articles/dynamodb-101';
+import { frontendBasePathArticle } from './articles/frontend-base-path';
 import { iaasPaasSaasArticle } from './articles/iaas-paas-saas';
+import { linuxCommandsArticle } from './articles/linux-commands';
+import { mapAndSetReactStateArticle } from './articles/map-and-set-react-state';
 import { nextjsBuildArticle } from './articles/nextjs-build';
 import { nuqsUrlStateArticle } from './articles/nuqs-url-state';
+import { portlessIntroductionArticle } from './articles/portless-introduction';
 import { pwaIntroductionArticle } from './articles/pwa-introduction';
 import { pwaWithNextjsArticle } from './articles/pwa-with-nextjs';
 import { pwaWithReactArticle } from './articles/pwa-with-react';
 import { reactQueryOverviewArticle } from './articles/react-query-overview';
 import { redis101Article } from './articles/redis-101';
 import { staticHostingS3CloudfrontArticle } from './articles/static-hosting-s3-cloudfront';
+import { viteProxyArticle } from './articles/vite-proxy';
 import { viteReactBuildArticle } from './articles/vite-react-build';
 import { vitestGettingStartedArticle } from './articles/vitest-getting-started';
 import { webAccessibilityDeepDiveArticle } from './articles/web-accessibility-deep-dive';
@@ -22,7 +28,11 @@ import { zustandOverviewArticle } from './articles/zustand-overview';
 export const ARTICLES: Article[] = [
   pwaIntroductionArticle,
   viteReactBuildArticle,
+  viteProxyArticle,
   nextjsBuildArticle,
+  cachingLayersArticle,
+  frontendBasePathArticle,
+  portlessIntroductionArticle,
   staticHostingS3CloudfrontArticle,
   vitestGettingStartedArticle,
   redis101Article,
@@ -36,7 +46,9 @@ export const ARTICLES: Article[] = [
   webAccessibilityDeepDiveArticle,
   coreWebVitalsArticle,
   iaasPaasSaasArticle,
-  browserRenderingArticle
+  browserRenderingArticle,
+  mapAndSetReactStateArticle,
+  linuxCommandsArticle
 ];
 
 // Keyed by slug — the route param and the bookmark/resolve-content refId.

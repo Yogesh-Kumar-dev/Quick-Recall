@@ -2,6 +2,18 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Source Code Pro covers box-drawing and block/geometric glyphs (used in ASCII diagrams),
+   but next/font/google subsets them out of its latin faces. Self-host the full variable
+   font for those ranges only, under the same family name so code blocks stay aligned. */
+@font-face {
+  font-family: "Source Code Pro";
+  src: url("/fonts/SourceCodePro-Variable.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2500-257F, U+2580-259F, U+25A0-25FF;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -53,23 +65,35 @@
    scheme onto LeafyGreen's dark surfaces/greens so shadcn and LeafyGreen components sit side by
    side. */
 :root {
-  --background: #001e2b; /* black.base — body */
-  --foreground: #e8edeb; /* gray.light2 — primary text */
-  --card: #112733; /* dark surface (darkLevel2) */
+  --background: #001e2b;
+  /* black.base — body */
+  --foreground: #e8edeb;
+  /* gray.light2 — primary text */
+  --card: #112733;
+  /* dark surface (darkLevel2) */
   --card-foreground: #e8edeb;
   --popover: #112733;
   --popover-foreground: #e8edeb;
-  --primary: #00ed64; /* green.base */
-  --primary-foreground: #001e2b; /* dark text on green */
-  --secondary: #1c2d38; /* raised surface */
+  --primary: #00ed64;
+  /* green.base */
+  --primary-foreground: #001e2b;
+  /* dark text on green */
+  --secondary: #1c2d38;
+  /* raised surface */
   --secondary-foreground: #e8edeb;
   --muted: #1c2d38;
-  --muted-foreground: #c1c7c6; /* gray.light1 — secondary text */
-  --accent: #023430; /* green.dark3 tint */
-  --accent-foreground: #71f6ba; /* green.light1 */
-  --destructive: #ff6960; /* red.light1 */
-  --destructive-foreground: #001e2b; /* dark text on red */
-  --border: #21313c; /* gray.dark2 */
+  --muted-foreground: #c1c7c6;
+  /* gray.light1 — secondary text */
+  --accent: #023430;
+  /* green.dark3 tint */
+  --accent-foreground: #71f6ba;
+  /* green.light1 */
+  --destructive: #ff6960;
+  /* red.light1 */
+  --destructive-foreground: #001e2b;
+  /* dark text on red */
+  --border: #21313c;
+  /* gray.dark2 */
   --input: #21313c;
   --ring: #00ed64;
   --chart-1: #00ed64;
@@ -78,7 +102,8 @@
   --chart-4: #ffc010;
   --chart-5: #ff6960;
   --radius: 0.625rem;
-  --sidebar: #00151e; /* slightly darker than body */
+  --sidebar: #00151e;
+  /* slightly darker than body */
   --sidebar-foreground: #c1c7c6;
   --sidebar-primary: #00ed64;
   --sidebar-primary-foreground: #001e2b;
@@ -92,11 +117,60 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
+  }
+
+  /* 1. Apply to EVERY element in the app */
+  html,
+  * {
+    scrollbar-gutter: stable;
+    /* Keeps text layout stable */
+    scrollbar-width: none;
+    /* Hide by default for Firefox */
+  }
+
+  /* 2. Hide by default for Chrome, Safari, and Edge */
+  html::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    display: none;
+  }
+
+  /* 3. Show and style on hover for Firefox */
+  html:hover,
+  *:hover {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.slate.300') transparent;
+  }
+
+  /* 4. Show and style on hover for Chrome, Safari, and Edge */
+  html:hover::-webkit-scrollbar,
+  *:hover::-webkit-scrollbar {
+    display: block;
+  }
+
+  html::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  html::-webkit-scrollbar-thumb,
+  *::-webkit-scrollbar-thumb {
+    background-color: theme('colors.slate.300');
+    border-radius: 9999px;
+  }
+
+  html::-webkit-scrollbar-thumb:hover,
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: theme('colors.slate.400');
+    /* Darker when directly hovering the thumb */
   }
 }
 
@@ -108,20 +182,27 @@
     height: 4px;
     background: transparent;
   }
+
   *::-webkit-scrollbar-track {
     background: transparent;
   }
+
   *::-webkit-scrollbar-thumb {
-    background-color: #c1c7c6; /* LeafyGreen gray.light1 */
+    background-color: #c1c7c6;
+    /* LeafyGreen gray.light1 */
     border-radius: 10px;
   }
+
   *::-webkit-scrollbar-thumb:hover {
-    background-color: #889397; /* LeafyGreen gray.base */
+    background-color: #889397;
+    /* LeafyGreen gray.base */
   }
+
   *::-webkit-scrollbar-button {
     display: none;
   }
 }
+
 * {
   scrollbar-width: thin;
 }
