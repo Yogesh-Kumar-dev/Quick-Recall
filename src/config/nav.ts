@@ -38,6 +38,7 @@ import {
   IconWorld
 } from '@tabler/icons-react';
 import type { ComponentType } from 'react';
+import type { Topic } from './topics';
 
 type IconType = ComponentType<{ className?: string; size?: number | string }>;
 
@@ -47,6 +48,8 @@ export interface NavLink {
   icon: IconType;
   /** Matches a `TourStep.key` in `src/data/product-tour.ts` — only set for nav items covered by the guided tour. */
   tourKey?: string;
+  /** Learning topic this item belongs to. Unset = always accessible (hubs, feature pages). */
+  topic?: Topic;
 }
 
 export interface NavSection {
@@ -86,8 +89,8 @@ export const navSections: NavSection[] = [
     title: 'HTML & CSS',
     icon: IconBrandHtml5,
     items: [
-      { title: 'HTML Notes', url: '/html-css/html', icon: IconBrandHtml5 },
-      { title: 'CSS Notes', url: '/html-css/css', icon: IconBrandCss3 }
+      { title: 'HTML Notes', url: '/html-css/html', icon: IconBrandHtml5, topic: 'html' },
+      { title: 'CSS Notes', url: '/html-css/css', icon: IconBrandCss3, topic: 'css' }
     ]
   },
   {
@@ -95,11 +98,11 @@ export const navSections: NavSection[] = [
     title: 'JavaScript & TypeScript',
     icon: IconBrandJavascript,
     items: [
-      { title: 'JS Notes', url: '/js/notes', icon: IconBrandJavascript },
-      { title: 'TS Notes', url: '/js/typescript', icon: IconBrandTypescript },
-      { title: 'TS for React', url: '/js/ts-for-react', icon: IconBrandTypescript },
-      { title: 'JS Machine Coding', url: '/js/machine-coding', icon: IconCode, tourKey: 'js-machine-coding' },
-      { title: 'Quick Recall', url: '/js/quick-recall', icon: IconBolt }
+      { title: 'JS Notes', url: '/js/notes', icon: IconBrandJavascript, topic: 'javascript' },
+      { title: 'TS Notes', url: '/js/typescript', icon: IconBrandTypescript, topic: 'typescript' },
+      { title: 'TS for React', url: '/js/ts-for-react', icon: IconBrandTypescript, topic: 'typescript' },
+      { title: 'JS Machine Coding', url: '/js/machine-coding', icon: IconCode, tourKey: 'js-machine-coding', topic: 'javascript' },
+      { title: 'Quick Recall', url: '/js/quick-recall', icon: IconBolt, topic: 'javascript' }
     ]
   },
   {
@@ -107,10 +110,10 @@ export const navSections: NavSection[] = [
     title: 'React',
     icon: IconBrandReact,
     items: [
-      { title: 'React Notes', url: '/react/notes', icon: IconBrandReact },
-      { title: 'Custom Hooks', url: '/react/custom-hooks', icon: IconCode, tourKey: 'react-custom-hooks' },
-      { title: 'React Machine Coding', url: '/react/machine-coding', icon: IconCode, tourKey: 'react-machine-coding' },
-      { title: 'Quick Recall', url: '/react/quick-recall', icon: IconBolt }
+      { title: 'React Notes', url: '/react/notes', icon: IconBrandReact, topic: 'react' },
+      { title: 'Custom Hooks', url: '/react/custom-hooks', icon: IconCode, tourKey: 'react-custom-hooks', topic: 'react' },
+      { title: 'React Machine Coding', url: '/react/machine-coding', icon: IconCode, tourKey: 'react-machine-coding', topic: 'react' },
+      { title: 'Quick Recall', url: '/react/quick-recall', icon: IconBolt, topic: 'react' }
     ]
   },
   {
@@ -118,10 +121,10 @@ export const navSections: NavSection[] = [
     title: 'Redux',
     icon: IconBrandRedux,
     items: [
-      { title: 'Redux Notes', url: '/redux/notes', icon: IconBrandRedux },
-      { title: 'Redux Toolkit', url: '/redux/toolkit', icon: IconBrandRedux },
-      { title: 'RTK Query', url: '/redux/rtk-query', icon: IconBolt },
-      { title: 'createAsyncThunk', url: '/redux/async-thunk', icon: IconCode }
+      { title: 'Redux Notes', url: '/redux/notes', icon: IconBrandRedux, topic: 'redux' },
+      { title: 'Redux Toolkit', url: '/redux/toolkit', icon: IconBrandRedux, topic: 'redux' },
+      { title: 'RTK Query', url: '/redux/rtk-query', icon: IconBolt, topic: 'redux' },
+      { title: 'createAsyncThunk', url: '/redux/async-thunk', icon: IconCode, topic: 'redux' }
     ]
   },
   {
@@ -129,8 +132,8 @@ export const navSections: NavSection[] = [
     title: 'Next.js',
     icon: IconBrandNextjs,
     items: [
-      { title: 'Next.js Notes', url: '/nextjs/notes', icon: IconBrandNextjs },
-      { title: 'Rendering Strategies', url: '/nextjs/rendering', icon: IconServer }
+      { title: 'Next.js Notes', url: '/nextjs/notes', icon: IconBrandNextjs, topic: 'nextjs' },
+      { title: 'Rendering Strategies', url: '/nextjs/rendering', icon: IconServer, topic: 'nextjs' }
     ]
   },
   {
@@ -138,8 +141,8 @@ export const navSections: NavSection[] = [
     title: 'Node.js',
     icon: IconBrandNodejs,
     items: [
-      { title: 'Node.js Notes', url: '/nodejs/notes', icon: IconBrandNodejs },
-      { title: 'Quick Recall', url: '/nodejs/quick-recall', icon: IconBolt }
+      { title: 'Node.js Notes', url: '/nodejs/notes', icon: IconBrandNodejs, topic: 'nodejs' },
+      { title: 'Quick Recall', url: '/nodejs/quick-recall', icon: IconBolt, topic: 'nodejs' }
     ]
   },
   {
@@ -147,26 +150,26 @@ export const navSections: NavSection[] = [
     title: 'Databases',
     icon: IconDatabase,
     items: [
-      { title: 'PostgreSQL', url: '/databases/postgresql', icon: IconDatabase },
-      { title: 'MongoDB', url: '/databases/mongodb', icon: IconBrandMongodb },
-      { title: 'Redis', url: '/databases/redis', icon: IconBolt },
-      { title: 'DynamoDB', url: '/databases/dynamodb', icon: IconBrandAws }
+      { title: 'PostgreSQL', url: '/databases/postgresql', icon: IconDatabase, topic: 'postgresql' },
+      { title: 'MongoDB', url: '/databases/mongodb', icon: IconBrandMongodb, topic: 'mongodb' },
+      { title: 'Redis', url: '/databases/redis', icon: IconBolt, topic: 'redis' },
+      { title: 'DynamoDB', url: '/databases/dynamodb', icon: IconBrandAws, topic: 'dynamodb' }
     ]
   },
   {
     id: 'aws',
     title: 'AWS',
     icon: IconBrandAws,
-    items: [{ title: 'Notes', url: '/aws/notes', icon: IconBrandAws }]
+    items: [{ title: 'Notes', url: '/aws/notes', icon: IconBrandAws, topic: 'aws' }]
   },
   {
     id: 'testing',
     title: 'Testing',
     icon: IconTestPipe,
     items: [
-      { title: 'Fundamentals', url: '/testing/fundamentals', icon: IconChecklist },
-      { title: 'Testing Frameworks & Tools', url: '/testing/tools', icon: IconRobot },
-      { title: 'Specialized Testing', url: '/testing/specialized', icon: IconBug }
+      { title: 'Fundamentals', url: '/testing/fundamentals', icon: IconChecklist, topic: 'testing' },
+      { title: 'Testing Frameworks & Tools', url: '/testing/tools', icon: IconRobot, topic: 'testing' },
+      { title: 'Specialized Testing', url: '/testing/specialized', icon: IconBug, topic: 'testing' }
     ]
   },
   {
@@ -174,16 +177,16 @@ export const navSections: NavSection[] = [
     title: 'Web Platform',
     icon: IconWorld,
     items: [
-      { title: 'Web Security', url: '/web/security', icon: IconShieldLock },
-      { title: 'Auth & Identity', url: '/web/auth', icon: IconKey },
-      { title: 'Accessibility', url: '/web/accessibility', icon: IconAccessible },
-      { title: 'Web Performance', url: '/web/performance', icon: IconGauge }
+      { title: 'Web Security', url: '/web/security', icon: IconShieldLock, topic: 'web' },
+      { title: 'Auth & Identity', url: '/web/auth', icon: IconKey, topic: 'web' },
+      { title: 'Accessibility', url: '/web/accessibility', icon: IconAccessible, topic: 'web' },
+      { title: 'Web Performance', url: '/web/performance', icon: IconGauge, topic: 'web' }
     ]
   },
   {
     id: 'engineering',
     title: 'Engineering Essentials',
     icon: IconCpu,
-    items: [{ title: 'Notes', url: '/engineering/notes', icon: IconNotes }]
+    items: [{ title: 'Notes', url: '/engineering/notes', icon: IconNotes, topic: 'engineering' }]
   }
 ];

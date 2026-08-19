@@ -8,6 +8,7 @@ import ArticleRefChips from '@/components/content/article-ref-chips';
 import CodeBlock from '@/components/content/code-block';
 import useJobs from '@/components/job-tracker/use-jobs';
 import { quizOptionClasses } from '@/components/quiz/quiz-option-classes';
+import useTopicPreferences from '@/components/settings/use-topic-preferences';
 import { Button } from '@/components/ui/button';
 import { MessageGroup } from '@/components/ui/message';
 import { Progress } from '@/components/ui/progress';
@@ -16,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { MOCK_INTERVIEW_TOPICS } from '@/data/mock-interview-pool';
 import * as mockInterviewsRepository from '@/db/mock-interviews';
 import { type ResolvedContent, resolveContent } from '@/lib/resolve-content';
+import { mockInterviewTopicEnabled } from '@/lib/topic-access';
 import type { MockInterviewPersona, MockInterviewQuestion, MockInterviewQuestionKind } from '@/types/mock-interview';
 import { AnimatedChips } from './chat/animated-chips';
 import { ChatBubble } from './chat/chat-bubble';
@@ -272,6 +274,7 @@ interface MockInterviewChatProps {
 export default function MockInterviewChat({ interviewId: initialInterviewId }: MockInterviewChatProps) {
   const { jobs } = useJobs();
   const { startInterview, submitAnswer, submitQuizAnswer } = useMockInterviews();
+  const { prefs: topicPrefs } = useTopicPreferences();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Local state for active interview ID (starts from prop, updates after creation)
@@ -483,7 +486,10 @@ export default function MockInterviewChat({ interviewId: initialInterviewId }: M
                 {SETUP_QUESTIONS.topics}
               </ChatBubble>
               <AnimatedChips
-                options={MOCK_INTERVIEW_TOPICS.map((t) => ({ value: t.label, label: t.label }))}
+                options={MOCK_INTERVIEW_TOPICS.filter((t) => mockInterviewTopicEnabled(t.label, topicPrefs)).map((t) => ({
+                  value: t.label,
+                  label: t.label
+                }))}
                 selected={topics}
                 onToggle={toggleTopic}
                 enabled={chipsEnabled}

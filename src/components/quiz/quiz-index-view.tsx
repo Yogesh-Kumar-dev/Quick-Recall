@@ -3,8 +3,10 @@
 import { IconChecklist, IconChevronRight, IconHistory } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import useTopicPreferences from '@/components/settings/use-topic-preferences';
 import { Badge } from '@/components/ui/badge';
 import { QUIZ_SETS } from '@/data/quiz-sets';
+import { quizSlugTopics, topicsEnabled } from '@/lib/topic-access';
 import { formatDate } from '@/lib/utils';
 import type { QuizAttempt } from '@/types/study';
 import useQuizAttempts from './use-quiz-attempts';
@@ -19,16 +21,38 @@ const sourceToSet = new Map<string, (typeof SETS)[number]>(SETS.map((s) => [s.so
 
 export default function QuizIndexView() {
   const { attempts } = useQuizAttempts();
+  const { prefs } = useTopicPreferences();
+
+  // Hide sets the user has switched off; until prefs load, show everything.
+  const visibleSets = useMemo(() => {
+    if (!prefs) return SETS;
+    return SETS.filter((s) => {
+      const topics = quizSlugTopics[s.slug];
+      return !topics || topicsEnabled(topics, prefs);
+    });
+  }, [prefs]);
+
+  // Recent attempts that point at a disabled topic would only dead-end on the route guard, so
+  // drop them too.
+  const visibleAttempts = useMemo(() => {
+    if (!prefs) return attempts;
+    return attempts.filter((a) => {
+      const set = sourceToSet.get(a.source);
+      if (!set) return true;
+      const topics = quizSlugTopics[set.slug];
+      return !topics || topicsEnabled(topics, prefs);
+    });
+  }, [attempts, prefs]);
 
   // Best (highest-scoring) attempt per topic, shown as a badge on that topic's card.
   const bestBySource = useMemo(() => {
     const map = new Map<string, QuizAttempt>();
-    for (const a of attempts) {
+    for (const a of visibleAttempts) {
       const best = map.get(a.source);
       if (!best || a.score / a.total > best.score / best.total) map.set(a.source, a);
     }
     return map;
-  }, [attempts]);
+  }, [visibleAttempts]);
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -40,7 +64,7 @@ export default function QuizIndexView() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {SETS.map((set) => {
+        {visibleSets.map((set) => {
           const best = bestBySource.get(set.source);
           return (
             <Link
@@ -62,13 +86,26 @@ export default function QuizIndexView() {
         })}
       </div>
 
-      {attempts.length > 0 && (
+      {visibleSets.length === 0 && (
+        <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
+          <h2 className="text-xl font-semibold">No quizzes available</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            All quiz topics are currently switched off. Turn some back on in{' '}
+            <Link href="/settings" className="text-primary underline underline-offset-2">
+              Settings
+            </Link>
+            .
+          </p>
+        </div>
+      )}
+
+      {visibleAttempts.length > 0 && (
         <div className="mt-8">
           <h2 className="mb-3 flex items-center gap-1.5 text-lg font-semibold">
             <IconHistory size={18} /> Recent attempts
           </h2>
           <div className="flex flex-col gap-2">
-            {attempts.slice(0, 10).map((a) => {
+            {visibleAttempts.slice(0, 10).map((a) => {
               const set = sourceToSet.get(a.source);
               return (
                 <Link

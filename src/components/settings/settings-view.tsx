@@ -3,6 +3,7 @@
 import { IconBellRinging, IconLoader2 } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import TopicPreferencesCard from './topic-preferences-card';
 import usePushSettings from './use-push-settings';
 
 // ==============================|| SETTINGS - VIEW ||============================== //
@@ -49,6 +50,8 @@ export default function SettingsView() {
           )}
         </CardContent>
       </Card>
+
+      <TopicPreferencesCard />
     </div>
   );
 }

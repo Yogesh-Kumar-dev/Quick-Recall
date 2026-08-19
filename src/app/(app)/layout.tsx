@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import TopicGate from '@/components/access/topic-gate';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import Breadcrumbs from '@/components/layout/breadcrumbs';
@@ -28,7 +29,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <AppHeader />
           <div id="main-content" tabIndex={-1} className="flex flex-1 flex-col p-4 focus:outline-none md:p-6">
             <Breadcrumbs />
-            <OfflineSectionGuard>{children}</OfflineSectionGuard>
+            <OfflineSectionGuard>
+              <TopicGate>{children}</TopicGate>
+            </OfflineSectionGuard>
           </div>
         </SidebarInset>
       </SidebarProvider>
