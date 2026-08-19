@@ -10,7 +10,8 @@ export async function generateMetadata({ params }: { params: Promise<{ section: 
   const { section } = await params;
   const entry = QUIZ_SETS[section];
   return {
-    title: entry ? `${entry.title} | QuickRecall` : 'Quiz | QuickRecall'
+    title: entry ? `${entry.title} | QuickRecall` : 'Quiz | QuickRecall',
+    openGraph: { images: ['/icons/icon-maskable-512.png'] }
   };
 }
 

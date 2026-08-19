@@ -3,6 +3,7 @@
 import { IconCards, IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import ShareButton from '@/components/content/ShareButton';
 import useTopicPreferences from '@/components/settings/use-topic-preferences';
 import { FLASHCARD_SETS } from '@/data/flashcard-sets';
 import { flashcardSlugTopics, topicsEnabled } from '@/lib/topic-access';
@@ -54,20 +55,26 @@ export default function FlashcardIndexView() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {sets.map((set) => (
-            <Link
+            <div
               key={set.slug}
-              href={`/flashcards/${set.slug}`}
-              className="group flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:border-primary/50 hover:bg-muted"
+              className="group flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:border-primary/50 hover:bg-muted"
             >
-              <IconCards size={22} className="shrink-0 text-muted-foreground" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{set.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {set.count} {set.count === 1 ? 'card' : 'cards'}
-                </p>
-              </div>
-              <IconChevronRight size={18} className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-            </Link>
+              <Link href={`/flashcards/${set.slug}`} className="flex min-w-0 flex-1 items-center gap-3">
+                <IconCards size={22} className="shrink-0 text-muted-foreground" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium">{set.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {set.count} {set.count === 1 ? 'card' : 'cards'}
+                  </p>
+                </div>
+                <IconChevronRight size={18} className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <ShareButton
+                title={`${set.title} flashcards`}
+                text={`Practice ${set.title} flashcards on QuickRecall.`}
+                path={`/flashcards/${set.slug}`}
+              />
+            </div>
           ))}
         </div>
       )}

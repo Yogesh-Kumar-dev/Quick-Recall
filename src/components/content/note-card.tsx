@@ -8,6 +8,7 @@ import type { NoteLink } from '@/data/note-sources';
 import type { Note } from '@/types/content';
 import ArticleRefChips, { LinkChips } from './article-ref-chips';
 import CodeBlock from './code-block';
+import ShareButton from './ShareButton';
 
 // these chips stay Tailwind; only ExpandableCard / Callout / Code stay LeafyGreen
 const DIFFICULTY_BADGE: Record<Note['difficulty'], string> = {
@@ -44,6 +45,7 @@ export default function NoteCard({ note, prereqs }: Readonly<{ note: Note; prere
         <Badge className="border-border text-muted-foreground">{note.category}</Badge>
       </span>
       <BookmarkButton kind="note" refId={note.id} stopPropagation />
+      <ShareButton title={note.title} text={note.summary} id={note.id} stopPropagation />
     </span>
   );
 

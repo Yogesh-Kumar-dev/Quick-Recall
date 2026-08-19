@@ -8,7 +8,11 @@ const lora = Lora({ subsets: ['latin'], variable: '--font-lora', display: 'swap'
 const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'QuickRecall - Full-Stack Developer Interview Prep',
+  metadataBase: new URL('https://quickrecall.vercel.app'),
+  title: {
+    default: 'QuickRecall - Full-Stack Developer Interview Prep',
+    template: '%s'
+  },
   description:
     'A personal knowledge base for full-stack developer interview prep. Notes, machine-coding problems with a side-by-side code viewer, and quick-recall sheets — any source distilled into one searchable format.',
   appleWebApp: { capable: true, title: 'QuickRecall', statusBarStyle: 'default' }

@@ -3,6 +3,7 @@
 import { IconChecklist, IconChevronRight, IconHistory } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import ShareButton from '@/components/content/ShareButton';
 import useTopicPreferences from '@/components/settings/use-topic-preferences';
 import { Badge } from '@/components/ui/badge';
 import { QUIZ_SETS } from '@/data/quiz-sets';
@@ -67,21 +68,23 @@ export default function QuizIndexView() {
         {visibleSets.map((set) => {
           const best = bestBySource.get(set.source);
           return (
-            <Link
+            <div
               key={set.slug}
-              href={`/quiz/${set.slug}`}
-              className="group flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:border-primary/50 hover:bg-muted"
+              className="group flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:border-primary/50 hover:bg-muted"
             >
-              <IconChecklist size={22} className="shrink-0 text-muted-foreground" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{set.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {set.count} {set.count === 1 ? 'question' : 'questions'}
-                  {best ? ` · best ${best.score}/${best.total}` : ''}
-                </p>
-              </div>
-              <IconChevronRight size={18} className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-            </Link>
+              <Link href={`/quiz/${set.slug}`} className="flex min-w-0 flex-1 items-center gap-3">
+                <IconChecklist size={22} className="shrink-0 text-muted-foreground" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium">{set.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {set.count} {set.count === 1 ? 'question' : 'questions'}
+                    {best ? ` · best ${best.score}/${best.total}` : ''}
+                  </p>
+                </div>
+                <IconChevronRight size={18} className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <ShareButton title={set.title} text={`Practice ${set.title} on QuickRecall.`} path={`/quiz/${set.slug}`} />
+            </div>
           );
         })}
       </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import BookmarkButton from '@/components/bookmarks/BookmarkButton';
 import type { Article } from '@/types/content';
+import ShareButton from './ShareButton';
 
 const DIFFICULTY_BADGE: Record<NonNullable<Article['difficulty']>, string> = {
   basic: 'border-primary/40 text-primary',
@@ -38,7 +39,10 @@ export default function ArticlesIndexView({ articles }: Readonly<{ articles: Art
                   </span>
                 ))}
               </div>
-              <BookmarkButton kind="article" refId={article.slug} />
+              <div className="flex items-center">
+                <BookmarkButton kind="article" refId={article.slug} />
+                <ShareButton title={article.title} text={article.summary} path={`/articles/${article.slug}`} />
+              </div>
             </div>
           </div>
         ))}
