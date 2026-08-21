@@ -269,7 +269,7 @@ Content-Security-Policy-Report-Only: ...; report-to csp-endpoint`
       'Strict-Transport-Security (HSTS): tells the browser to refuse plain HTTP to your domain for max-age seconds, defeating protocol-downgrade and cookie-stripping attacks on public Wi-Fi. includeSubDomains and preload extend it to everything under the domain, before the first ever visit.',
       'X-Content-Type-Options: nosniff stops the browser guessing content types , without it, a user-uploaded "image" that is really HTML/JS can be sniffed and executed in your origin.',
       'Referrer-Policy controls how much of the current URL leaks in the Referer header when users click away , strict-origin-when-cross-origin (the modern default) sends only your origin to other sites, keeping path/query data (tokens, ids) private.',
-      'Permissions-Policy turns off powerful APIs you do not use (camera, microphone, geolocation) for your page and any iframes it embeds , shrinking what a compromised script or third-party frame can do.',
+      'Permissions-Policy scopes powerful APIs to the origins you trust instead of leaving them open to any embedded frame: use camera=(self), microphone=(self) for features your own page needs and keep the rest blocked (geolocation=()), shrinking what a compromised script or third-party frame can do.',
       'Cross-Origin-Opener-Policy (COOP) severs the window.opener link between your tab and pages you open or that open you; with Cross-Origin-Embedder-Policy (COEP) it isolates your page enough to unlock SharedArrayBuffer safely.',
       'X-Frame-Options / frame-ancestors: covered under clickjacking , part of the same standard header bundle.'
     ],
@@ -279,7 +279,7 @@ Content-Security-Policy-Report-Only: ...; report-to csp-endpoint`
 Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
+Permissions-Policy: camera=(self), microphone=(self), geolocation=()
 Cross-Origin-Opener-Policy: same-origin
 Content-Security-Policy: frame-ancestors 'none'; ...
 
