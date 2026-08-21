@@ -1,14 +1,19 @@
 'use client';
 
 import { Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import type { CalendarEvent, CalendarEventInput } from '@/types/planner';
-import EventDetailDrawer from './event-detail-drawer';
-import EventFormDrawer from './event-form-drawer';
 import FullCalendarWrapper from './full-calendar-wrapper';
 import UpcomingEvents from './upcoming-events';
 import usePlannerEvents from './use-planner-events';
+
+// Drawers only render when their events are opened - lazy-load them so their
+// dependencies (react-hook-form, zod, LeafyGreen DatePicker, sheet) only
+// download on first open instead of with the planner page.
+const EventFormDrawer = dynamic(() => import('./event-form-drawer'), { ssr: false });
+const EventDetailDrawer = dynamic(() => import('./event-detail-drawer'), { ssr: false });
 
 // ==============================|| PLANNER - VIEW ||============================== //
 
@@ -103,29 +108,32 @@ export default function PlannerView() {
           <UpcomingEvents events={events} onEventClick={handleEventClick} />
         </div>
       </div>
+      {formOpen && (
+        <EventFormDrawer
+          open={formOpen}
+          mode={formMode}
+          initialValues={formInitial}
+          events={events}
+          onClose={() => {
+            setFormOpen(false);
+            setFormInitial(null);
+          }}
+          onSubmit={handleFormSubmit}
+        />
+      )}
 
-      <EventFormDrawer
-        open={formOpen}
-        mode={formMode}
-        initialValues={formInitial}
-        events={events}
-        onClose={() => {
-          setFormOpen(false);
-          setFormInitial(null);
-        }}
-        onSubmit={handleFormSubmit}
-      />
-
-      <EventDetailDrawer
-        open={detailOpen}
-        event={detailEvent}
-        onClose={() => {
-          setDetailOpen(false);
-          setDetailEvent(null);
-        }}
-        onEdit={handleEditFromDetail}
-        onDelete={handleDeleteFromDetail}
-      />
+      {detailOpen && (
+        <EventDetailDrawer
+          open={detailOpen}
+          event={detailEvent}
+          onClose={() => {
+            setDetailOpen(false);
+            setDetailEvent(null);
+          }}
+          onEdit={handleEditFromDetail}
+          onDelete={handleDeleteFromDetail}
+        />
+      )}
     </div>
   );
 }

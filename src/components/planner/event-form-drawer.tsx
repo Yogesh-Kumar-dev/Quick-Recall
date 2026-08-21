@@ -94,7 +94,7 @@ interface EventFormDrawerProps {
   onSubmit: (values: CalendarEventInput) => void | Promise<void>;
 }
 
-export default function EventFormDrawer({ open, mode, initialValues, events, onClose, onSubmit }: EventFormDrawerProps) {
+export default function EventFormDrawer({ open, mode, initialValues, events, onClose, onSubmit }: Readonly<EventFormDrawerProps>) {
   const {
     register,
     control,

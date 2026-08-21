@@ -1,6 +1,7 @@
 'use client';
 
 import { Clock, Pause, Play, X } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -8,8 +9,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { cn } from '@/lib/utils';
 import { useTimerStore } from '@/stores/timer';
 import { formatClock } from './config';
-import TimerFormDialog from './timer-form-dialog';
 import { useTimerTick } from './use-timer-tick';
+
+// TimerFormDialog is mounted in the app header on every page - lazy-load it so its
+// dialog/Segmented/notifications deps don't ship with the initial layout.
+const TimerFormDialog = dynamic(() => import('./timer-form-dialog'), { ssr: false });
 
 // always mounted in the layout header so it drives the tick and survives route navigation
 export default function TimerSection() {
@@ -116,7 +120,7 @@ export default function TimerSection() {
         <Clock className="size-4" />
         Timer
       </Button>
-      <TimerFormDialog open={formOpen} onOpenChange={setFormOpen} />
+      {formOpen && <TimerFormDialog open={formOpen} onOpenChange={setFormOpen} />}
       <FeedbackDialog open={feedbackOpen} name={finishedName} onRespond={respondFeedback} />
     </div>
   );

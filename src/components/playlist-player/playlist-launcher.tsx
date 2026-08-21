@@ -1,9 +1,12 @@
 'use client';
 
 import { IconBrandYoutube } from '@tabler/icons-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import PlaylistDrawer from './playlist-drawer';
+
+// PlaylistDrawer hosts react-youtube + axios (via PlaylistPlayer) - lazy-load on first open.
+const PlaylistDrawer = dynamic(() => import('./playlist-drawer'), { ssr: false });
 
 interface PlaylistLauncherProps {
   playlists: string[];
@@ -19,7 +22,7 @@ export default function PlaylistLauncher({ playlists, title, buttonLabel = 'Watc
       <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label={buttonLabel} title={buttonLabel}>
         <IconBrandYoutube size={20} className="text-[#FF0000]" />
       </Button>
-      <PlaylistDrawer open={open} onOpenChange={setOpen} playlists={playlists} title={title} />
+      {open && <PlaylistDrawer open={open} onOpenChange={setOpen} playlists={playlists} title={title} />}
     </>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Briefcase, Pencil, Play, Plus, Trash2 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,8 +12,10 @@ import * as jobsRepository from '@/db/jobs';
 import { cn } from '@/lib/utils';
 import type { JobApplication } from '@/types/job-tracker';
 import type { SpeakUpQA, SpeakUpQAInput } from '@/types/speak-up';
-import QAFormDrawer from './qa-form-drawer';
 import useSpeakUpQAs from './use-speak-up-qas';
+
+// QAFormDrawer pulls in react-hook-form and zod - only load it when the user opens the drawer.
+const QAFormDrawer = dynamic(() => import('./qa-form-drawer'), { ssr: false });
 
 // ==============================|| SPEAK UP - Q&A BANK ("UP NEXT") ||============================== //
 

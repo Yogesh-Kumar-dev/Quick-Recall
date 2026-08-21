@@ -1,10 +1,13 @@
 'use client';
 
 import { IconFileText } from '@tabler/icons-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import type { PdfGuide } from '@/data/pdf-guides';
-import PdfDrawer from './pdf-drawer';
+
+// PdfDrawer hosts the PDF viewer - lazy-load it so the sheet + viewer deps only download on first open.
+const PdfDrawer = dynamic(() => import('./pdf-drawer'), { ssr: false });
 
 // PDFs download once on first open and are served from cache thereafter (offline-friendly).
 
@@ -24,7 +27,7 @@ export default function PdfLauncher({ guides, title, buttonLabel = 'Open PDF gui
       <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label={buttonLabel} title={buttonLabel}>
         <IconFileText size={20} />
       </Button>
-      <PdfDrawer open={open} onOpenChange={setOpen} guides={guides} title={title} />
+      {open && <PdfDrawer open={open} onOpenChange={setOpen} guides={guides} title={title} />}
     </>
   );
 }

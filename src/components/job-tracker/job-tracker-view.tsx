@@ -2,6 +2,7 @@
 
 import Fuse from 'fuse.js';
 import { LayoutGrid, LayoutList, Plus, Search } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,13 +11,15 @@ import type { JobApplication, JobApplicationInput, JobStatus } from '@/types/job
 import { ChipFilter } from './chip-filter';
 import { INTERVIEW_OUTCOME_CONFIG, JOB_SOURCE_CONFIG, JOB_STATUS_CONFIG, JOB_STATUS_ORDER, WORK_MODE_CONFIG } from './config';
 import JobCard from './job-card';
-import JobFormDrawer from './job-form-drawer';
 import JobsEmptyState from './jobs-empty-state';
 import KanbanBoard from './kanban-board';
 import { seedJobs } from './seed';
 import { formatSalary } from './stats';
 import StatsStrip from './stats-strip';
 import useJobs from './use-jobs';
+
+// JobFormDrawer pulls in react-hook-form and zod - only download it when the user opens the drawer.
+const JobFormDrawer = dynamic(() => import('./job-form-drawer'), { ssr: false });
 
 // ==============================|| JOB TRACKER ||============================== //
 
