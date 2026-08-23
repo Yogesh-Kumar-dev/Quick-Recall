@@ -19,3 +19,26 @@ export function shuffle<T>(items: readonly T[]): T[] {
 export function formatDate(ts: number): string {
   return new Date(ts).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 }
+
+// Split a string on URLs and return segments of plain text and URL strings.
+const URL_REGEX = /https?:\/\/[^\s]+|[a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z0-9][-a-zA-Z0-9]*(?:\.[a-zA-Z]{2,})[^\s]*/g;
+
+export function splitUrls(text: string): Array<{ type: 'text'; value: string } | { type: 'url'; value: string }> {
+  const segments: Array<{ type: 'text'; value: string } | { type: 'url'; value: string }> = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(URL_REGEX)) {
+    const start = match.index!;
+    if (start > lastIndex) {
+      segments.push({ type: 'text', value: text.slice(lastIndex, start) });
+    }
+    segments.push({ type: 'url', value: match[0] });
+    lastIndex = start + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    segments.push({ type: 'text', value: text.slice(lastIndex) });
+  }
+
+  return segments;
+}

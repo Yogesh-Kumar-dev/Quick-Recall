@@ -22,6 +22,7 @@ import { viteProxyArticle } from './articles/vite-proxy';
 import { viteReactBuildArticle } from './articles/vite-react-build';
 import { vitestGettingStartedArticle } from './articles/vitest-getting-started';
 import { webAccessibilityDeepDiveArticle } from './articles/web-accessibility-deep-dive';
+import { webComponentsArticle } from './articles/web-components';
 import { webSecurityDeepDiveArticle } from './articles/web-security-deep-dive';
 import { zustandOverviewArticle } from './articles/zustand-overview';
 
@@ -40,6 +41,7 @@ export const ARTICLES: Article[] = [
   pwaWithReactArticle,
   pwaWithNextjsArticle,
   reactQueryOverviewArticle,
+  webComponentsArticle,
   nuqsUrlStateArticle,
   zustandOverviewArticle,
   webSecurityDeepDiveArticle,

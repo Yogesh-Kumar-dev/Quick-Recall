@@ -4,6 +4,7 @@ import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { HeaderRow, Cell as LGCell, HeaderCell as LGHeaderCell, Row as LGRow, Table, TableBody, TableHead } from '@leafygreen-ui/table';
 import type { ComponentType, ReactNode } from 'react';
 import type { ArticleBlock } from '@/types/content';
+import { splitUrls } from '@/lib/utils';
 import ArticleFileTree from './article-file-tree';
 import CodeBlock from './code-block';
 
@@ -12,6 +13,29 @@ const CALLOUT_VARIANT_MAP: Record<'note' | 'warning' | 'tip', CalloutVariant> = 
   warning: CalloutVariant.Warning,
   tip: CalloutVariant.Example
 };
+
+function TextWithLinks({ text }: Readonly<{ text: string }>) {
+  const segments = splitUrls(text);
+  return (
+    <>
+      {segments.map((segment, i) =>
+        segment.type === 'url' ? (
+          <a
+            key={i}
+            href={segment.value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            {segment.value}
+          </a>
+        ) : (
+          <span key={i}>{segment.value}</span>
+        )
+      )}
+    </>
+  );
+}
 
 // LeafyGreen's HeaderCell/Row/Cell types describe the inner forwardRef render-callback signature
 // (props, ref) rather than a valid JSX element type — a d.ts gap present even in their own
@@ -51,7 +75,7 @@ export default function ArticleBlocks({ blocks }: Readonly<{ blocks: ArticleBloc
           case 'callout':
             return (
               <Callout key={key} variant={CALLOUT_VARIANT_MAP[block.variant]} title={block.title}>
-                {block.text}
+                <TextWithLinks text={block.text} />
               </Callout>
             );
           case 'list':
