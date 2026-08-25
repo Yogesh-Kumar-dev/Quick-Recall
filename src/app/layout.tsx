@@ -3,6 +3,10 @@ import { Inter, Lora, Source_Code_Pro } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
 
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const lora = Lora({ subsets: ['latin'], variable: '--font-lora', display: 'swap' });
 const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code', display: 'swap' });

@@ -2,6 +2,10 @@ import { notFound } from 'next/navigation';
 import ArticleView from '@/components/content/article-view';
 import { ARTICLES, articleBySlug } from '@/data/articles-index';
 
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 export function generateStaticParams() {
   return ARTICLES.map((a) => ({ slug: a.slug }));
 }

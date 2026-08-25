@@ -7,6 +7,10 @@ import { supertestNotes } from '@/data/testing/supertest-notes';
 import { vitestNotes } from '@/data/testing/vitest-notes';
 import type { Note } from '@/types/content';
 
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 export const metadata = { title: 'Testing Frameworks & Tools | QuickRecall' };
 
 // Each source file's `category` is already set to its own tool name (Vitest, RTL, Jest, MSW,

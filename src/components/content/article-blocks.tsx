@@ -1,10 +1,10 @@
 'use client';
 
+import { splitUrls } from '@/lib/utils';
+import type { ArticleBlock } from '@/types/content';
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { HeaderRow, Cell as LGCell, HeaderCell as LGHeaderCell, Row as LGRow, Table, TableBody, TableHead } from '@leafygreen-ui/table';
 import type { ComponentType, ReactNode } from 'react';
-import type { ArticleBlock } from '@/types/content';
-import { splitUrls } from '@/lib/utils';
 import ArticleFileTree from './article-file-tree';
 import CodeBlock from './code-block';
 

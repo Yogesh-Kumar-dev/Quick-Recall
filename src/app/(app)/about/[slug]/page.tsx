@@ -3,6 +3,10 @@ import { notFound } from 'next/navigation';
 import FeatureDeepDiveView from '@/components/about/feature-deep-dive-view';
 import { FEATURES, getFeature } from '@/data/about/about-features';
 
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 export function generateStaticParams() {
   return FEATURES.map((f) => ({ slug: f.slug }));
 }
