@@ -90,7 +90,8 @@ export const navSections: NavSection[] = [
     icon: IconBrandHtml5,
     items: [
       { title: 'HTML Notes', url: '/html-css/html', icon: IconBrandHtml5, topic: 'html' },
-      { title: 'CSS Notes', url: '/html-css/css', icon: IconBrandCss3, topic: 'css' }
+      { title: 'CSS Notes', url: '/html-css/css', icon: IconBrandCss3, topic: 'css' },
+      { title: 'Quick Recall', url: '/html-css/quick-recall', icon: IconBolt }
     ]
   },
   {
@@ -124,7 +125,8 @@ export const navSections: NavSection[] = [
       { title: 'Redux Notes', url: '/redux/notes', icon: IconBrandRedux, topic: 'redux' },
       { title: 'Redux Toolkit', url: '/redux/toolkit', icon: IconBrandRedux, topic: 'redux' },
       { title: 'RTK Query', url: '/redux/rtk-query', icon: IconBolt, topic: 'redux' },
-      { title: 'createAsyncThunk', url: '/redux/async-thunk', icon: IconCode, topic: 'redux' }
+      { title: 'createAsyncThunk', url: '/redux/async-thunk', icon: IconCode, topic: 'redux' },
+      { title: 'Quick Recall', url: '/redux/quick-recall', icon: IconBolt, topic: 'redux' }
     ]
   },
   {
@@ -133,7 +135,8 @@ export const navSections: NavSection[] = [
     icon: IconBrandNextjs,
     items: [
       { title: 'Next.js Notes', url: '/nextjs/notes', icon: IconBrandNextjs, topic: 'nextjs' },
-      { title: 'Rendering Strategies', url: '/nextjs/rendering', icon: IconServer, topic: 'nextjs' }
+      { title: 'Rendering Strategies', url: '/nextjs/rendering', icon: IconServer, topic: 'nextjs' },
+      { title: 'Quick Recall', url: '/nextjs/quick-recall', icon: IconBolt, topic: 'nextjs' }
     ]
   },
   {
@@ -153,14 +156,18 @@ export const navSections: NavSection[] = [
       { title: 'PostgreSQL', url: '/databases/postgresql', icon: IconDatabase, topic: 'postgresql' },
       { title: 'MongoDB', url: '/databases/mongodb', icon: IconBrandMongodb, topic: 'mongodb' },
       { title: 'Redis', url: '/databases/redis', icon: IconBolt, topic: 'redis' },
-      { title: 'DynamoDB', url: '/databases/dynamodb', icon: IconBrandAws, topic: 'dynamodb' }
+      { title: 'DynamoDB', url: '/databases/dynamodb', icon: IconBrandAws, topic: 'dynamodb' },
+      { title: 'Quick Recall', url: '/databases/quick-recall', icon: IconBolt }
     ]
   },
   {
     id: 'aws',
     title: 'AWS',
     icon: IconBrandAws,
-    items: [{ title: 'Notes', url: '/aws/notes', icon: IconBrandAws, topic: 'aws' }]
+    items: [
+      { title: 'Notes', url: '/aws/notes', icon: IconBrandAws, topic: 'aws' },
+      { title: 'Quick Recall', url: '/aws/quick-recall', icon: IconBolt, topic: 'aws' }
+    ]
   },
   {
     id: 'testing',
@@ -169,7 +176,8 @@ export const navSections: NavSection[] = [
     items: [
       { title: 'Fundamentals', url: '/testing/fundamentals', icon: IconChecklist, topic: 'testing' },
       { title: 'Testing Frameworks & Tools', url: '/testing/tools', icon: IconRobot, topic: 'testing' },
-      { title: 'Specialized Testing', url: '/testing/specialized', icon: IconBug, topic: 'testing' }
+      { title: 'Specialized Testing', url: '/testing/specialized', icon: IconBug, topic: 'testing' },
+      { title: 'Quick Recall', url: '/testing/quick-recall', icon: IconBolt, topic: 'testing' }
     ]
   },
   {
@@ -180,13 +188,17 @@ export const navSections: NavSection[] = [
       { title: 'Web Security', url: '/web/security', icon: IconShieldLock, topic: 'web' },
       { title: 'Auth & Identity', url: '/web/auth', icon: IconKey, topic: 'web' },
       { title: 'Accessibility', url: '/web/accessibility', icon: IconAccessible, topic: 'web' },
-      { title: 'Web Performance', url: '/web/performance', icon: IconGauge, topic: 'web' }
+      { title: 'Web Performance', url: '/web/performance', icon: IconGauge, topic: 'web' },
+      { title: 'Quick Recall', url: '/web/quick-recall', icon: IconBolt, topic: 'web' }
     ]
   },
   {
     id: 'engineering',
     title: 'Engineering Essentials',
     icon: IconCpu,
-    items: [{ title: 'Notes', url: '/engineering/notes', icon: IconNotes, topic: 'engineering' }]
+    items: [
+      { title: 'Notes', url: '/engineering/notes', icon: IconNotes, topic: 'engineering' },
+      { title: 'Quick Recall', url: '/engineering/quick-recall', icon: IconBolt, topic: 'engineering' }
+    ]
   }
 ];

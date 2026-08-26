@@ -22,6 +22,10 @@ export interface Note {
 // Quick Recall cheatsheet
 // ---------------------------------------------------------------------------
 export interface QuickRecallItem {
+  /** Stable identity within a sheet — auto-assigned by the registry (slug of section + concept) when not authored. Needed for React keys and future SRS wiring. */
+  id?: string;
+  /** URL of the full note/problem behind this item (e.g. `/js/notes?open=x`) — rendered as a deep-link chip. Set for items derived from Note[]. */
+  href?: string;
   concept: string;
   bullets: string[];
   codeSnippet?: string; // short inline code block

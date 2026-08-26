@@ -71,12 +71,12 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
   {
     id: 'redux',
     label: 'Redux',
-    urls: ['/redux/notes', '/redux/toolkit', '/redux/rtk-query', '/redux/async-thunk']
+    urls: ['/redux/notes', '/redux/toolkit', '/redux/rtk-query', '/redux/async-thunk', '/redux/quick-recall']
   },
   {
     id: 'nextjs',
     label: 'Next.js',
-    urls: ['/nextjs/notes', '/nextjs/rendering']
+    urls: ['/nextjs/notes', '/nextjs/rendering', '/nextjs/quick-recall']
   },
   {
     id: 'nodejs',
@@ -86,27 +86,32 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
   {
     id: 'databases',
     label: 'Databases',
-    urls: ['/databases/postgresql', '/databases/mongodb', '/databases/redis', '/databases/dynamodb']
+    urls: ['/databases/postgresql', '/databases/mongodb', '/databases/redis', '/databases/dynamodb', '/databases/quick-recall']
+  },
+  {
+    id: 'aws',
+    label: 'AWS',
+    urls: ['/aws/notes', '/aws/quick-recall']
   },
   {
     id: 'testing',
     label: 'Testing',
-    urls: ['/testing/fundamentals', '/testing/tools', '/testing/specialized']
+    urls: ['/testing/fundamentals', '/testing/tools', '/testing/specialized', '/testing/quick-recall']
   },
   {
     id: 'html-css',
     label: 'HTML & CSS',
-    urls: ['/html-css/html', '/html-css/css']
+    urls: ['/html-css/html', '/html-css/css', '/html-css/quick-recall']
   },
   {
     id: 'web',
     label: 'Web Platform',
-    urls: ['/web/security', '/web/auth', '/web/accessibility', '/web/performance']
+    urls: ['/web/security', '/web/auth', '/web/accessibility', '/web/performance', '/web/quick-recall']
   },
   {
     id: 'engineering',
     label: 'Engineering Essentials',
-    urls: ['/engineering/notes']
+    urls: ['/engineering/notes', '/engineering/quick-recall']
   },
   {
     id: 'articles',

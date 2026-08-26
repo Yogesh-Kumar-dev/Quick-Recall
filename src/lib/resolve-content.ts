@@ -4,6 +4,7 @@
 // real content item plus a route-stable URL so the Saved view doesn't re-implement the lookup.
 
 import { articleBySlug } from '@/data/articles-index';
+import { awsNotes } from '@/data/aws/aws-notes';
 import { dynamodbNotes } from '@/data/databases/dynamodb-notes';
 import { mongodbNotes } from '@/data/databases/mongodb-notes';
 import { postgresqlNotes } from '@/data/databases/postgresql-notes';
@@ -71,6 +72,7 @@ const ALL_NOTES_WITH_URL: NoteWithUrl[] = [
   ...noteEntry(mongodbNotes, '/databases/mongodb'),
   ...noteEntry(redisNotes, '/databases/redis'),
   ...noteEntry(dynamodbNotes, '/databases/dynamodb'),
+  ...noteEntry(awsNotes, '/aws/notes'),
   ...noteEntry(testingFundamentalsNotes, '/testing/fundamentals'),
   ...noteEntry(vitestNotes, '/testing/tools'),
   ...noteEntry(rtlNotes, '/testing/tools'),

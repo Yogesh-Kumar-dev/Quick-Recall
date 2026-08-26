@@ -5,9 +5,9 @@ import { QUICK_RECALL_SHEETS } from '@/data/quick-recall-registry';
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
 export const instant = false;
 
-export const metadata = { title: 'Node.js Quick Recall | QuickRecall' };
+export const metadata = { title: 'Databases Quick Recall | QuickRecall' };
 
 export default function Page() {
-  const sheet = QUICK_RECALL_SHEETS.nodejs;
+  const sheet = QUICK_RECALL_SHEETS.databases;
   return <QuickRecallView title={sheet.title} intro={sheet.intro} sections={sheet.sections} />;
 }

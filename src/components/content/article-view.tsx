@@ -9,7 +9,6 @@ const DIFFICULTY_BADGE: Record<NonNullable<Article['difficulty']>, string> = {
   advanced: 'border-destructive/40 text-destructive'
 };
 
-
 export default function ArticleView({ article }: Readonly<{ article: Article }>) {
   const headings = article.blocks.filter((b): b is ArticleHeadingBlock => b.type === 'heading');
 

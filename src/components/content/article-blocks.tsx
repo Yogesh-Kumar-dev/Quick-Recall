@@ -1,10 +1,10 @@
 'use client';
 
-import { splitUrls } from '@/lib/utils';
-import type { ArticleBlock } from '@/types/content';
 import { Callout, Variant as CalloutVariant } from '@leafygreen-ui/callout';
 import { HeaderRow, Cell as LGCell, HeaderCell as LGHeaderCell, Row as LGRow, Table, TableBody, TableHead } from '@leafygreen-ui/table';
 import type { ComponentType, ReactNode } from 'react';
+import { splitUrls } from '@/lib/utils';
+import type { ArticleBlock } from '@/types/content';
 import ArticleFileTree from './article-file-tree';
 import CodeBlock from './code-block';
 
@@ -31,9 +31,7 @@ function TextWithLinks({ text }: Readonly<{ text: string }>) {
             {segment.value}
           </a>
         ) : (
-          <span key={`${segment.type}-${segment.value}`}>
-            {segment.value}
-          </span>
+          <span key={`${segment.type}-${segment.value}`}>{segment.value}</span>
         )
       )}
     </>
