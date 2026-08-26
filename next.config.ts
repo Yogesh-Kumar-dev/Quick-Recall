@@ -48,12 +48,13 @@ const nextConfig: NextConfig = {
     // gstatic.com: public/firebase-messaging-sw.js importScripts() the firebase compat SDK from
     // there — a worker inherits the CSP of its own response, so without this the SW fails to
     // install and pushes fall back to Chrome's generic "site updated in the background" notice.
-    const scriptSrc = `script-src 'self' 'unsafe-inline' https://www.gstatic.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com${process.env.NODE_ENV === 'production' ? '' : " 'unsafe-eval'"}`;
+    const scriptSrc = `script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.youtube.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com${process.env.NODE_ENV === 'production' ? '' : " 'unsafe-eval'"}`;
+
 
     // Dev-only: code-inspector-plugin's click-to-source XHRs its local server (default port 5678)
     // to open the editor. Without this host in connect-src the browser kills the request and
     // clicking a component never opens VS Code.
-    const connectSrc = `connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://firebasemessaging.googleapis.com https://fcm.googleapis.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com https://*.blob.vercel-storage.com${process.env.NODE_ENV === 'development' ? ' http://localhost:5678' : ''}`;
+    const connectSrc = `connect-src 'self' https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com https://firebasemessaging.googleapis.com https://fcm.googleapis.com https://www.youtube.com https://codesandbox.io https://*.codesandbox.io https://static.cloudflareinsights.com https://*.blob.vercel-storage.com${process.env.NODE_ENV === 'development' ? ' http://localhost:5678' : ''}`;
 
     const csp = [
       "default-src 'self'",
@@ -63,7 +64,7 @@ const nextConfig: NextConfig = {
       "font-src 'self' data: https://fonts.gstatic.com https://codesandbox.io https://*.codesandbox.io",
       connectSrc,
       "worker-src 'self' blob: https://codesandbox.io https://*.codesandbox.io",
-      "frame-src 'self' https://onecompiler.com https://codesandbox.io https://*.codesandbox.io",
+      "frame-src 'self' https://www.youtube.com https://onecompiler.com https://codesandbox.io https://*.codesandbox.io",
       "manifest-src 'self'",
       "frame-ancestors 'none'",
       "base-uri 'self'",
