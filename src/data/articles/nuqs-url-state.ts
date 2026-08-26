@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const nuqsUrlStateArticle: Article = {
   id: 'nuqs-url-state',
   slug: 'nuqs-url-state',
+  category: 'Frontend',
   title: 'nuqs: URL State Without the Boilerplate',
   summary:
     "A ground-up look at why the URL is a genuinely good place to keep page-shaping state like filters and pagination, how Next.js and React Router's built-in hooks treat it as a flat string you parse by hand, and how nuqs turns it into typed, declarative React state with built-in validation, batching, and history control.",

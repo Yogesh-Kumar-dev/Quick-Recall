@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const linuxCommandsArticle: Article = {
   id: 'linux-commands-developers-devops',
   slug: 'linux-commands-developers-devops',
+  category: 'Backend',
   title: 'Linux Commands Every Developer and DevOps Engineer Should Know',
   summary:
     'A beginner-first guide to the Linux and Unix commands developers use every day: navigating files, searching logs, working with processes, inspecting ports, connecting to servers with SSH, transferring files with scp and rsync, managing services, and combining commands into practical DevOps workflows.',

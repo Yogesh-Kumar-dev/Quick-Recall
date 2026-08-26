@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const browserRenderingArticle: Article = {
   id: 'browser-rendering',
   slug: 'browser-rendering',
+  category: 'Frontend',
   title: 'How a Browser Renders a Page',
   summary:
     'A ground-up walkthrough of everything that happens between typing a URL and seeing pixels: the HTML and CSS parsers, why CSS is render-blocking and scripts are parser-blocking, the layout/paint/composite pipeline, the JavaScript engine that sits alongside it, how the major browsers differ, and how a page can tell which browser it is running in.',

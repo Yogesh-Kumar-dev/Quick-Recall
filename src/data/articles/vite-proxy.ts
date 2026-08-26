@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const viteProxyArticle: Article = {
   id: 'vite-proxy-development',
   slug: 'vite-proxy-development',
+  category: 'Full Stack',
   title: 'Vite Proxy: Why Do We Need It?',
   summary:
     'A beginner-friendly explanation of Vite development proxies, why frontend applications need them when talking to a separate backend, how they avoid local CORS problems, and how to configure path rewrites, WebSockets, authentication, and Portless-based local development.',

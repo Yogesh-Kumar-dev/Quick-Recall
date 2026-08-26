@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const redis101Article: Article = {
   id: 'redis-101',
   slug: 'redis-101',
+  category: 'Databases',
   title: 'Redis 101 and Beyond',
   summary:
     'A from-scratch tour of Redis: why keeping data in RAM makes it so fast, every core data structure with real commands, the use cases each one unlocks, and how it stays durable, evictable, and scalable in production.',

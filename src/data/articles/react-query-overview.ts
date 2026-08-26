@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const reactQueryOverviewArticle: Article = {
   id: 'react-query-overview',
   slug: 'react-query-overview',
+  category: 'Frontend',
   title: 'React Query (TanStack Query): Taming Server State',
   summary:
     'A from-first-principles walkthrough of why "server state" is a different problem from UI state, and how TanStack Query solves caching, staleness, background refetching, and mutations so you stop hand-rolling them.',

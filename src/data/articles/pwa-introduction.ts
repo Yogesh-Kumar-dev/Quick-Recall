@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const pwaIntroductionArticle: Article = {
   id: 'pwa-introduction',
   slug: 'pwa-introduction',
+  category: 'Frontend',
   title: 'PWA Introduction',
   summary:
     'A ground-up explanation of what a Progressive Web App actually is, why each of its three pillars (HTTPS, manifest, service worker) exists, how caching strategies and install prompts work, and how a PWA compares to a native app.',

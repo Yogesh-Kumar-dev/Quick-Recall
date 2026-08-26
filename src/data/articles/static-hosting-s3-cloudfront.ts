@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const staticHostingS3CloudfrontArticle: Article = {
   id: 'static-hosting-s3-cloudfront',
   slug: 'static-hosting-s3-cloudfront',
+  category: 'Backend',
   title: 'Static Website Hosting: S3 + CloudFront + Route 53',
   summary:
     'A from-scratch, beginner-first walkthrough of the standard AWS setup for hosting a static site or SPA build: what a static site even is, why S3 alone is not enough, how CloudFront and DNS fit in, and a full step-by-step deployment.',

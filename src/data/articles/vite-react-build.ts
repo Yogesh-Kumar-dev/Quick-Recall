@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const viteReactBuildArticle: Article = {
   id: 'vite-react-build',
   slug: 'vite-react-build',
+  category: 'Frontend',
   title: 'Walkthrough of a Vite React Build',
   summary:
     'From "what even is a bundler" to why Vite feels instant in dev, why it switches engines for production, and exactly what lands in dist/ when you ship.',

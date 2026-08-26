@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const webComponentsArticle: Article = {
   id: 'web-components-enterprise-design-systems',
   slug: 'web-components-enterprise-design-systems',
+  category: 'Frontend',
   title: 'Web Components in Enterprise Applications',
   summary:
     'Learn what Web Components are, why enterprises may build framework-independent design systems, and how the same reusable components can be integrated into plain HTML, React, and Angular applications.',

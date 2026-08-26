@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const vitestGettingStartedArticle: Article = {
   id: 'vitest-getting-started',
   slug: 'vitest-getting-started',
+  category: 'Frontend',
   title: 'Getting Started with Vitest',
   summary:
     'A from-scratch, beginner-first guide to automated testing with Vitest: why tests matter at all, unit vs integration testing, the full describe/it/expect API, mocking, async tests, snapshots, coverage, testing React components, and the pitfalls that trip people up.',

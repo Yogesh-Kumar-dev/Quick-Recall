@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const cachingLayersArticle: Article = {
   id: 'caching-layers',
   slug: 'caching-layers',
+  category: 'Full Stack',
   title: 'Caching Layers: Understanding Performance Across the Stack',
   summary:
     'A comprehensive walkthrough of caching at every layer: browser (React Router, TanStack Query), CDN (CloudFront with cache headers), server-side application caches, and Redis. Uses a single user request journey to explain what problem each layer solves, when it kicks in, and how they work together.',

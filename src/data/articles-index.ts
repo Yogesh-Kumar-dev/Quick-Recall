@@ -3,8 +3,10 @@
 import type { Article } from '@/types/content';
 import { browserRenderingArticle } from './articles/browser-rendering';
 import { cachingLayersArticle } from './articles/caching-layers';
+import { codeModsArticle } from './articles/codemods';
 import { coreWebVitalsArticle } from './articles/core-web-vitals';
 import { dynamodb101Article } from './articles/dynamodb-101';
+import { featureFlagArticle } from './articles/feature-flags';
 import { frontendBasePathArticle } from './articles/frontend-base-path';
 import { iaasPaasSaasArticle } from './articles/iaas-paas-saas';
 import { linuxCommandsArticle } from './articles/linux-commands';
@@ -50,7 +52,9 @@ export const ARTICLES: Article[] = [
   iaasPaasSaasArticle,
   browserRenderingArticle,
   mapAndSetReactStateArticle,
-  linuxCommandsArticle
+  linuxCommandsArticle,
+  codeModsArticle,
+  featureFlagArticle
 ];
 
 // Keyed by slug — the route param and the bookmark/resolve-content refId.

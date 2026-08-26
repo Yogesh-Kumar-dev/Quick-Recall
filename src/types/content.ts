@@ -240,11 +240,15 @@ export type ArticleBlock =
   | ArticleFileTreeBlock
   | ArticleTableBlock;
 
+export const ARTICLE_CATEGORIES = ['Frontend', 'Backend', 'Databases', 'Full Stack'] as const;
+export type ArticleCategory = (typeof ARTICLE_CATEGORIES)[number];
+
 export interface Article {
   id: string;
   slug: string; // route param + bookmark refId
   title: string;
   summary: string;
+  category: ArticleCategory; // browse filter on /articles
   topics: string[]; // freeform browse/filter tags, e.g. ['PWA', 'Web Platform']
   difficulty?: 'basic' | 'intermediate' | 'advanced';
   blocks: ArticleBlock[];

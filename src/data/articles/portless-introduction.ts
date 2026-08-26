@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const portlessIntroductionArticle: Article = {
   id: 'portless-introduction',
   slug: 'portless-introduction',
+  category: 'Backend',
   title: 'Portless: Eliminate localhost Port Chaos with Stable Named URLs',
   summary:
     'A comprehensive guide to Portless, the CLI tool that replaces unpredictable localhost ports with stable, memorable named URLs. Covers the problems it solves, getting started, architecture, advanced configuration, and framework-specific setup for Vite and Next.js.',

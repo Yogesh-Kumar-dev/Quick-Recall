@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const zustandOverviewArticle: Article = {
   id: 'zustand-overview',
   slug: 'zustand-overview',
+  category: 'Frontend',
   title: 'Zustand: Global State Without the Ceremony',
   summary:
     "A ground-up look at why apps need shared state in the first place, why prop drilling and Context both hit walls, and how Zustand's store-as-a-hook design and selector subscriptions solve both without a Provider or a reducer in sight.",

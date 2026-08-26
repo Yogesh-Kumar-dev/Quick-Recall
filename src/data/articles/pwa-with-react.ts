@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const pwaWithReactArticle: Article = {
   id: 'pwa-with-react',
   slug: 'pwa-with-react',
+  category: 'Frontend',
   title: 'PWA with React',
   summary:
     'How a Vite-built React app becomes an installable, offline-capable PWA in practice: vite-plugin-pwa, Workbox caching strategies, update prompts, and the pitfalls that only show up in a real production build.',

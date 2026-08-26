@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const dynamodb101Article: Article = {
   id: 'dynamodb-101',
   slug: 'dynamodb-101',
+  category: 'Databases',
   title: 'DynamoDB 101 and Beyond',
   summary:
     'A from-scratch guide to AWS DynamoDB: what a managed NoSQL database actually means, how partition and sort keys shape everything you can query, capacity modes, indexes, single-table design, consistency, and the classic interview gotchas.',

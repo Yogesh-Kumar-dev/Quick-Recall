@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const webSecurityDeepDiveArticle: Article = {
   id: 'web-security-deep-dive',
   slug: 'web-security-deep-dive',
+  category: 'Full Stack',
   title: 'Web Security Deep Dive',
   summary:
     'A ground-up walkthrough of the attacks that actually hit real web apps: XSS, CSRF, clickjacking, and injection, told as attacker-first scenarios, followed by the browser mechanisms (CSP, SameSite cookies, CORS, secure flags) that stop each one.',

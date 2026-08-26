@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const webAccessibilityDeepDiveArticle: Article = {
   id: 'web-accessibility-deep-dive',
   slug: 'web-accessibility-deep-dive',
+  category: 'Frontend',
   title: 'Web Accessibility Deep Dive',
   summary:
     'A from-first-principles walkthrough of why accessibility matters, how screen readers actually work, semantic HTML as the foundation, ARIA as a careful patch, keyboard navigation, focus management, color contrast, and how WCAG conformance levels are structured.',

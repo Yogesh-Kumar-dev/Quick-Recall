@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const nextjsBuildArticle: Article = {
   id: 'nextjs-build',
   slug: 'nextjs-build',
+  category: 'Frontend',
   title: 'Walkthrough of a Next.js Build',
   summary:
     'From "why does rendering location even matter" to reading a real build output table, the Server/Client Component split, and what actually lands in .next/ when you run `next build`.',

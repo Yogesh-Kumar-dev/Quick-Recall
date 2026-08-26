@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const pwaWithNextjsArticle: Article = {
   id: 'pwa-with-nextjs',
   slug: 'pwa-with-nextjs',
+  category: 'Frontend',
   title: 'PWA with Next.js',
   summary:
     'Why service workers are more awkward in Next.js than in a plain SPA, the App Router manifest convention, the Turbopack-vs-webpack-plugin gap, and a full walkthrough of the real @serwist/turbopack setup this very app runs in production.',

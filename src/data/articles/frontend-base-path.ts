@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const frontendBasePathArticle: Article = {
   id: 'frontend-base-path-vite-nextjs',
   slug: 'frontend-base-path-vite-nextjs',
+  category: 'Frontend',
   title: 'Frontend Base Paths: Deploying Vite and Next.js Apps Under a URL Prefix',
   summary:
     'A beginner-first explanation of what a frontend base path actually means, why applications break when deployed under a sub-path, and how Vite, React Router, and Next.js handle the concept with base, basename, and basePath.',

@@ -51,7 +51,8 @@ export const awsNotes: Note[] = [
       'PaaS (Elastic Beanstalk, App Runner, Lambda): you deploy code and AWS manages the OS/runtime/scaling underneath , less control, far less ops.',
       'SaaS (Amazon WorkMail, QuickSight, most third-party apps): a finished product you just use; the provider manages everything.',
       'The tradeoff is always control vs. operational overhead , pick the highest-level abstraction that still gives you the control the workload actually needs.'
-    ]
+    ],
+    articleRefs: ['iaas-paas-saas']
   },
   {
     id: 'aws-pricing-models',

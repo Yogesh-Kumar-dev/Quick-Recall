@@ -126,34 +126,23 @@
     @apply font-sans;
   }
 
-  /* 1. Apply to EVERY element in the app */
+  /* Apply to EVERY element in the app, always visible (not hover-gated) */
   html,
   * {
-    scrollbar-gutter: stable;
-    /* Keeps text layout stable */
-    scrollbar-width: none;
-    /* Hide by default for Firefox */
-  }
-
-  /* 2. Hide by default for Chrome, Safari, and Edge */
-  html::-webkit-scrollbar,
-  *::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    display: none;
-  }
-
-  /* 3. Show and style on hover for Firefox */
-  html:hover,
-  *:hover {
     scrollbar-width: thin;
     scrollbar-color: theme('colors.slate.300') transparent;
   }
 
-  /* 4. Show and style on hover for Chrome, Safari, and Edge */
-  html:hover::-webkit-scrollbar,
-  *:hover::-webkit-scrollbar {
-    display: block;
+  /* Gutter only on the page scrollbar — on inner scroll containers (code blocks, panels) it
+     reserves a dead strip on the right even when content fits, which reads as a visual gap. */
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  html::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
 
   html::-webkit-scrollbar-track,

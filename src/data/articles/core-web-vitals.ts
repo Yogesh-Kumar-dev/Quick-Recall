@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const coreWebVitalsArticle: Article = {
   id: 'core-web-vitals',
   slug: 'core-web-vitals',
+  category: 'Frontend',
   title: 'Core Web Vitals',
   summary:
     'What "feels fast" actually means in measurable terms, and a deep, practical walkthrough of the three Core Web Vitals (LCP, INP, CLS) plus TTFB: what each one measures, why it can go bad, how to diagnose it, how to fix it, and how it connects to Google search ranking.',

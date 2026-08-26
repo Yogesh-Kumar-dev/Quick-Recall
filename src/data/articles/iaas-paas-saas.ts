@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const iaasPaasSaasArticle: Article = {
   id: 'iaas-paas-saas',
   slug: 'iaas-paas-saas',
+  category: 'Backend',
   title: 'IaaS vs PaaS vs SaaS',
   summary:
     'A from-scratch tour of the three cloud service models: what "as a service" actually means, exactly who manages what at each layer, real providers that fit each bucket, and how to reason about which one fits a given problem.',

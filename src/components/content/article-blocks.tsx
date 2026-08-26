@@ -16,12 +16,13 @@ const CALLOUT_VARIANT_MAP: Record<'note' | 'warning' | 'tip', CalloutVariant> = 
 
 function TextWithLinks({ text }: Readonly<{ text: string }>) {
   const segments = splitUrls(text);
+
   return (
     <>
-      {segments.map((segment, i) =>
+      {segments.map((segment) =>
         segment.type === 'url' ? (
           <a
-            key={i}
+            key={`${segment.type}-${segment.value}`}
             href={segment.value}
             target="_blank"
             rel="noopener noreferrer"
@@ -30,7 +31,9 @@ function TextWithLinks({ text }: Readonly<{ text: string }>) {
             {segment.value}
           </a>
         ) : (
-          <span key={i}>{segment.value}</span>
+          <span key={`${segment.type}-${segment.value}`}>
+            {segment.value}
+          </span>
         )
       )}
     </>

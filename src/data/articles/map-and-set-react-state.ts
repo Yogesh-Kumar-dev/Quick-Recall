@@ -3,6 +3,7 @@ import type { Article } from '@/types/content';
 export const mapAndSetReactStateArticle: Article = {
   id: 'map-and-set-react-state',
   slug: 'map-and-set-react-state',
+  category: 'Frontend',
   title: "Map and Set in React State: When Arrays Aren't the Best Tool",
   summary:
     "A practical guide to choosing between Array, Set, and Map in React state, covering when each structure shines, how to use them immutably, and why arrays aren't always the answer.",
