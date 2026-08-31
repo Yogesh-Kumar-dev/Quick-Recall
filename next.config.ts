@@ -9,7 +9,7 @@ import type { NextConfig } from 'next';
 // `withSerwist` here only adds the esbuild/esbuild-wasm packages to serverExternalPackages so
 // that route handler can bundle in a Node runtime.
 const nextConfig: NextConfig = {
-  // cacheComponents: true, // TODO: re-enable once route handlers support opt-out per-route
+  // cacheComponents: true, // TODO: re-enable once Next.js supports per-route opt-out
   // Machine-coding pages read their raw source files via readFileSync at render time to show the
   // code alongside the live demo. Under the `force-dynamic` (dashboard) segment that read runs inside
   // the serverless function, but Next's output file tracer only bundles *compiled* modules — the raw
