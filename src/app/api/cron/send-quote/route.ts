@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 import { ApiError } from '@/lib/api-error';
 import { messaging } from '@/lib/firebase-admin';
 import { connectMongo } from '@/lib/mongoose';
@@ -9,10 +8,11 @@ import NotificationTemplate from '@/models/NotificationTemplate';
 
 const INVALID_TOKEN_ERRORS = new Set(['messaging/registration-token-not-registered', 'messaging/invalid-registration-token']);
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: Request) {
   try {
-    const h = await headers();
-    const auth = h.get('authorization');
+    const auth = req.headers.get('authorization');
     if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
       throw new ApiError(401, 'Unauthorized');
     }
