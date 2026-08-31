@@ -28,7 +28,10 @@ const PROBLEM_MAP: Record<string, () => Promise<{ default: ComponentType }>> = {
   'pipe-compose': () => import('@/views/js-machine-coding/PipeCompose'),
   'array-chunk': () => import('@/views/js-machine-coding/ArrayChunk'),
   once: () => import('@/views/js-machine-coding/Once'),
-  'map-limit': () => import('@/views/js-machine-coding/MapLimit')
+  'map-limit': () => import('@/views/js-machine-coding/MapLimit'),
+  'dedupe-sort-array': () => import('@/views/js-machine-coding/DedupeSortArray'),
+  'array-methods': () => import('@/views/js-machine-coding/ArrayMethods'),
+  'array-methods-2': () => import('@/views/js-machine-coding/ArrayMethods2')
 };
 
 export function generateStaticParams() {

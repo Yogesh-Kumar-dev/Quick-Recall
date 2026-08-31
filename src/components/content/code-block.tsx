@@ -14,12 +14,20 @@ interface Props {
  * JS), then lazily swaps in the LeafyGreen highlighter on mount — so highlight.js ships only in this
  * client-only chunk and never bloats First-Load JS.
  */
-export default function CodeBlock({ code, language = 'tsx' }: Props) {
+export default function CodeBlock({ code, language = 'tsx' }: Readonly<Props>) {
   const [Highlighted, setHighlighted] = useState<ComponentType<Props> | null>(null);
 
   useEffect(() => {
     import('./code-highlighted').then((m) => setHighlighted(() => m.default));
   }, []);
+
+  if (!code) {
+    return (
+      <pre className="overflow-x-auto rounded-md border border-border bg-background p-3 font-mono text-[13px] leading-relaxed whitespace-pre">
+        {/* Code not available */}
+      </pre>
+    );
+  }
 
   if (Highlighted) return <Highlighted code={code} language={language} />;
 

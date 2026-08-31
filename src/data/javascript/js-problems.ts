@@ -184,5 +184,29 @@ export const jsProblems: JsProblemEntry[] = [
     difficulty: 'hard',
     category: 'async',
     tags: ['async', 'promise', 'concurrency', 'worker-pool']
+  },
+  {
+    id: 'dedupe-sort-array',
+    title: 'Remove Duplicates & Sort Array',
+    slug: 'dedupe-sort-array',
+    difficulty: 'easy',
+    category: 'array',
+    tags: ['hash-map', 'sorting', 'no-builtins', 'loops']
+  },
+  {
+    id: 'array-methods',
+    title: 'Array Methods Practice: The Essentials',
+    slug: 'array-methods',
+    difficulty: 'easy',
+    category: 'array',
+    tags: ['map', 'filter', 'find', 'reduce', 'set']
+  },
+  {
+    id: 'array-methods-2',
+    title: 'Array Methods Practice: Sorting & Composition',
+    slug: 'array-methods-2',
+    difficulty: 'medium',
+    category: 'array',
+    tags: ['toSorted', 'sort', 'localeCompare', 'comparator', 'slice']
   }
 ];
