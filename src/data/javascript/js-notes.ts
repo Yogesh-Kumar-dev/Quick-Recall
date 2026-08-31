@@ -2864,5 +2864,44 @@ if ('IntersectionObserver' in window) {
 } else {
   loadAllImages();         // baseline still works
 }`
+  },
+  // ─── Performance & Data Structures ──────────────────────────────────────────
+  {
+    id: 'perf-set-has-vs-includes',
+    title: 'Set.has() vs Array.includes()',
+    summary:
+      "Both check if a value exists, but Set.has() is O(1) while Array.includes() is O(n) — use Set when you're doing frequent lookups.",
+    difficulty: 'intermediate',
+    category: 'performance',
+    keyPoints: [
+      'Membership check = asking "does this value exist in the collection?"',
+      'Array.includes() walks element by element until it finds a match — O(n) worst case.',
+      'Set.has() does a hash-table lookup — O(1) constant time regardless of size.',
+      'Big O notation describes how performance scales: O(1) stays flat, O(n) grows linearly with input.',
+      'If you call includes() inside a loop, you\'re doing O(n²) work — convert to a Set first for O(n).',
+      'Set also enforces uniqueness, so deduping and membership checking naturally go together.',
+      'Rule of thumb: use Array.includes for one-off checks on small arrays; use Set.has when the same lookup runs repeatedly or in a loop.'
+    ],
+    codeSnippet: `// O(n) — Array.includes scans element by element
+const arr = [1, 2, 3, 4, 5];
+arr.includes(4); // checks 1, 2, 3, 4 → up to 4 steps
+
+// O(1) — Set.has does a hash lookup, one step
+const set = new Set([1, 2, 3, 4, 5]);
+set.has(4);      // hash → found → 1 step
+
+// O(n²) — bad: includes inside a loop
+for (const x of arr)
+  if (arr.includes(x)) console.log(x); // same scan every iteration
+
+// O(n) — good: Set for repeated lookups
+const seen = new Set();
+for (const x of arr)
+  if (!seen.has(x)) { seen.add(x); }`,
+    gotcha:
+      'Includes on a 2-element array is fine — the constant-factor overhead of Set.add() + Set.has() only wins at scale. Don\'t optimise prematurely, but know the pattern for interviews.',
+    eli5: 'Looking for a word in a book: includes() is flipping every page; has() is checking the index. The index takes the same time whether the book is 10 pages or 10,000.',
+    textbookDef:
+      'Big O notation classifies algorithms by how their running time grows with input size. Array.includes() is O(n) because it may scan all n elements. Set.has() is O(1) average-case because it uses a hash table to jump directly to the bucket containing the value.'
   }
 ];

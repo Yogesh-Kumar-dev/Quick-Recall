@@ -6,7 +6,9 @@ import Device from '@/models/Device';
 import Notification from '@/models/Notification';
 import NotificationTemplate from '@/models/NotificationTemplate';
 
-const INVALID_TOKEN_ERRORS = ['messaging/registration-token-not-registered', 'messaging/invalid-registration-token'];
+const INVALID_TOKEN_ERRORS = new Set(['messaging/registration-token-not-registered', 'messaging/invalid-registration-token']);
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
@@ -46,7 +48,7 @@ export async function GET(req: Request) {
       status: r.success ? ('sent' as const) : ('failed' as const),
       error: r.error?.code
     }));
-    const disabledDeviceIds = auditRows.filter((row) => row.error && INVALID_TOKEN_ERRORS.includes(row.error)).map((row) => row.deviceId);
+    const disabledDeviceIds = auditRows.filter((row) => row.error && INVALID_TOKEN_ERRORS.has(row.error)).map((row) => row.deviceId);
 
     await Promise.all([
       Notification.insertMany(auditRows),
