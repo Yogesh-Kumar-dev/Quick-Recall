@@ -12,9 +12,11 @@
 // since they have no registry to derive from.
 
 import { ARTICLES } from './articles-index';
-import { FLASHCARD_SETS } from './flashcard-sets';
 // Relative (not @/) imports here: this file is bundled by esbuild for the service worker
 // (see src/app/serwist/[path]/route.ts), which doesn't understand the tsconfig `@/*` alias.
+import { awsCertifications } from './aws/aws-certifications';
+import { awsServices } from './aws/aws-services';
+import { FLASHCARD_SETS } from './flashcard-sets';
 import { jsProblems } from './javascript/js-problems';
 import { reactMcProblems } from './react/react-mc-problems';
 
@@ -30,6 +32,8 @@ export interface OfflineSection {
 // Derived from the authoritative registries — no manual slug lists to keep in sync.
 const JS_MC_SLUGS = jsProblems.map((p) => p.slug);
 const REACT_MC_SLUGS = reactMcProblems.map((p) => p.slug);
+const AWS_SERVICE_SLUGS = awsServices.map((s) => s.slug);
+const AWS_CERT_SLUGS = awsCertifications.map((c) => c.slug);
 const FLASHCARD_SLUGS = Object.keys(FLASHCARD_SETS);
 const ARTICLE_SLUGS = ARTICLES.map((a) => a.slug);
 
@@ -91,7 +95,7 @@ export const OFFLINE_SECTIONS: OfflineSection[] = [
   {
     id: 'aws',
     label: 'AWS',
-    urls: ['/aws/notes', '/aws/quick-recall']
+    urls: ['/aws', ...AWS_CERT_SLUGS.map((slug) => `/aws/${slug}`), ...AWS_SERVICE_SLUGS.map((slug) => `/aws/${slug}`)]
   },
   {
     id: 'testing',

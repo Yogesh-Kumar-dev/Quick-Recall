@@ -53,7 +53,7 @@ export const NOTE_SOURCES: { notes: Note[]; url: string; topic: string }[] = [
   { notes: cssNotes, url: '/html-css/css', topic: 'CSS' },
   { notes: engineeringNotes, url: '/engineering/notes', topic: 'Engineering' },
   { notes: nodejsNotes, url: '/nodejs/notes', topic: 'Node.js' },
-  { notes: awsNotes, url: '/aws/notes', topic: 'AWS' },
+  { notes: awsNotes, url: '/aws', topic: 'AWS' },
   { notes: postgresqlNotes, url: '/databases/postgresql', topic: 'PostgreSQL' },
   { notes: mongodbNotes, url: '/databases/mongodb', topic: 'MongoDB' },
   { notes: redisNotes, url: '/databases/redis', topic: 'Redis' },

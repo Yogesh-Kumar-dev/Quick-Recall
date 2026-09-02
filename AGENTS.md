@@ -43,3 +43,13 @@ Biome enforces: single quotes (JS/TS), double quotes (JSX), 140 line width, 2-sp
 - Unit tests: `src/**/*.test.ts` (node environment)
 - Component tests: `src/**/*.test.tsx` (jsdom, with `vitest.setup.ts`)
 - Storybook tests: `*.stories.tsx` files run via `@storybook/addon-vitest` with Playwright browser (locally only, not in CI)
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

@@ -10,6 +10,9 @@ import type { NextConfig } from 'next';
 // that route handler can bundle in a Node runtime.
 const nextConfig: NextConfig = {
   // cacheComponents: true, // TODO: re-enable once Next.js supports per-route opt-out
+  // Cloudscape ships ESM but some transitive sub-packages haven't been verified under Turbopack —
+  // transpiling defensively so a CJS straggler doesn't break the AWS cert-prep section.
+  transpilePackages: ['@cloudscape-design/components', '@cloudscape-design/global-styles'],
   // Machine-coding pages read their raw source files via readFileSync at render time to show the
   // code alongside the live demo. Under the `force-dynamic` (dashboard) segment that read runs inside
   // the serverless function, but Next's output file tracer only bundles *compiled* modules — the raw

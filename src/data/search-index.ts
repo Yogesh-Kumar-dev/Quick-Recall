@@ -3,6 +3,9 @@ import Fuse from 'fuse.js';
 import { navSections, primaryNav } from '@/config/nav';
 // articles
 import { ARTICLES } from './articles-index';
+// AWS cert-prep services
+import { awsCertifications } from './aws/aws-certifications';
+import { awsServices } from './aws/aws-services';
 // flashcards
 import { FLASHCARD_SETS } from './flashcard-sets';
 // data sources
@@ -119,6 +122,31 @@ const articleItems: SearchItem[] = ARTICLES.map((a) => ({
   url: `/articles/${a.slug}`
 }));
 
+// AWS cert-prep services — selecting a result links straight to its /aws/<slug> detail page.
+const awsServiceItems: SearchItem[] = awsServices.map((s) => ({
+  id: `aws-service-${s.id}`,
+  label: s.title,
+  description: s.summary,
+  keywords: [...s.tags, ...s.cert],
+  difficulty: s.difficulty,
+  category: s.category,
+  section: 'Notes',
+  kind: 'Page',
+  url: `/aws/${s.slug}`
+}));
+
+// AWS certification hub pages — selecting a result links straight to /aws/<cert-slug>.
+const awsCertItems: SearchItem[] = awsCertifications.map((c) => ({
+  id: `aws-cert-${c.id}`,
+  label: c.fullName,
+  description: `Exam guide, services, and Well-Architected primer for ${c.name}.`,
+  keywords: [c.id, c.name],
+  category: 'AWS Certification',
+  section: 'Notes',
+  kind: 'Page',
+  url: `/aws/${c.slug}`
+}));
+
 // Flat nav config (src/config/nav.ts) — no tree to walk, unlike legacy's NavItemType recursion.
 const navItems: SearchItem[] = [
   ...primaryNav.map((n) => ({
@@ -145,7 +173,9 @@ const navItems: SearchItem[] = [
 // represented by one of those (note urls carry a ?open= query, so a topic's own bare "/x/notes"
 // nav link is untouched — only exact-url collisions, e.g. a hook's own page, are dropped).
 const richUrls = new Set(
-  [...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems, ...articleItems].map((i) => i.url)
+  [...jsProblemItems, ...reactProblemItems, ...hookItems, ...noteItems, ...flashcardItems, ...articleItems, ...awsServiceItems, ...awsCertItems].map(
+    (i) => i.url
+  )
 );
 const dedupedNavItems = navItems.filter((i) => !richUrls.has(i.url));
 
@@ -156,6 +186,8 @@ export const searchIndex: SearchItem[] = [
   ...noteItems,
   ...flashcardItems,
   ...articleItems,
+  ...awsServiceItems,
+  ...awsCertItems,
   ...dedupedNavItems
 ];
 

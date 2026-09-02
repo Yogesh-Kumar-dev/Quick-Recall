@@ -10,7 +10,6 @@
 
 import { deriveQuickRecallSections, withItemIds } from '@/lib/quick-recall-from-notes';
 import type { Note, QuickRecallSection } from '@/types/content';
-import { awsNotes } from './aws/aws-notes';
 import { dynamodbNotes } from './databases/dynamodb-notes';
 import { mongodbNotes } from './databases/mongodb-notes';
 import { postgresqlNotes } from './databases/postgresql-notes';
@@ -122,12 +121,6 @@ export const QUICK_RECALL_SHEETS: Record<string, QuickRecallSheet> = {
       ...derived(redisNotes, '/databases/redis', 'Redis'),
       ...derived(dynamodbNotes, '/databases/dynamodb', 'DynamoDB')
     ]
-  },
-  aws: {
-    key: 'aws',
-    title: 'AWS Quick Recall',
-    intro: INTRO,
-    sections: derived(awsNotes, '/aws/notes')
   },
   testing: {
     key: 'testing',

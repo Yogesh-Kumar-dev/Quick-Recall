@@ -20,6 +20,8 @@ export interface QuizSet {
 
 // Single source of truth for the quiz sets: consumed by both the `/quiz` index
 // (lists every set) and `/quiz/[section]` (renders one). Keyed by URL slug.
+// AWS's own quiz lives under /aws (Cloudscape-native AwsQuizRunner), not here — everything AWS
+// stays consolidated under /aws rather than spreading across QuickRecall's generic sections.
 export const QUIZ_SETS: Record<string, QuizSet> = {
   js: { questions: jsQuiz, source: 'js', title: 'JavaScript Quiz' },
   typescript: { questions: tsQuiz, source: 'ts', title: 'TypeScript Quiz' },

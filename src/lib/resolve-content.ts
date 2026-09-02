@@ -72,7 +72,9 @@ const ALL_NOTES_WITH_URL: NoteWithUrl[] = [
   ...noteEntry(mongodbNotes, '/databases/mongodb'),
   ...noteEntry(redisNotes, '/databases/redis'),
   ...noteEntry(dynamodbNotes, '/databases/dynamodb'),
-  ...noteEntry(awsNotes, '/aws/notes'),
+  // No standalone AWS notes page anymore — notes are embedded per-service on /aws/[service],
+  // so a bookmarked AWS note deep-links to the overview instead of a specific note card.
+  ...noteEntry(awsNotes, '/aws'),
   ...noteEntry(testingFundamentalsNotes, '/testing/fundamentals'),
   ...noteEntry(vitestNotes, '/testing/tools'),
   ...noteEntry(rtlNotes, '/testing/tools'),

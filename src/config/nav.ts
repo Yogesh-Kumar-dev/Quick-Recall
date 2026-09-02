@@ -164,10 +164,7 @@ export const navSections: NavSection[] = [
     id: 'aws',
     title: 'AWS',
     icon: IconBrandAws,
-    items: [
-      { title: 'Notes', url: '/aws/notes', icon: IconBrandAws, topic: 'aws' },
-      { title: 'Quick Recall', url: '/aws/quick-recall', icon: IconBolt, topic: 'aws' }
-    ]
+    items: [{ title: 'Overview', url: '/aws', icon: IconBrandAws, topic: 'aws' }]
   },
   {
     id: 'testing',
