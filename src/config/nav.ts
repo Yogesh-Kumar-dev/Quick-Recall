@@ -18,6 +18,7 @@ import {
   IconBrandTypescript,
   IconBriefcase,
   IconBug,
+  IconCalculator,
   IconCalendar,
   IconCards,
   IconChecklist,
@@ -64,15 +65,23 @@ export const primaryNav: NavLink[] = [
   { title: 'Dashboard', url: '/dashboard', icon: IconBrandChrome, tourKey: 'dashboard' },
   { title: 'About', url: '/about', icon: IconInfoCircle },
   { title: 'Articles', url: '/articles', icon: IconArticle, tourKey: 'articles' },
-  { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase, tourKey: 'job-tracker' },
-  { title: 'Planner', url: '/planner', icon: IconCalendar, tourKey: 'planner' },
-  { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone, tourKey: 'speak-up' },
-  { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion, tourKey: 'mock-interview' },
   { title: 'Settings', url: '/settings', icon: IconSettings }
 ];
 
 // Grouped sections (each renders as a labelled sidebar group).
 export const navSections: NavSection[] = [
+  {
+    id: 'tools',
+    title: 'Tools',
+    icon: IconCalculator,
+    items: [
+      { title: 'Job Tracker', url: '/job-tracker', icon: IconBriefcase, tourKey: 'job-tracker' },
+      { title: 'Planner', url: '/planner', icon: IconCalendar, tourKey: 'planner' },
+      { title: 'Speak Up', url: '/speak-up', icon: IconMicrophone, tourKey: 'speak-up' },
+      { title: 'Mock Interview', url: '/mock-interview', icon: IconMessageQuestion, tourKey: 'mock-interview' },
+      { title: 'Hike Calculator', url: '/tools/hike-calculator', icon: IconCalculator }
+    ]
+  },
   {
     id: 'study',
     title: 'Study & Review',
