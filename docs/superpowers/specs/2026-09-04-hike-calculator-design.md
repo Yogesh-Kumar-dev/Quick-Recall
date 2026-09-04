@@ -58,4 +58,4 @@ One route, one client component — no new Dexie table, no new dependency.
 
 ## Testing
 
-No test suite exists in this project yet (`pnpm test` is a no-op placeholder) — matches existing convention, no new test infra added for this feature.
+`pnpm test` runs vitest (`src/lib/topic-access.test.ts` is the existing precedent — a colocated `.test.ts` file for a pure `src/lib/*.ts` module). `src/lib/hike-calculator.ts` gets the same treatment: `src/lib/hike-calculator.test.ts` unit-tests the four pure functions directly. No component/UI tests — matches existing convention (no component tests exist elsewhere in the app either).
