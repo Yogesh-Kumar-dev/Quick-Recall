@@ -9,6 +9,12 @@ describe('newCtcFromHike', () => {
   it('returns the current CTC unchanged for a 0% hike', () => {
     expect(newCtcFromHike(500000, 0)).toBe(500000);
   });
+
+  it('round-trips a pay cut through hikePercentFromNewCtc', () => {
+    const cutPercent = hikePercentFromNewCtc(1000000, 900000);
+    expect(cutPercent).toBeCloseTo(-10, 5);
+    expect(newCtcFromHike(1000000, cutPercent)).toBeCloseTo(900000, 5);
+  });
 });
 
 describe('hikePercentFromNewCtc', () => {
@@ -18,6 +24,10 @@ describe('hikePercentFromNewCtc', () => {
 
   it('returns 0 when new CTC equals current CTC', () => {
     expect(hikePercentFromNewCtc(500000, 500000)).toBe(0);
+  });
+
+  it('returns a negative percent for a pay cut', () => {
+    expect(hikePercentFromNewCtc(1000000, 900000)).toBeCloseTo(-10, 5);
   });
 });
 
@@ -29,6 +39,11 @@ describe('scenarioRows', () => {
       { percent: 30, newCtc: 1300000 },
       { percent: 40, newCtc: 1400000 }
     ]);
+  });
+
+  it('produces a negative first row when effectivePercent is below the step', () => {
+    const rows = scenarioRows(1000000, 5);
+    expect(rows[0]).toEqual({ percent: -5, newCtc: 950000 });
   });
 });
 

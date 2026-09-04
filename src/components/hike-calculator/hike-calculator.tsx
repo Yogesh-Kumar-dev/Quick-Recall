@@ -47,9 +47,10 @@ function ResultsBlock({ currentCtc, newCtc, effectivePercent }: { currentCtc: nu
             <CardTitle className="text-sm text-muted-foreground">New CTC</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-primary">{formatCtc(newCtc)}</p>
+            <p className={`text-2xl font-bold ${increase > 0 ? 'text-primary' : ''}`}>{formatCtc(newCtc)}</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              +{formatCtc(increase)} ({formatPercent(effectivePercent)})
+              {increase >= 0 ? '+' : ''}
+              {formatCtc(increase)} ({formatPercent(effectivePercent)})
             </p>
           </CardContent>
         </Card>

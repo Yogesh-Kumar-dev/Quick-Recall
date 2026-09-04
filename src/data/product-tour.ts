@@ -6,7 +6,7 @@ export interface TourStep {
 }
 
 // Ordered to match the sidebar's actual top-to-bottom layout (primaryNav, then the
-// Study & Review section) so the spotlight moves in one direction instead of jumping.
+// Tools section, then Study & Review) so the spotlight moves in one direction instead of jumping.
 export const TOUR_STEPS: TourStep[] = [
   {
     key: 'dashboard',
