@@ -20,8 +20,15 @@ export interface ScenarioRow {
   newCtc: number;
 }
 
+// Rounds a percent to the nearest 10, e.g. 6 -> 10, 12 -> 10, 16 -> 20, -3 -> 0 (`|| 0` avoids a stray -0).
+// Keeps the chart's flanking scenarios on clean round numbers even when the effective percent isn't one.
+function roundToStep(percent: number): number {
+  return Math.round(percent / SCENARIO_STEP) * SCENARIO_STEP || 0;
+}
+
 export function scenarioRows(currentCtc: number, effectivePercent: number): ScenarioRow[] {
-  return [effectivePercent - SCENARIO_STEP, effectivePercent, effectivePercent + SCENARIO_STEP].map((percent) => ({
+  const percents = [roundToStep(effectivePercent - SCENARIO_STEP), effectivePercent, roundToStep(effectivePercent + SCENARIO_STEP)];
+  return percents.map((percent) => ({
     percent,
     newCtc: newCtcFromHike(currentCtc, percent)
   }));

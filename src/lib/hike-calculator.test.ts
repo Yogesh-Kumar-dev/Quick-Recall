@@ -32,7 +32,7 @@ describe('hikePercentFromNewCtc', () => {
 });
 
 describe('scenarioRows', () => {
-  it('returns effective-10, effective, effective+10 with their resulting new CTC', () => {
+  it('returns effective-10, effective, effective+10 unchanged when they are already round', () => {
     const rows = scenarioRows(1000000, 30);
     expect(rows).toEqual([
       { percent: 20, newCtc: 1200000 },
@@ -41,9 +41,27 @@ describe('scenarioRows', () => {
     ]);
   });
 
-  it('produces a negative first row when effectivePercent is below the step', () => {
+  it('rounds a flank up to the nearest 10 when closer to the higher multiple', () => {
+    const rows = scenarioRows(1000000, 16);
+    expect(rows).toEqual([
+      { percent: 10, newCtc: 1100000 }, // 6 -> 10
+      { percent: 16, newCtc: 1160000 }, // middle stays exact
+      { percent: 30, newCtc: 1300000 } // 26 -> 30
+    ]);
+  });
+
+  it('rounds a flank down to the nearest 10 when closer to the lower multiple', () => {
+    const rows = scenarioRows(1000000, 32);
+    expect(rows).toEqual([
+      { percent: 20, newCtc: 1200000 }, // 22 -> 20
+      { percent: 32, newCtc: 1320000 }, // middle stays exact
+      { percent: 40, newCtc: 1400000 } // 42 -> 40
+    ]);
+  });
+
+  it('rounds a negative lower flank up to 0 instead of leaving it negative', () => {
     const rows = scenarioRows(1000000, 5);
-    expect(rows[0]).toEqual({ percent: -5, newCtc: 950000 });
+    expect(rows[0]).toEqual({ percent: 0, newCtc: 1000000 });
   });
 });
 
